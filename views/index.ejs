@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= title %></title>
+<meta name="description" content="<%= description %>">
+<meta property="og:title" content="<%= title %>">
+<meta property="og:description" content="<%= description %>">
+<link rel="canonical" href="https://coloringpagemaker.app/">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#fff8f0;color:#2d1a4a;line-height:1.5}
+
+.nav{background:#fff;border-bottom:2px solid #ffe5b4;padding:14px 0;position:sticky;top:0;z-index:50}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:20px;font-weight:800;color:#ff6b9d;text-decoration:none;display:flex;align-items:center;gap:8px}
+.nav-links a{color:#5a4a7a;text-decoration:none;margin-left:18px;font-size:14px;font-weight:500}
+.nav-links a:hover{color:#ff6b9d}
+.nav-pro{background:linear-gradient(135deg,#ff6b9d,#c084fc);color:#fff!important;padding:7px 16px;border-radius:20px;font-weight:600}
+
+.hero{padding:50px 20px 30px;text-align:center;background:linear-gradient(180deg,#fff8f0 0%,#ffe5e5 50%,#e0e7ff 100%)}
+.hero h1{font-size:44px;font-weight:900;margin-bottom:14px;letter-spacing:-1px;color:#2d1a4a;line-height:1.1}
+.hero h1 .accent{background:linear-gradient(135deg,#ff6b9d,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:18px;color:#5a4a7a;max-width:620px;margin:0 auto 20px}
+.hero .badges{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:24px}
+.badge{display:inline-block;background:#fff;color:#2d1a4a;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;border:2px solid #ffe5b4}
+
+.tool-section{max-width:1100px;margin:30px auto;padding:0 20px}
+.tool-card{background:#fff;border-radius:20px;padding:28px;box-shadow:0 8px 32px rgba(255,107,157,.12);border:2px solid #ffe5b4}
+.tool-card h2{font-size:22px;margin-bottom:18px;font-weight:700}
+
+.prompt-area{position:relative;margin-bottom:14px}
+.prompt-area textarea{width:100%;min-height:80px;padding:14px 16px;border:2px solid #ffe5b4;border-radius:12px;font-size:16px;font-family:inherit;resize:vertical;background:#fff8f0}
+.prompt-area textarea:focus{outline:none;border-color:#ff6b9d;background:#fff}
+.char-count{font-size:12px;color:#888;text-align:right;margin-top:4px}
+
+.options-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+@media(max-width:640px){.options-row{grid-template-columns:1fr}}
+.option-card{padding:14px;border:2px solid #ffe5b4;border-radius:12px;cursor:pointer;text-align:center;transition:all .15s;background:#fff}
+.option-card:hover{border-color:#ff6b9d;background:#fff8f0}
+.option-card.active{border-color:#ff6b9d;background:#ffeef5}
+.option-card strong{display:block;color:#2d1a4a;font-size:14px;margin-bottom:2px}
+.option-card span{color:#888;font-size:12px}
+
+.style-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+@media(max-width:640px){.style-row{grid-template-columns:1fr}}
+
+.btn-generate{background:linear-gradient(135deg,#ff6b9d,#c084fc);color:#fff;border:none;padding:16px 28px;border-radius:14px;font-size:17px;font-weight:700;cursor:pointer;width:100%;font-family:inherit;box-shadow:0 4px 14px rgba(255,107,157,.3);transition:all .15s}
+.btn-generate:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 20px rgba(255,107,157,.4)}
+.btn-generate:disabled{opacity:.5;cursor:not-allowed}
+
+.examples-bar{margin-top:18px;padding-top:18px;border-top:1px dashed #ffd6e8}
+.examples-bar h3{font-size:13px;color:#888;margin-bottom:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px}
+.example-chip{display:inline-block;background:#fff8f0;border:1px solid #ffe5b4;color:#5a4a7a;padding:6px 12px;border-radius:20px;font-size:13px;margin:4px 4px 0 0;cursor:pointer;transition:all .15s}
+.example-chip:hover{background:#ffeef5;border-color:#ff6b9d}
+
+.usage-bar{background:#fff8f0;padding:10px 14px;border-radius:10px;margin-top:14px;font-size:13px;color:#5a4a7a;text-align:center}
+
+/* Loading */
+.loading{display:none;text-align:center;padding:40px 20px}
+.loading.active{display:block}
+.loading-spinner{display:inline-block;width:60px;height:60px;border:5px solid #ffe5b4;border-top-color:#ff6b9d;border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{margin-top:16px;color:#5a4a7a;font-size:15px}
+.loading-sub{font-size:13px;color:#888;margin-top:6px}
+
+/* Results gallery */
+.gallery-section{display:none;margin-top:30px}
+.gallery-section.active{display:block}
+.gallery-section h2{font-size:22px;margin-bottom:18px}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}
+.image-card{background:#fff;border:2px solid #ffe5b4;border-radius:16px;overflow:hidden;position:relative;transition:all .15s}
+.image-card:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(255,107,157,.15)}
+.image-card img{width:100%;display:block;background:#fff}
+.image-card .actions{padding:10px;display:flex;gap:8px;justify-content:center}
+.btn-small{background:#ff6b9d;color:#fff;border:none;padding:7px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn-small:hover{background:#e85a8d}
+.btn-small-outline{background:#fff;color:#ff6b9d;border:1px solid #ff6b9d}
+.image-card .label{position:absolute;top:10px;left:10px;background:rgba(255,255,255,.9);padding:4px 8px;border-radius:6px;font-size:11px;color:#5a4a7a}
+
+.batch-actions{margin-top:20px;text-align:center;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* Pro Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(45,26,74,.7);z-index:100;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.active{display:flex}
+.modal{background:#fff;border-radius:20px;max-width:460px;width:100%;padding:32px;position:relative;border:3px solid #ffe5b4}
+.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;font-size:24px;color:#888;cursor:pointer;width:32px;height:32px;border-radius:50%}
+.modal-close:hover{background:#fff8f0}
+.modal h2{font-size:26px;margin-bottom:8px;font-weight:800;background:linear-gradient(135deg,#ff6b9d,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.modal-sub{color:#5a4a7a;font-size:14px;margin-bottom:20px}
+.price-tag{display:flex;align-items:baseline;gap:8px;margin:18px 0}
+.price-tag .amt{font-size:48px;font-weight:900;color:#2d1a4a}
+.price-tag .desc{color:#ff6b9d;font-weight:600;font-size:14px}
+.features{list-style:none;margin:18px 0 24px}
+.features li{padding:8px 0 8px 28px;position:relative;color:#2d1a4a;font-size:14px}
+.features li:before{content:"✨";position:absolute;left:0;top:8px}
+.modal-btn{display:block;width:100%;background:linear-gradient(135deg,#ff6b9d,#c084fc);color:#fff;text-align:center;padding:14px;border-radius:12px;text-decoration:none;font-weight:700;font-size:15px;border:none;cursor:pointer;font-family:inherit}
+.modal-btn:hover{opacity:.95}
+.modal-btn.dark{background:#2d1a4a}
+.modal .or{text-align:center;color:#888;margin:18px 0;font-size:13px}
+.modal input[type="email"]{width:100%;padding:12px;border:2px solid #ffe5b4;border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:8px;background:#fff8f0}
+.modal input[type="email"]:focus{outline:none;border-color:#ff6b9d;background:#fff}
+.modal-status{font-size:13px;margin-top:8px;text-align:center}
+.modal-status.error{color:#d13438}
+.modal-status.success{color:#0d8043}
+
+/* Sections */
+.section{max-width:900px;margin:50px auto;padding:0 20px}
+.section h2{font-size:30px;margin-bottom:14px;font-weight:800;text-align:center}
+.section .lead{color:#5a4a7a;text-align:center;font-size:17px;margin-bottom:24px;max-width:600px;margin-left:auto;margin-right:auto}
+
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:24px}
+@media(max-width:700px){.feature-grid{grid-template-columns:1fr}}
+.feature{background:#fff;padding:24px;border-radius:16px;border:2px solid #ffe5b4;text-align:center}
+.feature .emoji{font-size:36px;margin-bottom:8px;display:block}
+.feature h3{font-size:17px;margin-bottom:6px;font-weight:700}
+.feature p{font-size:14px;color:#5a4a7a;margin:0}
+
+.niche-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}
+@media(max-width:700px){.niche-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.niche-grid{grid-template-columns:1fr}}
+.niche-card{background:#fff;border:2px solid #ffe5b4;padding:18px;border-radius:14px;text-decoration:none;color:#2d1a4a;text-align:center;transition:all .15s}
+.niche-card:hover{transform:translateY(-3px);border-color:#ff6b9d;box-shadow:0 6px 16px rgba(255,107,157,.15)}
+.niche-card .icon{font-size:32px;display:block;margin-bottom:6px}
+.niche-card strong{display:block;font-size:14px;margin-bottom:2px}
+.niche-card span{font-size:11px;color:#888}
+
+footer{background:#2d1a4a;color:#c5b4e0;padding:30px 20px;text-align:center;margin-top:60px;font-size:13px}
+footer a{color:#fff;text-decoration:none;margin:0 10px}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo">🎨 ColoringPageMaker</a>
+    <div class="nav-links">
+      <a href="/blog">Blog</a>
+      <a href="/animal-coloring-pages">Animals</a>
+      <a href="/mandala-coloring-pages">Mandalas</a>
+      <a href="javascript:void(0)" onclick="openProModal()" id="navProBtn" class="nav-pro">Get Pro $9</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="badges">
+    <span class="badge">✨ AI-Powered</span>
+    <span class="badge">🆓 2 Free Per Day</span>
+    <span class="badge">📄 Print-Ready PDF</span>
+  </div>
+  <h1>Make Your Own <span class="accent">Coloring Pages</span><br>With AI in Seconds</h1>
+  <p>Type anything — get a printable coloring page. Perfect for kids, adults, teachers, and Etsy sellers.</p>
+</section>
+
+<div class="tool-section">
+  <div class="tool-card">
+    <h2>🪄 Describe Your Coloring Page</h2>
+
+    <div class="prompt-area">
+      <textarea id="promptInput" placeholder="A cute baby unicorn in a flower field with butterflies..." maxlength="500"></textarea>
+      <div class="char-count"><span id="charCount">0</span> / 500</div>
+    </div>
+
+    <h3 style="font-size:13px;color:#888;margin-bottom:8px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px">Detail Level</h3>
+    <div class="style-row">
+      <div class="option-card" data-style="simple" onclick="selectStyle('simple')">
+        <strong>👶 Simple</strong>
+        <span>Ages 3-6, thick lines</span>
+      </div>
+      <div class="option-card active" data-style="medium" onclick="selectStyle('medium')">
+        <strong>🧒 Medium</strong>
+        <span>Ages 6-12, balanced</span>
+      </div>
+      <div class="option-card" data-style="detailed" onclick="selectStyle('detailed')">
+        <strong>🎨 Detailed</strong>
+        <span>Adults, intricate</span>
+      </div>
+    </div>
+
+    <button class="btn-generate" id="generateBtn" onclick="generatePage()">
+      ✨ Generate Coloring Page
+    </button>
+
+    <div class="usage-bar" id="usageBar">
+      Free tier: 2 pages per day. <a href="javascript:void(0)" onclick="openProModal()" style="color:#ff6b9d;font-weight:600;text-decoration:none">Upgrade for unlimited →</a>
+    </div>
+
+    <div class="examples-bar">
+      <h3>💡 Try These Prompts</h3>
+      <span class="example-chip" onclick="useExample(this)">cute dinosaur in jungle</span>
+      <span class="example-chip" onclick="useExample(this)">unicorn princess with castle</span>
+      <span class="example-chip" onclick="useExample(this)">intricate mandala with flowers</span>
+      <span class="example-chip" onclick="useExample(this)">halloween pumpkin with bats</span>
+      <span class="example-chip" onclick="useExample(this)">space astronaut on moon</span>
+      <span class="example-chip" onclick="useExample(this)">mermaid underwater scene</span>
+      <span class="example-chip" onclick="useExample(this)">cute robot with flowers</span>
+      <span class="example-chip" onclick="useExample(this)">fairy with butterflies</span>
+    </div>
+  </div>
+
+  <div class="loading" id="loadingArea">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Creating your coloring page...</div>
+    <div class="loading-sub">This usually takes 10-20 seconds</div>
+  </div>
+
+  <div class="gallery-section" id="gallerySection">
+    <h2>🖼️ Your Coloring Pages</h2>
+    <div class="gallery" id="gallery"></div>
+    <div class="batch-actions">
+      <button class="btn-generate" style="max-width:300px" onclick="downloadAllPDF()">📄 Download All as PDF Book</button>
+    </div>
+  </div>
+</div>
+
+<section class="section">
+  <h2>Why ColoringPageMaker?</h2>
+  <p class="lead">The simplest way to get exactly the coloring page you want.</p>
+  <div class="feature-grid">
+    <div class="feature">
+      <span class="emoji">⚡</span>
+      <h3>15 Seconds</h3>
+      <p>Type your idea and get a print-ready coloring page faster than searching Google.</p>
+    </div>
+    <div class="feature">
+      <span class="emoji">🎯</span>
+      <h3>Exactly What You Want</h3>
+      <p>No more settling for "close enough." Generate the exact scene, character, or pattern you imagined.</p>
+    </div>
+    <div class="feature">
+      <span class="emoji">💰</span>
+      <h3>Sell on Etsy & KDP</h3>
+      <p>Pro plan includes commercial rights. Build your coloring book empire from scratch.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2>Popular Themes</h2>
+  <p class="lead">Browse curated coloring page categories with custom AI generators for each theme.</p>
+  <div class="niche-grid">
+    <a href="/unicorn-coloring-pages" class="niche-card"><span class="icon">🦄</span><strong>Unicorns</strong><span>Magic & rainbows</span></a>
+    <a href="/dinosaur-coloring-pages" class="niche-card"><span class="icon">🦖</span><strong>Dinosaurs</strong><span>Roar!</span></a>
+    <a href="/mandala-coloring-pages" class="niche-card"><span class="icon">🌸</span><strong>Mandalas</strong><span>Adult mindfulness</span></a>
+    <a href="/halloween-coloring-pages" class="niche-card"><span class="icon">🎃</span><strong>Halloween</strong><span>Spooky-cute</span></a>
+    <a href="/christmas-coloring-pages" class="niche-card"><span class="icon">🎄</span><strong>Christmas</strong><span>Santa & more</span></a>
+    <a href="/animal-coloring-pages" class="niche-card"><span class="icon">🐱</span><strong>Animals</strong><span>Any creature</span></a>
+    <a href="/princess-coloring-pages" class="niche-card"><span class="icon">👑</span><strong>Princesses</strong><span>Castles & dresses</span></a>
+    <a href="/flower-coloring-pages" class="niche-card"><span class="icon">🌺</span><strong>Flowers</strong><span>Botanical art</span></a>
+    <a href="/adult-coloring-pages" class="niche-card"><span class="icon">🎨</span><strong>Adult</strong><span>Detailed designs</span></a>
+  </div>
+</section>
+
+<!-- PRO MODAL -->
+<div class="modal-overlay" id="proModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeProModal()">×</button>
+    <h2>ColoringPageMaker Pro</h2>
+    <p class="modal-sub">One payment. Lifetime access. No subscription.</p>
+
+    <div class="price-tag">
+      <span class="amt">$9</span>
+      <span class="desc">one-time, forever</span>
+    </div>
+
+    <ul class="features">
+      <li>Unlimited coloring page generation</li>
+      <li>No watermark on PDFs</li>
+      <li>Multi-page book maker (compile up to 100 pages)</li>
+      <li>Commercial use license (sell on Etsy & KDP!)</li>
+      <li>High-resolution downloads (300 DPI print-ready)</li>
+      <li>Priority support + all future updates</li>
+    </ul>
+
+    <a href="https://gumroad.com/l/REPLACE_WITH_GUMROAD" target="_blank" class="modal-btn">Get Pro for $9 →</a>
+
+    <div class="or">— or —</div>
+
+    <p style="font-size:13px;color:#5a4a7a;margin-bottom:8px;text-align:center">Already purchased? Enter your email:</p>
+    <input type="email" id="licenseEmail" placeholder="your@email.com">
+    <button class="modal-btn dark" onclick="verifyLicense()">Unlock Pro</button>
+    <div class="modal-status" id="licenseStatus"></div>
+  </div>
+</div>
+
+<footer>
+  <div>
+    <a href="/">Home</a>
+    <a href="/blog">Blog</a>
+    <a href="/sell-coloring-books-on-etsy">Sell on Etsy</a>
+    <a href="/kdp-coloring-book-self-publishing">KDP Guide</a>
+  </div>
+  <div style="margin-top:16px">© 2026 ColoringPageMaker — Free AI coloring page generator</div>
+</footer>
+
+<script>
+let selectedStyle = 'medium';
+let generatedImages = JSON.parse(sessionStorage.getItem('generated_images') || '[]');
+let proEmail = localStorage.getItem('pro_email') || '';
+
+function isProUser(){ return !!proEmail; }
+
+function selectStyle(style){
+  selectedStyle = style;
+  document.querySelectorAll('.option-card').forEach(c => c.classList.remove('active'));
+  document.querySelector(`[data-style="${style}"]`).classList.add('active');
+}
+
+function useExample(el){
+  document.getElementById('promptInput').value = el.textContent.trim();
+  updateCharCount();
+}
+
+function updateCharCount(){
+  const len = document.getElementById('promptInput').value.length;
+  document.getElementById('charCount').textContent = len;
+}
+
+document.getElementById('promptInput').addEventListener('input', updateCharCount);
+
+async function generatePage(){
+  const prompt = document.getElementById('promptInput').value.trim();
+  if(prompt.length < 3){
+    alert('Please describe what you want to draw (at least 3 characters)');
+    return;
+  }
+
+  const btn = document.getElementById('generateBtn');
+  const loading = document.getElementById('loadingArea');
+  btn.disabled = true;
+  btn.textContent = '⏳ Generating...';
+  loading.classList.add('active');
+
+  try {
+    const res = await fetch('/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt, style: selectedStyle, email: proEmail })
+    });
+    const data = await res.json();
+
+    if(!res.ok){
+      if(data.limitReached){
+        loading.classList.remove('active');
+        openProModal();
+      } else {
+        alert(data.error || 'Generation failed');
+      }
+      btn.disabled = false;
+      btn.textContent = '✨ Generate Coloring Page';
+      loading.classList.remove('active');
+      return;
+    }
+
+    // Add to gallery
+    generatedImages.unshift({ url: data.imageUrl, prompt, time: Date.now() });
+    sessionStorage.setItem('generated_images', JSON.stringify(generatedImages.slice(0, 50)));
+    renderGallery();
+
+    // Update usage display
+    if(data.remaining >= 0 && data.remaining < 999){
+      document.getElementById('usageBar').innerHTML = data.remaining > 0
+        ? `<strong>${data.remaining}</strong> free pages left today. <a href="javascript:void(0)" onclick="openProModal()" style="color:#ff6b9d;font-weight:600;text-decoration:none">Get unlimited →</a>`
+        : `Daily limit reached. <a href="javascript:void(0)" onclick="openProModal()" style="color:#ff6b9d;font-weight:600;text-decoration:none">Upgrade for unlimited →</a>`;
+    }
+  } catch(e){
+    alert('Connection error. Please try again.');
+  }
+
+  btn.disabled = false;
+  btn.textContent = '✨ Generate Coloring Page';
+  loading.classList.remove('active');
+}
+
+function renderGallery(){
+  const section = document.getElementById('gallerySection');
+  const gallery = document.getElementById('gallery');
+
+  if(generatedImages.length === 0){
+    section.classList.remove('active');
+    return;
+  }
+
+  section.classList.add('active');
+  gallery.innerHTML = generatedImages.map((img, i) => `
+    <div class="image-card">
+      <span class="label">${img.prompt.substring(0, 30)}${img.prompt.length > 30 ? '…' : ''}</span>
+      <img src="${img.url}" alt="${img.prompt}" loading="lazy">
+      <div class="actions">
+        <button class="btn-small" onclick="downloadSingle('${img.url}', '${i}')">📄 PDF</button>
+        <button class="btn-small btn-small-outline" onclick="downloadImage('${img.url}', '${i}')">🖼️ PNG</button>
+        <button class="btn-small btn-small-outline" onclick="removeImage(${i})">🗑️</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function downloadSingle(url, idx){
+  try {
+    const res = await fetch('/download-pdf', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ imageUrls: [url], email: proEmail })
+    });
+    if(!res.ok) throw new Error();
+    const blob = await res.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `coloring-page-${idx}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  } catch(e){ alert('Download failed'); }
+}
+
+async function downloadImage(url, idx){
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `coloring-page-${idx}.png`;
+  a.target = '_blank';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+async function downloadAllPDF(){
+  if(generatedImages.length === 0) return;
+
+  if(!isProUser() && generatedImages.length > 1){
+    alert('Free version can only download 1 page per PDF. Upgrade to Pro to combine all pages into a coloring book!');
+    openProModal();
+    return;
+  }
+
+  try {
+    const res = await fetch('/download-pdf', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ imageUrls: generatedImages.map(i => i.url), email: proEmail })
+    });
+    if(!res.ok) throw new Error();
+    const blob = await res.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `my-coloring-book.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  } catch(e){ alert('Download failed'); }
+}
+
+function removeImage(i){
+  generatedImages.splice(i, 1);
+  sessionStorage.setItem('generated_images', JSON.stringify(generatedImages));
+  renderGallery();
+}
+
+function openProModal(){ document.getElementById('proModal').classList.add('active'); }
+function closeProModal(){
+  document.getElementById('proModal').classList.remove('active');
+  document.getElementById('licenseStatus').textContent = '';
+}
+
+document.getElementById('proModal').addEventListener('click', function(e){
+  if(e.target === this) closeProModal();
+});
+
+async function verifyLicense(){
+  const email = document.getElementById('licenseEmail').value.trim();
+  const status = document.getElementById('licenseStatus');
+  if(!email){ status.textContent = 'Please enter your email'; status.className = 'modal-status error'; return; }
+
+  status.textContent = 'Checking...'; status.className = 'modal-status';
+  try {
+    const res = await fetch('/verify-pro', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    if(data.pro){
+      proEmail = data.email;
+      localStorage.setItem('pro_email', proEmail);
+      status.textContent = '✓ Pro unlocked! Refreshing...';
+      status.className = 'modal-status success';
+      setTimeout(() => location.reload(), 1000);
+    } else {
+      status.textContent = 'Email not found. Recently purchased? Wait a minute and retry.';
+      status.className = 'modal-status error';
+    }
+  } catch(e){
+    status.textContent = 'Connection error.';
+    status.className = 'modal-status error';
+  }
+}
+
+function updateProUI(){
+  if(isProUser()){
+    const btn = document.getElementById('navProBtn');
+    if(btn){
+      btn.innerHTML = '✓ Pro';
+      btn.style.background = '#0d8043';
+      btn.onclick = function(){
+        if(confirm('Sign out of Pro on this device?')){
+          localStorage.removeItem('pro_email');
+          proEmail = '';
+          location.reload();
+        }
+      };
+    }
+    document.getElementById('usageBar').innerHTML = '✨ <strong>Pro:</strong> Unlimited generation';
+  }
+}
+
+// Init
+updateProUI();
+renderGallery();
+</script>
+
+</body>
+</html>

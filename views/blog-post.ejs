@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= post.title %> | ColoringPageMaker</title>
+<meta name="description" content="<%= post.description %>">
+<meta property="og:type" content="article">
+<link rel="canonical" href="https://coloringpagemaker.app/<%= slug %>">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#fff;color:#2d1a4a;line-height:1.7}
+.nav{background:#fff;border-bottom:2px solid #ffe5b4;padding:14px 0}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:20px;font-weight:800;color:#ff6b9d;text-decoration:none}
+.nav-links a{color:#5a4a7a;text-decoration:none;margin-left:18px;font-size:14px;font-weight:500}
+
+article{max-width:760px;margin:50px auto 60px;padding:0 20px}
+.meta{color:#888;font-size:13px;margin-bottom:14px}
+article h1{font-size:38px;font-weight:900;line-height:1.2;margin-bottom:24px;letter-spacing:-0.5px}
+article h2{font-size:24px;margin:36px 0 14px;font-weight:700}
+article p{font-size:17px;color:#2d1a4a;margin-bottom:18px}
+
+.cta{background:linear-gradient(135deg,#ff6b9d,#c084fc);color:#fff;padding:30px;border-radius:18px;margin:36px 0;text-align:center}
+.cta h3{font-size:22px;margin-bottom:10px}
+.cta p{color:rgba(255,255,255,.95);margin-bottom:20px;font-size:16px}
+.cta a{display:inline-block;background:#fff;color:#ff6b9d;padding:12px 26px;border-radius:10px;text-decoration:none;font-weight:700}
+
+.related{background:#fff8f0;padding:50px 20px;margin-top:60px}
+.related-inner{max-width:1100px;margin:0 auto}
+.related h2{font-size:22px;margin-bottom:18px;font-weight:700}
+.related-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(max-width:700px){.related-grid{grid-template-columns:1fr}}
+.related-card{background:#fff;border:2px solid #ffe5b4;padding:18px;border-radius:14px;text-decoration:none;color:#2d1a4a}
+.related-card:hover{border-color:#ff6b9d}
+.related-card strong{display:block;font-size:15px}
+
+footer{background:#2d1a4a;color:#c5b4e0;padding:30px 20px;text-align:center;font-size:13px}
+footer a{color:#fff;text-decoration:none;margin:0 10px}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo">🎨 ColoringPageMaker</a>
+    <div class="nav-links">
+      <a href="/blog">Blog</a>
+      <a href="/">Generator</a>
+    </div>
+  </div>
+</nav>
+
+<article>
+  <div class="meta"><%= post.date %> • <%= post.read %> read</div>
+  <h1><%= post.title %></h1>
+
+  <% post.content.forEach(function(block, idx){ %>
+    <% if(block.type === 'h2'){ %>
+      <h2><%= block.text %></h2>
+    <% } else { %>
+      <p><%= block.text %></p>
+    <% } %>
+
+    <% if(idx === 4){ %>
+      <div class="cta">
+        <h3>Try the AI Coloring Page Generator</h3>
+        <p>Free, no signup. Type any idea and get a printable coloring page in seconds.</p>
+        <a href="/">Open the Generator →</a>
+      </div>
+    <% } %>
+  <% }); %>
+
+  <div class="cta">
+    <h3>Ready to create your own coloring book?</h3>
+    <p>Generate unlimited pages with the Pro license. Sell on Etsy & KDP commercially.</p>
+    <a href="/">Start Generating →</a>
+  </div>
+</article>
+
+<section class="related">
+  <div class="related-inner">
+    <h2>Continue Reading</h2>
+    <div class="related-grid">
+      <% allPosts.forEach(function(p){ %>
+        <a href="/<%= p.slug %>" class="related-card"><strong><%= p.title %></strong></a>
+      <% }); %>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>
+    <a href="/">Home</a>
+    <a href="/blog">Blog</a>
+  </div>
+  <div style="margin-top:16px">© 2026 ColoringPageMaker</div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "name": "coloringbookmaker",
+  "version": "1.0.0",
+  "description": "Free AI Coloring Book Page Generator",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "ejs": "^3.1.9",
+    "pdfkit": "^0.13.0",
+    "body-parser": "^1.20.2",
+    "openai": "^4.73.0",
+    "@vercel/kv": "^1.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

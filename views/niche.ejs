@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= page.title %></title>
+<meta name="description" content="<%= page.description %>">
+<meta property="og:title" content="<%= page.title %>">
+<meta property="og:description" content="<%= page.description %>">
+<link rel="canonical" href="https://coloringpagemaker.app/<%= slug %>">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#fff8f0;color:#2d1a4a;line-height:1.6}
+.nav{background:#fff;border-bottom:2px solid #ffe5b4;padding:14px 0}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:20px;font-weight:800;color:#ff6b9d;text-decoration:none}
+.nav-links a{color:#5a4a7a;text-decoration:none;margin-left:18px;font-size:14px;font-weight:500}
+.nav-pro{background:linear-gradient(135deg,#ff6b9d,#c084fc);color:#fff!important;padding:7px 16px;border-radius:20px;font-weight:600}
+
+.hero{padding:50px 20px 30px;text-align:center;background:linear-gradient(180deg,#fff8f0 0%,#ffe5e5 100%)}
+.hero h1{font-size:38px;font-weight:900;margin-bottom:14px;letter-spacing:-0.5px;color:#2d1a4a;max-width:800px;margin-left:auto;margin-right:auto}
+.hero .lead{font-size:17px;color:#5a4a7a;max-width:680px;margin:0 auto}
+
+.tool-section{max-width:900px;margin:30px auto;padding:0 20px}
+.tool-card{background:#fff;border-radius:20px;padding:28px;border:2px solid #ffe5b4}
+.tool-card h2{font-size:20px;margin-bottom:16px;font-weight:700}
+
+textarea{width:100%;min-height:80px;padding:14px 16px;border:2px solid #ffe5b4;border-radius:12px;font-size:16px;font-family:inherit;background:#fff8f0;resize:vertical}
+textarea:focus{outline:none;border-color:#ff6b9d;background:#fff}
+
+.btn-generate{background:linear-gradient(135deg,#ff6b9d,#c084fc);color:#fff;border:none;padding:14px 28px;border-radius:14px;font-size:16px;font-weight:700;cursor:pointer;width:100%;font-family:inherit;margin-top:14px}
+.btn-generate:disabled{opacity:.5}
+
+.examples-bar{margin-top:18px;padding-top:18px;border-top:1px dashed #ffd6e8}
+.examples-bar h3{font-size:13px;color:#888;margin-bottom:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px}
+.example-chip{display:inline-block;background:#fff8f0;border:1px solid #ffe5b4;color:#5a4a7a;padding:6px 12px;border-radius:20px;font-size:13px;margin:4px 4px 0 0;cursor:pointer}
+.example-chip:hover{background:#ffeef5;border-color:#ff6b9d}
+
+.loading{display:none;text-align:center;padding:30px}
+.loading.active{display:block}
+.loading-spinner{display:inline-block;width:50px;height:50px;border:5px solid #ffe5b4;border-top-color:#ff6b9d;border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.gallery-section{display:none;margin-top:24px}
+.gallery-section.active{display:block}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.image-card{background:#fff;border:2px solid #ffe5b4;border-radius:14px;overflow:hidden}
+.image-card img{width:100%;display:block}
+.image-card .actions{padding:8px;display:flex;gap:6px;justify-content:center}
+.btn-small{background:#ff6b9d;color:#fff;border:none;padding:6px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
+
+.content{max-width:760px;margin:50px auto;padding:0 20px}
+.content h2{font-size:24px;margin:30px 0 14px;font-weight:700}
+.content p{margin-bottom:14px;color:#5a4a7a;font-size:16px}
+
+.related{max-width:1100px;margin:50px auto;padding:0 20px}
+.related h2{font-size:24px;margin-bottom:18px;font-weight:700;text-align:center}
+.related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:700px){.related-grid{grid-template-columns:1fr 1fr}}
+.related-card{background:#fff;border:2px solid #ffe5b4;padding:18px;border-radius:14px;text-decoration:none;color:#2d1a4a;text-align:center}
+.related-card:hover{border-color:#ff6b9d}
+.related-card strong{display:block;font-size:14px}
+
+footer{background:#2d1a4a;color:#c5b4e0;padding:30px 20px;text-align:center;margin-top:60px;font-size:13px}
+footer a{color:#fff;text-decoration:none;margin:0 10px}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo">🎨 ColoringPageMaker</a>
+    <div class="nav-links">
+      <a href="/blog">Blog</a>
+      <a href="/" class="nav-pro">Generator</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <h1><%= page.h1 %></h1>
+  <p class="lead"><%= page.intro %></p>
+</section>
+
+<div class="tool-section">
+  <div class="tool-card">
+    <h2>🪄 Generate Your <%= page.h1 %></h2>
+    <textarea id="promptInput" placeholder="<%= page.examples[0] %>"><%= page.presetPrompt %></textarea>
+    <button class="btn-generate" id="generateBtn" onclick="generatePage()">✨ Generate Coloring Page</button>
+
+    <div class="examples-bar">
+      <h3>💡 Try These Prompts</h3>
+      <% page.examples.forEach(function(ex){ %>
+        <span class="example-chip" onclick="useExample(this)"><%= ex %></span>
+      <% }); %>
+    </div>
+  </div>
+
+  <div class="loading" id="loadingArea">
+    <div class="loading-spinner"></div>
+    <p style="margin-top:12px;color:#5a4a7a">Creating your <%= page.keyword %>...</p>
+  </div>
+
+  <div class="gallery-section" id="gallerySection">
+    <h2 style="margin-bottom:14px;font-size:20px">Your Pages</h2>
+    <div class="gallery" id="gallery"></div>
+  </div>
+</div>
+
+<article class="content">
+  <h2>About <%= page.h1 %></h2>
+  <p><%= page.intro %></p>
+
+  <h2>How to Use This Generator</h2>
+  <p>Type any description into the box above — the more specific, the better the result. Click "Generate" and our AI creates a unique <%= page.keyword %> in 10-20 seconds. The image appears below as a print-ready coloring page with clean black outlines on white background. Click "PDF" to download for printing.</p>
+
+  <h2>Free for Personal Use</h2>
+  <p>You can generate up to 3 free coloring pages per day with no signup required. Pro users (one-time $9 lifetime) get unlimited generation, multi-page PDF book maker, and a commercial license to sell on Etsy or KDP.</p>
+</article>
+
+<section class="related">
+  <h2>Browse More Themes</h2>
+  <div class="related-grid">
+    <% allPages.forEach(function(p){ %>
+      <a href="/<%= p.slug %>" class="related-card"><strong><%= p.h1 %></strong></a>
+    <% }); %>
+  </div>
+</section>
+
+<footer>
+  <div>
+    <a href="/">Home</a>
+    <a href="/blog">Blog</a>
+  </div>
+  <div style="margin-top:16px">© 2026 ColoringPageMaker</div>
+</footer>
+
+<script>
+let proEmail = localStorage.getItem('pro_email') || '';
+let generatedImages = [];
+
+function useExample(el){
+  document.getElementById('promptInput').value = el.textContent.trim();
+}
+
+async function generatePage(){
+  const prompt = document.getElementById('promptInput').value.trim();
+  if(prompt.length < 3){ alert('Please describe what you want'); return; }
+
+  const btn = document.getElementById('generateBtn');
+  const loading = document.getElementById('loadingArea');
+  btn.disabled = true; btn.textContent = '⏳ Generating...';
+  loading.classList.add('active');
+
+  try {
+    const res = await fetch('/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt, style: 'medium', email: proEmail })
+    });
+    const data = await res.json();
+
+    if(!res.ok){
+      alert(data.error || 'Failed');
+      btn.disabled = false; btn.textContent = '✨ Generate Coloring Page';
+      loading.classList.remove('active');
+      return;
+    }
+
+    generatedImages.unshift({ url: data.imageUrl, prompt });
+    renderGallery();
+  } catch(e){ alert('Connection error'); }
+
+  btn.disabled = false; btn.textContent = '✨ Generate Coloring Page';
+  loading.classList.remove('active');
+}
+
+function renderGallery(){
+  const section = document.getElementById('gallerySection');
+  const gallery = document.getElementById('gallery');
+  if(generatedImages.length === 0){ section.classList.remove('active'); return; }
+  section.classList.add('active');
+  gallery.innerHTML = generatedImages.map((img, i) => `
+    <div class="image-card">
+      <img src="${img.url}" alt="${img.prompt}" loading="lazy">
+      <div class="actions">
+        <button class="btn-small" onclick="downloadPDF('${img.url}', ${i})">📄 PDF</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function downloadPDF(url, idx){
+  try {
+    const res = await fetch('/download-pdf', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ imageUrls: [url], email: proEmail })
+    });
+    const blob = await res.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `coloring-page.pdf`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  } catch(e){ alert('Download failed'); }
+}
+</script>
+
+</body>
+</html>
