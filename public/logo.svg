@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff6b9d"/>
+      <stop offset="100%" stop-color="#c084fc"/>
+    </linearGradient>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Rounded square background -->
+  <rect width="512" height="512" rx="110" ry="110" fill="url(#bg)"/>
+
+  <!-- Inner white circle (palette base) -->
+  <circle cx="256" cy="256" r="170" fill="#ffffff" filter="url(#shadow)"/>
+
+  <!-- Thumb hole (palette indicator) -->
+  <circle cx="256" cy="256" r="44" fill="url(#bg)"/>
+
+  <!-- Color dots arranged around -->
+  <!-- Red top -->
+  <circle cx="256" cy="120" r="32" fill="#ff3b30"/>
+  <!-- Orange top-right -->
+  <circle cx="354" cy="170" r="32" fill="#ff9500"/>
+  <!-- Yellow right -->
+  <circle cx="386" cy="270" r="32" fill="#ffcc00"/>
+  <!-- Green bottom-right -->
+  <circle cx="354" cy="365" r="32" fill="#34c759"/>
+  <!-- Blue bottom -->
+  <circle cx="256" cy="395" r="32" fill="#007aff"/>
+  <!-- Purple bottom-left -->
+  <circle cx="158" cy="365" r="32" fill="#af52de"/>
+  <!-- Pink left -->
+  <circle cx="126" cy="270" r="32" fill="#ff2d55"/>
+  <!-- Cyan top-left -->
+  <circle cx="158" cy="170" r="32" fill="#5ac8fa"/>
+</svg>
