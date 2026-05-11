@@ -5,6 +5,24 @@ const path = require('path');
 const fs = require('fs');
 const OpenAI = require('openai');
 
+// === Load .env file if exists (for local dev) ===
+try {
+  const envPath = path.join(__dirname, '.env');
+  if (fs.existsSync(envPath)) {
+    const envContent = fs.readFileSync(envPath, 'utf8');
+    envContent.split('\n').forEach(line => {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#')) return;
+      const [key, ...valParts] = trimmed.split('=');
+      const value = valParts.join('=').replace(/^["']|["']$/g, '');
+      if (key && value && !process.env[key]) {
+        process.env[key.trim()] = value.trim();
+      }
+    });
+    console.log('Loaded .env file');
+  }
+} catch (e) { console.error('.env load error:', e); }
+
 const BLOG_POSTS = require('./blog-posts.js');
 
 const app = express();
@@ -392,6 +410,12 @@ app.post('/verify-pro', async (req, res) => {
   res.json({ pro, email: email.toLowerCase().trim() });
 });
 
+// === API endpoints - GET requests redirect to home (avoid 404s for crawlers) ===
+app.get('/generate', (req, res) => res.redirect(301, '/'));
+app.get('/download-pdf', (req, res) => res.redirect(301, '/'));
+app.get('/gumroad-webhook', (req, res) => res.redirect(301, '/'));
+app.get('/verify-pro', (req, res) => res.redirect(301, '/'));
+
 // === NICHE PAGES (must come before catch-all) ===
 app.get('/blog', (req, res) => {
   res.render('blog-index', {
@@ -444,6 +468,10 @@ app.get('/robots.txt', (req, res) => {
   res.type('text/plain');
   res.send(`User-agent: *
 Allow: /
+Disallow: /generate
+Disallow: /download-pdf
+Disallow: /gumroad-webhook
+Disallow: /verify-pro
 
 Sitemap: https://coloringpagemaker.app/sitemap.xml`);
 });
