@@ -94,22 +94,36 @@ async function revokePro(email) {
 }
 
 // === Daily rate limit (free users: 2/day per IP — OpenAI is expensive) ===
+// Free tier: 2/day. Pro: fair-use cap so a shared email can't drain the API budget.
+const FREE_DAILY_LIMIT = 2;
+const PRO_DAILY_LIMIT = Number(process.env.PRO_DAILY_LIMIT || 150);
+
 async function checkAndIncrementUsage(ip, email) {
-  const isProUser = await isPro(email);
-  if (isProUser) return { allowed: true, remaining: -1 };
-
   const today = new Date().toISOString().split('T')[0];
-  const key = `usage:${today}:${ip}`;
+  const isProUser = await isPro(email);
 
-  if (kv) {
-    try {
-      const count = (await kv.get(key)) || 0;
-      if (count >= 2) return { allowed: false, remaining: 0 };
-      await kv.set(key, count + 1, { ex: 86400 });
-      return { allowed: true, remaining: 2 - count - 1 };
-    } catch (e) { return { allowed: true, remaining: 999 }; }
+  // No KV = no way to count. Fail CLOSED so the OpenAI bill can't run away.
+  if (!kv) {
+    console.error('[usage] KV unavailable — denying generation (fail-closed)');
+    return { allowed: false, remaining: 0, reason: 'storage_down' };
   }
-  return { allowed: true, remaining: 999 };
+
+  const key = isProUser
+    ? `usage:pro:${today}:${(email || '').toLowerCase()}`
+    : `usage:${today}:${ip}`;
+  const limit = isProUser ? PRO_DAILY_LIMIT : FREE_DAILY_LIMIT;
+
+  try {
+    const count = (await kv.get(key)) || 0;
+    if (count >= limit) {
+      return { allowed: false, remaining: 0, reason: isProUser ? 'pro_daily_cap' : 'free_daily_cap' };
+    }
+    await kv.set(key, count + 1, { ex: 86400 });
+    return { allowed: true, remaining: isProUser ? -1 : limit - count - 1 };
+  } catch (e) {
+    console.error('[usage] KV error — denying generation (fail-closed):', e.message);
+    return { allowed: false, remaining: 0, reason: 'storage_down' };
+  }
 }
 
 // === NICHE SEO PAGES ===
@@ -250,6 +264,17 @@ app.post('/generate', async (req, res) => {
     const usage = await checkAndIncrementUsage(ip, email);
 
     if (!usage.allowed) {
+      if (usage.reason === 'storage_down') {
+        return res.status(503).json({
+          error: 'We are having a temporary technical issue. Please try again in a few minutes.'
+        });
+      }
+      if (usage.reason === 'pro_daily_cap') {
+        return res.status(429).json({
+          error: `Daily fair-use cap reached (${PRO_DAILY_LIMIT} pages). Resets at midnight UTC. Contact support if you need more.`,
+          limitReached: true
+        });
+      }
       return res.status(429).json({
         error: 'Daily limit reached (2 free pages per day). Upgrade to Pro for unlimited.',
         limitReached: true
@@ -265,13 +290,16 @@ app.post('/generate', async (req, res) => {
 
     const fullPrompt = `Black and white coloring book page line art of: ${prompt.trim()}. ${styleModifier} Pure white background, only black outlines, NO color, NO shading, NO gray, NO gradients. Clean printable coloring page style with thick uniform black lines on white. Suitable for printing on standard paper.`;
 
-    // Generate with gpt-image-1
+    // NOTE: gpt-image-1 is being retired Oct 23, 2026.
+    // Set IMAGE_MODEL env var to switch without a code change:
+    //   gpt-image-1-mini  (~$0.005-0.052/img, cheapest — test line-art quality first)
+    //   gpt-image-1.5     (current flagship)
     const result = await openai.images.generate({
-      model: 'gpt-image-1',
+      model: process.env.IMAGE_MODEL || 'gpt-image-1',
       prompt: fullPrompt,
       n: 1,
       size: '1024x1024',
-      quality: 'medium',
+      quality: process.env.IMAGE_QUALITY || 'medium',
       output_format: 'png',
       background: 'opaque'
     });
