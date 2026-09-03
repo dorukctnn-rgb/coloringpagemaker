@@ -310,6 +310,22 @@ footer a{color:#fff;text-decoration:none;margin:0 10px}
 <script>
 let selectedStyle = 'medium';
 let generatedImages = JSON.parse(sessionStorage.getItem('generated_images') || '[]');
+
+// Images are base64 data URLs (~1MB each) and sessionStorage caps out around 5MB.
+// Persisting is a convenience, not a requirement — it must never throw, because a
+// QuotaExceededError here used to surface as "Connection error" and hide the image.
+function persistImages(){
+  let keep = Math.min(generatedImages.length, 20);
+  while(keep > 0){
+    try {
+      sessionStorage.setItem('generated_images', JSON.stringify(generatedImages.slice(0, keep)));
+      return;
+    } catch(e){
+      keep = Math.floor(keep / 2);
+    }
+  }
+  try { sessionStorage.removeItem('generated_images'); } catch(e){}
+}
 let proEmail = localStorage.getItem('pro_email') || '';
 
 function isProUser(){ return !!proEmail; }
@@ -366,10 +382,10 @@ async function generatePage(){
       return;
     }
 
-    // Add to gallery
+    // Render first: a storage failure must never hide an image the user paid for.
     generatedImages.unshift({ url: data.imageUrl, prompt, time: Date.now() });
-    sessionStorage.setItem('generated_images', JSON.stringify(generatedImages.slice(0, 50)));
     renderGallery();
+    persistImages();
 
     // Update usage display
     if(data.remaining >= 0 && data.remaining < 999){
@@ -509,7 +525,7 @@ async function downloadAllPDF(){
 
 function removeImage(i){
   generatedImages.splice(i, 1);
-  sessionStorage.setItem('generated_images', JSON.stringify(generatedImages));
+  persistImages();
   renderGallery();
 }
 
