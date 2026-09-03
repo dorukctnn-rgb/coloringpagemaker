@@ -306,6 +306,7 @@ footer a{color:#fff;text-decoration:none;margin:0 10px}
   <div style="margin-top:16px">© 2026 ColoringPageMaker — Free AI coloring page generator</div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 let selectedStyle = 'medium';
 let generatedImages = JSON.parse(sessionStorage.getItem('generated_images') || '[]');
@@ -408,22 +409,68 @@ function renderGallery(){
   `).join('');
 }
 
+// === CLIENT-SIDE PDF ===
+// Built in the browser with jsPDF. Nothing is uploaded, so there is no
+// server payload limit — a 100-page book works the same as a 1-page one.
+
+const PAGE_W = 612, PAGE_H = 792, MARGIN = 30;
+const AREA_W = PAGE_W - MARGIN * 2;   // 552
+const AREA_H = PAGE_H - MARGIN * 2;   // 732
+
+function loadImageDims(src){
+  return new Promise((resolve, reject) => {
+    const im = new Image();
+    im.onload = () => resolve({ w: im.naturalWidth || 1024, h: im.naturalHeight || 1024 });
+    im.onerror = () => reject(new Error('Image could not be read'));
+    im.src = src;
+  });
+}
+
+function drawWatermark(doc){
+  doc.setFontSize(11);
+  doc.setTextColor(204, 0, 0);
+  doc.text(
+    'FREE PREVIEW - Not for resale. Get Pro for $9 (unlimited + commercial use): coloringpagemaker.app',
+    PAGE_W / 2, 22, { align: 'center', maxWidth: 572 }
+  );
+  doc.setFontSize(10);
+  doc.setTextColor(102, 102, 102);
+  doc.text('Generated free at coloringpagemaker.app', PAGE_W / 2, PAGE_H - 22, { align: 'center' });
+}
+
+async function buildPDF(urls, withWatermark){
+  if(!window.jspdf || !window.jspdf.jsPDF){
+    throw new Error('PDF library failed to load. Please refresh the page and try again.');
+  }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'pt', format: 'letter', compress: true });
+
+  for(let i = 0; i < urls.length; i++){
+    if(i > 0) doc.addPage();
+
+    const { w, h } = await loadImageDims(urls[i]);
+    const scale = Math.min(AREA_W / w, AREA_H / h);
+    const dw = w * scale, dh = h * scale;
+    const x = MARGIN + (AREA_W - dw) / 2;
+    const y = MARGIN + (AREA_H - dh) / 2;
+
+    doc.addImage(urls[i], 'PNG', x, y, dw, dh, undefined, 'FAST');
+    if(withWatermark) drawWatermark(doc);
+  }
+  return doc;
+}
+
+function savePDF(doc, filename){
+  doc.save(filename);
+}
+
 async function downloadSingle(url, idx){
   try {
-    const res = await fetch('/download-pdf', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ imageUrls: [url], email: proEmail })
-    });
-    if(!res.ok) throw new Error();
-    const blob = await res.blob();
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `coloring-page-${idx}.pdf`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  } catch(e){ alert('Download failed'); }
+    const doc = await buildPDF([url], !isProUser());
+    savePDF(doc, `coloring-page-${idx}.pdf`);
+  } catch(e){
+    alert(e.message || 'Download failed');
+  }
 }
 
 async function downloadImage(url, idx){
@@ -445,21 +492,19 @@ async function downloadAllPDF(){
     return;
   }
 
+  const btn = event && event.target ? event.target : null;
+  const original = btn ? btn.textContent : '';
+  if(btn){ btn.disabled = true; btn.textContent = '📄 Building PDF…'; }
+
   try {
-    const res = await fetch('/download-pdf', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ imageUrls: generatedImages.map(i => i.url), email: proEmail })
-    });
-    if(!res.ok) throw new Error();
-    const blob = await res.blob();
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `my-coloring-book.pdf`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  } catch(e){ alert('Download failed'); }
+    const urls = generatedImages.map(i => i.url);
+    const doc = await buildPDF(urls, !isProUser());
+    savePDF(doc, 'my-coloring-book.pdf');
+  } catch(e){
+    alert(e.message || 'Download failed');
+  } finally {
+    if(btn){ btn.disabled = false; btn.textContent = original; }
+  }
 }
 
 function removeImage(i){
