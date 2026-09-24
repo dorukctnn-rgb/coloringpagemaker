@@ -276,7 +276,7 @@ app.post('/generate', async (req, res) => {
         });
       }
       return res.status(429).json({
-        error: 'Daily limit reached (2 free pages per day). Upgrade to Pro for unlimited.',
+        error: 'Daily limit reached (2 free pages per day). Upgrade to Pro for up to 150 a day.',
         limitReached: true
       });
     }
@@ -393,7 +393,7 @@ app.post('/download-pdf', async (req, res) => {
 
         // Top watermark
         doc.fontSize(11).fillColor('#cc0000').opacity(1).text(
-          '⚠ FREE PREVIEW — Not for resale. Get Pro for $9 (unlimited + commercial use): coloringpagemaker.app',
+          '⚠ FREE PREVIEW — Not for resale. Get Pro for $9 (150 pages/day + commercial use): coloringpagemaker.app',
           20, 10, { align: 'center', width: 572 }
         );
 

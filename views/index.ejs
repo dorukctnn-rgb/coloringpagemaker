@@ -19,6 +19,9 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="canonical" href="https://coloringpagemaker.app/">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"ColoringPageMaker","url":"https://coloringpagemaker.app/","applicationCategory":"DesignApplication","operatingSystem":"Any (web browser)","description":"AI coloring page generator: describe a scene and get printable black-and-white line art as a PDF.","offers":[{"@type":"Offer","name":"Free","price":"0","priceCurrency":"USD"},{"@type":"Offer","name":"Pro (lifetime)","price":"9","priceCurrency":"USD"}]}
+</script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#fff8f0;color:#2d1a4a;line-height:1.5}
@@ -232,8 +235,8 @@ footer a{color:#fff;text-decoration:none;margin:0 10px}
   <div class="feature-grid">
     <div class="feature">
       <span class="emoji">⚡</span>
-      <h3>15 Seconds</h3>
-      <p>Type your idea and get a print-ready coloring page faster than searching Google.</p>
+      <h3>Under a minute</h3>
+      <p>Type your idea and get a print-ready coloring page, usually in 15 to 40 seconds.</p>
     </div>
     <div class="feature">
       <span class="emoji">🎯</span>
@@ -243,7 +246,7 @@ footer a{color:#fff;text-decoration:none;margin:0 10px}
     <div class="feature">
       <span class="emoji">💰</span>
       <h3>Sell on Etsy & KDP</h3>
-      <p>Pro plan includes commercial rights. Build your coloring book empire from scratch.</p>
+      <p>Pro includes commercial use, so you can sell the pages you make as printables or KDP books.</p>
     </div>
   </div>
 </section>
@@ -277,11 +280,11 @@ footer a{color:#fff;text-decoration:none;margin:0 10px}
     </div>
 
     <ul class="features">
-      <li>Unlimited coloring page generation</li>
+      <li>Up to 150 pages a day (free: 2 a day)</li>
       <li>No watermark on PDFs</li>
-      <li>Multi-page book maker (compile up to 100 pages)</li>
-      <li>Commercial use license (sell on Etsy & KDP!)</li>
-      <li>High-resolution downloads (300 DPI print-ready)</li>
+      <li>Combine all your pages into one PDF book</li>
+      <li>Commercial use: sell your pages on Etsy &amp; KDP</li>
+      <li>Print-ready letter-size PDFs</li>
       <li>Priority support + all future updates</li>
     </ul>
 
@@ -446,7 +449,7 @@ function drawWatermark(doc){
   doc.setFontSize(11);
   doc.setTextColor(204, 0, 0);
   doc.text(
-    'FREE PREVIEW - Not for resale. Get Pro for $9 (unlimited + commercial use): coloringpagemaker.app',
+    'FREE PREVIEW - Not for resale. Get Pro for $9 (150 pages/day + commercial use): coloringpagemaker.app',
     PAGE_W / 2, 22, { align: 'center', maxWidth: 572 }
   );
   doc.setFontSize(10);
@@ -582,7 +585,7 @@ function updateProUI(){
         }
       };
     }
-    document.getElementById('usageBar').innerHTML = '✨ <strong>Pro:</strong> Unlimited generation';
+    document.getElementById('usageBar').innerHTML = '✨ <strong>Pro:</strong> up to 150 pages a day';
   }
 }
 

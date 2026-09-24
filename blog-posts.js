@@ -9,7 +9,7 @@ const BLOG_POSTS = {
   content: [
     { type: 'p', text: 'Selling coloring books on Etsy has become one of the most accessible side hustles of the past three years. With AI image generation now producing professional-quality coloring pages in seconds, you can build a full coloring book and list it on Etsy in a single afternoon. Some Etsy sellers in this niche are pulling in $3,000 to $15,000 per month from passive digital downloads. This guide walks you through exactly how to do it.' },
     { type: 'h2', text: 'Why coloring books work on Etsy' },
-    { type: 'p', text: 'Coloring book searches on Etsy are massive and consistent. "Coloring book" gets over 200,000 monthly searches across the platform. Subcategories like "adult coloring book," "kids coloring book," "mandala coloring book," and "Halloween coloring book" each pull tens of thousands more. The buyer intent is high — people search Etsy specifically because they want printable digital downloads, not physical books shipped from Amazon.' },
+    { type: 'p', text: 'Coloring book searches on Etsy are massive and consistent. Coloring books are a steady, year-round category on Etsy, with clear seasonal peaks around Halloween, Christmas and back-to-school. Subcategories like "adult coloring book," "kids coloring book," "mandala coloring book," and "Halloween coloring book" each pull tens of thousands more. The buyer intent is high — people search Etsy specifically because they want printable digital downloads, not physical books shipped from Amazon.' },
     { type: 'h2', text: 'What sells (and what doesn\'t)' },
     { type: 'p', text: 'The best-selling coloring books on Etsy fall into clear categories: themed adult coloring books (mandalas, florals, animals), kids coloring books (unicorns, dinosaurs, princesses, vehicles), seasonal books (Halloween, Christmas, Easter, Valentine\'s), and educational coloring books (alphabet, numbers, sight words). Generic "coloring book" listings without a clear theme rarely break $50/month. Themed books with strong cover art consistently hit $500-$5,000/month.' },
     { type: 'h2', text: 'Step 1: Pick a profitable theme' },
@@ -25,7 +25,7 @@ const BLOG_POSTS = {
     { type: 'h2', text: 'Step 6: Price right' },
     { type: 'p', text: 'Most successful coloring book listings price between $4.99 and $12.99. Single-theme books with 25 pages: $4.99-$6.99. Larger themed books with 50+ pages: $7.99-$12.99. Bundle deals (3 books): $14.99-$24.99. Don\'t price below $3.99 — that signals low quality. Don\'t price above $14.99 unless you have 100+ pages or premium illustrations.' },
     { type: 'h2', text: 'Step 7: Use Pinterest for free traffic' },
-    { type: 'p', text: 'Pinterest is the secret weapon for Etsy coloring book sellers. Each coloring page you create can become a Pinterest pin linking back to your Etsy listing. The platform rewards consistent posting (10-20 pins/day) and design diversity. Top sellers report Pinterest driving 30-60% of their Etsy traffic — for free.' },
+    { type: 'p', text: 'Pinterest is the secret weapon for Etsy coloring book sellers. Each coloring page you create can become a Pinterest pin linking back to your Etsy listing. The platform rewards consistent posting (10-20 pins/day) and design diversity. Many sellers say Pinterest is one of their biggest free traffic sources.' },
     { type: 'h2', text: 'Common mistakes that kill sales' },
     { type: 'p', text: 'The biggest mistake is making books that are too generic. "Coloring Book" without a clear theme will not rank or sell. Other killers: blurry cover art, vague descriptions, missing print sizes, no preview pages, and pricing above what the niche supports. Focus on one theme per book and execute it well — quality beats quantity every time.' }
   ]
@@ -58,12 +58,12 @@ const BLOG_POSTS = {
 
 'coloring-pages-for-self-publishing-kdp': {
   title: 'Self-Publishing Coloring Books on KDP: Complete 2026 Guide',
-  description: 'Step-by-step guide to publishing coloring books on Amazon KDP in 2026. AI tools, formatting, royalties, and how top sellers earn $5K+/month.',
+  description: 'Step-by-step guide to publishing coloring books on Amazon KDP in 2026. AI tools, formatting, royalties, and and what realistic income looks like.',
   keyword: 'kdp coloring book self publishing',
   date: 'May 2026',
   read: '10 min',
   content: [
-    { type: 'p', text: 'Amazon KDP (Kindle Direct Publishing) is the second-largest channel for selling coloring books after Etsy — and for many publishers, it generates higher passive income because Amazon\'s search engine drives organic traffic that compounds over years. Top KDP coloring book publishers earn $3,000 to $15,000+ per month from a catalog of 20-50 books. This guide shows you how the system works and how to launch your first book.' },
+    { type: 'p', text: 'Amazon KDP (Kindle Direct Publishing) is the second-largest channel for selling coloring books after Etsy — and for many publishers, it generates higher passive income because Amazon\'s search engine drives organic traffic that compounds over years. Income varies enormously: the publishers who talk about meaningful monthly income usually have large catalogues built over years, while most individual books sell only a few copies. This guide shows you how the system works and how to launch your first book.' },
     { type: 'h2', text: 'Why KDP for coloring books' },
     { type: 'p', text: 'KDP prints books on demand — you upload a PDF, set a price, and Amazon prints, ships, and handles customer service every time someone orders. Your only work is creating the book once. Amazon takes a cut, but for 8.5x11 paperback coloring books, royalties typically run $1.50-$3.50 per sale. A book selling 5 copies a day pays $225-$525 a month, forever.' },
     { type: 'h2', text: 'KDP vs Etsy: key differences' },
@@ -83,7 +83,7 @@ const BLOG_POSTS = {
     { type: 'h2', text: 'Launch strategy' },
     { type: 'p', text: 'On launch day, run a Kindle Countdown Deal or use a Free Promotion (KDP Select required) to get initial downloads and reviews. Email any friends or family who\'ll honestly review. Aim for 5-10 reviews in the first 30 days — Amazon\'s algorithm strongly favors books with early review velocity. Promote on Pinterest, Instagram, and parenting Facebook groups (carefully — read group rules first).' },
     { type: 'h2', text: 'Scaling: the catalog effect' },
-    { type: 'p', text: 'One coloring book might earn $50-$300/month. The real money is in catalog scale. Top KDP coloring publishers have 20-100+ books, each earning a small monthly amount that compounds. Once you have your workflow dialed (AI generation → compile PDF → Canva cover → upload), you can publish a new book every 1-2 weeks. After 12 months and 26 books at $150 average, you\'re at $3,900/month passive.' },
+    { type: 'p', text: 'Most single coloring books earn modest amounts. The real money is in catalog scale. Top KDP coloring publishers have 20-100+ books, each earning a small monthly amount that compounds. Once you have your workflow dialed (AI generation → compile PDF → Canva cover → upload), you can publish a new book every 1-2 weeks. After 12 months and 26 books at $150 average, you\'re at $3,900/month passive.' },
     { type: 'h2', text: 'Avoiding KDP rejection' },
     { type: 'p', text: 'KDP rejects coloring books for: low-resolution images (under 300 DPI), pages with no content (blank or near-blank), duplicate content (Amazon checks for similar books), trademark violations (no Disney, no Pokemon, no copyrighted characters — generate originals), inappropriate content for stated age range, and missing required formatting elements. Rejection emails take 24-72 hours; fix the issue and resubmit.' }
   ]
