@@ -180,7 +180,7 @@ async function checkAndIncrementUsage(ip, email) {
 const NICHE_PAGES = {
   'unicorn-coloring-pages': {
     title: 'Free Unicorn Coloring Pages (AI Generator, Printable PDF)',
-    h1: 'Unicorn Coloring Pages',
+    h1: 'Unicorn coloring pages',
     description: 'Free AI-generated unicorn coloring pages. Create custom unicorn designs and download printable PDFs instantly. No signup required.',
     keyword: 'unicorn coloring pages',
     presetPrompt: 'unicorn with a flowing mane and small stars, cute friendly expression',
@@ -189,7 +189,7 @@ const NICHE_PAGES = {
   },
   'dinosaur-coloring-pages': {
     title: 'Free Dinosaur Coloring Pages (AI Generator, Printable)',
-    h1: 'Dinosaur Coloring Pages',
+    h1: 'Dinosaur coloring pages',
     description: 'Free AI-generated dinosaur coloring pages. T-Rex, Stegosaurus, Triceratops and more. Download printable PDFs instantly.',
     keyword: 'dinosaur coloring pages',
     presetPrompt: 'friendly cartoon dinosaur in jungle scene with palm trees',
@@ -198,7 +198,7 @@ const NICHE_PAGES = {
   },
   'mandala-coloring-pages': {
     title: 'Free Mandala Coloring Pages (AI Generator for Adults)',
-    h1: 'Mandala Coloring Pages',
+    h1: 'Mandala coloring pages',
     description: 'Free AI-generated mandala coloring pages for adults. Intricate, symmetrical designs for stress relief and mindfulness. Download printable PDFs.',
     keyword: 'mandala coloring pages',
     presetPrompt: 'intricate symmetrical mandala with floral patterns and geometric details',
@@ -207,7 +207,7 @@ const NICHE_PAGES = {
   },
   'halloween-coloring-pages': {
     title: 'Free Halloween Coloring Pages (AI Generator, Printable)',
-    h1: 'Halloween Coloring Pages',
+    h1: 'Halloween coloring pages',
     description: 'Free AI Halloween coloring pages: pumpkins, ghosts, witches, haunted houses. Generate custom designs and print at home.',
     keyword: 'halloween coloring pages',
     presetPrompt: 'cute friendly halloween pumpkin with bats and stars',
@@ -216,7 +216,7 @@ const NICHE_PAGES = {
   },
   'christmas-coloring-pages': {
     title: 'Free Christmas Coloring Pages (AI Generator for Santa, Trees and More)',
-    h1: 'Christmas Coloring Pages',
+    h1: 'Christmas coloring pages',
     description: 'Free AI Christmas coloring pages. Santa, Christmas trees, snowmen, reindeer, presents. Download printable PDFs instantly.',
     keyword: 'christmas coloring pages',
     presetPrompt: 'jolly santa claus with christmas tree and presents',
@@ -225,7 +225,7 @@ const NICHE_PAGES = {
   },
   'animal-coloring-pages': {
     title: 'Free Animal Coloring Pages (AI Generator, Any Animal)',
-    h1: 'Animal Coloring Pages',
+    h1: 'Animal coloring pages',
     description: 'Free AI animal coloring pages: any animal you can imagine. Cats, dogs, horses, lions, dolphins, birds. Generate and print instantly.',
     keyword: 'animal coloring pages',
     presetPrompt: 'cute cartoon cat sitting in a garden with flowers',
@@ -234,7 +234,7 @@ const NICHE_PAGES = {
   },
   'flower-coloring-pages': {
     title: 'Free Flower Coloring Pages (AI Generator for Kids and Adults)',
-    h1: 'Flower Coloring Pages',
+    h1: 'Flower coloring pages',
     description: 'Free AI flower coloring pages: roses, sunflowers, tulips, lilies, bouquets. Detailed adult or simple kid versions. Download PDFs.',
     keyword: 'flower coloring pages',
     presetPrompt: 'beautiful detailed bouquet of mixed flowers with leaves',
@@ -243,7 +243,7 @@ const NICHE_PAGES = {
   },
   'princess-coloring-pages': {
     title: 'Free Princess Coloring Pages (AI Generator, Disney-Style)',
-    h1: 'Princess Coloring Pages',
+    h1: 'Princess coloring pages',
     description: 'Free AI princess coloring pages. Beautiful princesses with castles, dresses, animals. Generate custom designs and print instantly.',
     keyword: 'princess coloring pages',
     presetPrompt: 'beautiful princess in flowing gown standing in front of castle',
@@ -252,7 +252,7 @@ const NICHE_PAGES = {
   },
   'easter-coloring-pages': {
     title: 'Free Easter Coloring Pages (AI Generator for Bunnies and Eggs)',
-    h1: 'Easter Coloring Pages',
+    h1: 'Easter coloring pages',
     description: 'Free AI Easter coloring pages. Bunnies, eggs, chicks, spring scenes. Generate custom designs for kids and print instantly.',
     keyword: 'easter coloring pages',
     presetPrompt: 'cute easter bunny with decorated eggs in a basket',
@@ -261,7 +261,7 @@ const NICHE_PAGES = {
   },
   'pokemon-coloring-pages': {
     title: 'Free Pokemon-Style Coloring Pages (AI Creature Generator)',
-    h1: 'Pokemon-Style Coloring Pages',
+    h1: 'Pokemon-style coloring pages',
     description: 'Free AI-generated Pokemon-style creature coloring pages. Create unique cute monster designs for kids. Print-ready PDF.',
     keyword: 'pokemon coloring pages',
     presetPrompt: 'cute cartoon monster creature with big eyes and friendly expression',
@@ -270,7 +270,7 @@ const NICHE_PAGES = {
   },
   'cartoon-character-coloring-pages': {
     title: 'Free Cartoon Character Coloring Pages (AI Generator)',
-    h1: 'Cartoon Character Coloring Pages',
+    h1: 'Cartoon character coloring pages',
     description: 'Free AI cartoon character coloring pages. Generate custom cartoon kids, animals, robots, monsters. Print-ready PDFs.',
     keyword: 'cartoon coloring pages',
     presetPrompt: 'cute cartoon character with big eyes and friendly smile',
@@ -279,7 +279,7 @@ const NICHE_PAGES = {
   },
   'adult-coloring-pages': {
     title: 'Free Detailed Adult Coloring Pages (AI Generator)',
-    h1: 'Adult Coloring Pages',
+    h1: 'Adult coloring pages',
     description: 'Free AI-generated detailed coloring pages for adults. Intricate designs for stress relief, mindfulness, and creative expression.',
     keyword: 'adult coloring pages',
     presetPrompt: 'highly detailed intricate zentangle pattern with nature elements',

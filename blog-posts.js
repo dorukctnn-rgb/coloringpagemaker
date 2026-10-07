@@ -1,7 +1,7 @@
 const BLOG_POSTS = {
 
 'sell-coloring-books-on-etsy': {
-  title: 'How to Sell Coloring Books on Etsy in 2026 (Step-by-Step Guide)',
+  title: 'How to sell coloring books on Etsy in 2026 (step-by-step guide)',
   description: 'Complete 2026 guide to creating and selling AI coloring books on Etsy. Tools, pricing, SEO, and the listings that actually sell.',
   keyword: 'sell coloring books on etsy',
   date: 'May 2026',
@@ -32,7 +32,7 @@ const BLOG_POSTS = {
 },
 
 'best-ai-coloring-page-generators-2026': {
-  title: 'Best AI Coloring Page Generators in 2026 (Honest Comparison)',
+  title: 'Best AI coloring page generators in 2026 (honest comparison)',
   description: 'Compared 8 AI coloring page generators in 2026. Quality, pricing, commercial use, and which one is actually free. Honest reviews.',
   keyword: 'best ai coloring page generator',
   date: 'May 2026',
@@ -57,7 +57,7 @@ const BLOG_POSTS = {
 },
 
 'coloring-pages-for-self-publishing-kdp': {
-  title: 'Self-Publishing Coloring Books on KDP: Complete 2026 Guide',
+  title: 'Self-publishing coloring books on KDP: a complete 2026 guide',
   description: 'Step-by-step guide to publishing coloring books on Amazon KDP in 2026. AI tools, formatting, royalties, and what realistic income looks like.',
   keyword: 'kdp coloring book self publishing',
   date: 'May 2026',
@@ -90,7 +90,7 @@ const BLOG_POSTS = {
 },
 
 'coloring-pages-for-classroom-teachers': {
-  title: 'Free Coloring Pages for Teachers: 2026 Classroom Resource Guide',
+  title: 'Free coloring pages for teachers: a 2026 classroom resource guide',
   description: 'Free printable coloring pages for elementary classrooms. Generate custom themed pages aligned to lessons. No signup, no copyright issues.',
   keyword: 'coloring pages for teachers',
   date: 'May 2026',
@@ -113,7 +113,7 @@ const BLOG_POSTS = {
 },
 
 'adult-coloring-mental-health-benefits': {
-  title: 'Adult Coloring for Mental Health: What the Research Actually Says',
+  title: 'Adult coloring for mental health: what the research actually says',
   description: 'Real research on adult coloring and mental health in 2026. Stress relief, anxiety and mindfulness: evidence-based benefits and best practices.',
   keyword: 'adult coloring mental health',
   date: 'May 2026',
