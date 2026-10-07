@@ -4,3 +4,5 @@ pro-emails.json
 .env
 .DS_Store
 *.log
+.vercel
+.env*

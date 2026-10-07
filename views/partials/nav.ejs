@@ -1,0 +1,16 @@
+<a class="skip-link" href="#main">Skip to content</a>
+<nav class="nav" aria-label="Main">
+  <div class="nav-inner">
+    <a href="/" class="logo"><img src="/logo.svg" alt="" width="30" height="30">ColoringPageMaker</a>
+    <div class="nav-links">
+      <a href="/blog" class="nav-extra">Blog</a>
+      <a href="/animal-coloring-pages" class="nav-extra">Animals</a>
+      <a href="/mandala-coloring-pages" class="nav-extra">Mandalas</a>
+      <% if (locals.home) { %>
+      <button type="button" class="btn" id="navProBtn" onclick="openProModal()">Get Pro $9</button>
+      <% } else { %>
+      <a href="/" class="btn">Generator</a>
+      <% } %>
+    </div>
+  </div>
+</nav>

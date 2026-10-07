@@ -3,112 +3,76 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title><%= post.title %> | ColoringPageMaker</title>
+<title><%= post.title.length + 20 <= 70 ? post.title + " | ColoringPageMaker" : post.title %></title>
 <meta name="description" content="<%= post.description %>">
 <meta property="og:type" content="article">
 <meta property="og:title" content="<%= post.title %>">
 <meta property="og:description" content="<%= post.description %>">
-<meta property="og:image" content="https://coloringpagemaker.app/og-image.png">
-<meta property="og:url" content="https://coloringpagemaker.app/<%= slug %>">
+<meta property="og:image" content="https://www.coloringpagemaker.app/og-image.png">
+<meta property="og:url" content="https://www.coloringpagemaker.app/<%= slug %>">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://coloringpagemaker.app/og-image.png">
+<meta name="twitter:image" content="https://www.coloringpagemaker.app/og-image.png">
 <meta name="google-site-verification" content="FbTHVuCc47YEKFw9nyT2XbH2ZgpbtjZPZce7boWZgH0" />
 <meta name="p:domain_verify" content="13cf5111c1b82113fad5ae7932381a41"/>
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="canonical" href="https://coloringpagemaker.app/<%= slug %>">
-<script type="application/ld+json"><%- JSON.stringify({"@context":"https://schema.org","@graph":[{"@type":"Article",headline:post.title,description:post.description,image:"https://coloringpagemaker.app/og-image.png",author:{"@type":"Organization",name:"ColoringPageMaker"},publisher:{"@type":"Organization",name:"ColoringPageMaker",url:"https://coloringpagemaker.app/"},mainEntityOfPage:"https://coloringpagemaker.app/"+slug},{"@type":"BreadcrumbList",itemListElement:[{"@type":"ListItem",position:1,name:"Home",item:"https://coloringpagemaker.app/"},{"@type":"ListItem",position:2,name:"Blog",item:"https://coloringpagemaker.app/blog"},{"@type":"ListItem",position:3,name:post.title,item:"https://coloringpagemaker.app/"+slug}]}]}).replace(/</g,"\\u003c") %></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#fff;color:#2d1a4a;line-height:1.7}
-.nav{background:#fff;border-bottom:2px solid #ffe5b4;padding:14px 0}
-.nav-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:space-between;align-items:center}
-.logo{font-size:20px;font-weight:800;color:#ff6b9d;text-decoration:none}
-.nav-links a{color:#5a4a7a;text-decoration:none;margin-left:18px;font-size:14px;font-weight:500}
-
-article{max-width:760px;margin:50px auto 60px;padding:0 20px}
-.meta{color:#888;font-size:13px;margin-bottom:14px}
-article h1{font-size:38px;font-weight:900;line-height:1.2;margin-bottom:24px;letter-spacing:-0.5px}
-article h2{font-size:24px;margin:36px 0 14px;font-weight:700}
-article p{font-size:17px;color:#2d1a4a;margin-bottom:18px}
-
-.cta{background:linear-gradient(135deg,#ff6b9d,#c084fc);color:#fff;padding:30px;border-radius:18px;margin:36px 0;text-align:center}
-.cta h3{font-size:22px;margin-bottom:10px}
-.cta p{color:rgba(255,255,255,.95);margin-bottom:20px;font-size:16px}
-.cta a{display:inline-block;background:#fff;color:#ff6b9d;padding:12px 26px;border-radius:10px;text-decoration:none;font-weight:700}
-
-.related{background:#fff8f0;padding:50px 20px;margin-top:60px}
-.related-inner{max-width:1100px;margin:0 auto}
-.related h2{font-size:22px;margin-bottom:18px;font-weight:700}
-.related-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-@media(max-width:700px){.related-grid{grid-template-columns:1fr}}
-.related-card{background:#fff;border:2px solid #ffe5b4;padding:18px;border-radius:14px;text-decoration:none;color:#2d1a4a}
-.related-card:hover{border-color:#ff6b9d}
-.related-card strong{display:block;font-size:15px}
-
-footer{background:#2d1a4a;color:#c5b4e0;padding:30px 20px;text-align:center;font-size:13px}
-footer a{color:#fff;text-decoration:none;margin:0 10px}
-</style>
+<link rel="canonical" href="https://www.coloringpagemaker.app/<%= slug %>">
+<%- include('partials/head-assets') %>
+<script type="application/ld+json"><%- JSON.stringify({"@context":"https://schema.org","@graph":[{"@type":"Article",headline:post.title,description:post.description,image:"https://www.coloringpagemaker.app/og-image.png",author:{"@type":"Organization",name:"ColoringPageMaker"},publisher:{"@type":"Organization",name:"ColoringPageMaker",url:"https://www.coloringpagemaker.app/"},mainEntityOfPage:"https://www.coloringpagemaker.app/"+slug},{"@type":"BreadcrumbList",itemListElement:[{"@type":"ListItem",position:1,name:"Home",item:"https://www.coloringpagemaker.app/"},{"@type":"ListItem",position:2,name:"Blog",item:"https://www.coloringpagemaker.app/blog"},{"@type":"ListItem",position:3,name:post.title,item:"https://www.coloringpagemaker.app/"+slug}]}]}).replace(/</g,"\\u003c") %></script>
 </head>
 <body>
 
-<nav class="nav">
-  <div class="nav-inner">
-    <a href="/" class="logo">🎨 ColoringPageMaker</a>
-    <div class="nav-links">
-      <a href="/blog">Blog</a>
-      <a href="/">Generator</a>
-    </div>
-  </div>
-</nav>
+<%- include('partials/nav') %>
 
-<article>
-  <div class="meta"><%= post.date %> • <%= post.read %> read</div>
+<main id="main">
+<article class="post">
+  <div class="meta"><%= post.date %> &middot; <%= post.read %> read</div>
   <h1><%= post.title %></h1>
 
+  <% let ctaAt = 4; while (post.content[ctaAt + 1] && post.content[ctaAt + 1].type === 'sources') ctaAt++; %>
   <% post.content.forEach(function(block, idx){ %>
     <% if(block.type === 'h2'){ %>
       <h2><%= block.text %></h2>
+    <% } else if(block.type === 'sources'){ %>
+      <aside class="sources" aria-label="Sources">
+        <p class="sources-label">Sources, last checked 7 October 2026</p>
+        <ul>
+          <% block.links.forEach(function(l){ %><li><a href="<%= l.href %>" rel="noopener"><%= l.text %></a></li><% }); %>
+        </ul>
+      </aside>
     <% } else { %>
       <p><%= block.text %></p>
     <% } %>
 
-    <% if(idx === 4){ %>
-      <div class="cta">
-        <h3>Try the AI Coloring Page Generator</h3>
-        <p>Free, no signup. Type any idea and get a printable coloring page in seconds.</p>
-        <a href="/">Open the Generator →</a>
-      </div>
+    <% if(idx === ctaAt){ %>
+      <aside class="cta">
+        <h3>Try the AI coloring page generator</h3>
+        <p>Free, no signup. Type an idea and get a printable coloring page in under a minute.</p>
+        <a href="/" class="btn">Open the generator</a>
+      </aside>
     <% } %>
   <% }); %>
 
-  <div class="cta">
-    <h3>Ready to create your own coloring book?</h3>
-    <p>Generate up to 150 pages a day with Pro. Sell on Etsy & KDP commercially.</p>
-    <a href="/">Start Generating →</a>
-  </div>
+  <aside class="cta">
+    <h3>Build your own coloring book</h3>
+    <p>Pro generates up to 150 pages a day and includes a commercial license for Etsy and KDP.</p>
+    <a href="/" class="btn">Open the generator</a>
+  </aside>
 </article>
 
 <section class="related">
-  <div class="related-inner">
-    <h2>Continue Reading</h2>
-    <div class="related-grid">
-      <% allPosts.forEach(function(p){ %>
-        <a href="/<%= p.slug %>" class="related-card"><strong><%= p.title %></strong></a>
-      <% }); %>
-    </div>
-  </div>
+  <h2>Continue reading</h2>
+  <ul class="theme-list" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+    <% allPosts.forEach(function(p){ %>
+      <li><a href="/<%= p.slug %>"><strong><%= p.title %></strong></a></li>
+    <% }); %>
+  </ul>
 </section>
+</main>
 
-<footer>
-  <div>
-    <a href="/">Home</a>
-    <a href="/blog">Blog</a>
-  </div>
-  <div style="margin-top:16px">© 2026 ColoringPageMaker</div>
-</footer>
+<%- include('partials/footer') %>
 
 </body>
 </html>
