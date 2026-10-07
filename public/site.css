@@ -237,3 +237,10 @@ article.post p{font-size:18px;line-height:1.72;margin-bottom:18px}
 .notfound p{color:var(--muted);margin-bottom:24px;font-size:1.1rem}
 
 .sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+.sources{margin:-6px 0 22px;padding:12px 16px;border-left:3px solid var(--line-strong);background:var(--card);font-size:14px;line-height:1.5;color:var(--muted)}
+.sources-label{font-size:12px!important;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin:0 0 6px!important;color:var(--muted)!important}
+article.post .sources p{font-size:12px;margin-bottom:6px}
+.sources ul{list-style:none;margin:0;padding:0}
+.sources li{margin:2px 0}
+.sources a{color:var(--ink);text-underline-offset:3px;overflow-wrap:anywhere}

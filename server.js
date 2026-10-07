@@ -211,7 +211,7 @@ const NICHE_PAGES = {
     description: 'Free AI Halloween coloring pages: pumpkins, ghosts, witches, haunted houses. Generate custom designs and print at home.',
     keyword: 'halloween coloring pages',
     presetPrompt: 'cute friendly halloween pumpkin with bats and stars',
-    intro: 'Halloween coloring pages are most wanted in September and October. Generate spooky-but-friendly Halloween designs for kids: jack-o-lanterns, ghosts, witches, black cats, haunted houses. All age-appropriate. Print-ready PDF.',
+    intro: 'Halloween coloring pages are in demand in September and October. Generate spooky-but-friendly Halloween designs for kids: jack-o-lanterns, ghosts, witches, black cats, haunted houses. All age-appropriate. Print-ready PDF.',
     examples: ['cute jack-o-lantern with bats', 'friendly ghost with candy', 'witch flying on broomstick', 'haunted house with full moon']
   },
   'christmas-coloring-pages': {
@@ -220,7 +220,7 @@ const NICHE_PAGES = {
     description: 'Free AI Christmas coloring pages. Santa, Christmas trees, snowmen, reindeer, presents. Download printable PDFs instantly.',
     keyword: 'christmas coloring pages',
     presetPrompt: 'jolly santa claus with christmas tree and presents',
-    intro: 'Christmas coloring pages are most wanted in November and December. Create custom Santa, Christmas tree, snowman, reindeer, or nativity scenes. Each one is print-ready and free.',
+    intro: 'Christmas coloring pages are in demand in November and December. Create custom Santa, Christmas tree, snowman, reindeer, or nativity scenes. Each one is print-ready and free.',
     examples: ['santa delivering presents', 'snowman with carrot nose', 'christmas tree with ornaments', 'reindeer pulling sleigh']
   },
   'animal-coloring-pages': {
@@ -229,7 +229,7 @@ const NICHE_PAGES = {
     description: 'Free AI animal coloring pages: any animal you can imagine. Cats, dogs, horses, lions, dolphins, birds. Generate and print instantly.',
     keyword: 'animal coloring pages',
     presetPrompt: 'cute cartoon cat sitting in a garden with flowers',
-    intro: 'Animal coloring pages are a top category for kids. With AI you can generate any animal in any setting: your child\'s favorite pet doing something silly, a wild animal in its habitat, or a fantasy creature. Print-ready, free, no signup.',
+    intro: 'Animal coloring pages are a popular category for kids. With AI you can generate any animal in any setting: your child\'s favorite pet doing something silly, a wild animal in its habitat, or a fantasy creature. Print-ready, free, no signup.',
     examples: ['golden retriever puppy playing', 'lion family in the savanna', 'dolphin jumping out of water', 'cat napping on a windowsill']
   },
   'flower-coloring-pages': {
@@ -247,7 +247,7 @@ const NICHE_PAGES = {
     description: 'Free AI princess coloring pages. Beautiful princesses with castles, dresses, animals. Generate custom designs and print instantly.',
     keyword: 'princess coloring pages',
     presetPrompt: 'beautiful princess in flowing gown standing in front of castle',
-    intro: 'Princess coloring pages are a top request from kids ages 3-10. Generate princesses in any style: fairy princess, mermaid princess, woodland princess, snow princess. Each one can come with castles, dresses, wands or animal companions.',
+    intro: 'Princess coloring pages are a frequent request from kids ages 3-10. Generate princesses in any style: fairy princess, mermaid princess, woodland princess, snow princess. Each one can come with castles, dresses, wands or animal companions.',
     examples: ['princess with long flowing dress and crown', 'mermaid princess underwater', 'fairy princess with butterflies', 'princess riding a horse']
   },
   'easter-coloring-pages': {
@@ -256,7 +256,7 @@ const NICHE_PAGES = {
     description: 'Free AI Easter coloring pages. Bunnies, eggs, chicks, spring scenes. Generate custom designs for kids and print instantly.',
     keyword: 'easter coloring pages',
     presetPrompt: 'cute easter bunny with decorated eggs in a basket',
-    intro: 'Easter coloring page searches peak in March-April. Generate Easter bunnies, decorated eggs, baby chicks, spring flowers, and Easter baskets. Good for classroom activities, church groups, or rainy spring afternoons.',
+    intro: 'Easter coloring pages are in demand in March and April. Generate Easter bunnies, decorated eggs, baby chicks, spring flowers, and Easter baskets. Good for classroom activities, church groups, or rainy spring afternoons.',
     examples: ['bunny holding decorated easter egg', 'baby chicks in a nest', 'easter basket overflowing with eggs', 'spring scene with bunny and tulips']
   },
   'pokemon-coloring-pages': {

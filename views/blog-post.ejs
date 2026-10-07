@@ -31,14 +31,22 @@
   <div class="meta"><%= post.date %> &middot; <%= post.read %> read</div>
   <h1><%= post.title %></h1>
 
+  <% let ctaAt = 4; while (post.content[ctaAt + 1] && post.content[ctaAt + 1].type === 'sources') ctaAt++; %>
   <% post.content.forEach(function(block, idx){ %>
     <% if(block.type === 'h2'){ %>
       <h2><%= block.text %></h2>
+    <% } else if(block.type === 'sources'){ %>
+      <aside class="sources" aria-label="Sources">
+        <p class="sources-label">Sources, last checked 7 October 2026</p>
+        <ul>
+          <% block.links.forEach(function(l){ %><li><a href="<%= l.href %>" rel="noopener"><%= l.text %></a></li><% }); %>
+        </ul>
+      </aside>
     <% } else { %>
       <p><%= block.text %></p>
     <% } %>
 
-    <% if(idx === 4){ %>
+    <% if(idx === ctaAt){ %>
       <aside class="cta">
         <h3>Try the AI coloring page generator</h3>
         <p>Free, no signup. Type an idea and get a printable coloring page in under a minute.</p>
