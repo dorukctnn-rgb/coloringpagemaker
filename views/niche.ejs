@@ -19,6 +19,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="canonical" href="https://www.coloringpagemaker.app/<%= slug %>">
+<%- include('partials/head-assets') %>
 
 <script type="application/ld+json">
 {
@@ -43,7 +44,7 @@
       "name": "Is this <%= page.keyword %> generator really free?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes, completely free for personal use. Generate up to 2 coloring pages per day at no cost, no signup required. The Pro upgrade ($9 lifetime) is only needed if you want more than 2 pages a day (up to 150), commercial use rights, and the multi-page PDF book maker."
+        "text": "Yes, it is free for personal use. Generate up to 2 coloring pages per day at no cost, no signup required. The Pro upgrade ($9 lifetime) is only needed if you want more than 2 pages a day (up to 150), commercial use rights, and the multi-page PDF book maker."
       }
     },
     {
@@ -51,7 +52,7 @@
       "name": "Can I print the coloring pages at home?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Absolutely. Every coloring page is generated at 1024x1024 resolution, which prints crisp at 8.5x11 inches on standard home printers. The PDF download button gives you a print-ready file in seconds."
+        "text": "Yes. Every coloring page is generated at 1024x1024 resolution, which prints crisp at 8.5x11 inches on standard home printers. The PDF download button gives you a print-ready file in seconds."
       }
     },
     {
@@ -59,7 +60,7 @@
       "name": "Can I sell these on Etsy or KDP?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Pro license ($9 one-time) includes full commercial rights, meaning you can sell the generated coloring pages on Etsy, Amazon KDP, your own website, or any print-on-demand platform. Free tier is personal use only."
+        "text": "The Pro license ($9 one-time) includes full commercial rights, meaning you can sell the generated coloring pages on Etsy, Amazon KDP, your own website, or any print-on-demand platform. The free tier is personal use only."
       }
     },
     {
@@ -73,319 +74,186 @@
   ]
 }
 </script>
-
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#fff8f0;color:#2d1a4a;line-height:1.6}
-.nav{background:#fff;border-bottom:2px solid #ffe5b4;padding:14px 0;position:sticky;top:0;z-index:50}
-.nav-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:space-between;align-items:center}
-.logo{font-size:20px;font-weight:800;color:#ff6b9d;text-decoration:none}
-.nav-links a{color:#5a4a7a;text-decoration:none;margin-left:18px;font-size:14px;font-weight:500}
-.nav-pro{background:linear-gradient(135deg,#ff6b9d,#c084fc);color:#fff!important;padding:7px 16px;border-radius:20px;font-weight:600}
-
-.hero{padding:50px 20px 30px;text-align:center;background:linear-gradient(180deg,#fff8f0 0%,#ffe5e5 100%)}
-.hero h1{font-size:42px;font-weight:900;margin-bottom:14px;letter-spacing:-0.5px;color:#2d1a4a;max-width:800px;margin-left:auto;margin-right:auto;line-height:1.15}
-.hero .lead{font-size:18px;color:#5a4a7a;max-width:680px;margin:0 auto 20px;line-height:1.5}
-.hero .badges{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
-.badge{display:inline-block;background:#fff;color:#0a2540;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;border:2px solid #ffe5b4}
-
-.tool-section{max-width:900px;margin:30px auto;padding:0 20px}
-.tool-card{background:#fff;border-radius:20px;padding:28px;border:2px solid #ffe5b4}
-.tool-card h2{font-size:20px;margin-bottom:16px;font-weight:700}
-
-textarea{width:100%;min-height:80px;padding:14px 16px;border:2px solid #ffe5b4;border-radius:12px;font-size:16px;font-family:inherit;background:#fff8f0;resize:vertical}
-textarea:focus{outline:none;border-color:#ff6b9d;background:#fff}
-
-.btn-generate{background:linear-gradient(135deg,#ff6b9d,#c084fc);color:#fff;border:none;padding:14px 28px;border-radius:14px;font-size:16px;font-weight:700;cursor:pointer;width:100%;font-family:inherit;margin-top:14px}
-.btn-generate:disabled{opacity:.5}
-
-.examples-bar{margin-top:18px;padding-top:18px;border-top:1px dashed #ffd6e8}
-.examples-bar h3{font-size:13px;color:#888;margin-bottom:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px}
-.example-chip{display:inline-block;background:#fff8f0;border:1px solid #ffe5b4;color:#5a4a7a;padding:6px 12px;border-radius:20px;font-size:13px;margin:4px 4px 0 0;cursor:pointer}
-.example-chip:hover{background:#ffeef5;border-color:#ff6b9d}
-
-.loading{display:none;text-align:center;padding:30px}
-.loading.active{display:block}
-.loading-spinner{display:inline-block;width:50px;height:50px;border:5px solid #ffe5b4;border-top-color:#ff6b9d;border-radius:50%;animation:spin 1s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-.gallery-section{display:none;margin-top:24px}
-.gallery-section.active{display:block}
-.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
-.image-card{background:#fff;border:2px solid #ffe5b4;border-radius:14px;overflow:hidden}
-.image-card img{width:100%;display:block}
-.image-card .actions{padding:8px;display:flex;gap:6px;justify-content:center}
-.btn-small{background:#ff6b9d;color:#fff;border:none;padding:6px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
-
-.content{max-width:760px;margin:50px auto;padding:0 20px}
-.content h2{font-size:28px;margin:36px 0 16px;font-weight:800;color:#2d1a4a}
-.content h3{font-size:20px;margin:24px 0 12px;font-weight:700;color:#2d1a4a}
-.content p{margin-bottom:16px;color:#3a3a52;font-size:16px;line-height:1.7}
-.content ul{margin:12px 0 16px 24px;color:#3a3a52}
-.content ul li{margin-bottom:8px;line-height:1.6}
-.content strong{color:#2d1a4a;font-weight:700}
-
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:24px 0}
-@media(max-width:700px){.steps{grid-template-columns:1fr}}
-.step{background:#fff;border:2px solid #ffe5b4;padding:20px;border-radius:14px;position:relative}
-.step .num{position:absolute;top:-15px;left:20px;background:#ff6b9d;color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px}
-.step h4{font-size:16px;margin-bottom:8px;margin-top:6px;font-weight:700}
-.step p{font-size:14px;color:#5a4a7a;margin:0;line-height:1.5}
-
-.tips-box{background:#fff;border:2px solid #ffe5b4;border-radius:14px;padding:24px;margin:24px 0}
-.tips-box h3{font-size:18px;margin-bottom:14px;margin-top:0;color:#2d1a4a}
-.tips-box ul{list-style:none;margin:0}
-.tips-box li{padding:10px 0 10px 32px;position:relative;color:#3a3a52;border-bottom:1px solid #fff0e6}
-.tips-box li:last-child{border:none}
-.tips-box li:before{content:"\2713";position:absolute;left:8px;top:10px;color:#0d8043;font-weight:800;font-size:18px}
-
-.faq-section{max-width:760px;margin:50px auto;padding:0 20px}
-.faq-section h2{font-size:28px;margin-bottom:24px;font-weight:800;color:#2d1a4a;text-align:center}
-.faq-item{background:#fff;border:2px solid #ffe5b4;border-radius:12px;margin-bottom:12px;overflow:hidden}
-.faq-q{padding:16px 20px;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;align-items:center;color:#2d1a4a}
-.faq-q:hover{background:#fff8f0}
-.faq-q .arrow{transition:transform .2s}
-.faq-q.open .arrow{transform:rotate(180deg)}
-.faq-a{padding:0 20px;max-height:0;overflow:hidden;transition:all .25s;color:#5a4a7a;line-height:1.6}
-.faq-a.open{max-height:500px;padding:0 20px 20px 20px}
-
-.pricing-cta{background:linear-gradient(135deg,#ff6b9d,#c084fc);color:#fff;padding:32px;border-radius:18px;text-align:center;margin:40px auto;max-width:680px}
-.pricing-cta h2{color:#fff;font-size:24px;margin-bottom:8px}
-.pricing-cta p{color:rgba(255,255,255,.95);margin-bottom:16px;font-size:16px}
-.pricing-cta a{display:inline-block;background:#fff;color:#ff6b9d;padding:12px 26px;border-radius:10px;text-decoration:none;font-weight:700;font-size:15px}
-
-.related{max-width:1100px;margin:50px auto;padding:0 20px}
-.related h2{font-size:24px;margin-bottom:18px;font-weight:800;text-align:center}
-.related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-@media(max-width:700px){.related-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:480px){.related-grid{grid-template-columns:1fr}}
-.related-card{background:#fff;border:2px solid #ffe5b4;padding:18px;border-radius:14px;text-decoration:none;color:#2d1a4a;text-align:center;transition:all .15s;font-weight:600}
-.related-card:hover{background:#ffeef5;border-color:#ff6b9d;transform:translateY(-2px)}
-
-footer{background:#2d1a4a;color:#c5b4e0;padding:30px 20px;text-align:center;margin-top:60px;font-size:13px}
-footer a{color:#fff;text-decoration:none;margin:0 10px}
-</style>
 </head>
 <body>
 
-<nav class="nav">
-  <div class="nav-inner">
-    <a href="/" class="logo">🎨 ColoringPageMaker</a>
-    <div class="nav-links">
-      <a href="/blog">Blog</a>
-      <a href="/" class="nav-pro">Generator</a>
-    </div>
-  </div>
-</nav>
+<%- include('partials/nav') %>
 
-<section class="hero">
-  <div class="badges" style="margin-bottom:18px">
-    <span class="badge">✨ Free AI Generator</span>
-    <span class="badge">🆓 2 Free Daily</span>
-    <span class="badge">📄 Print-Ready PDF</span>
+<main id="main">
+<header class="hero hero-wide">
+  <div class="wrap">
+    <p class="eyebrow">Free AI generator</p>
+    <h1><%= page.h1 %></h1>
+    <p class="lead"><%= page.intro %></p>
+    <ul class="facts-inline">
+      <li>2 free pages a day</li>
+      <li>No signup</li>
+      <li>Print-ready PDF</li>
+    </ul>
   </div>
-  <h1><%= page.h1 %></h1>
-  <p class="lead"><%= page.intro %></p>
-</section>
+</header>
 
-<div class="tool-section">
+<div class="tool-section narrow">
   <div class="tool-card">
-    <h2>🪄 Generate Your <%= page.h1 %></h2>
+    <h2>Generate your <%= page.keyword %></h2>
+    <label class="field-label" for="promptInput">Your idea</label>
     <textarea id="promptInput" placeholder="<%= page.examples[0] %>"><%= page.presetPrompt %></textarea>
-    <button class="btn-generate" id="generateBtn" onclick="generatePage()">✨ Generate Coloring Page</button>
+    <button type="button" class="btn-generate" id="generateBtn" onclick="generatePage()">Generate coloring page</button>
 
     <div class="examples-bar">
-      <h3>💡 Try These Prompts</h3>
+      <h3>Example prompts</h3>
       <% page.examples.forEach(function(ex){ %>
-        <span class="example-chip" onclick="useExample(this)"><%= ex %></span>
+        <button type="button" class="example-chip" onclick="useExample(this)"><%= ex %></button>
       <% }); %>
     </div>
   </div>
 
-  <div class="loading" id="loadingArea">
+  <div class="loading" id="loadingArea" role="status">
     <div class="loading-spinner"></div>
-    <p style="margin-top:12px;color:#5a4a7a;font-weight:600">Creating your <%= page.keyword %>...</p>
+    <p class="loading-text">Creating your <%= page.keyword %>...</p>
   </div>
 
   <div class="gallery-section" id="gallerySection">
-    <h2 style="margin-bottom:14px;font-size:20px">Your Pages</h2>
+    <h2>Your pages</h2>
     <div class="gallery" id="gallery"></div>
   </div>
 </div>
 
 <article class="content">
 
-  <h2>About <%= page.h1 %></h2>
+  <h2>About <%= page.keyword %></h2>
   <p><%= page.intro %></p>
 
-  <p>Whether you are a parent looking to entertain your kids, a teacher creating classroom resources, an Etsy seller building a digital downloads shop, or a self-publisher launching books on Amazon KDP, this <%= page.keyword %> generator solves a real problem: generic stock coloring pages all look the same. With AI generation, every page is unique and matches exactly what you describe.</p>
+  <p>This <%= page.keyword %> generator is for parents who need a page for this afternoon, teachers building classroom resources, Etsy sellers stocking a digital downloads shop, and self-publishers preparing books for Amazon KDP. Stock coloring pages tend to look alike. Here every page is generated from your own description.</p>
 
-  <p>The technology uses <strong>OpenAI's gpt-image-1 model</strong>, the same engine powering professional design platforms. It interprets your text description and produces a clean black-and-white line drawing perfect for coloring. No more searching Pinterest for hours hoping to find the right design — type your idea and the page exists in 30 seconds.</p>
+  <p>Pages are drawn by an <strong>OpenAI image model</strong>. It reads your text description and returns a clean black-and-white line drawing made for coloring. Instead of searching Pinterest for an hour, you type the idea and the page is ready in about 30 seconds.</p>
 
-  <h2>How to Generate the Perfect Coloring Page</h2>
+  <h2>How to generate the right coloring page</h2>
 
-  <div class="steps">
-    <div class="step">
-      <div class="num">1</div>
-      <h4>Describe Your Idea</h4>
-      <p>Type a clear description in the box above. Be specific — "cute baby unicorn in a flower field with butterflies" works better than just "unicorn."</p>
-    </div>
-    <div class="step">
-      <div class="num">2</div>
-      <h4>Click Generate</h4>
-      <p>Hit the generate button and wait 30-40 seconds. The AI is creating your unique coloring page at 1024×1024 resolution.</p>
-    </div>
-    <div class="step">
-      <div class="num">3</div>
-      <h4>Download PDF</h4>
-      <p>Click the PDF button to download. The file is print-ready at 8.5×11 inches — works perfectly with any home printer.</p>
-    </div>
-  </div>
+  <ol class="steps">
+    <li>
+      <h4>Describe your idea</h4>
+      <p>Type a clear description in the box above. Be specific: "cute baby unicorn in a flower field with butterflies" works better than just "unicorn."</p>
+    </li>
+    <li>
+      <h4>Click generate</h4>
+      <p>Press the generate button and wait 30-40 seconds while your page is drawn at 1024×1024 resolution.</p>
+    </li>
+    <li>
+      <h4>Download the PDF</h4>
+      <p>Click the PDF button to download. The file is print-ready at 8.5×11 inches and works with any home printer.</p>
+    </li>
+  </ol>
 
   <div class="tips-box">
-    <h3>💡 Pro Tips for Better Results</h3>
+    <h3>Tips for better results</h3>
     <ul>
       <li><strong>Be specific in your prompt.</strong> Instead of "cat," try "fluffy orange cat sitting in a flower pot with butterflies around it."</li>
-      <li><strong>Specify the age group.</strong> Adding "simple lines for young children" or "detailed for adults" changes the complexity automatically.</li>
-      <li><strong>Mention background elements.</strong> "...with rainbow background" or "...with cloud sky" makes the page more complete.</li>
-      <li><strong>Try multiple variations.</strong> Free tier gives 2 generations per day — experiment with different prompts for the same theme.</li>
-      <li><strong>For sticker-style cleaner output</strong>, add "thick outline, simple shapes" to your prompt.</li>
+      <li><strong>Specify the age group.</strong> Adding "simple lines for young children" or "detailed for adults" changes the complexity.</li>
+      <li><strong>Mention background elements.</strong> "...with rainbow background" or "...with cloud sky" makes the page feel finished.</li>
+      <li><strong>Try variations.</strong> The free tier gives 2 generations a day, so change one detail at a time instead of repeating the same prompt.</li>
+      <li><strong>For cleaner, sticker-style output</strong>, add "thick outline, simple shapes" to your prompt.</li>
     </ul>
   </div>
 
-  <h2>Who Uses This <%= page.h1 %> Generator?</h2>
+  <h2>Who uses this <%= page.keyword %> generator</h2>
 
-  <h3>Parents and Caregivers</h3>
-  <p>The most common use case. Parents come here when their child wants "a unicorn coloring page" or "a dinosaur coloring page" and Pinterest results look bland. Generate one tailored to your kid's specific request in under a minute. Free tier covers most family needs (3 pages per day is plenty for an afternoon activity).</p>
+  <h3>Parents and caregivers</h3>
+  <p>The most common use. A child asks for "a unicorn coloring page" or "a dinosaur coloring page," and the Pinterest results look bland. Make one that matches exactly what your kid asked for, in under a minute. The free tier covers most family needs (2 pages a day is plenty for an afternoon activity).</p>
 
-  <h3>Teachers and Educators</h3>
-  <p>Elementary and preschool teachers use this for themed classroom activities. Studying ancient Egypt? Generate Egyptian-themed coloring pages. Animal unit? Create pages of the exact animals you are teaching about. The educational use case is huge because generic coloring pages do not reinforce lesson content — custom ones do.</p>
+  <h3>Teachers and educators</h3>
+  <p>Elementary and preschool teachers use this for themed classroom activities. Studying ancient Egypt? Generate Egyptian-themed coloring pages. Animal unit? Create pages of the exact animals you are teaching about. Custom pages matter in class because generic coloring pages do not reinforce lesson content, while custom ones do.</p>
 
-  <h3>Etsy and KDP Sellers</h3>
-  <p>Printable coloring books are an established digital-download category on Etsy and in KDP low-content books. With the Pro license ($9 lifetime), you get commercial rights to sell anything you generate — making this the cheapest way to build a coloring book catalog from scratch.</p>
+  <h3>Etsy and KDP sellers</h3>
+  <p>Printable coloring books are an established digital-download category on Etsy and in KDP low-content books. With the Pro license ($9 lifetime) you get commercial rights to sell anything you generate, which makes it a low-cost way to build a coloring book catalog from scratch.</p>
 
-  <h3>Mindfulness and Self-Care</h3>
-  <p>Many adults color to unwind after work or before bed. Generate detailed mandala-style pages tailored to your preferred style — botanical, geometric, animal-based — anytime you need a calm break.</p>
+  <h3>Mindfulness and self-care</h3>
+  <p>Many adults color to unwind after work or before bed. Generate detailed mandala-style pages in the style you prefer (botanical, geometric, animal-based) whenever you want a calm break.</p>
 
-  <h2>Why AI Beats Stock Coloring Pages</h2>
+  <h2>Why generate instead of downloading stock pages</h2>
 
-  <p>Traditional sources for coloring pages have three problems: <strong>limited variety</strong> (the same 20 designs everywhere), <strong>copyright issues</strong> (many "free" sites host pirated Disney or Pokemon characters), and <strong>generic quality</strong> (designs from 2010 that look outdated).</p>
+  <p>Traditional sources for coloring pages have three problems: <strong>limited variety</strong> (the same 20 designs everywhere), <strong>copyright issues</strong> (many "free" sites host pirated Disney or Pokemon characters), and <strong>dated quality</strong> (designs from 2010 that look outdated).</p>
 
-  <p>AI generation solves all three. Each page is generated fresh from your description (if you plan to sell pages, describe original characters rather than trademarked ones). The art style is modern and clean. And the variety is unlimited — there is no library to exhaust because each generation is fresh.</p>
+  <p>Generating pages addresses all three. Each page is drawn fresh from your description (if you plan to sell pages, describe original characters rather than trademarked ones). The art style is modern and clean, and there is no library to run out of.</p>
 
-  <p>For schools and businesses, the copyright angle matters most. Schools cannot legally distribute Disney coloring pages without paying licensing. AI-generated originals have no such restriction — you own what you create (Pro tier explicitly grants full commercial rights).</p>
+  <p>For schools and businesses, the copyright angle matters most. Schools cannot legally distribute Disney coloring pages without a license. Original pages generated from your own description avoid that problem, and you own what you create (the Pro tier explicitly grants full commercial rights).</p>
 
-  <h2>Print Quality and Format</h2>
+  <h2>Print quality and format</h2>
 
-  <p>Every coloring page is generated at <strong>1024×1024 pixels</strong>, which scales perfectly to standard 8.5×11 inch home printing. The PDF download is print-ready — no resizing, no margin adjustments, no software needed beyond a basic PDF viewer.</p>
+  <p>Every coloring page is generated at <strong>1024×1024 pixels</strong>, which scales to standard 8.5×11 inch home printing. The PDF download is print-ready: no resizing, no margin adjustments, no software beyond a basic PDF viewer.</p>
 
-  <p>The lines are pure black on white background — no gray, no shading, no gradient pixels that would print as muddy patches. This is critical for kids using crayons, colored pencils, or markers: they need clean spaces to color within.</p>
+  <p>The lines are pure black on a white background, with no gray, shading or gradient pixels that would print as muddy patches. That matters for kids using crayons, colored pencils or markers, who need clean spaces to color within.</p>
 
-  <p>For commercial printing (Amazon KDP, professional print shops), the 1024×1024 resolution prints crisp at book-page size 8.5×11. For larger formats (posters, oversized prints), use the Pro tier for high-resolution versions.</p>
+  <p>For commercial printing (Amazon KDP, professional print shops), 1024×1024 pixels is sized for book pages at 8.5×11. For larger formats such as posters, the lines will look soft, so stay with letter-size pages.</p>
 
 </article>
 
-<div class="pricing-cta">
-  <h2>Make whole coloring books with Pro</h2>
-  <p>One payment of $9 gets you up to 150 <%= page.keyword %> a day, no watermark, multi-page PDF book maker, and commercial license to sell on Etsy &amp; KDP.</p>
-  <a href="https://dorukctn.gumroad.com/l/uynqt" target="_blank">Get Pro for $9 →</a>
+<div class="wrap">
+  <div class="pricing-cta">
+    <h2>Make whole coloring books with Pro</h2>
+    <p>One payment of $9 covers up to 150 <%= page.keyword %> a day, PDFs without a watermark, the multi-page PDF book maker, and a commercial license to sell on Etsy &amp; KDP.</p>
+    <a href="https://dorukctn.gumroad.com/l/uynqt" target="_blank" rel="noopener" class="btn">Get Pro for $9</a>
+  </div>
 </div>
 
 <section class="faq-section">
-  <h2>Frequently Asked Questions</h2>
+  <h2>Frequently asked questions</h2>
 
-  <div class="faq-item">
-    <div class="faq-q" onclick="toggleFAQ(this)">
-      <span>Is this <%= page.keyword %> generator really free?</span>
-      <span class="arrow">▼</span>
-    </div>
-    <div class="faq-a">
-      <p>Yes, completely free for personal use. Generate up to 2 coloring pages per day at no cost, no signup required. The Pro upgrade ($9 lifetime) is only needed if you want more than 2 pages a day (up to 150), commercial use rights, and the multi-page PDF book maker.</p>
-    </div>
-  </div>
+  <div class="faq-list">
+    <details class="faq-item">
+      <summary>Is this <%= page.keyword %> generator really free?</summary>
+      <p>Yes, it is free for personal use. Generate up to 2 coloring pages per day at no cost, no signup required. The Pro upgrade ($9 lifetime) is only needed if you want more than 2 pages a day (up to 150), commercial use rights, and the multi-page PDF book maker.</p>
+    </details>
 
-  <div class="faq-item">
-    <div class="faq-q" onclick="toggleFAQ(this)">
-      <span>Can I print the coloring pages at home?</span>
-      <span class="arrow">▼</span>
-    </div>
-    <div class="faq-a">
-      <p>Absolutely. Every coloring page is generated at 1024×1024 resolution, which prints crisp at 8.5×11 inches on standard home printers. The PDF download button gives you a print-ready file in seconds.</p>
-    </div>
-  </div>
+    <details class="faq-item">
+      <summary>Can I print the coloring pages at home?</summary>
+      <p>Yes. Every coloring page is generated at 1024×1024 resolution, which prints crisp at 8.5×11 inches on standard home printers. The PDF download button gives you a print-ready file in seconds.</p>
+    </details>
 
-  <div class="faq-item">
-    <div class="faq-q" onclick="toggleFAQ(this)">
-      <span>Can I sell these <%= page.keyword %> on Etsy or KDP?</span>
-      <span class="arrow">▼</span>
-    </div>
-    <div class="faq-a">
-      <p>Pro license ($9 one-time) includes full commercial rights, meaning you can sell the generated coloring pages on Etsy, Amazon KDP, your own website, or any print-on-demand platform. Free tier is personal use only.</p>
-    </div>
-  </div>
+    <details class="faq-item">
+      <summary>Can I sell these <%= page.keyword %> on Etsy or KDP?</summary>
+      <p>The Pro license ($9 one-time) includes full commercial rights, meaning you can sell the generated coloring pages on Etsy, Amazon KDP, your own website, or any print-on-demand platform. The free tier is personal use only.</p>
+    </details>
 
-  <div class="faq-item">
-    <div class="faq-q" onclick="toggleFAQ(this)">
-      <span>Do I need an account?</span>
-      <span class="arrow">▼</span>
-    </div>
-    <div class="faq-a">
-      <p>No account, no email, no signup needed for the free tier. Just type your idea, click generate, and download. The Pro version uses your purchase email to unlock features.</p>
-    </div>
-  </div>
+    <details class="faq-item">
+      <summary>Do I need an account?</summary>
+      <p>No account, no email, no signup needed for the free tier. Just type your idea, click generate, and download. The Pro version uses your purchase email to activate its features.</p>
+    </details>
 
-  <div class="faq-item">
-    <div class="faq-q" onclick="toggleFAQ(this)">
-      <span>What if I don't like the generated page?</span>
-      <span class="arrow">▼</span>
-    </div>
-    <div class="faq-a">
-      <p>Try again with a more specific prompt. Free generations are limited to 2 per day, so make each one count. Adding details like style, mood, or background elements usually produces better results. With Pro, you can iterate as many times as needed.</p>
-    </div>
-  </div>
+    <details class="faq-item">
+      <summary>What if I don't like the generated page?</summary>
+      <p>Try again with a more specific prompt. Free generations are limited to 2 per day, so make each one count. Adding details like style, mood, or background elements usually produces better results. With Pro, you can iterate as many times as needed, up to 150 pages a day.</p>
+    </details>
 
-  <div class="faq-item">
-    <div class="faq-q" onclick="toggleFAQ(this)">
-      <span>What ages are these suitable for?</span>
-      <span class="arrow">▼</span>
-    </div>
-    <div class="faq-a">
+    <details class="faq-item">
+      <summary>What ages are these suitable for?</summary>
       <p>Coloring pages work for ages 3 and up. For younger kids, use prompts that specify "simple, thick lines, few details." For older kids and adults, add "intricate" or "detailed" to your prompt for more complex designs.</p>
-    </div>
+    </details>
   </div>
 </section>
 
 <section class="related">
-  <h2>Browse More Themes</h2>
-  <div class="related-grid">
+  <h2>Browse more themes</h2>
+  <ul class="theme-list">
     <% allPages.forEach(function(p){ %>
-      <a href="/<%= p.slug %>" class="related-card"><%= p.h1 %></a>
+      <li><a href="/<%= p.slug %>"><strong><%= p.h1 %></strong></a></li>
     <% }); %>
-  </div>
+  </ul>
 </section>
+</main>
 
-<footer>
-  <div>
-    <a href="/">Home</a>
-    <a href="/blog">Blog</a>
-    <a href="/sell-coloring-books-on-etsy">Sell on Etsy</a>
-    <a href="/coloring-pages-for-self-publishing-kdp">KDP Guide</a>
-  </div>
-  <div style="margin-top:16px">© 2026 ColoringPageMaker — Free AI Coloring Page Generator</div>
-</footer>
+<%- include('partials/footer') %>
 
 <script>
 let proEmail = localStorage.getItem('pro_email') || '';
 let generatedImages = [];
 
-function useExample(el){
-  document.getElementById('promptInput').value = el.textContent.trim();
+function esc(s){
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-function toggleFAQ(el){
-  el.classList.toggle('open');
-  const answer = el.nextElementSibling;
-  answer.classList.toggle('open');
+function useExample(el){
+  document.getElementById('promptInput').value = el.textContent.trim();
 }
 
 async function generatePage(){
@@ -394,7 +262,7 @@ async function generatePage(){
 
   const btn = document.getElementById('generateBtn');
   const loading = document.getElementById('loadingArea');
-  btn.disabled = true; btn.textContent = '⏳ Generating...';
+  btn.disabled = true; btn.textContent = 'Generating...';
   loading.classList.add('active');
 
   try {
@@ -407,7 +275,7 @@ async function generatePage(){
 
     if(!res.ok){
       alert(data.error || 'Failed');
-      btn.disabled = false; btn.textContent = '✨ Generate Coloring Page';
+      btn.disabled = false; btn.textContent = 'Generate coloring page';
       loading.classList.remove('active');
       return;
     }
@@ -416,7 +284,7 @@ async function generatePage(){
     renderGallery();
   } catch(e){ alert('Connection error'); }
 
-  btn.disabled = false; btn.textContent = '✨ Generate Coloring Page';
+  btn.disabled = false; btn.textContent = 'Generate coloring page';
   loading.classList.remove('active');
 }
 
@@ -427,9 +295,9 @@ function renderGallery(){
   section.classList.add('active');
   gallery.innerHTML = generatedImages.map((img, i) => `
     <div class="image-card">
-      <img src="${img.url}" alt="${img.prompt}" loading="lazy">
+      <img src="${img.url}" alt="${esc(img.prompt)}" loading="lazy">
       <div class="actions">
-        <button class="btn-small" onclick="downloadPDF('${img.url}', ${i})">📄 PDF</button>
+        <button type="button" class="btn-small" onclick="downloadPDF('${img.url}', ${i})">PDF</button>
       </div>
     </div>
   `).join('');
