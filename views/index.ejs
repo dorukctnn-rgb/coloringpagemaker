@@ -7,20 +7,20 @@
 <meta name="description" content="<%= description %>">
 <meta property="og:title" content="<%= title %>">
 <meta property="og:description" content="<%= description %>">
-<meta property="og:image" content="https://coloringpagemaker.app/og-image.png">
-<meta property="og:url" content="https://coloringpagemaker.app/">
+<meta property="og:image" content="https://www.coloringpagemaker.app/og-image.png">
+<meta property="og:url" content="https://www.coloringpagemaker.app/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://coloringpagemaker.app/og-image.png">
+<meta name="twitter:image" content="https://www.coloringpagemaker.app/og-image.png">
 <meta name="google-site-verification" content="FbTHVuCc47YEKFw9nyT2XbH2ZgpbtjZPZce7boWZgH0" />
 <meta name="p:domain_verify" content="13cf5111c1b82113fad5ae7932381a41"/>
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="canonical" href="https://coloringpagemaker.app/">
+<link rel="canonical" href="https://www.coloringpagemaker.app/">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"SoftwareApplication","name":"ColoringPageMaker","url":"https://coloringpagemaker.app/","applicationCategory":"DesignApplication","operatingSystem":"Any (web browser)","description":"AI coloring page generator: describe a scene and get printable black-and-white line art as a PDF.","offers":[{"@type":"Offer","name":"Free","price":"0","priceCurrency":"USD"},{"@type":"Offer","name":"Pro (lifetime)","price":"9","priceCurrency":"USD"}]}
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"ColoringPageMaker","url":"https://www.coloringpagemaker.app/","applicationCategory":"DesignApplication","operatingSystem":"Any (web browser)","description":"AI coloring page generator: describe a scene and get printable black-and-white line art as a PDF.","offers":[{"@type":"Offer","name":"Free","price":"0","priceCurrency":"USD"},{"@type":"Offer","name":"Pro (lifetime)","price":"9","priceCurrency":"USD"}]}
 </script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -198,7 +198,7 @@ footer a{color:#fff;text-decoration:none;margin:0 10px}
     </button>
 
     <div class="usage-bar" id="usageBar">
-      Free tier: 2 pages per day. <a href="javascript:void(0)" onclick="openProModal()" style="color:#ff6b9d;font-weight:600;text-decoration:none">Upgrade for unlimited →</a>
+      Free tier: 2 pages per day. <a href="javascript:void(0)" onclick="openProModal()" style="color:#ff6b9d;font-weight:600;text-decoration:none">Upgrade: up to 150 a day →</a>
     </div>
 
     <div class="examples-bar">
@@ -292,8 +292,8 @@ footer a{color:#fff;text-decoration:none;margin:0 10px}
 
     <div class="or">— or —</div>
 
-    <p style="font-size:13px;color:#5a4a7a;margin-bottom:8px;text-align:center">Already purchased? Enter your email:</p>
-    <input type="email" id="licenseEmail" placeholder="your@email.com">
+    <p style="font-size:13px;color:#5a4a7a;margin-bottom:8px;text-align:center">Already purchased? Enter your purchase email or the license key from your Gumroad receipt:</p>
+    <input type="text" id="licenseEmail" placeholder="you@email.com or license key" autocomplete="email" spellcheck="false">
     <button class="modal-btn dark" onclick="verifyLicense()">Unlock Pro</button>
     <div class="modal-status" id="licenseStatus"></div>
   </div>
@@ -394,7 +394,7 @@ async function generatePage(){
     if(data.remaining >= 0 && data.remaining < 999){
       document.getElementById('usageBar').innerHTML = data.remaining > 0
         ? `<strong>${data.remaining}</strong> free pages left today. <a href="javascript:void(0)" onclick="openProModal()" style="color:#ff6b9d;font-weight:600;text-decoration:none">Get unlimited →</a>`
-        : `Daily limit reached. <a href="javascript:void(0)" onclick="openProModal()" style="color:#ff6b9d;font-weight:600;text-decoration:none">Upgrade for unlimited →</a>`;
+        : `Daily limit reached. <a href="javascript:void(0)" onclick="openProModal()" style="color:#ff6b9d;font-weight:600;text-decoration:none">Upgrade: up to 150 a day →</a>`;
     }
   } catch(e){
     alert('Connection error. Please try again.');
@@ -543,16 +543,17 @@ document.getElementById('proModal').addEventListener('click', function(e){
 });
 
 async function verifyLicense(){
-  const email = document.getElementById('licenseEmail').value.trim();
+  const value = document.getElementById('licenseEmail').value.trim();
   const status = document.getElementById('licenseStatus');
-  if(!email){ status.textContent = 'Please enter your email'; status.className = 'modal-status error'; return; }
+  if(!value){ status.textContent = 'Please enter your email or license key'; status.className = 'modal-status error'; return; }
+  const payload = value.includes('@') ? { email: value } : { license_key: value };
 
   status.textContent = 'Checking...'; status.className = 'modal-status';
   try {
     const res = await fetch('/verify-pro', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
+      body: JSON.stringify(payload)
     });
     const data = await res.json();
     if(data.pro){
@@ -562,7 +563,9 @@ async function verifyLicense(){
       status.className = 'modal-status success';
       setTimeout(() => location.reload(), 1000);
     } else {
-      status.textContent = 'Email not found. Recently purchased? Wait a minute and retry.';
+      status.textContent = payload.email
+        ? 'Email not found. Paste the license key from your Gumroad receipt instead.'
+        : 'That license key was not accepted. Check it against your Gumroad receipt.';
       status.className = 'modal-status error';
     }
   } catch(e){

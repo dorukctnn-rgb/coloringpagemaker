@@ -39,6 +39,55 @@ const openai = process.env.OPENAI_API_KEY
   ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   : null;
 
+// === Image model ===
+// Default: gpt-image-2.5-flare (OpenAI's "fast, high-quality everyday image generation"
+// model; size 1024x1024, quality low|medium|high, output_format png and background opaque
+// are all supported: https://developers.openai.com/api/docs/guides/image-generation).
+// IMAGE_MODEL overrides it, but a model past its OpenAI shutdown date falls back to the
+// default so generation keeps working: https://developers.openai.com/api/docs/deprecations
+const DEFAULT_IMAGE_MODEL = 'gpt-image-2.5-flare';
+const IMAGE_MODEL_SHUTDOWN = {
+  'dall-e-2': '2026-05-12',
+  'dall-e-3': '2026-05-12',
+  'gpt-image-1': '2026-10-23',
+  'gpt-image-1-mini': '2026-12-01',
+  'gpt-image-1.5': '2026-12-01',
+};
+function imageModel(now = new Date()) {
+  const wanted = (process.env.IMAGE_MODEL || '').trim();
+  if (!wanted) return DEFAULT_IMAGE_MODEL;
+  const shutdown = IMAGE_MODEL_SHUTDOWN[wanted];
+  if (shutdown && now >= new Date(shutdown + 'T00:00:00Z')) {
+    console.warn(`[image] IMAGE_MODEL=${wanted} was shut down on ${shutdown}; using ${DEFAULT_IMAGE_MODEL}`);
+    return DEFAULT_IMAGE_MODEL;
+  }
+  return wanted;
+}
+
+// === Gumroad license verification ===
+// POST https://api.gumroad.com/v2/licenses/verify needs no secret. The product must have
+// "Generate a unique license key per sale" enabled, or no purchase can be verified.
+const GUMROAD_PRODUCT_ID = process.env.GUMROAD_PRODUCT_ID || 'ZnIImoT1CFy75R8mnbEQDw=='; // dorukctn.gumroad.com/l/uynqt
+async function verifyGumroadLicense(licenseKey) {
+  const key = String(licenseKey || '').trim();
+  if (!key) return { ok: false, reason: 'No license key' };
+  try {
+    const r = await fetch('https://api.gumroad.com/v2/licenses/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ product_id: GUMROAD_PRODUCT_ID, license_key: key, increment_uses_count: 'false' })
+    });
+    const data = await r.json();
+    if (!data || !data.success || !data.purchase) return { ok: false, reason: (data && data.message) || 'License not valid' };
+    const p = data.purchase;
+    const revoked = !!(p.refunded || p.chargebacked || (p.disputed && !p.dispute_won));
+    return { ok: true, revoked, email: String(p.email || '').toLowerCase().trim(), sale_id: p.sale_id, product_id: p.product_id };
+  } catch (e) {
+    console.error('Gumroad verify failed:', e.message);
+    return { ok: false, reason: 'Could not reach Gumroad' };
+  }
+}
+
 // === Pro Emails Storage (Vercel KV + local fallback) ===
 const USE_KV = !!process.env.KV_REST_API_URL;
 let kv = null;
@@ -152,7 +201,7 @@ const NICHE_PAGES = {
     description: 'Free AI-generated mandala coloring pages for adults. Intricate, symmetrical designs for stress relief and mindfulness. Download printable PDFs.',
     keyword: 'mandala coloring pages',
     presetPrompt: 'intricate symmetrical mandala with floral patterns and geometric details',
-    intro: 'Mandala coloring is the #1 mindfulness activity for adults — proven to reduce stress and anxiety. Generate your own intricate symmetrical mandala designs using AI. Each one is unique. Perfect for relaxation, meditation, or quiet evenings.',
+    intro: 'Mandala coloring is a popular calm-down activity for adults: repetitive, symmetrical and absorbing. Generate your own intricate symmetrical mandala designs using AI. Each one is unique. Perfect for relaxation, meditation, or quiet evenings.',
     examples: ['floral mandala with lotus center', 'geometric mandala with stars', 'animal mandala with deer', 'celtic knot mandala']
   },
   'halloween-coloring-pages': {
@@ -161,7 +210,7 @@ const NICHE_PAGES = {
     description: 'Free AI Halloween coloring pages — pumpkins, ghosts, witches, haunted houses. Generate custom designs and print at home.',
     keyword: 'halloween coloring pages',
     presetPrompt: 'cute friendly halloween pumpkin with bats and stars',
-    intro: 'Halloween coloring page searches peak from September through October — over 90,000 monthly searches. Generate spooky-but-friendly Halloween designs perfect for kids: jack-o-lanterns, ghosts, witches, black cats, haunted houses. All age-appropriate. Print-ready PDF.',
+    intro: 'Halloween coloring pages are most wanted in September and October. Generate spooky-but-friendly Halloween designs perfect for kids: jack-o-lanterns, ghosts, witches, black cats, haunted houses. All age-appropriate. Print-ready PDF.',
     examples: ['cute jack-o-lantern with bats', 'friendly ghost with candy', 'witch flying on broomstick', 'haunted house with full moon']
   },
   'christmas-coloring-pages': {
@@ -170,7 +219,7 @@ const NICHE_PAGES = {
     description: 'Free AI Christmas coloring pages. Santa, Christmas trees, snowmen, reindeer, presents. Download printable PDFs instantly.',
     keyword: 'christmas coloring pages',
     presetPrompt: 'jolly santa claus with christmas tree and presents',
-    intro: 'Christmas is the biggest coloring page season — over 200,000 monthly searches in November and December. Create custom Santa, Christmas tree, snowman, reindeer, or nativity scenes. Each one is print-ready and totally free.',
+    intro: 'Christmas coloring pages are most wanted in November and December. Create custom Santa, Christmas tree, snowman, reindeer, or nativity scenes. Each one is print-ready and totally free.',
     examples: ['santa delivering presents', 'snowman with carrot nose', 'christmas tree with ornaments', 'reindeer pulling sleigh']
   },
   'animal-coloring-pages': {
@@ -233,7 +282,7 @@ const NICHE_PAGES = {
     description: 'Free AI-generated detailed coloring pages for adults. Intricate designs for stress relief, mindfulness, and creative expression.',
     keyword: 'adult coloring pages',
     presetPrompt: 'highly detailed intricate zentangle pattern with nature elements',
-    intro: 'Adult coloring is a $1B+ industry built on stress relief and mindfulness. Generate complex, detailed designs perfect for grown-up colorists — zentangle patterns, intricate florals, geometric scenes, fantasy landscapes. Each design is print-ready at high resolution.',
+    intro: 'Adult coloring pages need more detail than pages for young children. Generate complex, detailed designs perfect for grown-up colorists — zentangle patterns, intricate florals, geometric scenes, fantasy landscapes. Each design is print-ready at high resolution.',
     examples: ['intricate zentangle owl', 'detailed floral garden scene', 'geometric pattern with stars', 'fantasy forest with hidden details']
   }
 };
@@ -290,12 +339,8 @@ app.post('/generate', async (req, res) => {
 
     const fullPrompt = `Black and white coloring book page line art of: ${prompt.trim()}. ${styleModifier} Pure white background, only black outlines, NO color, NO shading, NO gray, NO gradients. Clean printable coloring page style with thick uniform black lines on white. Suitable for printing on standard paper.`;
 
-    // NOTE: gpt-image-1 is being retired Oct 23, 2026.
-    // Set IMAGE_MODEL env var to switch without a code change:
-    //   gpt-image-1-mini  (~$0.005-0.052/img, cheapest — test line-art quality first)
-    //   gpt-image-1.5     (current flagship)
     const result = await openai.images.generate({
-      model: process.env.IMAGE_MODEL || 'gpt-image-1',
+      model: imageModel(),
       prompt: fullPrompt,
       n: 1,
       size: '1024x1024',
@@ -304,7 +349,7 @@ app.post('/generate', async (req, res) => {
       background: 'opaque'
     });
 
-    // gpt-image-1 returns base64 by default
+    // GPT Image models return base64
     const imageData = result.data[0];
     let imageUrl;
 
@@ -413,15 +458,20 @@ app.post('/download-pdf', async (req, res) => {
 });
 
 // === GUMROAD WEBHOOK ===
+// Anyone can POST here, so Pro is only granted when Gumroad confirms the ping's
+// license key belongs to a real sale of this product, and only to that sale's email.
 app.post('/gumroad-webhook', async (req, res) => {
   try {
-    const { email, sale_id, product_id, refunded } = req.body;
-    if (!email) return res.status(400).send('No email');
-
-    if (refunded === 'true' || refunded === true) {
-      await revokePro(email);
+    const lic = await verifyGumroadLicense(req.body.license_key);
+    if (!lic.ok) {
+      console.warn('[gumroad] ping rejected:', lic.reason);
+      return res.status(401).send('Unverified');
+    }
+    if (!lic.email) return res.status(400).send('No email');
+    if (lic.revoked) {
+      await revokePro(lic.email);
     } else {
-      await grantPro(email, { sale_id, product_id });
+      await grantPro(lic.email, { sale_id: lic.sale_id, product_id: lic.product_id });
     }
     res.send('OK');
   } catch (err) {
@@ -432,7 +482,14 @@ app.post('/gumroad-webhook', async (req, res) => {
 
 // === VERIFY PRO ===
 app.post('/verify-pro', async (req, res) => {
-  const { email } = req.body;
+  const { email, license_key } = req.body;
+  // A license key from the Gumroad receipt activates Pro even if the webhook never arrived.
+  if (license_key) {
+    const lic = await verifyGumroadLicense(license_key);
+    if (!lic.ok || lic.revoked || !lic.email) return res.json({ pro: false });
+    await grantPro(lic.email, { sale_id: lic.sale_id, product_id: lic.product_id });
+    return res.json({ pro: true, email: lic.email });
+  }
   if (!email) return res.json({ pro: false });
   const pro = await isPro(email);
   res.json({ pro, email: email.toLowerCase().trim() });
@@ -471,19 +528,21 @@ app.get('/:slug', (req, res, next) => {
 });
 
 // === SITEMAP ===
+const SITEMAP_LASTMOD = '2026-10-07';
 app.get('/sitemap.xml', (req, res) => {
   res.set('Content-Type', 'text/xml');
-  const base = 'https://coloringpagemaker.app';
+  const base = 'https://www.coloringpagemaker.app';
   const urls = [
-    '',
+    '/',
     '/blog',
     ...Object.keys(NICHE_PAGES).map(s => '/' + s),
     ...Object.keys(BLOG_POSTS).map(s => '/' + s)
   ].map(p => `
   <url>
     <loc>${base}${p}</loc>
+    <lastmod>${SITEMAP_LASTMOD}</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>${p === '' ? '1.0' : '0.8'}</priority>
+    <priority>${p === '/' ? '1.0' : '0.8'}</priority>
   </url>`).join('');
 
   res.send(`<?xml version="1.0" encoding="UTF-8"?>
@@ -501,7 +560,7 @@ Disallow: /download-pdf
 Disallow: /gumroad-webhook
 Disallow: /verify-pro
 
-Sitemap: https://coloringpagemaker.app/sitemap.xml`);
+Sitemap: https://www.coloringpagemaker.app/sitemap.xml`);
 });
 
 // === 404 ===
