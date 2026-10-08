@@ -147,6 +147,8 @@ async function revokePro(email) {
 // Free tier: 2/day. Pro: fair-use cap so a shared email can't drain the API budget.
 const FREE_DAILY_LIMIT = 2;
 const PRO_DAILY_LIMIT = Number(process.env.PRO_DAILY_LIMIT || 150);
+// Ceiling on free pages across ALL visitors per UTC day, so many IP addresses cannot run up the image bill.
+const FREE_GLOBAL_DAILY_LIMIT = Number(process.env.FREE_GLOBAL_DAILY_LIMIT || 60);
 
 async function checkAndIncrementUsage(ip, email) {
   const today = new Date().toISOString().split('T')[0];
@@ -167,6 +169,14 @@ async function checkAndIncrementUsage(ip, email) {
     const count = (await kv.get(key)) || 0;
     if (count >= limit) {
       return { allowed: false, remaining: 0, reason: isProUser ? 'pro_daily_cap' : 'free_daily_cap' };
+    }
+    if (!isProUser) {
+      const totalKey = `usage:free:total:${today}`;
+      const total = (await kv.get(totalKey)) || 0;
+      if (total >= FREE_GLOBAL_DAILY_LIMIT) {
+        return { allowed: false, remaining: 0, reason: 'free_global_cap' };
+      }
+      await kv.set(totalKey, total + 1, { ex: 86400 });
     }
     await kv.set(key, count + 1, { ex: 86400 });
     return { allowed: true, remaining: isProUser ? -1 : limit - count - 1 };
@@ -317,6 +327,12 @@ app.post('/generate', async (req, res) => {
       if (usage.reason === 'storage_down') {
         return res.status(503).json({
           error: 'We are having a temporary technical issue. Please try again in a few minutes.'
+        });
+      }
+      if (usage.reason === 'free_global_cap') {
+        return res.status(429).json({
+          error: 'The free pages for today are all used. They reset at midnight UTC, or Pro gives you up to ' + PRO_DAILY_LIMIT + ' a day.',
+          limitReached: true
         });
       }
       if (usage.reason === 'pro_daily_cap') {
