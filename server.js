@@ -48,6 +48,20 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.locals.md = md;
 
+// Retired pages: one 301 to the closest live page, with or without a trailing slash; the query string is dropped.
+// This runs before the trailing-slash redirect below, so a slashed old URL also takes a single hop.
+const RETIRED_PAGES = {
+  '/pokemon-coloring-pages': '/animal-coloring-pages',
+  '/cartoon-character-coloring-pages': '/'
+};
+app.use((req, res, next) => {
+  if (req.method === 'GET' || req.method === 'HEAD') {
+    const target = RETIRED_PAGES[req.path.replace(/\/+$/, '')];
+    if (target) return res.redirect(301, target);
+  }
+  next();
+});
+
 // One URL per page: /blog/ and /halloween-coloring-pages/ redirect to the path without the slash.
 app.use((req, res, next) => {
   if ((req.method === 'GET' || req.method === 'HEAD') && req.path.length > 1 && req.path.endsWith('/')) {
@@ -242,24 +256,6 @@ const NICHE_PAGES = {
     presetPrompt: 'cute easter bunny with decorated eggs in a basket',
     intro: 'Easter coloring pages are in demand in March and April. Generate Easter bunnies, decorated eggs, baby chicks, spring flowers, and Easter baskets. Good for classroom activities, church groups, or rainy spring afternoons.',
     examples: ['bunny holding decorated easter egg', 'baby chicks in a nest', 'easter basket overflowing with eggs', 'spring scene with bunny and tulips']
-  },
-  'pokemon-coloring-pages': {
-    title: 'Free Pokemon-Style Coloring Pages (AI Creature Generator)',
-    h1: 'Pokemon-style coloring pages',
-    description: 'Free AI-generated Pokemon-style creature coloring pages. Create unique cute monster designs for kids. Print-ready PDF.',
-    keyword: 'pokemon coloring pages',
-    presetPrompt: 'cute cartoon monster creature with big eyes and friendly expression',
-    intro: 'Pokemon-style cute monster coloring pages are popular with kids. This tool does not draw copyrighted Pokemon characters. It creates original creature designs in the same spirit, for kids who like monsters but want something new.',
-    examples: ['cute electric mouse-like creature', 'fire-breathing baby dragon', 'water-type creature with fins', 'plant creature with leaves']
-  },
-  'cartoon-character-coloring-pages': {
-    title: 'Free Cartoon Character Coloring Pages (AI Generator)',
-    h1: 'Cartoon character coloring pages',
-    description: 'Free AI cartoon character coloring pages. Generate custom cartoon kids, animals, robots, monsters. Print-ready PDFs.',
-    keyword: 'cartoon coloring pages',
-    presetPrompt: 'cute cartoon character with big eyes and friendly smile',
-    intro: 'Generate original cartoon characters made for coloring: cartoon kids playing, friendly robots, silly monsters, talking animals. Each character is unique to your prompt.',
-    examples: ['cartoon astronaut floating in space', 'friendly robot waving hello', 'silly monster eating ice cream', 'cartoon fairy holding a star wand']
   }
 };
 
@@ -267,7 +263,7 @@ const NICHE_PAGES = {
 const THEME_ORDER = [
   'unicorn-coloring-pages', 'dinosaur-coloring-pages', 'mandala-coloring-pages', 'halloween-coloring-pages',
   'christmas-coloring-pages', 'animal-coloring-pages', 'flower-coloring-pages', 'princess-coloring-pages',
-  'easter-coloring-pages', 'pokemon-coloring-pages', 'cartoon-character-coloring-pages', 'adult-coloring-pages'
+  'easter-coloring-pages', 'adult-coloring-pages'
 ];
 const themeLabel = slug => (THEME_GUIDES[slug] ? THEME_GUIDES[slug].h1 : NICHE_PAGES[slug].h1);
 const SITE = 'https://www.coloringpagemaker.app';
