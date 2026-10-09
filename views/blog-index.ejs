@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Coloring Book Blog: Etsy, KDP and AI Guides | ColoringPageMaker</title>
-<meta name="description" content="Free guides on selling coloring books on Etsy &amp; KDP, AI tools, mental health benefits of coloring, and classroom use.">
-<meta property="og:title" content="Coloring Book Blog: Etsy, KDP and AI Guides">
-<meta property="og:description" content="Free guides on selling coloring books on Etsy &amp; KDP, AI tools, mental health benefits of coloring, and classroom use.">
+<title>Coloring Page Guides: Etsy, KDP, AI Tools and Classroom Use</title>
+<meta name="description" content="Guides for people who make coloring pages: Etsy fees and AI rules, KDP print requirements, an AI generator comparison, classroom planning and the research on adult coloring.">
+<meta property="og:title" content="Coloring page guides: Etsy, KDP, AI tools and classroom use">
+<meta property="og:description" content="Guides for people who make coloring pages: Etsy fees and AI rules, KDP print requirements, an AI generator comparison, classroom planning and the research on adult coloring.">
 <meta property="og:image" content="https://www.coloringpagemaker.app/og-image.png">
 <meta property="og:url" content="https://www.coloringpagemaker.app/blog">
 <meta name="twitter:card" content="summary_large_image">
@@ -19,6 +19,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="canonical" href="https://www.coloringpagemaker.app/blog">
 <%- include('partials/head-assets') %>
+<script type="application/ld+json"><%- ld %></script>
 </head>
 <body>
 
@@ -27,20 +28,43 @@
 <main id="main">
 <header class="page-head">
   <div class="wrap" style="max-width:900px">
-    <p class="eyebrow">Blog</p>
-    <h1>Coloring book blog</h1>
-    <p>Guides for Etsy sellers, KDP self-publishers, teachers, and anyone who colors.</p>
+    <p class="eyebrow">Guides</p>
+    <h1>Guides for making, using and selling coloring pages</h1>
+    <p>These guides answer the questions that come up once you start making coloring pages: what an Etsy listing has to say about AI, whether a 1024-pixel page is good enough for an Amazon paperback, what each AI tool costs, and what studies of adult coloring actually found.</p>
+    <p>Rules, fees and figures from Etsy, Amazon KDP, the US Copyright Office and published studies link to their source, with the date we last checked it. Where this site's own generator falls short, for example on 300 DPI print files, the guides say so.</p>
   </div>
 </header>
 
-<div class="post-list">
-  <% posts.forEach(function(p){ %>
-    <a href="/<%= p.slug %>" class="post-card">
-      <div class="meta"><%= p.date %> &middot; <%= p.read %> read</div>
-      <h2><%= p.title %></h2>
-      <p><%= p.description %></p>
-    </a>
+<div class="post-groups">
+  <% groups.forEach(function(group){ %>
+  <section class="post-group" aria-labelledby="group-<%= group.id %>">
+    <div class="post-group-head">
+      <h2 id="group-<%= group.id %>"><%= group.title %></h2>
+      <p><%= group.intro %></p>
+    </div>
+    <div class="post-list">
+      <% group.posts.forEach(function(p){ %>
+        <a href="/<%= p.slug %>" class="post-card">
+          <div class="meta"><%= p.date %> &middot; <%= p.read %> read</div>
+          <h3><%= p.title %></h3>
+          <p><%= p.summary || p.description %></p>
+        </a>
+      <% }); %>
+    </div>
+  </section>
   <% }); %>
+
+  <section class="post-group" aria-labelledby="group-themes">
+    <div class="post-group-head">
+      <h2 id="group-themes">Theme guides</h2>
+      <p>Each theme page has the generator, prompts sorted by age and answers to the questions people ask about that theme.</p>
+    </div>
+    <ul class="theme-list">
+      <% themes.forEach(function(t){ %>
+        <li><a href="/<%= t.slug %>"><strong><%= t.label %></strong><span><%= t.note %></span></a></li>
+      <% }); %>
+    </ul>
+  </section>
 </div>
 </main>
 
