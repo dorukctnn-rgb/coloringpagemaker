@@ -24,12 +24,38 @@ try {
 } catch (e) { console.error('.env load error:', e); }
 
 const BLOG_POSTS = require('./blog-posts.js');
+const THEME_GUIDES = require('./theme-guides.js');
+
+// Inline markup for trusted page copy (theme guides, blog posts): [label](href) and **bold**.
+function escHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function md(s) {
+  return escHtml(s)
+    .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (m, label, href) => `<a href="${href}"${/^https?:/.test(href) ? ' rel="noopener"' : ''}>${label}</a>`)
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+}
+function plain(s) {
+  return String(s).replace(/\[([^\]]+)\]\([^)\s]+\)/g, '$1').replace(/\*\*([^*]+)\*\*/g, '$1');
+}
+// JSON for <script type="application/ld+json">: no raw "<" so the block cannot be closed early.
+const jsonLd = obj => JSON.stringify(obj).replace(/</g, '\\u003c');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.locals.md = md;
+
+// One URL per page: /blog/ and /halloween-coloring-pages/ redirect to the path without the slash.
+app.use((req, res, next) => {
+  if ((req.method === 'GET' || req.method === 'HEAD') && req.path.length > 1 && req.path.endsWith('/')) {
+    const query = req.url.slice(req.path.length);
+    return res.redirect(301, req.path.replace(/\/+$/, '') + query);
+  }
+  next();
+});
 app.use('/fonts', express.static(path.join(__dirname, 'public', 'fonts'), { maxAge: '365d', immutable: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json({ limit: '20mb' }));
@@ -186,26 +212,10 @@ async function checkAndIncrementUsage(ip, email) {
   }
 }
 
-// === NICHE SEO PAGES ===
+// === THEME PAGES ===
+// Theme guides with their own content live in theme-guides.js (views/theme.ejs).
+// The pages below still use the shorter shared layout (views/niche.ejs).
 const NICHE_PAGES = {
-  'unicorn-coloring-pages': {
-    title: 'Free Unicorn Coloring Pages (AI Generator, Printable PDF)',
-    h1: 'Unicorn coloring pages',
-    description: 'Free AI-generated unicorn coloring pages. Create custom unicorn designs and download printable PDFs instantly. No signup required.',
-    keyword: 'unicorn coloring pages',
-    presetPrompt: 'unicorn with a flowing mane and small stars, cute friendly expression',
-    intro: 'Unicorns are a favorite coloring page subject for kids ages 4-12. Generate your own unicorn coloring page: fairy unicorns, baby unicorns, rainbow unicorns or a unicorn in front of a castle. Each design is a clean black-and-white outline ready to print. Free, no signup.',
-    examples: ['baby unicorn in a flower field', 'unicorn with rainbow mane', 'unicorn princess with a castle', 'pegasus unicorn flying through clouds']
-  },
-  'dinosaur-coloring-pages': {
-    title: 'Free Dinosaur Coloring Pages (AI Generator, Printable)',
-    h1: 'Dinosaur coloring pages',
-    description: 'Free AI-generated dinosaur coloring pages. T-Rex, Stegosaurus, Triceratops and more. Download printable PDFs instantly.',
-    keyword: 'dinosaur coloring pages',
-    presetPrompt: 'friendly cartoon dinosaur in jungle scene with palm trees',
-    intro: 'Dinosaurs are a coloring page staple year after year. Use the AI generator below to create custom T-Rex, Triceratops, Stegosaurus, Brachiosaurus, or Velociraptor scenes. Suitable for ages 3 and up. Print-ready PDF.',
-    examples: ['T-Rex roaring in the jungle', 'baby triceratops with mom', 'stegosaurus eating leaves', 'flying pterodactyl over volcano']
-  },
   'mandala-coloring-pages': {
     title: 'Free Mandala Coloring Pages (AI Generator for Adults)',
     h1: 'Mandala coloring pages',
@@ -215,33 +225,6 @@ const NICHE_PAGES = {
     intro: 'Mandala coloring is a popular calm-down activity for adults: repetitive, symmetrical and absorbing. Generate your own symmetrical mandala designs; each one is unique. Good for relaxation, meditation, or a quiet evening.',
     examples: ['floral mandala with lotus center', 'geometric mandala with stars', 'animal mandala with deer', 'celtic knot mandala']
   },
-  'halloween-coloring-pages': {
-    title: 'Free Halloween Coloring Pages (AI Generator, Printable)',
-    h1: 'Halloween coloring pages',
-    description: 'Free AI Halloween coloring pages: pumpkins, ghosts, witches, haunted houses. Generate custom designs and print at home.',
-    keyword: 'halloween coloring pages',
-    presetPrompt: 'cute friendly halloween pumpkin with bats and stars',
-    intro: 'Halloween coloring pages are in demand in September and October. Generate spooky-but-friendly Halloween designs for kids: jack-o-lanterns, ghosts, witches, black cats, haunted houses. All age-appropriate. Print-ready PDF.',
-    examples: ['cute jack-o-lantern with bats', 'friendly ghost with candy', 'witch flying on broomstick', 'haunted house with full moon']
-  },
-  'christmas-coloring-pages': {
-    title: 'Free Christmas Coloring Pages (AI Generator for Santa, Trees and More)',
-    h1: 'Christmas coloring pages',
-    description: 'Free AI Christmas coloring pages. Santa, Christmas trees, snowmen, reindeer, presents. Download printable PDFs instantly.',
-    keyword: 'christmas coloring pages',
-    presetPrompt: 'jolly santa claus with christmas tree and presents',
-    intro: 'Christmas coloring pages are in demand in November and December. Create custom Santa, Christmas tree, snowman, reindeer, or nativity scenes. Each one is print-ready and free.',
-    examples: ['santa delivering presents', 'snowman with carrot nose', 'christmas tree with ornaments', 'reindeer pulling sleigh']
-  },
-  'animal-coloring-pages': {
-    title: 'Free Animal Coloring Pages (AI Generator, Any Animal)',
-    h1: 'Animal coloring pages',
-    description: 'Free AI animal coloring pages: any animal you can imagine. Cats, dogs, horses, lions, dolphins, birds. Generate and print instantly.',
-    keyword: 'animal coloring pages',
-    presetPrompt: 'cute cartoon cat sitting in a garden with flowers',
-    intro: 'Animal coloring pages are a popular category for kids. With AI you can generate any animal in any setting: your child\'s favorite pet doing something silly, a wild animal in its habitat, or a fantasy creature. Print-ready, free, no signup.',
-    examples: ['golden retriever puppy playing', 'lion family in the savanna', 'dolphin jumping out of water', 'cat napping on a windowsill']
-  },
   'flower-coloring-pages': {
     title: 'Free Flower Coloring Pages (AI Generator for Kids and Adults)',
     h1: 'Flower coloring pages',
@@ -250,15 +233,6 @@ const NICHE_PAGES = {
     presetPrompt: 'beautiful detailed bouquet of mixed flowers with leaves',
     intro: 'Flowers are a timeless coloring page subject. Kids like simple daisies; adults like intricate roses and detailed botanical illustrations. Generate any flower or arrangement you want. Each design is unique.',
     examples: ['rose with leaves and thorns', 'sunflower in a field', 'bouquet of mixed wildflowers', 'cherry blossom branch']
-  },
-  'princess-coloring-pages': {
-    title: 'Free Princess Coloring Pages (AI Generator, Disney-Style)',
-    h1: 'Princess coloring pages',
-    description: 'Free AI princess coloring pages. Beautiful princesses with castles, dresses, animals. Generate custom designs and print instantly.',
-    keyword: 'princess coloring pages',
-    presetPrompt: 'beautiful princess in flowing gown standing in front of castle',
-    intro: 'Princess coloring pages are a frequent request from kids ages 3-10. Generate princesses in any style: fairy princess, mermaid princess, woodland princess, snow princess. Each one can come with castles, dresses, wands or animal companions.',
-    examples: ['princess with long flowing dress and crown', 'mermaid princess underwater', 'fairy princess with butterflies', 'princess riding a horse']
   },
   'easter-coloring-pages': {
     title: 'Free Easter Coloring Pages (AI Generator for Bunnies and Eggs)',
@@ -286,17 +260,50 @@ const NICHE_PAGES = {
     presetPrompt: 'cute cartoon character with big eyes and friendly smile',
     intro: 'Generate original cartoon characters made for coloring: cartoon kids playing, friendly robots, silly monsters, talking animals. Each character is unique to your prompt.',
     examples: ['cartoon astronaut floating in space', 'friendly robot waving hello', 'silly monster eating ice cream', 'cartoon fairy holding a star wand']
-  },
-  'adult-coloring-pages': {
-    title: 'Free Detailed Adult Coloring Pages (AI Generator)',
-    h1: 'Adult coloring pages',
-    description: 'Free AI-generated detailed coloring pages for adults. Intricate designs for stress relief, mindfulness, and creative expression.',
-    keyword: 'adult coloring pages',
-    presetPrompt: 'highly detailed intricate zentangle pattern with nature elements',
-    intro: 'Adult coloring pages need more detail than pages for young children. Generate complex, detailed designs for grown-up colorists: zentangle patterns, intricate florals, geometric scenes, fantasy landscapes. Each design is print-ready at letter size.',
-    examples: ['intricate zentangle owl', 'detailed floral garden scene', 'geometric pattern with stars', 'fantasy forest with hidden details']
   }
 };
+
+// Every theme page in one order (used for "Browse more themes" and the sitemap).
+const THEME_ORDER = [
+  'unicorn-coloring-pages', 'dinosaur-coloring-pages', 'mandala-coloring-pages', 'halloween-coloring-pages',
+  'christmas-coloring-pages', 'animal-coloring-pages', 'flower-coloring-pages', 'princess-coloring-pages',
+  'easter-coloring-pages', 'pokemon-coloring-pages', 'cartoon-character-coloring-pages', 'adult-coloring-pages'
+];
+const themeLabel = slug => (THEME_GUIDES[slug] ? THEME_GUIDES[slug].h1 : NICHE_PAGES[slug].h1);
+const SITE = 'https://www.coloringpagemaker.app';
+const LEVEL_NAMES = { simple: 'Simple', medium: 'Medium', detailed: 'Detailed' };
+
+function themeJsonLd(slug, g) {
+  const url = `${SITE}/${slug}`;
+  return jsonLd({
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebPage', '@id': url + '#webpage', url, name: g.title, description: g.description,
+        dateModified: g.updated, isPartOf: { '@type': 'WebSite', name: 'ColoringPageMaker', url: SITE + '/' },
+        breadcrumb: { '@id': url + '#breadcrumb' }
+      },
+      {
+        '@type': 'WebApplication', name: g.eyebrow, url, applicationCategory: 'DesignApplication', operatingSystem: 'Web browser',
+        offers: [
+          { '@type': 'Offer', name: 'Free', price: '0', priceCurrency: 'USD' },
+          { '@type': 'Offer', name: 'Pro (one-time)', price: '9', priceCurrency: 'USD' }
+        ]
+      },
+      {
+        '@type': 'BreadcrumbList', '@id': url + '#breadcrumb',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: SITE + '/' },
+          { '@type': 'ListItem', position: 2, name: g.h1, item: url }
+        ]
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: g.faq.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: plain(f.a) } }))
+      }
+    ]
+  });
+}
 
 // === ROUTES ===
 
@@ -519,19 +526,61 @@ app.get('/gumroad-webhook', (req, res) => res.redirect(301, '/'));
 app.get('/verify-pro', (req, res) => res.redirect(301, '/'));
 
 // === NICHE PAGES (must come before catch-all) ===
+const BLOG_GROUPS = [
+  { id: 'selling', title: 'Selling coloring books', intro: 'Two marketplaces, two formats: printable PDFs on Etsy and printed paperbacks on Amazon KDP.', slugs: ['sell-coloring-books-on-etsy', 'coloring-pages-for-self-publishing-kdp'] },
+  { id: 'tools', title: 'Choosing a generator', intro: 'Free limits, prices and commercial-use terms of the AI tools people compare, taken from each tool\'s own pages.', slugs: ['best-ai-coloring-page-generators-2026'] },
+  { id: 'using', title: 'Coloring at school and at home', intro: 'Planning pages around a lesson, and what studies of adult coloring do and do not show.', slugs: ['coloring-pages-for-classroom-teachers', 'adult-coloring-mental-health-benefits'] }
+];
+const THEME_NOTES = {
+  'halloween-coloring-pages': ['Halloween', 'Scare levels by age, class parties, Día de los Muertos'],
+  'christmas-coloring-pages': ['Christmas', 'A 24-day Advent plan, cards and ornaments'],
+  'dinosaur-coloring-pages': ['Dinosaurs', 'Which species lived together, with museum dates'],
+  'adult-coloring-pages': ['Adult', 'Intricate or bold and easy, paper for markers'],
+  'princess-coloring-pages': ['Princesses', 'Fairy tales that are free to draw'],
+  'animal-coloring-pages': ['Animals', 'Black markings, life cycles, pet portraits'],
+  'unicorn-coloring-pages': ['Unicorns', 'Winged unicorns, the narwhal, party pages']
+};
 app.get('/blog', (req, res) => {
-  res.render('blog-index', {
-    posts: Object.entries(BLOG_POSTS).map(([slug, p]) => ({ slug, ...p }))
+  const listed = new Set(BLOG_GROUPS.flatMap(g => g.slugs));
+  const extra = Object.keys(BLOG_POSTS).filter(s => !listed.has(s));
+  const groups = [...BLOG_GROUPS, ...(extra.length ? [{ id: 'more', title: 'More guides', intro: '', slugs: extra }] : [])]
+    .map(g => ({ ...g, posts: g.slugs.filter(s => BLOG_POSTS[s]).map(s => ({ slug: s, ...BLOG_POSTS[s] })) }));
+  const themes = THEME_ORDER.filter(s => THEME_NOTES[s]).map(s => ({ slug: s, label: THEME_NOTES[s][0], note: THEME_NOTES[s][1] }));
+  const ld = jsonLd({
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'CollectionPage', '@id': SITE + '/blog#page', url: SITE + '/blog', name: 'Guides for making, using and selling coloring pages',
+        dateModified: BLOG_INDEX_UPDATED,
+        hasPart: Object.keys(BLOG_POSTS).map(s => ({ '@type': 'Article', headline: BLOG_POSTS[s].title, url: `${SITE}/${s}` }))
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: SITE + '/' },
+          { '@type': 'ListItem', position: 2, name: 'Guides', item: SITE + '/blog' }
+        ]
+      }
+    ]
   });
+  res.render('blog-index', { groups, themes, ld });
 });
 
 app.get('/:slug', (req, res, next) => {
   const slug = req.params.slug;
+  if (THEME_GUIDES[slug]) {
+    return res.render('theme', {
+      g: THEME_GUIDES[slug],
+      slug,
+      levelNames: LEVEL_NAMES,
+      ld: themeJsonLd(slug, THEME_GUIDES[slug])
+    });
+  }
   if (NICHE_PAGES[slug]) {
     return res.render('niche', {
       page: NICHE_PAGES[slug],
       slug,
-      allPages: Object.keys(NICHE_PAGES).filter(s => s !== slug).slice(0, 6).map(s => ({ slug: s, h1: NICHE_PAGES[s].h1 }))
+      allPages: THEME_ORDER.filter(s => s !== slug).slice(0, 6).map(s => ({ slug: s, h1: themeLabel(s) }))
     });
   }
   if (BLOG_POSTS[slug]) {
@@ -545,19 +594,21 @@ app.get('/:slug', (req, res, next) => {
 });
 
 // === SITEMAP ===
+// Only canonical URLs (www host, no trailing slash), each with the date its content last changed.
 const SITEMAP_LASTMOD = '2026-10-07';
+const BLOG_INDEX_UPDATED = '2026-10-09';
 app.get('/sitemap.xml', (req, res) => {
   res.set('Content-Type', 'text/xml');
-  const base = 'https://www.coloringpagemaker.app';
-  const urls = [
-    '/',
-    '/blog',
-    ...Object.keys(NICHE_PAGES).map(s => '/' + s),
-    ...Object.keys(BLOG_POSTS).map(s => '/' + s)
-  ].map(p => `
+  const entries = [
+    ['/', SITEMAP_LASTMOD],
+    ['/blog', BLOG_INDEX_UPDATED],
+    ...THEME_ORDER.map(s => ['/' + s, (THEME_GUIDES[s] && THEME_GUIDES[s].updated) || SITEMAP_LASTMOD]),
+    ...Object.keys(BLOG_POSTS).map(s => ['/' + s, BLOG_POSTS[s].updated || SITEMAP_LASTMOD])
+  ];
+  const urls = entries.map(([p, lastmod]) => `
   <url>
-    <loc>${base}${p}</loc>
-    <lastmod>${SITEMAP_LASTMOD}</lastmod>
+    <loc>${SITE}${p}</loc>
+    <lastmod>${lastmod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>${p === '/' ? '1.0' : '0.8'}</priority>
   </url>`).join('');

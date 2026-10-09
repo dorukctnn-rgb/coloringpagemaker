@@ -1,67 +1,119 @@
-// Blog content. Blocks: 'p' (paragraph), 'h2' (heading), 'sources' (list of links).
+// Blog content. Blocks: 'p' (paragraph, supports [label](href) and **bold**), 'h2' (heading), 'ul' (items),
+// 'table' (head, rows) and 'sources' (links; 'checked' on the block or on a link gives the date it was verified).
+// 'summary' is the longer description shown on /blog. 'updated' feeds the sitemap <lastmod>.
 // Figures and rules quoted from outside sources carry a 'sources' block and were last checked on 7 October 2026.
 const BLOG_POSTS = {
 
 'sell-coloring-books-on-etsy': {
-  title: 'How to sell coloring books on Etsy in 2026 (step-by-step guide)',
-  description: 'A step-by-step guide to making and selling printable coloring books on Etsy: choosing a theme, generating pages, print resolution, listing SEO and pricing after Etsy fees.',
+  title: 'How to sell coloring books on Etsy in 2026: fees, files and AI rules',
+  description: `Selling printable coloring books on Etsy: the 20 MB file limit, Etsy's AI disclosure rule, what a sale keeps after fees at six prices, and the checks to run before you list.`,
   keyword: 'sell coloring books on etsy',
   date: 'Updated October 2026',
   read: '8 min',
+  updated: '2026-10-09',
+  summary: `Etsy's rule that AI-made items must say so, the five-file and 20 MB limit (and why a 30-page book can break it), and what is left of a $4 to $16 sale after fees, in one table. Then the steps: theme, pages, print check, cover, listing text and price.`,
   content: [
-    { type: 'p', text: `Printable coloring books suit Etsy sellers who want to start small: the product is a PDF, so there is no inventory and no shipping. This guide covers the path from picking a theme to writing the listing, and it is upfront about what the generator can and cannot do. With Pro (up to 150 pages a day) you can generate a 25 to 50 page book in one sitting. On the free tier (2 pages a day) the same book takes roughly two to four weeks.` },
-    { type: 'h2', text: `Why coloring books work on Etsy` },
-    { type: 'p', text: `A coloring book PDF is a good fit for Etsy: it is cheap to make, easy to preview in a listing, and buyers print it at home. Demand tends to rise around Halloween, Christmas and back-to-school, and themes such as "adult coloring book," "kids coloring book," "mandala coloring book" and "Halloween coloring book" each have their own audience. Check Etsy's search suggestions, eRank or EverBee for current search volume before you commit to a theme.` },
-    { type: 'h2', text: `What sells (and what doesn't)` },
-    { type: 'p', text: `A clear theme is easier to rank and to click than a generic listing. Common categories are themed adult coloring books (mandalas, florals, animals), kids coloring books (unicorns, dinosaurs, princesses, vehicles), seasonal books (Halloween, Christmas, Easter, Valentine's) and educational coloring books (alphabet, numbers, sight words). A listing called just "coloring book" gives a buyer no reason to click. Etsy does not publish what individual shops earn, so treat income figures you see online as unverified.` },
-    { type: 'h2', text: `Step 1: Pick a theme with room to rank` },
-    { type: 'p', text: `Use eRank or EverBee to compare monthly searches with the number of active listings for each theme. A higher ratio of searches to listings means less competition for each search. There is no official threshold, so use the ratio to compare themes against each other. With made-up numbers as an illustration: a theme with 12,000 monthly searches and 240 listings looks easier than a theme with the same searches and 3,000 listings. If your first idea is crowded, narrow it, for example "rainbow unicorn coloring book for girls ages 6-9."` },
-    { type: 'h2', text: `Step 2: Generate your pages` },
-    { type: 'p', text: `Use the generator on this site. A typical coloring book has 25 to 50 pages. Each page should be themed but distinct: if your book is "Unicorn Adventures," generate baby unicorns, unicorn princesses, unicorn castles, unicorn rainbows and unicorn forests. Detailed prompts work better: "cute baby unicorn with flowers" gives better results than just "unicorn." Keep a list of the prompts you use so you can regenerate a page that comes out badly.` },
-    { type: 'h2', text: `Step 3: Compile into a print-ready PDF` },
-    { type: 'p', text: `Etsy buyers expect a PDF they can print at home on standard 8.5x11 inch paper. Use the Pro version of this generator to combine all your pages into one PDF, or compile them in a layout tool such as Canva. Add a cover page with the book title, an "About this book" page and a thank-you page.` },
-    { type: 'p', text: `A note on resolution: the pages from this generator are 1024x1024 pixels. They reach 300 DPI, the figure print shops ask for, only at about 3.4 inches across. Printed 7.5 inches wide on a letter page they are about 136 DPI. Bold line art tolerates that better than photos do, but edges can look soft, so print a test page before you list the book. If you want 300 DPI at full-page size, upscale the images in a separate tool and check the result at full size.` },
-    { type: 'h2', text: `Step 4: Design a cover that stands out in search results` },
-    { type: 'p', text: `Your Etsy listing thumbnail is the first thing a buyer sees, and a weak cover costs clicks regardless of price or reviews. Use Canva or a similar tool to make a cover that shows 3-5 sample colored-in pages from your book, the book title in a bold readable font, and "INSTANT DOWNLOAD" or "PRINTABLE" text. Look at the top five listings for your theme and match their cover style instead of reinventing it.` },
-    { type: 'h2', text: `Step 5: Write a listing that matches how people search` },
-    { type: 'p', text: `Etsy search reads your title, tags and description. A title can carry several search phrases, for example "Unicorn Coloring Book for Kids, 30 Printable Pages, Instant Download PDF, Girls Ages 4-10, Rainbow Unicorns." Etsy allows 13 tags per listing, so use all of them with long-tail variants. The description should say what is inside, the page count, the file format, the page size you ship (US Letter, plus A4 if you make that version) and the licensing terms (personal use only, no resale).` },
-    { type: 'h2', text: `Step 6: Price after fees` },
-    { type: 'p', text: `Look at the top listings for your theme and price within their range, then check what is left after fees. On US sales Etsy charges a $0.20 listing fee (charged again each time the listing renews after a sale), a 6.5% transaction fee and 3% + $0.25 payment processing. On a $5 book that leaves about $4.08 before tax and any advertising fees. On a $12 book it leaves about $10.41. Very low prices leave little once the fixed amounts are taken out.` },
-    { type: 'sources', links: [
-      { text: 'Etsy: fees and taxes for selling on Etsy', href: 'https://help.etsy.com/hc/en-us/articles/115014483627-What-are-the-Fees-and-Taxes-for-Selling-on-Etsy' },
-      { text: 'Etsy: payment processing fees', href: 'https://help.etsy.com/hc/en-us/articles/115015628847-What-are-Payment-Processing-Fees-for-Selling-on-Etsy' }
+    { type: 'p', text: `A printable coloring book is a PDF: no stock, no shipping, and a buyer who prints at home. That makes it a common first Etsy product, and it also means a few Etsy rules matter more than usual. This guide starts with those rules, the file limit and the fees, then walks through making and listing the book. Etsy figures link to Etsy's own help pages.` },
+    { type: 'h2', text: `Three Etsy rules that apply to AI coloring books` },
+    { type: 'ul', items: [
+      `**Say that AI was used.** Etsy counts seller-prompted AI creations as “Designed by a seller” and requires them to disclose the use of AI. The listing description is the natural place, for example: “Illustrations generated with AI from my own prompts, then selected and arranged by me.”`,
+      `**Up to five files of 20 MB each.** An instant-download listing holds up to five files, each up to 20 MB. File names cannot be changed after upload, so name them before you add them.`,
+      `**Your own designs only.** Digital items must be made or designed by the seller. Keep characters from films, TV, games and toys out of your prompts.`
     ] },
-    { type: 'h2', text: `Step 7: Use Pinterest for traffic` },
-    { type: 'p', text: `Pinterest can send visitors to a listing. Each coloring page you create can become a pin that links back to your Etsy listing. Pin consistently, use different sample pages and cover mockups as pin images, and write pin titles that match what people search for.` },
-    { type: 'h2', text: `Common mistakes that hurt sales` },
-    { type: 'p', text: `The biggest mistake is a book with no clear theme: "Coloring Book" on its own will not rank or sell. Other common problems are blurry cover art, vague descriptions, missing print sizes, no preview pages and pricing above what the niche supports. Focus on one theme per book and execute it well. If you plan to sell the pages, also keep trademarked characters out of your prompts.` }
+    { type: 'sources', checked: '9 October 2026', links: [
+      { text: 'Etsy: What can I sell on Etsy? (Designed by a seller, AI disclosure)', href: 'https://help.etsy.com/hc/en-us/articles/360024112614-What-Can-I-Sell-on-Etsy' },
+      { text: 'Etsy: How to manage your digital listings (five files, 20 MB each)', href: 'https://help.etsy.com/hc/en-us/articles/115015628347-How-to-Manage-Your-Digital-Listings' }
+    ] },
+    { type: 'h2', text: `Will your book fit in 20 MB?` },
+    { type: 'p', text: `Full-page line art is heavier than it looks. We saved two pages from this generator as one-page PDFs with the site's own PDF code, and they came to 0.78 MB and 1.42 MB. At 0.8 to 1.4 MB a page, a 30-page book comes to roughly 24 to 42 MB, more than one file may hold. Check the size of your PDF before you list. If it is too big, split the book across two or three files (pages 1 to 15 and 16 to 30, say), which the five-file limit allows, or compress the PDF and print a test page to make sure the lines survived.` },
+    { type: 'h2', text: `What a sale keeps after Etsy's fees` },
+    { type: 'p', text: `A US sale of a digital file carries three fees: a $0.20 listing fee (charged again each time an auto-renewing listing sells), a 6.5% transaction fee and payment processing of 3% plus $0.25. Together that is 9.5% of the price plus $0.45, so the fixed part weighs most on cheap listings:` },
+    { type: 'table', head: ['Price', 'Etsy fees', 'You keep', 'Share kept'], rows: [
+      ['$4.00', '$0.83', '$3.17', '79%'],
+      ['$6.00', '$1.02', '$4.98', '83%'],
+      ['$8.00', '$1.21', '$6.79', '85%'],
+      ['$10.00', '$1.40', '$8.60', '86%'],
+      ['$12.00', '$1.59', '$10.41', '87%'],
+      ['$16.00', '$1.97', '$14.03', '88%']
+    ] },
+    { type: 'p', text: `These figures are before sales tax, Offsite Ads and any Etsy Ads you pay for, and payment processing rates differ for shops whose bank account is outside the US. Etsy does not publish what individual shops earn, so treat income claims you see online as unverified.` },
+    { type: 'sources', links: [
+      { text: 'Etsy: Etsy fee basics (listing fee, auto-renewal, transaction fee)', href: 'https://help.etsy.com/hc/en-us/articles/360035902374-Etsy-Fee-Basics', checked: '9 October 2026' },
+      { text: 'Etsy: payment processing fees', href: 'https://help.etsy.com/hc/en-us/articles/115015628847-What-are-Payment-Processing-Fees-for-Selling-on-Etsy', checked: '7 October 2026' }
+    ] },
+    { type: 'h2', text: `Step 1: pick a theme with room to rank` },
+    { type: 'p', text: `Use eRank or EverBee to compare monthly searches with the number of active listings for each theme. More searches per listing means less competition for each search; there is no official threshold, so use the ratio to compare themes against each other. If your first idea is crowded, narrow it: “rainbow unicorn coloring book for girls ages 6 to 9” rather than “unicorn coloring book”. Seasonal books such as Halloween and Christmas need to be listed well before the holiday.` },
+    { type: 'h2', text: `Step 2: generate pages that belong together` },
+    { type: 'p', text: `A typical book has 25 to 50 pages, each on the theme but distinct. For a unicorn book that might be a baby unicorn, a unicorn castle, a winged unicorn, a unicorn by a waterfall and a unicorn family. Keep a list of your prompts so you can regenerate a page that prints badly. Our theme pages list prompts by age, for example for [Halloween](/halloween-coloring-pages), [Christmas](/christmas-coloring-pages) and [dinosaurs](/dinosaur-coloring-pages). On the free plan (2 pages a day) a 30-page book takes 15 days; Pro makes up to 150 pages a day and includes the commercial use you need to sell them.` },
+    { type: 'h2', text: `Step 3: check print quality before you list` },
+    { type: 'p', text: `Pages from this generator are 1024 by 1024 pixels. They reach 300 DPI, the figure print shops ask for, only at about 3.4 inches across; printed 7.5 inches wide on a letter page they are about 136 DPI. Bold line art tolerates that better than photos do, but edges can look soft, so print a test page on an ordinary home printer, the way your buyers will. If you want 300 DPI at full-page size, upscale the images in a separate tool and check the result at full size.` },
+    { type: 'h2', text: `Step 4: cover image and listing text` },
+    { type: 'p', text: `The thumbnail is the first thing a buyer sees. Show three to five sample pages, colored in, with the title in a large readable font and the words “printable” or “instant download”. Look at the top five listings for your theme and match their style rather than inventing a new one.` },
+    { type: 'p', text: `Etsy search reads your title, tags and description. A title can carry several search phrases, for example “Unicorn Coloring Book for Kids, 30 Printable Pages, Instant Download PDF, Girls Ages 4 to 10”. Use all 13 tags with long-tail variants. In the description, list the page count, file format, page size (US Letter, plus A4 if you make that version), your AI disclosure and your terms of use.` },
+    { type: 'p', text: `A short terms line saves questions later, for example: “For personal use and use in your own classroom. Please do not resell, share or upload these files.”` },
+    { type: 'h2', text: `Step 5: price, then bring in traffic` },
+    { type: 'p', text: `Price within the range of the top listings for your theme, then check the table above for what is left. Pinterest can send visitors to a listing: each page can become a pin that links back to it, so pin regularly, vary the pin images and write pin titles that match what people search for.` },
+    { type: 'h2', text: `Common mistakes` },
+    { type: 'p', text: `A book with no clear theme (“Coloring Book” on its own) will not rank. Other common problems are blurry cover art, a description without the page count or size, no preview pages, a missing AI disclosure, a PDF over 20 MB and a price above what the theme supports. Pick one theme per book and do it well.` }
   ]
 },
 
 'best-ai-coloring-page-generators-2026': {
-  title: 'How to choose an AI coloring page generator in 2026 (what to compare)',
-  description: 'A checklist for comparing AI coloring page generators: line quality, resolution, PDF export, commercial-use terms and total cost, with an honest note on where ColoringPageMaker fits.',
+  title: 'Best AI coloring page generators in 2026: an honest comparison',
+  description: `Nine AI coloring page generators compared on free limits, cheapest paid plan, commercial use and output, with every figure linked to the tool's own page.`,
   keyword: 'best ai coloring page generator',
   date: 'Updated October 2026',
-  read: '6 min',
+  read: '7 min',
+  updated: '2026-10-09',
+  summary: `Nine generators side by side: free allowance, cheapest paid option, commercial-use terms and output notes, every cell taken from the tool's own pricing or help page on 9 October 2026. We make one of the nine, and the post says where it falls short.`,
   content: [
-    { type: 'p', text: `Many AI image tools can draw a coloring page, and they differ in ways that matter once you print or sell the pages. This guide lists what to compare and how to test it in about ten minutes. It does not rank other products. Prices and licenses change often, so read each tool's own pricing and terms pages before you decide.` },
-    { type: 'h2', text: `What makes a good AI coloring page` },
-    { type: 'p', text: `A good AI-generated coloring page has thick, clean black outlines, no shading or gradient, a fully white background and a level of detail that suits the age group. Bad pages have jagged or broken lines, gray pixels (which print as muddy patches), outlines missing on parts of the image, or detail so dense that young colorists give up.` },
-    { type: 'h2', text: `Test every tool with the same prompts` },
-    { type: 'p', text: `Pick five prompts that cover your use, for example "unicorn in a forest," "cute T-Rex," "intricate mandala with flowers," "Halloween pumpkin scene" and "princess castle." Run each prompt once in each tool, print the results at letter size, and look at line weight, the white background and whether any part of the drawing is open or shaded. Judge the printouts, not the screen.` },
-    { type: 'h2', text: `Compare the total cost` },
-    { type: 'p', text: `Work out what you will pay for the pages you actually need. Look at the free tier and its daily limit, whether the paid plan is a monthly subscription or a one-time payment, whether images are priced one by one, and whether commercial use costs extra. ColoringPageMaker is free for 2 pages a day, and Pro is a single $9 payment that allows up to 150 pages a day, removes the PDF watermark, adds the multi-page PDF book maker and includes commercial use. For any other tool, multiply its monthly price by the number of months you expect to use it.` },
-    { type: 'h2', text: `Check the commercial-use terms` },
-    { type: 'p', text: `If you plan to sell coloring books on Etsy, KDP or your own site, read each tool's license before you generate a single page. Some tools limit commercial use to paid plans, and marketplaces add their own rules: KDP, for example, requires you to tell them when your book contains AI-generated images. ColoringPageMaker Pro includes commercial use.` },
-    { type: 'sources', links: [
-      { text: 'KDP: content guidelines (AI-generated content)', href: 'https://kdp.amazon.com/en_US/help/topic/G200672390' }
+    { type: 'p', text: `We make ColoringPageMaker, one of the tools below, so read this with that in mind. To keep it fair, every figure about another tool comes from that tool's own pricing, help or terms page, linked at the end and checked on 9 October 2026. We did not generate test pages in every tool, so the table compares limits, prices and licenses, not drawing quality. The last section shows how to judge quality yourself in ten minutes.` },
+    { type: 'h2', text: `Nine generators side by side` },
+    { type: 'table', head: ['Tool', 'Free option', 'Cheapest paid option', 'Commercial use', 'Worth knowing'], rows: [
+      ['ColoringPageMaker (ours)', '2 pages a day, no account, while a shared daily pool lasts; watermarked PDF', '$9 once: up to 150 pages a day', 'Pro only', '1024 × 1024 px pages (about 136 DPI at 7.5 in); text prompts only'],
+      ['Koloring.ai', '1 page without signing in; a free account gets 8 credits once (2 per page); watermarked downloads', '$5.99 a month for 80 credits', 'Paid plans', 'Photo to coloring page; book creator for PDF booklets'],
+      ['iColoring AI', 'Free credits each month (amount not listed); PNG and PDF without watermark', '$9.99 a month for 300 credits, or $95.88 a year', 'Listed on paid plans', 'Unused credits: 20% roll over'],
+      ['ColorifyAI', 'Free generator (limits not listed)', '$9.90 a month for 250 credits, 1 credit a page', 'Not on the $9.90 plan; from $29.90 a month', '4K output on paid plans'],
+      ['ColoringFam', 'Watermarked, standard quality, personal use; pages may appear in a public gallery', '$3.99 a month for 100 credits (personal use)', 'From $6.99 a month (200 credits)', 'Paid plans list 300 DPI print quality'],
+      ['Supercoloring AI generator', 'Free; heavy use may be limited', 'None listed', 'Not prohibited', 'Prompts and images are deleted after 7 days'],
+      ['Canva', 'Free Canva account', 'Canva Pro (price not on the generator page)', 'Not stated on the generator page', 'Turns an uploaded photo into line art; build a book in the editor'],
+      ['Adobe Express', 'Free plan with limited generative credits', 'Premium: US$9.99 a month with 250 generative credits', 'Described as “designed to be commercially safe”', 'Coloring mode for coloring on screen'],
+      ['ChatGPT', 'Limited image creation on the free plan', 'Paid plans add more image creation', `OpenAI's terms assign you its rights in the output`, 'A general assistant: you write the coloring-page instructions yourself']
     ] },
-    { type: 'h2', text: `Print quality and file formats` },
-    { type: 'p', text: `Check the pixel size of the files, because it decides how large you can print. At 300 DPI, which print shops and KDP expect, a 1024x1024 image covers only about 3.4 inches. Pages from this generator are 1024x1024, so at 7.5 inches across they are about 136 DPI: reasonable for a home printer test, below 300 DPI for professional printing. If you need 300 DPI at full-page size, choose a tool that outputs larger files or upscale the images separately.` },
-    { type: 'p', text: `PDF export matters too. Compiling 50 separate PNGs by hand is slow, so check whether the tool exports a multi-page PDF. ColoringPageMaker Pro combines all your pages into one PDF book.` },
-    { type: 'h2', text: `Where ColoringPageMaker fits` },
-    { type: 'p', text: `ColoringPageMaker suits home, classroom and small Etsy use: no signup, 2 free pages a day, a one-time Pro price and letter-size PDFs. It is a weaker fit if you need 300 DPI files at full-page size straight from the tool, or more than 150 pages a day. In those cases compare tools that output larger images or offer volume plans.` }
+    { type: 'h2', text: `Which one fits what you are doing` },
+    { type: 'ul', items: [
+      `**One page for a child, today.** Any free option works. ColoringPageMaker and Supercoloring need no account, and Koloring.ai gives one page without signing in.`,
+      `**A classroom set or a party.** Count the pages first. Daily and one-time free allowances run out quickly, so compare the cheapest paid option against the number of pages you need this month.`,
+      `**Selling on Etsy.** You need commercial use: ColoringPageMaker Pro, paid Koloring.ai and iColoring plans, ColoringFam from $6.99 a month or ColorifyAI from $29.90 a month. Etsy also requires AI-made items to say so; see our [Etsy guide](/sell-coloring-books-on-etsy).`,
+      `**A printed book on Amazon KDP.** KDP asks for images of at least 300 DPI. Our 1024-pixel pages reach that only at about 3.4 inches across, so for full-page interiors look at tools that state 300 DPI or 4K output (the paid ColoringFam and ColorifyAI plans) or plan to upscale. Our [KDP guide](/coloring-pages-for-self-publishing-kdp) has the details.`,
+      `**From a photo** of a pet, a house or a child's drawing. ColoringPageMaker works from text only; Canva and Koloring.ai describe photo-to-line-art features.`
+    ] },
+    { type: 'h2', text: `Judge the drawing quality yourself` },
+    { type: 'p', text: `Prices are easy to compare; drawings are not, and they change whenever a tool switches models. Spend ten minutes: run the same five prompts in two or three tools, for example “unicorn in a forest”, “cute T. rex”, “intricate mandala with flowers”, “Halloween pumpkin scene” and “princess castle”, then print the results at letter size and check four things.` },
+    { type: 'ul', items: [
+      `**Lines:** solid black and unbroken, with no gaps where a color would leak.`,
+      `**Background:** pure white, with no gray haze or shading that prints as muddy patches.`,
+      `**Shapes:** closed areas a child can color one at a time.`,
+      `**Detail:** right for the age you asked for, neither empty nor cramped.`
+    ] },
+    { type: 'p', text: `Judge the printouts, not the screen. A page that looks crisp on a phone can print gray and soft.` },
+    { type: 'h2', text: `Where ColoringPageMaker falls short` },
+    { type: 'p', text: `Our pages are 1024 by 1024 pixels: fine for home printing, below 300 DPI at full-page size. There is no photo upload and no on-screen coloring, and the free plan's 2 pages a day come from a shared daily pool that can run out on busy days. What it does well: free pages without an account, theme pages with prompts sorted by age, one $9 payment instead of a subscription, and a Pro book maker that joins your pages into one PDF.` },
+    { type: 'sources', checked: '9 October 2026', links: [
+      { text: 'Koloring.ai: pricing', href: 'https://koloring.ai/pricing' },
+      { text: 'Koloring.ai: free AI coloring page generator', href: 'https://koloring.ai/create' },
+      { text: 'iColoring AI: home page', href: 'https://icoloring.ai/' },
+      { text: 'iColoring AI: pricing', href: 'https://icoloring.ai/pricing' },
+      { text: 'ColorifyAI: pricing', href: 'https://colorifyai.art/pricing' },
+      { text: 'ColoringFam: pricing', href: 'https://coloringfam.com/pricing' },
+      { text: 'Supercoloring: AI coloring page generator (FAQ)', href: 'https://www.supercoloring.com/tool/ai-coloring-page-generator' },
+      { text: 'Canva: AI coloring page generator', href: 'https://www.canva.com/ai-coloring-page-generator/' },
+      { text: 'Adobe Express: pricing', href: 'https://www.adobe.com/express/pricing' },
+      { text: 'Adobe Express: Halloween coloring page generator', href: 'https://www.adobe.com/express/create/ai/worksheet/halloween' },
+      { text: 'ChatGPT: pricing', href: 'https://chatgpt.com/pricing' },
+      { text: 'OpenAI: terms of use (ownership of content)', href: 'https://openai.com/policies/terms-of-use/' },
+      { text: 'Amazon KDP: paperback submission guidelines (300 DPI)', href: 'https://kdp.amazon.com/en_US/help/topic/G201857950' }
+    ] }
   ]
 },
 
@@ -71,6 +123,7 @@ const BLOG_POSTS = {
   keyword: 'kdp coloring book self publishing',
   date: 'Updated October 2026',
   read: '9 min',
+  summary: `KDP's trim size, bleed and margin rules, the 300 DPI minimum and what it means for 1024-pixel pages, royalties with two worked examples, AI disclosure, keywords, categories and review times. Each rule links to KDP's own help pages.`,
   content: [
     { type: 'p', text: `Amazon KDP (Kindle Direct Publishing) prints paperbacks on demand, so you can sell a coloring book without holding stock. Income varies enormously and KDP does not publish typical earnings, so treat any figure you read online as unverified. This guide covers the rules KDP publishes and how to meet them with AI-generated pages. The KDP details below were last checked on 7 October 2026. Confirm them on KDP's own help pages before you upload.` },
     { type: 'h2', text: `Why KDP for coloring books` },
@@ -137,6 +190,7 @@ const BLOG_POSTS = {
   keyword: 'coloring pages for teachers',
   date: 'Updated October 2026',
   read: '6 min',
+  summary: `How to match coloring pages to the week's unit, why character pages from free sites can be a problem in school, what the US Copyright Office says about AI images, and which detail level suits which grade.`,
   content: [
     { type: 'p', text: `Printable coloring pages are an easy classroom extra, but many free coloring page sites are watermarked, low quality or limited to personal use, and many feature characters that belong to someone else. This guide shows teachers how to generate custom coloring pages that match a lesson.` },
     { type: 'h2', text: `Why custom coloring pages matter for teachers` },
@@ -164,6 +218,7 @@ const BLOG_POSTS = {
   keyword: 'adult coloring mental health',
   date: 'Updated October 2026',
   read: '6 min',
+  summary: `Four studies, from a 2005 experiment with students to a 2026 meta-analysis of hospital patients, summarized with links, plus what they cannot tell you. Written for adults who color, not as medical advice.`,
   content: [
     { type: 'p', text: `Coloring books for adults are often sold as stress relief. The research is more modest than the marketing, and it helps to know what it does and does not show. This article summarizes four published studies, links to each, and marks where the evidence is weak. It is not medical advice.` },
     { type: 'h2', text: `What the research shows` },

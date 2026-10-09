@@ -20,7 +20,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="canonical" href="https://www.coloringpagemaker.app/<%= slug %>">
 <%- include('partials/head-assets') %>
-<script type="application/ld+json"><%- JSON.stringify({"@context":"https://schema.org","@graph":[{"@type":"Article",headline:post.title,description:post.description,image:"https://www.coloringpagemaker.app/og-image.png",author:{"@type":"Organization",name:"ColoringPageMaker"},publisher:{"@type":"Organization",name:"ColoringPageMaker",url:"https://www.coloringpagemaker.app/"},mainEntityOfPage:"https://www.coloringpagemaker.app/"+slug},{"@type":"BreadcrumbList",itemListElement:[{"@type":"ListItem",position:1,name:"Home",item:"https://www.coloringpagemaker.app/"},{"@type":"ListItem",position:2,name:"Blog",item:"https://www.coloringpagemaker.app/blog"},{"@type":"ListItem",position:3,name:post.title,item:"https://www.coloringpagemaker.app/"+slug}]}]}).replace(/</g,"\\u003c") %></script>
+<script type="application/ld+json"><%- JSON.stringify({"@context":"https://schema.org","@graph":[{"@type":"Article",headline:post.title,description:post.description,image:"https://www.coloringpagemaker.app/og-image.png",...(post.updated ? {dateModified:post.updated} : {}),author:{"@type":"Organization",name:"ColoringPageMaker"},publisher:{"@type":"Organization",name:"ColoringPageMaker",url:"https://www.coloringpagemaker.app/"},mainEntityOfPage:"https://www.coloringpagemaker.app/"+slug},{"@type":"BreadcrumbList",itemListElement:[{"@type":"ListItem",position:1,name:"Home",item:"https://www.coloringpagemaker.app/"},{"@type":"ListItem",position:2,name:"Blog",item:"https://www.coloringpagemaker.app/blog"},{"@type":"ListItem",position:3,name:post.title,item:"https://www.coloringpagemaker.app/"+slug}]}]}).replace(/</g,"\\u003c") %></script>
 </head>
 <body>
 
@@ -31,19 +31,34 @@
   <div class="meta"><%= post.date %> &middot; <%= post.read %> read</div>
   <h1><%= post.title %></h1>
 
-  <% let ctaAt = 4; while (post.content[ctaAt + 1] && post.content[ctaAt + 1].type === 'sources') ctaAt++; %>
+  <%# The mid-article CTA goes at the end of a section (just before an h2), from the fifth block on. %>
+  <% let ctaAt = -1; for (let i = 4; i < post.content.length - 1; i++) { if (post.content[i].type !== 'h2' && post.content[i + 1].type === 'h2') { ctaAt = i; break; } } %>
   <% post.content.forEach(function(block, idx){ %>
     <% if(block.type === 'h2'){ %>
       <h2><%= block.text %></h2>
     <% } else if(block.type === 'sources'){ %>
+      <% const perLink = block.links.every(function(l){ return l.checked; }); %>
       <aside class="sources" aria-label="Sources">
-        <p class="sources-label">Sources, last checked 7 October 2026</p>
+        <p class="sources-label"><%= block.checked ? 'Sources, last checked ' + block.checked : (perLink ? 'Sources' : 'Sources, last checked 7 October 2026') %></p>
         <ul>
-          <% block.links.forEach(function(l){ %><li><a href="<%= l.href %>" rel="noopener"><%= l.text %></a></li><% }); %>
+          <% block.links.forEach(function(l){ %><li><a href="<%= l.href %>" rel="noopener"><%= l.text %></a><% if (l.checked && !block.checked) { %> (checked <%= l.checked %>)<% } %></li><% }); %>
         </ul>
       </aside>
+    <% } else if(block.type === 'ul'){ %>
+      <ul class="post-list-items">
+        <% block.items.forEach(function(item){ %><li><%- md(item) %></li><% }); %>
+      </ul>
+    <% } else if(block.type === 'table'){ %>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><% block.head.forEach(function(h){ %><th scope="col"><%= h %></th><% }); %></tr></thead>
+          <tbody>
+            <% block.rows.forEach(function(row){ %><tr><% row.forEach(function(cell, ci){ %><% if (ci === 0) { %><th scope="row"><%- md(cell) %></th><% } else { %><td data-label="<%= block.head[ci] %>"><%- md(cell) %></td><% } %><% }); %></tr><% }); %>
+          </tbody>
+        </table>
+      </div>
     <% } else { %>
-      <p><%= block.text %></p>
+      <p><%- md(block.text) %></p>
     <% } %>
 
     <% if(idx === ctaAt){ %>

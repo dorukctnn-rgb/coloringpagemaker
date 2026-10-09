@@ -73,7 +73,7 @@
     <button type="button" class="btn-generate" id="generateBtn" onclick="generatePage()">Generate coloring page</button>
 
     <div class="usage-bar" id="usageBar">
-      Free tier: 2 pages a day. <a href="javascript:void(0)" onclick="openProModal()">See Pro (up to 150 a day)</a>
+      Free tier: 2 pages a day. <a href="#pro" data-open-pro>See Pro (up to 150 a day)</a>
     </div>
 
     <div class="examples-bar">
@@ -139,7 +139,7 @@
   </ul>
 </section>
 
-<section class="section">
+<section class="section" id="pro">
   <h2>Free and Pro</h2>
   <p class="lead">Free covers a few pages a day for home use. Pro is a single $9 payment with no subscription.</p>
   <div class="plans-wrap">
@@ -155,7 +155,7 @@
       </tbody>
     </table>
   </div>
-  <p class="plans-cta"><button type="button" class="btn" onclick="openProModal()">Get Pro for $9</button></p>
+  <p class="plans-cta"><a href="https://dorukctn.gumroad.com/l/uynqt" class="btn" data-open-pro>Get Pro for $9</a></p>
 </section>
 </main>
 
@@ -193,7 +193,6 @@
 
 <%- include('partials/footer') %>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 let selectedStyle = 'medium';
 let generatedImages = JSON.parse(sessionStorage.getItem('generated_images') || '[]');
@@ -286,8 +285,8 @@ async function generatePage(){
     // Update usage display
     if(data.remaining >= 0 && data.remaining < 999){
       document.getElementById('usageBar').innerHTML = data.remaining > 0
-        ? `<strong>${data.remaining}</strong> free pages left today. <a href="javascript:void(0)" onclick="openProModal()">See Pro (up to 150 a day)</a>`
-        : `Daily limit reached. <a href="javascript:void(0)" onclick="openProModal()">See Pro (up to 150 a day)</a>`;
+        ? `<strong>${data.remaining}</strong> free pages left today. <a href="#pro" data-open-pro>See Pro (up to 150 a day)</a>`
+        : `Daily limit reached. <a href="#pro" data-open-pro>See Pro (up to 150 a day)</a>`;
     }
   } catch(e){
     alert('Connection error. Please try again.');
@@ -350,11 +349,26 @@ function drawWatermark(doc){
   doc.text('Generated free at coloringpagemaker.app', PAGE_W / 2, PAGE_H - 22, { align: 'center' });
 }
 
-async function buildPDF(urls, withWatermark){
-  if(!window.jspdf || !window.jspdf.jsPDF){
-    throw new Error('PDF library failed to load. Please refresh the page and try again.');
+// jsPDF is about 360 KB, so it loads only when someone exports a PDF.
+const JSPDF_SRC = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+let jspdfLoading = null;
+function loadJsPDF(){
+  if(window.jspdf && window.jspdf.jsPDF) return Promise.resolve(window.jspdf);
+  if(!jspdfLoading){
+    jspdfLoading = new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = JSPDF_SRC;
+      s.async = true;
+      s.onload = () => (window.jspdf && window.jspdf.jsPDF) ? resolve(window.jspdf) : reject(new Error('PDF library failed to load. Please try again.'));
+      s.onerror = () => { jspdfLoading = null; s.remove(); reject(new Error('PDF library failed to load. Check your connection and try again.')); };
+      document.head.appendChild(s);
+    });
   }
-  const { jsPDF } = window.jspdf;
+  return jspdfLoading;
+}
+
+async function buildPDF(urls, withWatermark){
+  const { jsPDF } = await loadJsPDF();
   const doc = new jsPDF({ unit: 'pt', format: 'letter', compress: true });
 
   for(let i = 0; i < urls.length; i++){
@@ -434,6 +448,11 @@ function closeProModal(){
   document.getElementById('proModal').classList.remove('active');
   document.getElementById('licenseStatus').textContent = '';
 }
+
+document.addEventListener('click', function(e){
+  const link = e.target.closest && e.target.closest('[data-open-pro]');
+  if(link){ e.preventDefault(); openProModal(); }
+});
 
 document.getElementById('proModal').addEventListener('click', function(e){
   if(e.target === this) closeProModal();

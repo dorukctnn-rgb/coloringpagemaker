@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= g.title %></title>
+<meta name="description" content="<%= g.description %>">
+<meta property="og:title" content="<%= g.title %>">
+<meta property="og:description" content="<%= g.description %>">
+<meta property="og:image" content="https://www.coloringpagemaker.app/og-image.png">
+<meta property="og:url" content="https://www.coloringpagemaker.app/<%= slug %>">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.coloringpagemaker.app/og-image.png">
+<meta name="google-site-verification" content="FbTHVuCc47YEKFw9nyT2XbH2ZgpbtjZPZce7boWZgH0" />
+<meta name="p:domain_verify" content="13cf5111c1b82113fad5ae7932381a41"/>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="canonical" href="https://www.coloringpagemaker.app/<%= slug %>">
+<%- include('partials/head-assets') %>
+<script type="application/ld+json"><%- ld %></script>
+</head>
+<body>
+
+<%- include('partials/nav') %>
+
+<main id="main">
+<header class="hero hero-wide">
+  <div class="wrap">
+    <p class="eyebrow"><%= g.eyebrow %></p>
+    <h1><%= g.h1 %></h1>
+    <p class="lead"><%= g.lead %></p>
+    <ul class="facts-inline">
+      <li>2 free pages a day</li>
+      <li>No account</li>
+      <li>Letter-size PDF</li>
+    </ul>
+  </div>
+</header>
+
+<div class="tool-section narrow" id="generator">
+  <div class="tool-card">
+    <h2><%= g.toolHeading %></h2>
+    <label class="field-label" for="promptInput">Your idea</label>
+    <textarea id="promptInput" maxlength="500"><%= g.presetPrompt %></textarea>
+
+    <span class="field-label" id="detailLabel">Detail level</span>
+    <div class="style-row" role="group" aria-labelledby="detailLabel">
+      <% [['simple', 'Ages 3-6, thick lines'], ['medium', 'Ages 6-12, balanced'], ['detailed', 'Teens and adults, intricate']].forEach(function(o){ var on = o[0] === g.defaultStyle; %>
+      <button type="button" class="option-card<%= on ? ' active' : '' %>" data-style="<%= o[0] %>" aria-pressed="<%= on ? 'true' : 'false' %>">
+        <strong><%= levelNames[o[0]] %></strong>
+        <span><%= o[1] %></span>
+      </button>
+      <% }); %>
+    </div>
+
+    <button type="button" class="btn-generate" id="generateBtn">Generate coloring page</button>
+    <p class="usage-bar" id="usageBar" role="status">Free: 2 pages a day, no account. <a href="https://dorukctn.gumroad.com/l/uynqt" target="_blank" rel="noopener">Pro: up to 150 a day for $9 once</a></p>
+
+    <div class="examples-bar">
+      <h3>More ideas</h3>
+      <% g.chips.forEach(function(c){ %><button type="button" class="example-chip" data-prompt="<%= c %>"><%= c %></button><% }); %>
+    </div>
+  </div>
+
+  <div class="loading" id="loadingArea" role="status">
+    <div class="loading-spinner"></div>
+    <p class="loading-text">Drawing your <%= g.name %>...</p>
+    <p class="loading-sub">This usually takes 10 to 40 seconds</p>
+  </div>
+
+  <div class="gallery-section" id="gallerySection">
+    <h2>Your pages</h2>
+    <div class="gallery" id="gallery"></div>
+    <p class="gallery-note">Your pages are also kept on the <a href="/">home page</a> for this browser session, where Pro joins them into one PDF book.</p>
+  </div>
+</div>
+
+<article class="content">
+  <h2 id="prompts"><%= g.recipesHeading || 'Prompts by age' %></h2>
+  <p class="recipes-intro">“Use this prompt” fills in the generator and sets the detail level. Every page is drawn fresh, so if one misses, change one detail and try again.</p>
+  <table class="recipes">
+    <thead><tr><th scope="col">For</th><th scope="col">Prompt</th><th scope="col">Action</th></tr></thead>
+    <tbody>
+      <% g.recipes.forEach(function(r){ %>
+      <tr>
+        <th scope="row"><span class="who"><%= r.who %></span><span class="lvl"><%= levelNames[r.style] %></span></th>
+        <td><p class="prompt-text"><%= r.prompt %></p><p class="why"><%= r.why %></p></td>
+        <td><button type="button" class="use-btn" data-prompt="<%= r.prompt %>" data-use-style="<%= r.style %>">Use this prompt</button></td>
+      </tr>
+      <% }); %>
+    </tbody>
+  </table>
+
+  <% g.sections.forEach(function(s){ %>
+  <h2><%= s.h2 %></h2>
+  <% s.blocks.forEach(function(b){ %>
+    <% if (b.p) { %>
+  <p><%- md(b.p) %></p>
+    <% } else if (b.ul) { %>
+  <ul class="list">
+    <% b.ul.forEach(function(item){ %><li><%- md(item) %></li><% }); %>
+  </ul>
+    <% } else if (b.table) { %>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead><tr><% b.table.head.forEach(function(h){ %><th scope="col"><%= h %></th><% }); %></tr></thead>
+      <tbody>
+        <% b.table.rows.forEach(function(row){ %><tr><% row.forEach(function(cell, ci){ %><% if (ci === 0) { %><th scope="row"><%- md(cell) %></th><% } else { %><td data-label="<%= b.table.head[ci] %>"><%- md(cell) %></td><% } %><% }); %></tr><% }); %>
+      </tbody>
+    </table>
+  </div>
+    <% } else if (b.groups) { %>
+  <div class="advent">
+    <% b.groups.forEach(function(week){ %>
+    <div class="advent-week">
+      <h3><%= week.title %></h3>
+      <ol start="<%= week.start %>">
+        <% week.items.forEach(function(item){ %><li><button type="button" class="advent-item" data-prompt="<%= item %>"><%= item %></button></li><% }); %>
+      </ol>
+    </div>
+    <% }); %>
+  </div>
+    <% } %>
+  <% }); %>
+  <% }); %>
+</article>
+
+<section class="faq-section">
+  <h2>Questions about <%= g.topic %></h2>
+  <div class="faq-list">
+    <% g.faq.forEach(function(f){ %>
+    <details class="faq-item">
+      <summary><%= f.q %></summary>
+      <p><%- md(f.a) %></p>
+    </details>
+    <% }); %>
+  </div>
+</section>
+
+<% if (g.sources && g.sources.length) { %>
+<div class="sources-wrap">
+  <aside class="sources" aria-label="Sources">
+    <p class="sources-label">Sources, last checked <%= g.checked %></p>
+    <ul>
+      <% g.sources.forEach(function(l){ %><li><a href="<%= l.href %>" rel="noopener"><%= l.text %></a></li><% }); %>
+    </ul>
+  </aside>
+</div>
+<% } %>
+
+<section class="spec-section" aria-labelledby="specTitle">
+  <h2 id="specTitle">About this generator</h2>
+  <dl class="spec">
+    <div><dt>Output</dt><dd>Black line art, 1024 by 1024 pixels: about 136 DPI on a letter page, fine at home and below the 300 DPI print shops want.</dd></div>
+    <div><dt>Free</dt><dd>2 pages a day, no account, personal use, watermarked PDF. A shared daily pool can run out on busy days.</dd></div>
+    <div><dt>Pro</dt><dd>$9 once: up to 150 pages a day, no watermark, commercial use and the one-PDF book maker.</dd></div>
+  </dl>
+</section>
+
+<div class="wrap">
+  <div class="pricing-cta">
+    <h2>Make the whole set with Pro</h2>
+    <p><%= g.cta %></p>
+    <a href="https://dorukctn.gumroad.com/l/uynqt" target="_blank" rel="noopener" class="btn">Get Pro for $9</a>
+  </div>
+</div>
+
+<section class="related">
+  <h2>Related themes and guides</h2>
+  <ul class="theme-list">
+    <% g.related.forEach(function(r){ %>
+      <li><a href="<%= r.href %>"><strong><%= r.label %></strong><span><%= r.note %></span></a></li>
+    <% }); %>
+  </ul>
+</section>
+</main>
+
+<%- include('partials/footer') %>
+
+<script>
+(function(){
+  var PRO_URL = 'https://dorukctn.gumroad.com/l/uynqt';
+  var promptEl = document.getElementById('promptInput');
+  var genBtn = document.getElementById('generateBtn');
+  var loading = document.getElementById('loadingArea');
+  var usage = document.getElementById('usageBar');
+  var gallery = document.getElementById('gallery');
+  var gallerySection = document.getElementById('gallerySection');
+  var style = '<%= g.defaultStyle %>';
+  var reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var proEmail = '';
+  try { proEmail = localStorage.getItem('pro_email') || ''; } catch (e) {}
+  // Same storage key as the home page, so pages made here show up in its PDF book maker.
+  var images = [];
+  try { images = JSON.parse(sessionStorage.getItem('generated_images') || '[]') || []; } catch (e) { images = []; }
+
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function persist() {
+    var keep = Math.min(images.length, 20);
+    while (keep > 0) {
+      try { sessionStorage.setItem('generated_images', JSON.stringify(images.slice(0, keep))); return; }
+      catch (e) { keep = Math.floor(keep / 2); }
+    }
+    try { sessionStorage.removeItem('generated_images'); } catch (e) {}
+  }
+  function scrollTo(el) {
+    el.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+  }
+  function setStyle(next) {
+    style = next;
+    document.querySelectorAll('.option-card').forEach(function(card) {
+      var on = card.getAttribute('data-style') === next;
+      card.classList.toggle('active', on);
+      card.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+  }
+  function proLink(text) {
+    var a = document.createElement('a');
+    a.href = PRO_URL; a.target = '_blank'; a.rel = 'noopener'; a.textContent = text;
+    return a;
+  }
+  function say(text, offerPro, alert) {
+    usage.textContent = text + ' ';
+    if (offerPro) usage.appendChild(proLink('Get Pro for $9'));
+    usage.classList.toggle('is-alert', !!alert);
+  }
+
+  document.querySelectorAll('.option-card').forEach(function(card) {
+    card.addEventListener('click', function() { setStyle(card.getAttribute('data-style')); });
+  });
+  document.querySelectorAll('[data-prompt]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      promptEl.value = btn.getAttribute('data-prompt');
+      var s = btn.getAttribute('data-use-style');
+      if (s) setStyle(s);
+      scrollTo(document.getElementById('generator'));
+      promptEl.focus({ preventScroll: true });
+    });
+  });
+
+  function render() {
+    if (!images.length) { gallerySection.classList.remove('active'); return; }
+    gallerySection.classList.add('active');
+    gallery.innerHTML = images.map(function(img, i) {
+      return '<div class="image-card"><img src="' + img.url + '" alt="Coloring page: ' + esc(img.prompt) + '" loading="lazy">' +
+        '<div class="actions"><button type="button" class="btn-small" data-pdf="' + i + '">PDF</button>' +
+        '<button type="button" class="btn-small btn-small-outline" data-png="' + i + '">PNG</button></div></div>';
+    }).join('');
+  }
+  function download(href, name) {
+    var a = document.createElement('a');
+    a.href = href; a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+  async function pdf(i) {
+    try {
+      var r = await fetch('/download-pdf', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageUrls: [images[i].url], email: proEmail })
+      });
+      if (!r.ok) throw new Error('pdf');
+      var url = URL.createObjectURL(await r.blob());
+      download(url, 'coloring-page-' + (i + 1) + '.pdf');
+      setTimeout(function() { URL.revokeObjectURL(url); }, 10000);
+    } catch (e) {
+      say('The PDF could not be made just now. Use the PNG button, or try again in a minute.', false, true);
+    }
+  }
+  gallery.addEventListener('click', function(e) {
+    var btn = e.target.closest('button');
+    if (!btn) return;
+    if (btn.hasAttribute('data-pdf')) pdf(Number(btn.getAttribute('data-pdf')));
+    if (btn.hasAttribute('data-png')) download(images[Number(btn.getAttribute('data-png'))].url, 'coloring-page-' + (Number(btn.getAttribute('data-png')) + 1) + '.png');
+  });
+
+  genBtn.addEventListener('click', async function() {
+    var prompt = promptEl.value.trim();
+    if (prompt.length < 3) { say('Describe the page in a few words first.', false, true); promptEl.focus(); return; }
+    genBtn.disabled = true; genBtn.textContent = 'Generating...';
+    loading.classList.add('active');
+    try {
+      var res = await fetch('/generate', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt, style: style, email: proEmail })
+      });
+      var data = {};
+      try { data = await res.json(); } catch (e) {}
+      if (!res.ok) {
+        say(data.error || 'The page could not be generated. Please try again.', !!data.limitReached, true);
+      } else {
+        images.unshift({ url: data.imageUrl, prompt: prompt, time: Date.now() });
+        render();
+        persist();
+        if (typeof data.remaining === 'number' && data.remaining >= 0) {
+          say(data.remaining > 0 ? data.remaining + ' free page' + (data.remaining === 1 ? '' : 's') + ' left today.' : 'That was your last free page today.', true, false);
+        }
+        scrollTo(gallerySection);
+      }
+    } catch (e) {
+      say('Connection error. Please try again.', false, true);
+    }
+    genBtn.disabled = false; genBtn.textContent = 'Generate coloring page';
+    loading.classList.remove('active');
+  });
+
+  render();
+})();
+</script>
+
+</body>
+</html>
