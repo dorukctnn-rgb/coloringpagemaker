@@ -1,0 +1,86 @@
+<%
+  var title = 'Terms of Use | ColoringPageMaker';
+  var desc = 'Terms for ColoringPageMaker: free and Pro limits, what you may do with the pages you make, the $9 one-time Pro sold through Gumroad, refunds and liability.';
+  var url = 'https://www.coloringpagemaker.app/terms';
+%><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= title %></title>
+<meta name="description" content="<%= desc %>">
+<meta property="og:type" content="website">
+<meta property="og:title" content="<%= title %>">
+<meta property="og:description" content="<%= desc %>">
+<meta property="og:image" content="https://www.coloringpagemaker.app/og-image.png">
+<meta property="og:url" content="<%= url %>">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.coloringpagemaker.app/og-image.png">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="canonical" href="<%= url %>">
+<%- include('partials/head-assets') %>
+</head>
+<body>
+
+<%- include('partials/nav') %>
+
+<main id="main">
+<article class="post">
+  <div class="meta">Last updated: 11 October 2026</div>
+  <h1>Terms of use</h1>
+  <p>These terms cover your use of ColoringPageMaker and the Pro license. By using the site, you agree to them.</p>
+
+  <h2>Who we are</h2>
+  <p>ColoringPageMaker (www.coloringpagemaker.app) is run by Peak Apps Studio. You can reach us at <a href="mailto:info@peakappsstudio.com">info@peakappsstudio.com</a>.</p>
+
+  <h2>What the site does</h2>
+  <p>You describe a scene, the site has OpenAI's image service draw it as black-and-white line art, and you can print it or download it as a PDF. The site also has theme pages and guides on using and selling coloring pages.</p>
+
+  <h2>Free and Pro</h2>
+  <ul class="post-list-items">
+    <li><strong>Free:</strong> two pages a day, counted by IP address, with no account. Free PDFs carry a "Free preview" watermark. Free pages also come from a shared daily pool that can run out on busy days. Limits reset at midnight UTC.</li>
+    <li><strong>Pro:</strong> $9 (US dollars), paid once. It is not a subscription. Pro gives you up to 150 pages a day as a fair-use cap, PDFs without the watermark, the one-PDF book maker and commercial use of your pages.</li>
+    <li>After you buy, enter the license key from your Gumroad receipt, or your purchase email address, in the Pro window to turn Pro on in that browser. Please keep your key to yourself.</li>
+    <li>Payments are processed by Gumroad, which acts as the merchant of record for the sale and collects any sales tax or VAT. Gumroad's own terms also apply to your purchase.</li>
+  </ul>
+
+  <h2>Using the pages you make</h2>
+  <p>We do not claim ownership of the pages you make. Free pages are for personal, non-commercial use, for example at home or in your own classroom, and may not be sold. With Pro you may also sell the pages you make, for example as printables or in printed books.</p>
+  <p>Do not ask for characters, logos or artwork that belong to someone else, and check that a page does not copy them before you share or sell it. Marketplaces such as Etsy and Amazon KDP have their own rules for AI-generated content, and you are responsible for following them.</p>
+
+  <h2>Check every page</h2>
+  <p>AI drawings can contain mistakes, such as odd shapes, extra details or text that does not read properly. Look at each page before you print, share or sell it. Our guides on selling and printing are general information, not legal or tax advice.</p>
+
+  <h2>Refunds</h2>
+  <p>If Pro does not work for you, email us within 14 days of purchase and we will refund you. Refunds are paid back through Gumroad, and a refunded license key can no longer turn Pro on.</p>
+
+  <h2>Acceptable use</h2>
+  <p>Please do not:</p>
+  <ul class="post-list-items">
+    <li>ask for violent, sexual, hateful or otherwise harmful images, or anything OpenAI's usage policies do not allow (OpenAI may refuse some descriptions);</li>
+    <li>try to get around the daily limits or the Pro license check, or share Pro keys publicly;</li>
+    <li>attack, overload or probe the site, or send it large numbers of automated requests;</li>
+    <li>use the site for anything that breaks the law.</li>
+  </ul>
+  <p>We may block access for anyone who does.</p>
+
+  <h2>No warranty</h2>
+  <p>We work to keep the site running, but it is provided as it is and as available, without warranties of any kind. We do not promise that it will be free of errors, always available or suitable for your particular purpose.</p>
+
+  <h2>Limitation of liability</h2>
+  <p>As far as the law allows, we are not liable for indirect or consequential losses, such as lost profit, lost sales or lost data, that come from using the site or the pages it makes. Our total liability to you is limited to the amount you paid for Pro. Nothing in these terms limits any liability that cannot be limited by law, or takes away your rights as a consumer.</p>
+
+  <h2>Changes to these terms</h2>
+  <p>We may update these terms when the site or Pro changes. The date at the top shows the current version. If you keep using the site after a change, the updated terms apply.</p>
+
+  <h2>Contact</h2>
+  <p>Questions about these terms: <a href="mailto:info@peakappsstudio.com">info@peakappsstudio.com</a>. How we handle your data is explained in our <a href="/privacy">privacy policy</a>.</p>
+</article>
+</main>
+
+<%- include('partials/footer') %>
+</body>
+</html>
