@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const PDFDocument = require('pdfkit');
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
+const zlib = require('zlib');
 const OpenAI = require('openai');
 
 // === Load .env file if exists (for local dev) ===
@@ -129,7 +131,7 @@ async function verifyGumroadLicense(licenseKey) {
   }
 }
 
-// === Pro Emails Storage (Vercel KV + local fallback) ===
+// === Storage (Vercel KV, which is Upstash Redis) ===
 const USE_KV = !!process.env.KV_REST_API_URL;
 let kv = null;
 if (USE_KV) {
@@ -137,23 +139,69 @@ if (USE_KV) {
   catch (e) { console.error('KV failed:', e.message); }
 }
 
-const PRO_FILE = path.join(__dirname, 'pro-emails.json');
+// === Pro tokens ===
+// Pro turns on only with a Gumroad license key that Gumroad confirms (POST /verify-pro). The server then
+// gives the browser a random token and stores it as protoken:<token> with the purchase email, the sale ID
+// and the date, for about 400 days. Every Pro check reads that token. An email address never turns Pro on,
+// and no response contains or confirms one.
+const PRO_TOKEN_TTL_SECONDS = 400 * 24 * 60 * 60;
+const PRO_TOKEN_RE = /^[a-f0-9]{64}$/;
 
-async function isPro(email) {
-  if (!email) return false;
-  const normalized = email.toLowerCase().trim();
-  if (kv) {
-    try { return !!(await kv.get(`pro:${normalized}`)); }
-    catch (e) { return false; }
-  }
-  try {
-    if (fs.existsSync(PRO_FILE)) {
-      const emails = JSON.parse(fs.readFileSync(PRO_FILE, 'utf8'));
-      return !!emails[normalized];
-    }
-  } catch (e) {}
-  return false;
+function cleanProToken(token) {
+  const t = typeof token === 'string' ? token.trim() : '';
+  return PRO_TOKEN_RE.test(t) ? t : '';
 }
+
+// Resolves to the token's record when it may use Pro and to null when it may not.
+// Rejects when the database cannot be reached, so each caller decides how to fail.
+async function lookupProToken(token) {
+  if (!kv) throw new Error('KV unavailable');
+  const t = cleanProToken(token);
+  if (!t) return null;
+  const rec = await kv.get(`protoken:${t}`);
+  if (!rec || typeof rec !== 'object' || !rec.sale_id) return null;
+  // Set when Gumroad reports a refund or chargeback for the sale (see /gumroad-webhook).
+  if (await kv.get(`prorevoked:${rec.sale_id}`)) return null;
+  return rec;
+}
+
+async function proFromToken(token) {
+  if (!cleanProToken(token)) return null;
+  try { return await lookupProToken(token); }
+  catch (e) { console.error('[pro] token lookup failed:', e.message); return null; }
+}
+
+// lic comes from verifyGumroadLicense. Returns the new token, or null if it could not be stored.
+async function createProToken(lic) {
+  if (!kv) return null;
+  const token = crypto.randomBytes(32).toString('hex');
+  try {
+    await kv.set(`protoken:${token}`, { email: lic.email, sale_id: lic.sale_id, created: new Date().toISOString() }, { ex: PRO_TOKEN_TTL_SECONDS });
+  } catch (e) {
+    console.error('[pro] token store failed:', e.message);
+    return null;
+  }
+  // Gumroad has just confirmed the sale is not refunded, so an older refund mark no longer applies.
+  await clearSaleRevocation(lic.sale_id);
+  return token;
+}
+
+// Ends Pro for every token made from a refunded or charged-back sale. The mark lives as long as
+// the longest token could, and holds only the sale ID.
+async function revokeSaleTokens(saleId) {
+  if (!kv || !saleId) return;
+  try { await kv.set(`prorevoked:${saleId}`, { revoked_at: new Date().toISOString() }, { ex: PRO_TOKEN_TTL_SECONDS }); }
+  catch (e) { console.error('[pro] revoke mark failed:', e.message); }
+}
+
+async function clearSaleRevocation(saleId) {
+  if (!kv || !saleId) return;
+  try { await kv.del(`prorevoked:${saleId}`); } catch (e) {}
+}
+
+// === Pro sale records from the Gumroad webhook (local file fallback without KV) ===
+// Kept as the record of each sale. They are never used to turn Pro on.
+const PRO_FILE = path.join(__dirname, 'pro-emails.json');
 
 async function grantPro(email, data) {
   const normalized = email.toLowerCase().trim();
@@ -184,15 +232,16 @@ async function revokePro(email) {
 }
 
 // === Daily rate limit (free users: 2/day per IP, OpenAI is expensive) ===
-// Free tier: 2/day. Pro: fair-use cap so a shared email can't drain the API budget.
+// Free tier: 2/day. Pro: fair-use cap so a shared license key can't drain the API budget.
 const FREE_DAILY_LIMIT = 2;
 const PRO_DAILY_LIMIT = Number(process.env.PRO_DAILY_LIMIT || 150);
 // Ceiling on free pages across ALL visitors per UTC day, so many IP addresses cannot run up the image bill.
 const FREE_GLOBAL_DAILY_LIMIT = Number(process.env.FREE_GLOBAL_DAILY_LIMIT || 60);
 
-async function checkAndIncrementUsage(ip, email) {
+// pro: the record from proFromToken(), or null for a free visitor.
+async function checkAndIncrementUsage(ip, pro) {
   const today = new Date().toISOString().split('T')[0];
-  const isProUser = await isPro(email);
+  const isProUser = !!pro;
 
   // No KV = no way to count. Fail CLOSED so the OpenAI bill can't run away.
   if (!kv) {
@@ -200,8 +249,9 @@ async function checkAndIncrementUsage(ip, email) {
     return { allowed: false, remaining: 0, reason: 'storage_down' };
   }
 
+  // Pro is counted per Gumroad sale, so every browser activated with the same key shares one cap.
   const key = isProUser
-    ? `usage:pro:${today}:${(email || '').toLowerCase()}`
+    ? `usage:pro:${today}:${pro.sale_id}`
     : `usage:${today}:${ip}`;
   const limit = isProUser ? PRO_DAILY_LIMIT : FREE_DAILY_LIMIT;
 
@@ -314,8 +364,9 @@ app.get('/', (req, res) => {
 // === GENERATE COLORING PAGE ===
 app.post('/generate', async (req, res) => {
   try {
-    const { prompt, email, style } = req.body;
-    if (!prompt || prompt.trim().length < 3) {
+    // Pro comes only from the token. An "email" field sent by an older page is ignored.
+    const { prompt, token, style } = req.body;
+    if (typeof prompt !== 'string' || prompt.trim().length < 3) {
       return res.status(400).json({ error: 'Prompt must be at least 3 characters' });
     }
 
@@ -324,7 +375,8 @@ app.post('/generate', async (req, res) => {
     }
 
     const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown';
-    const usage = await checkAndIncrementUsage(ip, email);
+    const pro = await proFromToken(token);
+    const usage = await checkAndIncrementUsage(ip, pro);
 
     if (!usage.allowed) {
       if (usage.reason === 'storage_down') {
@@ -369,18 +421,11 @@ app.post('/generate', async (req, res) => {
       background: 'opaque'
     });
 
-    // GPT Image models return base64
-    const imageData = result.data[0];
-    let imageUrl;
-
-    if (imageData.b64_json) {
-      // Convert to data URL for client display
-      imageUrl = `data:image/png;base64,${imageData.b64_json}`;
-    } else if (imageData.url) {
-      imageUrl = imageData.url;
-    } else {
-      throw new Error('No image data returned');
-    }
+    // GPT Image models always return base64, and the page is always sent to the browser as a PNG data URL.
+    // /download-pdf accepts only image data, never a web address, so a reply without base64 is an error.
+    const b64 = result && result.data && result.data[0] && result.data[0].b64_json;
+    if (!b64) throw new Error('No image data returned');
+    const imageUrl = `data:image/png;base64,${b64}`;
 
     res.json({
       success: true,
@@ -395,19 +440,97 @@ app.post('/generate', async (req, res) => {
   }
 });
 
+// === PDF IMAGES ===
+// /generate only ever returns base64 PNG data URLs, so the PDF route takes image data and never fetches
+// a URL: no request to cloud metadata, localhost, file: or any other host can start here.
+// PDFKit embeds PNG and JPEG only, so a WebP data URL is recognised and refused with 415.
+const PDF_IMAGE_MAX_BYTES = 8 * 1024 * 1024;
+const PDF_IMAGE_MAX_SIDE = 2048; // generated pages are 1024 x 1024
+const PDF_MAX_PAGES = 30; // the theme pages send one page; the home page builds its books in the browser
+const IMAGE_DATA_URL_RE = /^data:image\/(png|jpeg|webp);base64,([A-Za-z0-9+/]+={0,2})$/;
+const PDF_IMAGE_REFUSED = 'Only PNG or JPEG images made on this site can go in a PDF.';
+
+// The real format of the bytes, whatever the data URL claims.
+function sniffImageType(buf) {
+  if (buf.length >= 8 && buf.readUInt32BE(0) === 0x89504e47 && buf.readUInt32BE(4) === 0x0d0a1a0a) return 'png';
+  if (buf.length >= 3 && buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff) return 'jpeg';
+  if (buf.length >= 12 && buf.toString('latin1', 0, 4) === 'RIFF' && buf.toString('latin1', 8, 12) === 'WEBP') return 'webp';
+  return null;
+}
+
+// PDFKit unpacks PNGs that have transparency, and its PNG decoder throws inside a zlib callback, which
+// would take the whole process down. So every PNG is unpacked here first, synchronously and with a size
+// cap: a known header, at most 2048 pixels a side, not interlaced, image data that inflates to exactly
+// the expected size and a valid filter byte on every row.
+const PNG_CHANNELS = { 0: 1, 2: 3, 3: 1, 4: 2, 6: 4 };
+function pngIsSafe(buf) {
+  if (buf.length < 33 || buf.toString('latin1', 12, 16) !== 'IHDR') return false;
+  const w = buf.readUInt32BE(16), h = buf.readUInt32BE(20);
+  const bits = buf[24], channels = PNG_CHANNELS[buf[25]], interlace = buf[28];
+  if (!w || !h || w > PDF_IMAGE_MAX_SIDE || h > PDF_IMAGE_MAX_SIDE) return false;
+  if (!channels || ![1, 2, 4, 8, 16].includes(bits) || interlace !== 0) return false;
+  const idat = [];
+  let off = 8, ended = false;
+  while (off + 12 <= buf.length) {
+    const len = buf.readUInt32BE(off);
+    const type = buf.toString('latin1', off + 4, off + 8);
+    const end = off + 8 + len;
+    if (end + 4 > buf.length) return false;
+    if (type === 'IDAT') idat.push(buf.subarray(off + 8, end));
+    off = end + 4;
+    if (type === 'IEND') { ended = true; break; }
+  }
+  if (!ended || !idat.length) return false;
+  const rowBytes = Math.ceil((w * channels * bits) / 8);
+  const expected = (rowBytes + 1) * h;
+  let raw;
+  try { raw = zlib.inflateSync(Buffer.concat(idat), { maxOutputLength: expected }); }
+  catch (e) { return false; }
+  if (raw.length !== expected) return false;
+  for (let y = 0; y < h; y++) if (raw[y * (rowBytes + 1)] > 4) return false;
+  return true;
+}
+
+// Returns { buffer } for an image PDFKit can embed, or { status, error }.
+function decodePdfImage(src) {
+  if (typeof src !== 'string') return { status: 400, error: PDF_IMAGE_REFUSED };
+  // Base64 takes 4 characters for every 3 bytes; a longer string cannot decode to 8 MB or less.
+  if (src.length > 40 + Math.ceil(PDF_IMAGE_MAX_BYTES / 3) * 4) return { status: 413, error: 'Each image must be 8 MB or smaller.' };
+  const m = IMAGE_DATA_URL_RE.exec(src);
+  if (!m) return { status: 400, error: PDF_IMAGE_REFUSED };
+  const buffer = Buffer.from(m[2], 'base64');
+  if (buffer.length > PDF_IMAGE_MAX_BYTES) return { status: 413, error: 'Each image must be 8 MB or smaller.' };
+  const type = sniffImageType(buffer);
+  if (!type || type !== m[1]) return { status: 400, error: PDF_IMAGE_REFUSED };
+  if (type === 'webp') return { status: 415, error: 'WebP images cannot go in a PDF. Use the PNG instead.' };
+  if (type === 'png' && !pngIsSafe(buffer)) return { status: 400, error: PDF_IMAGE_REFUSED };
+  return { buffer };
+}
+
 // === DOWNLOAD AS PDF ===
 app.post('/download-pdf', async (req, res) => {
   try {
-    const { imageUrls, email } = req.body;
+    const { imageUrls, token } = req.body;
     if (!imageUrls || !Array.isArray(imageUrls) || imageUrls.length === 0) {
       return res.status(400).json({ error: 'No images provided' });
     }
 
-    const userIsPro = email && await isPro(email);
+    const userIsPro = !!(await proFromToken(token));
 
     // Free users: max 1 image, with watermark
-    // Pro users: unlimited multi-page book
+    // Pro users: multi-page book
     const imagesToUse = userIsPro ? imageUrls : imageUrls.slice(0, 1);
+    if (imagesToUse.length > PDF_MAX_PAGES) {
+      return res.status(400).json({ error: `A PDF can hold up to ${PDF_MAX_PAGES} pages.` });
+    }
+
+    // Every image is checked before the PDF starts, so a bad one fails the request instead of leaving a blank page.
+    const buffers = [];
+    for (const src of imagesToUse) {
+      const img = decodePdfImage(src);
+      if (!img.buffer) return res.status(img.status).json({ error: img.error });
+      buffers.push(img.buffer);
+    }
 
     const doc = new PDFDocument({ margin: 30, size: 'LETTER', bufferPages: true });
     const chunks = [];
@@ -419,34 +542,20 @@ app.post('/download-pdf', async (req, res) => {
       res.send(pdfData);
     });
 
-    // Add each image to PDF
-    for (let i = 0; i < imagesToUse.length; i++) {
+    // Add each image to PDF. Always pass a Buffer: given a string that is not a data URL, PDFKit reads a local file.
+    for (let i = 0; i < buffers.length; i++) {
       if (i > 0) doc.addPage();
-
       try {
-        let imageBuffer;
-        const src = imagesToUse[i];
-
-        if (src.startsWith('data:image/')) {
-          // Base64 data URL
-          const base64Data = src.split(',')[1];
-          imageBuffer = Buffer.from(base64Data, 'base64');
-        } else {
-          // External URL
-          const response = await fetch(src);
-          const arrayBuffer = await response.arrayBuffer();
-          imageBuffer = Buffer.from(arrayBuffer);
-        }
-
         // Letter size: 612 x 792 points, margin 30
         // Available: 552 x 732
-        doc.image(imageBuffer, 30, 30, {
+        doc.image(buffers[i], 30, 30, {
           fit: [552, 732],
           align: 'center',
           valign: 'center'
         });
       } catch (e) {
-        console.error('Image fetch error:', e);
+        console.error('PDF image error:', String((e && e.message) || e));
+        return res.status(400).json({ error: 'One of the images could not be read. Download the PNG instead.' });
       }
     }
 
@@ -478,8 +587,8 @@ app.post('/download-pdf', async (req, res) => {
 });
 
 // === GUMROAD WEBHOOK ===
-// Anyone can POST here, so Pro is only granted when Gumroad confirms the ping's
-// license key belongs to a real sale of this product, and only to that sale's email.
+// Anyone can POST here, so a sale record is only kept when Gumroad confirms the ping's
+// license key belongs to a real sale of this product. The record never turns Pro on by itself.
 app.post('/gumroad-webhook', async (req, res) => {
   try {
     const lic = await verifyGumroadLicense(req.body.license_key);
@@ -490,8 +599,11 @@ app.post('/gumroad-webhook', async (req, res) => {
     if (!lic.email) return res.status(400).send('No email');
     if (lic.revoked) {
       await revokePro(lic.email);
+      // Tokens made from this sale stop working too.
+      await revokeSaleTokens(lic.sale_id);
     } else {
       await grantPro(lic.email, { sale_id: lic.sale_id, product_id: lic.product_id });
+      await clearSaleRevocation(lic.sale_id);
     }
     res.send('OK');
   } catch (err) {
@@ -501,18 +613,38 @@ app.post('/gumroad-webhook', async (req, res) => {
 });
 
 // === VERIFY PRO ===
+// { license_key }: Gumroad checks the key. A valid key that is not refunded gets a new random token: { pro: true, token }.
+// { token }: says whether a token from this server still works: { pro: true } or { pro: false }.
+// An email address never turns Pro on, and no response contains or confirms one.
 app.post('/verify-pro', async (req, res) => {
-  const { email, license_key } = req.body;
-  // A license key from the Gumroad receipt activates Pro even if the webhook never arrived.
-  if (license_key) {
-    const lic = await verifyGumroadLicense(license_key);
-    if (!lic.ok || lic.revoked || !lic.email) return res.json({ pro: false });
-    await grantPro(lic.email, { sale_id: lic.sale_id, product_id: lic.product_id });
-    return res.json({ pro: true, email: lic.email });
+  const body = req.body || {};
+  const licenseKey = typeof body.license_key === 'string' ? body.license_key.trim() : '';
+  if (licenseKey) {
+    if (licenseKey.length > 200) return res.json({ pro: false });
+    const lic = await verifyGumroadLicense(licenseKey);
+    if (!lic.ok || lic.revoked || !lic.sale_id) return res.json({ pro: false });
+    const token = await createProToken(lic);
+    if (!token) return res.status(503).json({ pro: false, error: 'Pro could not be turned on just now. Please try again in a few minutes.' });
+    return res.json({ pro: true, token });
   }
-  if (!email) return res.json({ pro: false });
-  const pro = await isPro(email);
-  res.json({ pro, email: email.toLowerCase().trim() });
+  if (cleanProToken(body.token)) {
+    try { return res.json({ pro: !!(await lookupProToken(body.token)) }); }
+    catch (e) {
+      console.error('[pro] token check failed:', e.message);
+      return res.status(503).json({ pro: false, error: 'Pro could not be checked just now.' });
+    }
+  }
+  res.json({ pro: false });
+});
+
+// Signing out of Pro on the home page deletes that browser's token here as well.
+app.post('/pro-signout', async (req, res) => {
+  const token = cleanProToken(req.body && req.body.token);
+  if (token && kv) {
+    try { await kv.del(`protoken:${token}`); }
+    catch (e) { console.error('[pro] token delete failed:', e.message); }
+  }
+  res.json({ ok: true });
 });
 
 // === API endpoints - GET requests redirect to home (avoid 404s for crawlers) ===
