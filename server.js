@@ -564,6 +564,8 @@ app.post('/download-pdf', async (req, res) => {
       const range = doc.bufferedPageRange();
       for (let i = range.start; i < range.start + range.count; i++) {
         doc.switchToPage(i);
+        // The footer sits below the 30 pt margin; without this PDFKit moved it onto an extra blank page.
+        doc.page.margins.bottom = 0;
 
         // Top watermark
         doc.fontSize(11).fillColor('#cc0000').opacity(1).text(

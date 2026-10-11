@@ -551,7 +551,14 @@ updateProUI();
 renderGallery();
 checkProToken();
 // Theme pages link here with #activate when Pro needs the license key again.
-if(location.hash === '#activate') openProModal();
+// The hash is cleared so the reload after activation does not open the window again.
+function openFromHash(){
+  if(location.hash !== '#activate') return;
+  try { history.replaceState(null, '', location.pathname + location.search); } catch(e){}
+  openProModal();
+}
+openFromHash();
+window.addEventListener('hashchange', openFromHash);
 </script>
 
 </body>
