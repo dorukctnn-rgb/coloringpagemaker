@@ -180,6 +180,7 @@
 
 <%- include('partials/footer') %>
 
+<%- include('partials/pro-storage') %>
 <script>
 (function(){
   var PRO_URL = 'https://dorukctn.gumroad.com/l/uynqt';
@@ -191,8 +192,7 @@
   var gallerySection = document.getElementById('gallerySection');
   var style = '<%= g.defaultStyle %>';
   var reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  var proEmail = '';
-  try { proEmail = localStorage.getItem('pro_email') || ''; } catch (e) {}
+  var proToken = window.cpmPro ? cpmPro.token() : '';
   // Same storage key as the home page, so pages made here show up in its PDF book maker.
   var images = [];
   try { images = JSON.parse(sessionStorage.getItem('generated_images') || '[]') || []; } catch (e) { images = []; }
@@ -261,7 +261,7 @@
     try {
       var r = await fetch('/download-pdf', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ imageUrls: [images[i].url], email: proEmail })
+        body: JSON.stringify({ imageUrls: [images[i].url], token: proToken })
       });
       if (!r.ok) throw new Error('pdf');
       var url = URL.createObjectURL(await r.blob());
@@ -286,7 +286,7 @@
     try {
       var res = await fetch('/generate', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: prompt, style: style, email: proEmail })
+        body: JSON.stringify({ prompt: prompt, style: style, token: proToken })
       });
       var data = {};
       try { data = await res.json(); } catch (e) {}
@@ -307,6 +307,14 @@
     genBtn.disabled = false; genBtn.textContent = 'Generate coloring page';
     loading.classList.remove('active');
   });
+
+  // A buyer whose browser only had the old Pro email: Pro needs the license key again, on the home page.
+  if (window.cpmPro && cpmPro.needsKey()) {
+    usage.textContent = cpmPro.RESTORE + ' ';
+    var activate = document.createElement('a');
+    activate.href = '/#activate'; activate.textContent = 'Activate Pro';
+    usage.appendChild(activate);
+  }
 
   render();
 })();

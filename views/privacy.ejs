@@ -1,6 +1,6 @@
 <%
   var title = 'Privacy Policy | ColoringPageMaker';
-  var desc = 'What ColoringPageMaker does with your data: descriptions sent to OpenAI, daily limits counted by IP address, the Pro email we keep and who else receives data.';
+  var desc = 'What ColoringPageMaker does with your data: descriptions sent to OpenAI, daily limits counted by IP address, the Pro token and purchase records we keep, and who else receives data.';
   var url = 'https://www.coloringpagemaker.app/privacy';
 %><!DOCTYPE html>
 <html lang="en">
@@ -41,7 +41,7 @@
   <p>Your descriptions go to OpenAI, so please do not include a child's name or other personal details in them. Under OpenAI's API data policy, data sent through the API is kept for up to 30 days to monitor abuse and, by default, is not used to train OpenAI's models.</p>
 
   <h2>Daily limits and your IP address</h2>
-  <p>Free pages are limited to two a day. To count them, the server stores a counter under your IP address in our database (Upstash Redis, connected through Vercel). Each counter is deleted automatically after 24 hours. For Pro, the daily counter is stored under your Pro email address instead and is deleted after 24 hours in the same way.</p>
+  <p>Free pages are limited to two a day. To count them, the server stores a counter under your IP address in our database (Upstash Redis, connected through Vercel). Each counter is deleted automatically after 24 hours. For Pro, the daily counter is stored under your Gumroad sale ID instead and is deleted after 24 hours in the same way.</p>
 
   <h2>PDF downloads</h2>
   <p>On the home page, the PDF is built in your browser, and the PDF library loads from cdnjs, a public code library run by Cloudflare. On the theme pages, your browser sends the pages you made to our server, which builds the PDF in memory, sends it back and does not keep a copy.</p>
@@ -49,11 +49,14 @@
   <h2>What is stored in your browser</h2>
   <ul class="post-list-items">
     <li>The pages you made in this visit are kept in your browser's session storage so they survive a page reload. They are deleted when you close the tab.</li>
-    <li>If you activate Pro, your Pro email address is saved in your browser's local storage so that Pro stays on. To remove it, press the "Pro active" button on the home page and confirm "Sign out of Pro on this device", or clear this site's data.</li>
+    <li>If you activate Pro, a Pro token is saved in your browser's local storage so that Pro stays on. The token is a random code made by our server. It does not contain your email address or your license key. To remove it, press the "Pro active" button on the home page and confirm "Sign out of Pro on this device", which also deletes the token from our database, or clear this site's data.</li>
+    <li>Earlier versions of the site saved your Pro email address in your browser instead. The site now deletes it the next time you open one of its pages, and keeps only a note to ask you for your license key.</li>
   </ul>
 
-  <h2>Pro and your email address</h2>
-  <p>Pro is sold through Gumroad. The buy buttons open Gumroad's checkout, where you give your payment details to Gumroad, not to us. When Gumroad notifies our server of a sale, or when you activate Pro with your license key, the server checks the key with Gumroad's license service (api.gumroad.com). It then stores your purchase email address with the Gumroad sale ID and the date Pro was granted, so it can recognise you as a Pro user. If you activate with your email address instead of a key, the server looks that address up in the same records. Your Pro email is also sent with each page you generate or download, so the server can apply the Pro limits. This record stays until a refund is reported to us or you ask us to delete it. As the seller, we also see your email address and order details in Gumroad, and we use them to answer questions and issue refunds.</p>
+  <h2>Pro, your license key and your email address</h2>
+  <p>Pro is sold through Gumroad. The buy buttons open Gumroad's checkout, where you give your payment details to Gumroad, not to us.</p>
+  <p>Pro turns on only with the license key from your Gumroad receipt. When you enter it, our server checks it with Gumroad's license service (api.gumroad.com). If Gumroad confirms a Pro purchase that has not been refunded, the server makes a random Pro token and sends it to your browser. In our database it stores the token with your purchase email address, the Gumroad sale ID and the date, and deletes this record automatically about 400 days later, or when you sign out on that device. After that you can turn Pro on again with the same key. We do not store your license key. An email address on its own never turns Pro on, and the site never tells anyone whether an email address bought Pro.</p>
+  <p>Your browser sends the Pro token with each page you generate or download, so the server can apply the Pro limits. When Gumroad notifies our server of a sale, the server checks that sale's license key in the same way and keeps a purchase record: your email address, the Gumroad sale ID and the date. If Gumroad reports a refund or chargeback to our server, the server deletes that record and stops the Pro tokens made from that sale. To do this it keeps the sale ID, marked as refunded, for about 400 days. As the seller, we also see your email address and order details in Gumroad, and we use them to answer questions and issue refunds.</p>
 
   <h2>Hosting and fonts</h2>
   <p>The site runs on Vercel. Like any web host, Vercel processes each request, including your IP address, the page you asked for and your browser type, and keeps request logs for a limited time. If something fails, our server writes a technical error message to those logs. The fonts are served from this site, so no font service sees your visit.</p>
@@ -68,7 +71,7 @@
       <tbody>
         <tr><th scope="row">OpenAI</th><td>Drawing your coloring pages from your descriptions</td><td><a href="https://openai.com/policies/privacy-policy/" rel="noopener">openai.com</a></td></tr>
         <tr><th scope="row">Vercel</th><td>Hosting the site and its server</td><td><a href="https://vercel.com/legal/privacy-notice" rel="noopener">vercel.com</a></td></tr>
-        <tr><th scope="row">Upstash</th><td>The database for daily counters and Pro records</td><td><a href="https://upstash.com/trust/privacy.pdf" rel="noopener">upstash.com</a></td></tr>
+        <tr><th scope="row">Upstash</th><td>The database for daily counters, Pro tokens and purchase records</td><td><a href="https://upstash.com/trust/privacy.pdf" rel="noopener">upstash.com</a></td></tr>
         <tr><th scope="row">Gumroad</th><td>Checkout, payments and license checks</td><td><a href="https://gumroad.com/privacy" rel="noopener">gumroad.com</a></td></tr>
         <tr><th scope="row">Cloudflare</th><td>Serving the PDF library on the home page (cdnjs)</td><td><a href="https://www.cloudflare.com/privacypolicy/" rel="noopener">cloudflare.com</a></td></tr>
         <tr><th scope="row">Google</th><td>The Gmail inbox for our email</td><td><a href="https://policies.google.com/privacy" rel="noopener">policies.google.com</a></td></tr>
@@ -81,9 +84,10 @@
   <h2>How long data is kept</h2>
   <ul class="post-list-items">
     <li>Descriptions and images: not kept by us. Requests to OpenAI: up to 30 days, under OpenAI's API data policy.</li>
-    <li>Daily counters under your IP address or Pro email: 24 hours.</li>
-    <li>Pro records (email, Gumroad sale ID, date): until a refund is reported or you ask us to delete them.</li>
-    <li>Pages in your browser: until you close the tab. Your Pro email in your browser: until you sign out or clear this site's data.</li>
+    <li>Daily counters under your IP address or Gumroad sale ID: 24 hours.</li>
+    <li>Pro tokens in our database (token, email, Gumroad sale ID, date): about 400 days after you activate Pro, or until you sign out on that device.</li>
+    <li>Purchase records (email, Gumroad sale ID, date): until a refund is reported or you ask us to delete them. Refund marks (sale ID only): about 400 days.</li>
+    <li>Pages in your browser: until you close the tab. Your Pro token in your browser: until you sign out or clear this site's data.</li>
     <li>Hosting logs: kept by Vercel for a limited time under its own policy. Purchase records: kept by Gumroad under its own policy.</li>
     <li>Emails to us: until we delete them. Ask us and we will delete yours, unless we need it as a record of a payment or refund.</li>
   </ul>
@@ -92,7 +96,7 @@
   <p>You can ask us for a copy of the personal data we hold about you, ask us to correct or delete it, or object to how we use it. Email <a href="mailto:info@peakappsstudio.com">info@peakappsstudio.com</a> and we will reply within one month. If you live in the EU or the UK, you can also complain to your local data protection authority.</p>
 
   <h2>Children</h2>
-  <p>ColoringPageMaker is made for adults: parents, teachers and sellers who make coloring pages, often for children to color. The free tier asks for no name, email address or account. The site is not meant to be used by children on their own, and we do not knowingly collect personal data from children under 13. If you think a child has given us personal data, for example an email address in the Pro form, email us and we will delete it.</p>
+  <p>ColoringPageMaker is made for adults: parents, teachers and sellers who make coloring pages, often for children to color. The free tier asks for no name, email address or account. The site is not meant to be used by children on their own, and we do not knowingly collect personal data from children under 13. If you think a child has given us personal data, for example by buying Pro, email us and we will delete it.</p>
 
   <h2>Changes to this policy</h2>
   <p>If the site starts handling data differently, we will update this page and the date at the top.</p>
