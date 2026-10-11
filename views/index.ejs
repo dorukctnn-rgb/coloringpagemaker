@@ -184,8 +184,8 @@
 
     <div class="or">or</div>
 
-    <p class="hint">Already purchased? Enter your purchase email or the license key from your Gumroad receipt.</p>
-    <input type="text" id="licenseEmail" placeholder="you@email.com or license key" autocomplete="email" spellcheck="false" aria-label="Purchase email or license key">
+    <p class="hint">Already purchased? Enter the license key from your Gumroad receipt. It is also in your Gumroad library.</p>
+    <input type="text" id="licenseKey" placeholder="License key" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="License key from your Gumroad receipt">
     <button type="button" class="btn btn-dark btn-block" onclick="verifyLicense()">Activate Pro</button>
     <div class="modal-status" id="licenseStatus" role="status"></div>
   </div>
@@ -193,6 +193,7 @@
 
 <%- include('partials/footer') %>
 
+<%- include('partials/pro-storage') %>
 <script>
 let selectedStyle = 'medium';
 let generatedImages = JSON.parse(sessionStorage.getItem('generated_images') || '[]');
@@ -216,9 +217,9 @@ function persistImages(){
   }
   try { sessionStorage.removeItem('generated_images'); } catch(e){}
 }
-let proEmail = localStorage.getItem('pro_email') || '';
+let proToken = cpmPro.token();
 
-function isProUser(){ return !!proEmail; }
+function isProUser(){ return !!proToken; }
 
 function selectStyle(style){
   selectedStyle = style;
@@ -260,7 +261,7 @@ async function generatePage(){
     const res = await fetch('/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt, style: selectedStyle, email: proEmail })
+      body: JSON.stringify({ prompt, style: selectedStyle, token: proToken })
     });
     const data = await res.json();
 
@@ -461,29 +462,37 @@ document.addEventListener('keydown', function(e){
   if(e.key === 'Escape') closeProModal();
 });
 
+// Pro turns on only with the license key from the Gumroad receipt. The server checks it with Gumroad
+// and returns a random token for this browser; an email address is never accepted.
 async function verifyLicense(){
-  const value = document.getElementById('licenseEmail').value.trim();
+  const input = document.getElementById('licenseKey');
+  const value = input.value.trim();
   const status = document.getElementById('licenseStatus');
-  if(!value){ status.textContent = 'Please enter your email or license key'; status.className = 'modal-status error'; return; }
-  const payload = value.includes('@') ? { email: value } : { license_key: value };
+  if(!value){ status.textContent = 'Please enter the license key from your Gumroad receipt.'; status.className = 'modal-status error'; return; }
+  if(value.includes('@')){
+    status.textContent = 'Pro turns on with the license key from your Gumroad receipt, not an email address.';
+    status.className = 'modal-status error';
+    return;
+  }
 
   status.textContent = 'Checking...'; status.className = 'modal-status';
   try {
     const res = await fetch('/verify-pro', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({ license_key: value })
     });
     const data = await res.json();
-    if(data.pro){
-      proEmail = data.email;
-      localStorage.setItem('pro_email', proEmail);
+    if(data.pro && data.token){
+      cpmPro.save(data.token);
+      proToken = data.token;
+      input.value = '';
       status.textContent = 'Pro is active. Reloading...';
       status.className = 'modal-status success';
       setTimeout(() => location.reload(), 1000);
     } else {
-      status.textContent = payload.email
-        ? 'Email not found. Paste the license key from your Gumroad receipt instead.'
+      status.textContent = res.status === 503
+        ? 'Pro could not be turned on just now. Please try again in a few minutes.'
         : 'That license key was not accepted. Check it against your Gumroad receipt.';
       status.className = 'modal-status error';
     }
@@ -501,19 +510,55 @@ function updateProUI(){
       btn.classList.add('is-pro');
       btn.onclick = function(){
         if(confirm('Sign out of Pro on this device?')){
-          localStorage.removeItem('pro_email');
-          proEmail = '';
-          location.reload();
+          const token = proToken;
+          cpmPro.signOut();
+          proToken = '';
+          fetch('/pro-signout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token })
+          }).catch(() => {}).finally(() => location.reload());
         }
       };
     }
     document.getElementById('usageBar').innerHTML = '<strong>Pro:</strong> up to 150 pages a day';
+  } else if(cpmPro.needsKey()){
+    document.getElementById('usageBar').innerHTML = esc(cpmPro.RESTORE) + ' <a href="#pro" data-open-pro>Activate Pro</a>';
   }
+}
+
+// A token ends about 400 days after activation, or when Gumroad reports a refund.
+// Only a clear "no" from the server drops it; a network or server error keeps it.
+async function checkProToken(){
+  if(!proToken) return;
+  try {
+    const res = await fetch('/verify-pro', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: proToken })
+    });
+    if(!res.ok) return;
+    const data = await res.json();
+    if(data.pro === false){
+      cpmPro.expire();
+      location.reload();
+    }
+  } catch(e){}
 }
 
 // Init
 updateProUI();
 renderGallery();
+checkProToken();
+// Theme pages link here with #activate when Pro needs the license key again.
+// The hash is cleared so the reload after activation does not open the window again.
+function openFromHash(){
+  if(location.hash !== '#activate') return;
+  try { history.replaceState(null, '', location.pathname + location.search); } catch(e){}
+  openProModal();
+}
+openFromHash();
+window.addEventListener('hashchange', openFromHash);
 </script>
 
 </body>

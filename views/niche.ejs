@@ -99,6 +99,7 @@
     <label class="field-label" for="promptInput">Your idea</label>
     <textarea id="promptInput" placeholder="<%= page.examples[0] %>"><%= page.presetPrompt %></textarea>
     <button type="button" class="btn-generate" id="generateBtn" onclick="generatePage()">Generate coloring page</button>
+    <p class="usage-bar" id="usageBar" role="status" hidden></p>
 
     <div class="examples-bar">
       <h3>Example prompts</h3>
@@ -217,7 +218,7 @@
 
     <details class="faq-item">
       <summary>Do I need an account?</summary>
-      <p>No account, no email, no signup needed for the free tier. Just type your idea, click generate, and download. The Pro version uses your purchase email to activate its features.</p>
+      <p>No account, no email, no signup needed for the free tier. Just type your idea, click generate, and download. Pro turns on with the license key from your Gumroad receipt.</p>
     </details>
 
     <details class="faq-item">
@@ -244,8 +245,9 @@
 
 <%- include('partials/footer') %>
 
+<%- include('partials/pro-storage') %>
 <script>
-let proEmail = localStorage.getItem('pro_email') || '';
+let proToken = window.cpmPro ? cpmPro.token() : '';
 let generatedImages = [];
 
 function esc(s){
@@ -269,7 +271,7 @@ async function generatePage(){
     const res = await fetch('/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt, style: 'medium', email: proEmail })
+      body: JSON.stringify({ prompt, style: 'medium', token: proToken })
     });
     const data = await res.json();
 
@@ -308,14 +310,26 @@ async function downloadPDF(url, idx){
     const res = await fetch('/download-pdf', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ imageUrls: [url], email: proEmail })
+      body: JSON.stringify({ imageUrls: [url], token: proToken })
     });
+    if(!res.ok) throw new Error('pdf');
     const blob = await res.blob();
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = `coloring-page.pdf`;
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
   } catch(e){ alert('Download failed'); }
+}
+
+// A buyer whose browser only had the old Pro email: Pro needs the license key again, on the home page.
+if(window.cpmPro && cpmPro.needsKey()){
+  const bar = document.getElementById('usageBar');
+  bar.textContent = cpmPro.RESTORE + ' ';
+  const activate = document.createElement('a');
+  activate.href = '/#activate';
+  activate.textContent = 'Activate Pro';
+  bar.appendChild(activate);
+  bar.hidden = false;
 }
 </script>
 

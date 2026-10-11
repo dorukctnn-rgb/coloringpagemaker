@@ -1,0 +1,23 @@
+<script>
+// Pro on this browser is the random token that /verify-pro returns once Gumroad confirms a license key.
+// It is kept in localStorage. Older versions of the site saved the purchase email instead. An email no
+// longer turns Pro on, so it is deleted here and the page asks for the license key again.
+window.cpmPro = (function () {
+  var TOKEN = 'pro_token', OLD_EMAIL = 'pro_email', ASK = 'pro_ask_key';
+  function get(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }
+  function put(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function drop(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  if (get(OLD_EMAIL)) {
+    drop(OLD_EMAIL);
+    if (!get(TOKEN)) put(ASK, '1');
+  }
+  return {
+    RESTORE: 'Enter the license key from your Gumroad receipt to restore Pro.',
+    token: function () { return get(TOKEN); },
+    needsKey: function () { return !get(TOKEN) && get(ASK) === '1'; },
+    save: function (t) { put(TOKEN, t); drop(ASK); },
+    expire: function () { drop(TOKEN); put(ASK, '1'); },
+    signOut: function () { drop(TOKEN); drop(ASK); }
+  };
+})();
+</script>
