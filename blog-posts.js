@@ -126,6 +126,7 @@ const BLOG_POSTS = {
   keyword: 'kdp coloring book self publishing',
   date: 'Updated October 2026',
   read: '9 min',
+  updated: '2026-10-15',
   summary: `KDP's trim size, bleed and margin rules, the 300 DPI minimum and what it means for 1024-pixel pages, royalties with two worked examples, AI disclosure, keywords, categories and review times. Each rule links to KDP's own help pages.`,
   content: [
     { type: 'p', text: `Amazon KDP (Kindle Direct Publishing) prints paperbacks on demand, so you can sell a coloring book without holding stock. Income varies enormously and KDP does not publish typical earnings, so treat any figure you read online as unverified. This guide covers the rules KDP publishes and how to meet them with AI-generated pages. The KDP details below were last checked on 7 October 2026. Confirm them on KDP's own help pages before you upload.` },
@@ -141,6 +142,7 @@ const BLOG_POSTS = {
     { type: 'p', text: `Etsy sells digital downloads (PDFs) that buyers print at home. KDP sells physical printed books shipped to buyers. On Etsy you pay a $0.20 listing fee, a 6.5% transaction fee and 3% + $0.25 payment processing on each US sale. On KDP you earn 50% or 60% of the list price minus printing cost. Etsy buyers find you through Etsy search and any traffic you send yourself, for example from Pinterest. KDP buyers find you through Amazon search and category pages. Nothing stops you from selling the same theme in both places, as a PDF on Etsy and as a paperback on KDP.` },
     { type: 'h2', text: `KDP coloring book formatting requirements` },
     { type: 'p', text: `KDP lists 8.5 x 11 inches as a supported trim size. The minimum page count is 24, and for 8.5 x 11 black-ink books on white paper the maximum is 590 pages (limits differ by paper type and trim size). Bleed: if images run to the page edge, extend them 0.125 inch beyond the trim on the top, bottom and outside edges, or use the no-bleed option. Margins: the inside (gutter) margin must be at least 0.375 inch for 24 to 150 pages and 0.5 inch for 151 to 300 pages, and grows for thicker books. The outside margin must be at least 0.25 inch without bleed or 0.375 inch with bleed. Images must have a minimum resolution of 300 DPI.` },
+    { type: 'p', text: `Peak Apps Studio, which also makes this site, has a [KDP coloring book interior maker](https://peakappsstudio.com/kdp-coloring-book/) that applies these numbers to your page count, adds blank backs and flags images under 300 DPI, free in your browser for up to 24 coloring pages.` },
     { type: 'sources', links: [
       { text: 'KDP: set trim size, bleed and margins', href: 'https://kdp.amazon.com/en_US/help/topic/GVBQ3CMEQW3W2VL6' },
       { text: 'KDP: paperback submission guidelines', href: 'https://kdp.amazon.com/help/topic/G201857950' }
