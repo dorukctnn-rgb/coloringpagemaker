@@ -668,7 +668,10 @@ const THEME_NOTES = {
   'adult-coloring-pages': ['Adult', 'Intricate or bold and easy, paper for markers'],
   'princess-coloring-pages': ['Princesses', 'Fairy tales that are free to draw'],
   'animal-coloring-pages': ['Animals', 'Black markings, life cycles, pet portraits'],
-  'unicorn-coloring-pages': ['Unicorns', 'Winged unicorns, the narwhal, party pages']
+  'unicorn-coloring-pages': ['Unicorns', 'Winged unicorns, the narwhal, party pages'],
+  'mandala-coloring-pages': ['Mandalas', 'Symmetrical designs for a quiet evening'],
+  'flower-coloring-pages': ['Flowers', 'Roses, sunflowers and bouquets'],
+  'easter-coloring-pages': ['Easter', 'Bunnies, eggs and chicks for spring']
 };
 app.get('/blog', (req, res) => {
   const listed = new Set(BLOG_GROUPS.flatMap(g => g.slugs));
@@ -713,7 +716,8 @@ app.get('/:slug', (req, res, next) => {
     return res.render('niche', {
       page: NICHE_PAGES[slug],
       slug,
-      allPages: THEME_ORDER.filter(s => s !== slug).slice(0, 6).map(s => ({ slug: s, h1: themeLabel(s) }))
+      // The next six themes after this one, wrapping around, so every theme page gets links from six others.
+      allPages: [...THEME_ORDER.slice(THEME_ORDER.indexOf(slug) + 1), ...THEME_ORDER.slice(0, Math.max(0, THEME_ORDER.indexOf(slug)))].filter(s => s !== slug).slice(0, 6).map(s => ({ slug: s, h1: themeLabel(s) }))
     });
   }
   if (BLOG_POSTS[slug]) {
