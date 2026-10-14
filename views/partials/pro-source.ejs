@@ -1,0 +1,95 @@
+<script>
+// Which kind of site a visitor came from, so each Pro sale in Gumroad shows its channel. On the first page of a
+// visit in this tab, the referrer's host is sorted into one word (google, bing, other-search, ai-assistant,
+// pinterest, social, referral or direct) and only that word is kept, in sessionStorage. The referrer address is
+// never stored or sent. Nothing leaves the browser until a Pro button is clicked: the click then goes through
+// that word's Gumroad UTM link (gumroad.com/dashboard/utm_links, campaign "coloringpagemaker"). If anything here
+// fails, or the kind of site is unknown, the button keeps its plain Gumroad link.
+window.cpmSource = (function () {
+  var KEY = 'cpm_source';
+  var PRO = /^https:\/\/dorukctn\.gumroad\.com\/l\/uynqt(?:[\/?#]|$)/;
+  var LINKS = {
+    'google': 'https://gum.co/u/dsikakff',
+    'bing': 'https://gum.co/u/rpturwob',
+    'other-search': 'https://gum.co/u/f93wludz',
+    'ai-assistant': 'https://gum.co/u/tuooex5a',
+    'pinterest': 'https://gum.co/u/pev97h5v',
+    'social': 'https://gum.co/u/mzojadhp',
+    'referral': 'https://gum.co/u/hdddyxaj',
+    'direct': 'https://gum.co/u/c5e3rwd5'
+  };
+  // Tested in this order against the referrer's host, so Gemini on google.com counts as an AI assistant.
+  var SITES = [
+    ['ai-assistant', /(^|\.)(chatgpt\.com|chat\.openai\.com|perplexity\.ai|copilot\.microsoft\.com|gemini\.google\.com|claude\.ai|you\.com|phind\.com|chat\.deepseek\.com|grok\.com|meta\.ai|duck\.ai|chat\.mistral\.ai|poe\.com)$/],
+    ['google', /^((www|m|images)\.)?google\.(com?\.)?[a-z]{2,3}$/],
+    ['bing', /(^|\.)bing\.com$/],
+    ['other-search', /(^|\.)(duckduckgo\.com|search\.yahoo\.(com|co\.jp)|yandex\.(com?\.)?[a-z]{2,3}|ya\.ru|ecosia\.org|search\.brave\.com|search\.naver\.com|search\.seznam\.cz|qwant\.com|startpage\.com)$/],
+    ['other-search', /^((www|m)\.)?baidu\.com$/],
+    ['pinterest', /(^|\.)(pinterest\.(com?\.)?[a-z]{2,3}|pin\.it)$/],
+    ['social', /(^|\.)(reddit\.com|redd\.it|facebook\.com|fb\.com|instagram\.com|x\.com|t\.co|twitter\.com|youtube\.com|youtu\.be|tiktok\.com|threads\.net|threads\.com|linkedin\.com|lnkd\.in|quora\.com)$/]
+  ];
+  // Android apps send android-app://<package>/ as the referrer. Any other app counts as a referral.
+  var APPS = {
+    'com.google.android.googlequicksearchbox': 'google',
+    'com.microsoft.bing': 'bing',
+    'com.duckduckgo.mobile.android': 'other-search',
+    'com.openai.chatgpt': 'ai-assistant',
+    'ai.perplexity.app.android': 'ai-assistant',
+    'com.anthropic.claude': 'ai-assistant',
+    'com.google.android.apps.bard': 'ai-assistant',
+    'com.microsoft.copilot': 'ai-assistant',
+    'com.pinterest': 'pinterest',
+    'com.reddit.frontpage': 'social',
+    'com.facebook.katana': 'social',
+    'com.facebook.lite': 'social',
+    'com.instagram.android': 'social',
+    'com.instagram.barcelona': 'social',
+    'com.twitter.android': 'social',
+    'com.zhiliaoapp.musically': 'social',
+    'com.ss.android.ugc.trill': 'social',
+    'com.google.android.youtube': 'social',
+    'com.linkedin.android': 'social',
+    'com.quora.android': 'social'
+  };
+  function own(map, k) { return Object.prototype.hasOwnProperty.call(map, k) ? map[k] : ''; }
+
+  // The kind of site a referrer belongs to. '' means "do not record": this site, Gumroad, or nothing readable.
+  function classify(referrer, ownHost) {
+    if (!referrer) return 'direct';
+    var m = /^([a-z][a-z0-9+.\-]*):\/\/(?:[^@\/?#]*@)?(\[[^\]]*\]|[^\/?#:]*)/i.exec(String(referrer));
+    if (!m) return '';
+    var scheme = m[1].toLowerCase(), host = m[2].toLowerCase().replace(/\.$/, '');
+    if (scheme === 'android-app') return host ? (own(APPS, host) || 'referral') : '';
+    if ((scheme !== 'http' && scheme !== 'https') || !host) return '';
+    if (host === String(ownHost || '').toLowerCase() || /(^|\.)(coloringpagemaker\.app|gumroad\.com|gum\.co)$/.test(host)) return '';
+    for (var i = 0; i < SITES.length; i++) if (SITES[i][1].test(host)) return SITES[i][0];
+    return 'referral';
+  }
+
+  function stored() { try { return sessionStorage.getItem(KEY) || ''; } catch (e) { return ''; } }
+  var source = stored();
+  if (!own(LINKS, source)) {
+    source = '';
+    try { source = classify(document.referrer, location.hostname); } catch (e) {}
+    var remember = function () { try { if (!own(LINKS, stored())) sessionStorage.setItem(KEY, source); } catch (e) {} };
+    // A page Chrome prerenders in the background is only kept once the visitor opens it.
+    if (own(LINKS, source)) { if (document.prerendering) document.addEventListener('prerenderingchange', remember); else remember(); }
+  }
+  var link = own(LINKS, source);
+
+  // The link changes only as the visitor follows it (mouse, touch, keyboard, or a new tab), so the page as served,
+  // and any crawler reading it, keeps the plain product link.
+  function swap(e) {
+    try {
+      var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+      if (a && PRO.test(a.href)) a.href = link;
+    } catch (err) {}
+  }
+  if (link && document.addEventListener) {
+    document.addEventListener('mousedown', swap, true);
+    document.addEventListener('touchstart', swap, { capture: true, passive: true });
+    document.addEventListener('click', swap, true);
+  }
+  return { source: source, classify: classify };
+})();
+</script>

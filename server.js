@@ -734,7 +734,8 @@ app.get('/:slug', (req, res, next) => {
 // Only canonical URLs (www host, no trailing slash), each with the date its content last changed.
 const SITEMAP_LASTMOD = '2026-10-07';
 const BLOG_INDEX_UPDATED = '2026-10-09';
-const LEGAL_UPDATED = '2026-10-11';
+const PRIVACY_UPDATED = '2026-10-14';
+const TERMS_UPDATED = '2026-10-11';
 app.get('/sitemap.xml', (req, res) => {
   res.set('Content-Type', 'text/xml');
   const entries = [
@@ -742,8 +743,8 @@ app.get('/sitemap.xml', (req, res) => {
     ['/blog', BLOG_INDEX_UPDATED],
     ...THEME_ORDER.map(s => ['/' + s, (THEME_GUIDES[s] && THEME_GUIDES[s].updated) || SITEMAP_LASTMOD]),
     ...Object.keys(BLOG_POSTS).map(s => ['/' + s, BLOG_POSTS[s].updated || SITEMAP_LASTMOD]),
-    ['/privacy', LEGAL_UPDATED],
-    ['/terms', LEGAL_UPDATED]
+    ['/privacy', PRIVACY_UPDATED],
+    ['/terms', TERMS_UPDATED]
   ];
   const urls = entries.map(([p, lastmod]) => `
   <url>

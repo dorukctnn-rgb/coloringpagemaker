@@ -22,6 +22,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="canonical" href="<%= url %>">
 <%- include('partials/head-assets') %>
+<%- include('partials/pro-source') %>
 </head>
 <body>
 
@@ -29,7 +30,7 @@
 
 <main id="main">
 <article class="post">
-  <div class="meta">Last updated: 11 October 2026</div>
+  <div class="meta">Last updated: 14 October 2026</div>
   <h1>Privacy policy</h1>
   <p>ColoringPageMaker needs no account and uses no cookies, analytics or advertising. This page lists the data the site handles, where it goes and why.</p>
 
@@ -49,12 +50,14 @@
   <h2>What is stored in your browser</h2>
   <ul class="post-list-items">
     <li>The pages you made in this visit are kept in your browser's session storage so they survive a page reload. They are deleted when you close the tab.</li>
+    <li>When you open the site, it notes in session storage what kind of site sent you, as one word such as "google", "pinterest", "social" or "direct" when no site did. It keeps only that word, never the address of the page you came from, and the word is deleted when you close the tab. It goes nowhere unless you click a Pro button, as explained below.</li>
     <li>If you activate Pro, a Pro token is saved in your browser's local storage so that Pro stays on. The token is a random code made by our server. It does not contain your email address or your license key. To remove it, press the "Pro active" button on the home page and confirm "Sign out of Pro on this device", which also deletes the token from our database, or clear this site's data.</li>
     <li>Earlier versions of the site saved your Pro email address in your browser instead. The site now deletes it the next time you open one of its pages, and keeps only a note to ask you for your license key.</li>
   </ul>
 
   <h2>Pro, your license key and your email address</h2>
   <p>Pro is sold through Gumroad. The buy buttons open Gumroad's checkout, where you give your payment details to Gumroad, not to us.</p>
+  <p>When you click a Pro button, it goes to Gumroad through a tracking link that tells Gumroad what kind of site you came to us from, for example a search engine, an AI assistant, Pinterest, a social network, another website or none. Gumroad gets only that kind, never the address of the site. We use it to see which kinds of sites bring buyers. Until you click, the note stays in your browser tab, and this site still uses no cookies and no analytics.</p>
   <p>Pro turns on only with the license key from your Gumroad receipt. When you enter it, our server checks it with Gumroad's license service (api.gumroad.com). If Gumroad confirms a Pro purchase that has not been refunded, the server makes a random Pro token and sends it to your browser. In our database it stores the token with your purchase email address, the Gumroad sale ID and the date, and deletes this record automatically about 400 days later, or when you sign out on that device. After that you can turn Pro on again with the same key. We do not store your license key. An email address on its own never turns Pro on, and the site never tells anyone whether an email address bought Pro.</p>
   <p>Your browser sends the Pro token with each page you generate or download, so the server can apply the Pro limits. When Gumroad notifies our server of a sale, the server checks that sale's license key in the same way and keeps a purchase record: your email address, the Gumroad sale ID and the date. If Gumroad reports a refund or chargeback to our server, the server deletes that record and stops the Pro tokens made from that sale. To do this it keeps the sale ID, marked as refunded, for about 400 days. As the seller, we also see your email address and order details in Gumroad, and we use them to answer questions and issue refunds.</p>
 
@@ -72,7 +75,7 @@
         <tr><th scope="row">OpenAI</th><td>Drawing your coloring pages from your descriptions</td><td><a href="https://openai.com/policies/privacy-policy/" rel="noopener">openai.com</a></td></tr>
         <tr><th scope="row">Vercel</th><td>Hosting the site and its server</td><td><a href="https://vercel.com/legal/privacy-notice" rel="noopener">vercel.com</a></td></tr>
         <tr><th scope="row">Upstash</th><td>The database for daily counters, Pro tokens and purchase records</td><td><a href="https://upstash.com/trust/privacy.pdf" rel="noopener">upstash.com</a></td></tr>
-        <tr><th scope="row">Gumroad</th><td>Checkout, payments and license checks</td><td><a href="https://gumroad.com/privacy" rel="noopener">gumroad.com</a></td></tr>
+        <tr><th scope="row">Gumroad</th><td>Checkout, payments and license checks, and the kind of site you came from when you click a Pro button</td><td><a href="https://gumroad.com/privacy" rel="noopener">gumroad.com</a></td></tr>
         <tr><th scope="row">Cloudflare</th><td>Serving the PDF library on the home page (cdnjs)</td><td><a href="https://www.cloudflare.com/privacypolicy/" rel="noopener">cloudflare.com</a></td></tr>
         <tr><th scope="row">Google</th><td>The Gmail inbox for our email</td><td><a href="https://policies.google.com/privacy" rel="noopener">policies.google.com</a></td></tr>
         <tr><th scope="row">Forward Email</th><td>Forwarding mail sent to our address</td><td><a href="https://forwardemail.net/en/privacy" rel="noopener">forwardemail.net</a></td></tr>
@@ -87,7 +90,7 @@
     <li>Daily counters under your IP address or Gumroad sale ID: 24 hours.</li>
     <li>Pro tokens in our database (token, email, Gumroad sale ID, date): about 400 days after you activate Pro, or until you sign out on that device.</li>
     <li>Purchase records (email, Gumroad sale ID, date): until a refund is reported or you ask us to delete them. Refund marks (sale ID only): about 400 days.</li>
-    <li>Pages in your browser: until you close the tab. Your Pro token in your browser: until you sign out or clear this site's data.</li>
+    <li>Pages in your browser, and the word for the kind of site you came from: until you close the tab. Your Pro token in your browser: until you sign out or clear this site's data.</li>
     <li>Hosting logs: kept by Vercel for a limited time under its own policy. Purchase records: kept by Gumroad under its own policy.</li>
     <li>Emails to us: until we delete them. Ask us and we will delete yours, unless we need it as a record of a payment or refund.</li>
   </ul>
