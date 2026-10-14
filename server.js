@@ -734,7 +734,7 @@ app.get('/:slug', (req, res, next) => {
 // Only canonical URLs (www host, no trailing slash), each with the date its content last changed.
 const SITEMAP_LASTMOD = '2026-10-07';
 const BLOG_INDEX_UPDATED = '2026-10-09';
-const PRIVACY_UPDATED = '2026-10-14';
+const PRIVACY_UPDATED = '2026-10-15';
 const TERMS_UPDATED = '2026-10-11';
 app.get('/sitemap.xml', (req, res) => {
   res.set('Content-Type', 'text/xml');

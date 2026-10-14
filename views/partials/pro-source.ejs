@@ -1,12 +1,14 @@
 <script>
-// Which kind of site a visitor came from, so each Pro sale in Gumroad shows its channel. On the first page of a
-// visit in this tab, the referrer's host is sorted into one word (google, bing, other-search, ai-assistant,
-// pinterest, social, referral or direct) and only that word is kept, in sessionStorage. The referrer address is
-// never stored or sent. Nothing leaves the browser until a Pro button is clicked: the click then goes through
-// that word's Gumroad UTM link (gumroad.com/dashboard/utm_links, campaign "coloringpagemaker"). If anything here
-// fails, or the kind of site is unknown, the button keeps its plain Gumroad link.
+// Which kind of site brought a visitor, so each Pro sale in Gumroad shows its channel. A kind of site is one word:
+// google, bing, other-search, ai-assistant, pinterest, social, referral or direct. It is read first from a tag in
+// the landing address (utm_source, then ref, then source, such as utm_source=chatgpt.com), then from the host of
+// the referrer. Only that word is ever kept, never an address: for this tab in sessionStorage (the first page of
+// the visit decides), and in localStorage the first word other than "direct" this browser ever got, set once and
+// never replaced. Nothing leaves the browser until a Pro button is clicked. The click then goes through the Gumroad
+// UTM link (gumroad.com/dashboard/utm_links, campaign "coloringpagemaker") of the browser's first word, else this
+// visit's word, else "direct". If this script fails, the button keeps its plain Gumroad link.
 window.cpmSource = (function () {
-  var KEY = 'cpm_source';
+  var VISIT = 'cpm_source', FIRST = 'cpm_first_source';
   var PRO = /^https:\/\/dorukctn\.gumroad\.com\/l\/uynqt(?:[\/?#]|$)/;
   var LINKS = {
     'google': 'https://gum.co/u/dsikakff',
@@ -18,9 +20,9 @@ window.cpmSource = (function () {
     'referral': 'https://gum.co/u/hdddyxaj',
     'direct': 'https://gum.co/u/c5e3rwd5'
   };
-  // Tested in this order against the referrer's host, so Gemini on google.com counts as an AI assistant.
+  // Tested in this order against a host, so Gemini on google.com counts as an AI assistant.
   var SITES = [
-    ['ai-assistant', /(^|\.)(chatgpt\.com|chat\.openai\.com|perplexity\.ai|copilot\.microsoft\.com|gemini\.google\.com|claude\.ai|you\.com|phind\.com|chat\.deepseek\.com|grok\.com|meta\.ai|duck\.ai|chat\.mistral\.ai|poe\.com)$/],
+    ['ai-assistant', /(^|\.)(chatgpt\.com|chat\.openai\.com|perplexity\.ai|copilot\.microsoft\.com|copilot\.com|gemini\.google\.com|claude\.ai|you\.com|phind\.com|chat\.deepseek\.com|grok\.com|meta\.ai|duck\.ai|chat\.mistral\.ai|poe\.com)$/],
     ['google', /^((www|m|images)\.)?google\.(com?\.)?[a-z]{2,3}$/],
     ['bing', /(^|\.)bing\.com$/],
     ['other-search', /(^|\.)(duckduckgo\.com|search\.yahoo\.(com|co\.jp)|yandex\.(com?\.)?[a-z]{2,3}|ya\.ru|ecosia\.org|search\.brave\.com|search\.naver\.com|search\.seznam\.cz|qwant\.com|startpage\.com)$/],
@@ -51,6 +53,16 @@ window.cpmSource = (function () {
     'com.linkedin.android': 'social',
     'com.quora.android': 'social'
   };
+  // Tag values that are names, not addresses, once lowercased without spaces, dots, dashes or underscores
+  // ("Chat GPT" is "chatgpt"). Long brand names also match with a suffix ("facebookads"); short ones only alone.
+  var NAMES = [
+    ['ai-assistant', /^(chatgpt|openai|perplexity|copilot|gemini|claude|anthropic|phind|deepseek|mistral)|^(bard|grok|poe|youcom|metaai|duckai|lechat|microsoftcopilot|googlegemini)$/],
+    ['google', /^google/],
+    ['bing', /^(bing|bingsearch|bingorganic|microsoftbing)$/],
+    ['other-search', /^(duckduckgo|yahoo|yandex|ecosia|baidu|naver|seznam|qwant|startpage)|^(ddg|brave|bravesearch)$/],
+    ['pinterest', /^pinterest|^pinit$/],
+    ['social', /^(facebook|instagram|reddit|twitter|youtube|tiktok|threads|linkedin|quora)|^(fb|ig|x|tco|yt)$/]
+  ];
   function own(map, k) { return Object.prototype.hasOwnProperty.call(map, k) ? map[k] : ''; }
 
   // The kind of site a referrer belongs to. '' means "do not record": this site, Gumroad, or nothing readable.
@@ -66,30 +78,74 @@ window.cpmSource = (function () {
     return 'referral';
   }
 
-  function stored() { try { return sessionStorage.getItem(KEY) || ''; } catch (e) { return ''; } }
-  var source = stored();
-  if (!own(LINKS, source)) {
-    source = '';
-    try { source = classify(document.referrer, location.hostname); } catch (e) {}
-    var remember = function () { try { if (!own(LINKS, stored())) sessionStorage.setItem(KEY, source); } catch (e) {} };
-    // A page Chrome prerenders in the background is only kept once the visitor opens it.
-    if (own(LINKS, source)) { if (document.prerendering) document.addEventListener('prerenderingchange', remember); else remember(); }
+  // The kind of site a landing tag names. Addresses and host names are sorted like a referrer. A name that matches
+  // nothing counts as a referral. '' for an empty tag or one that names this site or Gumroad.
+  function classifyTag(value, ownHost) {
+    var v = String(value || '').replace(/^\s+|\s+$/g, '').toLowerCase();
+    if (!v) return '';
+    if (/^[a-z][a-z0-9+.\-]*:\/\//.test(v)) return classify(v, ownHost);
+    if (/^[a-z0-9\-]+(\.[a-z0-9\-]+)+(:\d+)?([\/?#].*)?$/.test(v)) return classify('https://' + v, ownHost);
+    var name = v.replace(/[\s._\-]+/g, '');
+    if (/^(coloringpagemaker|gumroad|gumco)/.test(name)) return '';
+    for (var i = 0; i < NAMES.length; i++) if (NAMES[i][1].test(name)) return NAMES[i][0];
+    return 'referral';
   }
-  var link = own(LINKS, source);
 
+  function param(search, key) {
+    var m = new RegExp('[?&]' + key + '=([^&#]*)', 'i').exec(String(search || ''));
+    if (!m) return '';
+    var v = m[1].replace(/\+/g, ' ');
+    try { v = decodeURIComponent(v); } catch (e) {}
+    return v;
+  }
+  // The kind of site the landing address names, '' if none. Facebook and Instagram add fbclid to the links they
+  // open, often with no referrer, so fbclid alone counts as social.
+  function fromUrl(search, ownHost) {
+    var keys = ['utm_source', 'ref', 'source'];
+    for (var i = 0; i < keys.length; i++) {
+      var kind = classifyTag(param(search, keys[i]), ownHost);
+      if (kind) return kind;
+    }
+    return param(search, 'fbclid') ? 'social' : '';
+  }
+
+  // Storage can be missing or throw (private modes, blocked site data), so every read and write is guarded.
+  function get(local, k) { try { return (local ? localStorage : sessionStorage).getItem(k) || ''; } catch (e) { return ''; } }
+  function put(local, k, v) { try { (local ? localStorage : sessionStorage).setItem(k, v); } catch (e) {} }
+  function firstWord() { var f = get(true, FIRST); return f !== 'direct' && own(LINKS, f) ? f : ''; }
+
+  var host = '';
+  try { host = location.hostname; } catch (e) {}
+  // This visit: the first page in the tab decides.
+  var visit = get(false, VISIT);
+  if (!own(LINKS, visit)) {
+    visit = '';
+    try { visit = fromUrl(location.search, host) || classify(document.referrer, host); } catch (e) {}
+    if (!own(LINKS, visit)) visit = '';
+  }
+  function remember() {
+    if (visit && !own(LINKS, get(false, VISIT))) put(false, VISIT, visit);
+    // This browser: the first kind of site other than "direct", stored once and never replaced.
+    if (visit && visit !== 'direct' && !firstWord()) put(true, FIRST, visit);
+  }
+  // A page Chrome prerenders in the background is only kept once the visitor opens it.
+  if (document.prerendering) document.addEventListener('prerenderingchange', remember); else remember();
+
+  // Read at click time, so a tab opened before the browser's first word was stored still uses it.
+  function chosen() { return firstWord() || visit || 'direct'; }
   // The link changes only as the visitor follows it (mouse, touch, keyboard, or a new tab), so the page as served,
   // and any crawler reading it, keeps the plain product link.
   function swap(e) {
     try {
       var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
-      if (a && PRO.test(a.href)) a.href = link;
+      if (a && PRO.test(a.href)) a.href = LINKS[chosen()];
     } catch (err) {}
   }
-  if (link && document.addEventListener) {
+  if (document.addEventListener) {
     document.addEventListener('mousedown', swap, true);
     document.addEventListener('touchstart', swap, { capture: true, passive: true });
     document.addEventListener('click', swap, true);
   }
-  return { source: source, classify: classify };
+  return { source: visit, first: firstWord(), chosen: chosen, classify: classify, classifyTag: classifyTag, fromUrl: fromUrl };
 })();
 </script>
