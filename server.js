@@ -6,6 +6,7 @@ const fs = require('fs');
 const crypto = require('crypto');
 const zlib = require('zlib');
 const OpenAI = require('openai');
+const { cleanColoringPage } = require('./lineart.js');
 
 // === Load .env file if exists (for local dev) ===
 try {
@@ -418,7 +419,7 @@ app.post('/generate', async (req, res) => {
     const styleModifier = style === 'simple'
       ? 'Use simple thick black outlines with very few details. Designed for young children ages 3-6.'
       : style === 'detailed'
-        ? 'Use highly detailed intricate lines with complex patterns. Designed for adults or older kids.'
+        ? 'Use intricate designs built from many small closed shapes and repeating patterns, all drawn with crisp, solid black lines of even, medium weight, never hairline-thin. Add detail with more shapes and patterns, never with hatching, cross-hatching, stippling, pencil texture or shading. Designed for adults or older kids.'
         : 'Use medium-detail clear black outlines. Designed for kids ages 6-12.';
 
     const fullPrompt = `Black and white coloring book page line art of: ${prompt.trim()}. ${styleModifier} Pure white background, only black outlines, NO color, NO shading, NO gray, NO gradients. Clean printable coloring page style with thick uniform black lines on white. Suitable for printing on standard paper.`;
@@ -437,7 +438,18 @@ app.post('/generate', async (req, res) => {
     // /download-pdf accepts only image data, never a web address, so a reply without base64 is an error.
     const b64 = result && result.data && result.data[0] && result.data[0].b64_json;
     if (!b64) throw new Error('No image data returned');
-    const imageUrl = `data:image/png;base64,${b64}`;
+    // A page drawn like a pencil sketch (gray shading, hatching, stippling) is turned into clean black and white;
+    // clean line art comes back unchanged (lineart.js). Any problem here keeps the page as the model drew it.
+    let pageB64 = b64;
+    try {
+      const lineart = cleanColoringPage(Buffer.from(b64, 'base64'));
+      if (lineart.cleaned) pageB64 = lineart.buffer.toString('base64');
+      const level = style === 'simple' || style === 'detailed' ? style : 'medium';
+      if (lineart.before) console.log(`[lineart] ${level} detached=${lineart.before.detached.toFixed(4)} cleaned=${lineart.cleaned} ${lineart.ms}ms`);
+    } catch (e) {
+      console.error('[lineart] skipped:', e.message);
+    }
+    const imageUrl = `data:image/png;base64,${pageB64}`;
 
     res.json({
       success: true,
