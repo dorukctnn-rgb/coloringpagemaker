@@ -75,11 +75,11 @@ const THEME_GUIDES = {
   ],
   cta: `Six table groups, six designs: that is three days on the free plan. Pro makes up to 150 pages a day with no watermark and a commercial license, for $9 once.`,
   related: [
-    { href: '/fall-coloring-pages', label: 'Fall coloring pages', note: 'leaves, scarecrows and pumpkin patches' },
     { href: '/christmas-coloring-pages', label: 'Christmas coloring pages', note: 'with a 24-day Advent plan' },
     { href: '/animal-coloring-pages', label: 'Animal coloring pages', note: 'bats, owls and black cats drawn as outlines' },
     { href: '/adult-coloring-pages', label: 'Adult coloring pages', note: 'detailed pages and paper tips' },
-    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' },
+    { href: '/fall-coloring-pages', label: 'Fall coloring pages', note: 'leaves, scarecrows and pumpkin patches' }
   ]
 },
 
@@ -140,11 +140,11 @@ const THEME_GUIDES = {
   ],
   cta: `Twenty-four Advent pages take 12 days on the free plan. Pro makes them in one sitting, with no watermark and a commercial license, for $9 once.`,
   related: [
-    { href: '/winter-coloring-pages', label: 'Winter coloring pages', note: 'snowmen, snow days and polar animals' },
     { href: '/halloween-coloring-pages', label: 'Halloween coloring pages', note: 'from cute to spooky' },
     { href: '/animal-coloring-pages', label: 'Animal coloring pages', note: 'reindeer, robins and polar bears' },
     { href: '/adult-coloring-pages', label: 'Adult coloring pages', note: 'intricate wreaths and villages' },
-    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'building a year of themed pages' }
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'building a year of themed pages' },
+    { href: '/winter-coloring-pages', label: 'Winter coloring pages', note: 'snowmen, snow days and polar animals' }
   ]
 },
 

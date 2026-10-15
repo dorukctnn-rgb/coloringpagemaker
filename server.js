@@ -318,10 +318,13 @@ const NICHE_PAGES = {
 // Every theme page in one order (used for "Browse more themes" and the sitemap).
 const THEME_ORDER = [
   'unicorn-coloring-pages', 'dinosaur-coloring-pages', 'mandala-coloring-pages', 'halloween-coloring-pages',
-  'fall-coloring-pages', 'thanksgiving-coloring-pages', 'turkey-coloring-pages', 'christmas-coloring-pages',
-  'winter-coloring-pages', 'animal-coloring-pages', 'flower-coloring-pages', 'princess-coloring-pages',
+  'christmas-coloring-pages', 'animal-coloring-pages', 'flower-coloring-pages', 'princess-coloring-pages',
   'easter-coloring-pages', 'adult-coloring-pages'
 ];
+// Seasonal guides come after the original themes, so every existing list keeps its links and its order and
+// the seasonal pages are only added at the end (sitemap, guides hub and the "Browse more themes" rotation).
+const SEASONAL_THEMES = ['fall-coloring-pages', 'thanksgiving-coloring-pages', 'turkey-coloring-pages', 'winter-coloring-pages'];
+const ALL_THEMES = [...THEME_ORDER, ...SEASONAL_THEMES];
 // The "Free printable ... coloring pages" gallery for a theme page, or null.
 const examplesFor = slug => (THEME_EXAMPLES[slug] ? { slug, ...THEME_EXAMPLES[slug] } : null);
 const themeLabel = slug => (THEME_GUIDES[slug] ? THEME_GUIDES[slug].h1 : NICHE_PAGES[slug].h1);
@@ -691,7 +694,7 @@ app.get('/blog', (req, res) => {
   const extra = Object.keys(BLOG_POSTS).filter(s => !listed.has(s));
   const groups = [...BLOG_GROUPS, ...(extra.length ? [{ id: 'more', title: 'More guides', intro: '', slugs: extra }] : [])]
     .map(g => ({ ...g, posts: g.slugs.filter(s => BLOG_POSTS[s]).map(s => ({ slug: s, ...BLOG_POSTS[s] })) }));
-  const themes = THEME_ORDER.filter(s => THEME_NOTES[s]).map(s => ({ slug: s, label: THEME_NOTES[s][0], note: THEME_NOTES[s][1] }));
+  const themes = ALL_THEMES.filter(s => THEME_NOTES[s]).map(s => ({ slug: s, label: THEME_NOTES[s][0], note: THEME_NOTES[s][1] }));
   const ld = jsonLd({
     '@context': 'https://schema.org',
     '@graph': [
@@ -731,8 +734,9 @@ app.get('/:slug', (req, res, next) => {
       page: NICHE_PAGES[slug],
       slug,
       examples: examplesFor(slug),
-      // The next six themes after this one, wrapping around, so every theme page gets links from six others.
-      allPages: [...THEME_ORDER.slice(THEME_ORDER.indexOf(slug) + 1), ...THEME_ORDER.slice(0, Math.max(0, THEME_ORDER.indexOf(slug)))].filter(s => s !== slug).slice(0, 6).map(s => ({ slug: s, h1: themeLabel(s) }))
+      // The next six themes after this one, wrapping around, so every theme page gets links from six others,
+      // followed by the seasonal guides.
+      allPages: [...[...THEME_ORDER.slice(THEME_ORDER.indexOf(slug) + 1), ...THEME_ORDER.slice(0, Math.max(0, THEME_ORDER.indexOf(slug)))].filter(s => s !== slug).slice(0, 6), ...SEASONAL_THEMES].map(s => ({ slug: s, h1: themeLabel(s) }))
     });
   }
   if (BLOG_POSTS[slug]) {
@@ -757,7 +761,7 @@ app.get('/sitemap.xml', (req, res) => {
   const entries = [
     ['/', HOME_UPDATED],
     ['/blog', BLOG_INDEX_UPDATED],
-    ...THEME_ORDER.map(s => ['/' + s, (THEME_GUIDES[s] || NICHE_PAGES[s] || {}).updated || SITEMAP_LASTMOD]),
+    ...ALL_THEMES.map(s => ['/' + s, (THEME_GUIDES[s] || NICHE_PAGES[s] || {}).updated || SITEMAP_LASTMOD]),
     ...Object.keys(BLOG_POSTS).map(s => ['/' + s, BLOG_POSTS[s].updated || SITEMAP_LASTMOD]),
     ['/privacy', PRIVACY_UPDATED],
     ['/terms', TERMS_UPDATED]
