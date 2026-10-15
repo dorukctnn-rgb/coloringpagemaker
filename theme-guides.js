@@ -7,7 +7,7 @@
 const THEME_GUIDES = {
 
 'halloween-coloring-pages': {
-  updated: '2026-10-09',
+  updated: '2026-10-15',
   checked: '9 October 2026',
   title: 'Halloween Coloring Pages From Cute to Spooky (Free Generator)',
   description: 'Make Halloween coloring pages at the right scare level: smiling pumpkins for ages 3 to 5, haunted houses for older kids, Victorian mansions for adults. Free, no signup.',
@@ -75,6 +75,7 @@ const THEME_GUIDES = {
   ],
   cta: `Six table groups, six designs: that is three days on the free plan. Pro makes up to 150 pages a day with no watermark and a commercial license, for $9 once.`,
   related: [
+    { href: '/fall-coloring-pages', label: 'Fall coloring pages', note: 'leaves, scarecrows and pumpkin patches' },
     { href: '/christmas-coloring-pages', label: 'Christmas coloring pages', note: 'with a 24-day Advent plan' },
     { href: '/animal-coloring-pages', label: 'Animal coloring pages', note: 'bats, owls and black cats drawn as outlines' },
     { href: '/adult-coloring-pages', label: 'Adult coloring pages', note: 'detailed pages and paper tips' },
@@ -83,7 +84,7 @@ const THEME_GUIDES = {
 },
 
 'christmas-coloring-pages': {
-  updated: '2026-10-09',
+  updated: '2026-10-15',
   checked: '9 October 2026',
   title: 'Christmas Coloring Pages Generator, With a 24-Day Advent Plan',
   description: 'Generate Christmas coloring pages for toddlers to adults, follow a 24-day Advent coloring plan that fits the free tier, and print pages as cards or ornaments.',
@@ -139,6 +140,7 @@ const THEME_GUIDES = {
   ],
   cta: `Twenty-four Advent pages take 12 days on the free plan. Pro makes them in one sitting, with no watermark and a commercial license, for $9 once.`,
   related: [
+    { href: '/winter-coloring-pages', label: 'Winter coloring pages', note: 'snowmen, snow days and polar animals' },
     { href: '/halloween-coloring-pages', label: 'Halloween coloring pages', note: 'from cute to spooky' },
     { href: '/animal-coloring-pages', label: 'Animal coloring pages', note: 'reindeer, robins and polar bears' },
     { href: '/adult-coloring-pages', label: 'Adult coloring pages', note: 'intricate wreaths and villages' },
@@ -147,7 +149,7 @@ const THEME_GUIDES = {
 },
 
 'dinosaur-coloring-pages': {
-  updated: '2026-10-09',
+  updated: '2026-10-15',
   checked: '9 October 2026',
   title: 'Dinosaur Coloring Pages With the Science Right (Free Generator)',
   description: 'Make dinosaur coloring pages that pair species that really lived together, with a feathered Velociraptor and a scaly T. rex. Dates from the Natural History Museum.',
@@ -222,7 +224,7 @@ const THEME_GUIDES = {
 },
 
 'adult-coloring-pages': {
-  updated: '2026-10-09',
+  updated: '2026-10-15',
   checked: '9 October 2026',
   title: 'Adult Coloring Pages, Intricate or Bold and Easy (AI Generator)',
   description: 'Generate adult coloring pages at the detail you enjoy: intricate zentangle and botanical pages, or bold-and-easy pages with large spaces. Paper tips for pencils and markers.',
@@ -292,7 +294,7 @@ const THEME_GUIDES = {
 },
 
 'princess-coloring-pages': {
-  updated: '2026-10-09',
+  updated: '2026-10-15',
   checked: '9 October 2026',
   title: 'Princess Coloring Pages: Original Princesses Your Child Describes',
   description: `Build a princess coloring page from your child's answers: hair, outfit, pet, castle. Plus fairy-tale scenes from Perrault and the Grimms that are free to draw.`,
@@ -364,7 +366,7 @@ const THEME_GUIDES = {
 },
 
 'animal-coloring-pages': {
-  updated: '2026-10-09',
+  updated: '2026-10-15',
   checked: '9 October 2026',
   title: 'Animal Coloring Pages for Any Animal, Pet or Science Unit',
   description: 'Generate a coloring page of any animal: a pet portrait, a frog life cycle, a habitat scene. How to keep zebras, pandas and penguins from printing as black blobs.',
@@ -433,7 +435,7 @@ const THEME_GUIDES = {
 },
 
 'unicorn-coloring-pages': {
-  updated: '2026-10-09',
+  updated: '2026-10-15',
   checked: '9 October 2026',
   title: 'Unicorn Coloring Pages, From Baby Unicorns to Heraldry',
   description: `Generate unicorn coloring pages for toddlers to adults: baby unicorns, winged unicorns, a narwhal and Scotland's heraldic unicorn, with party and naming tips.`,
@@ -486,6 +488,270 @@ const THEME_GUIDES = {
     { href: '/princess-coloring-pages', label: 'Princess coloring pages', note: 'princesses your child designs' },
     { href: '/animal-coloring-pages', label: 'Animal coloring pages', note: 'real animals, pets and habitats' },
     { href: '/adult-coloring-pages', label: 'Adult coloring pages', note: 'detailed and bold-and-easy pages' }
+  ]
+},
+
+'fall-coloring-pages': {
+  updated: '2026-10-15',
+  checked: '15 October 2026',
+  title: 'Fall Coloring Pages: Free Printables and a Generator',
+  description: 'Free printable fall coloring pages and a generator for more: autumn leaves and acorns for toddlers, scarecrows and pumpkin patches for kids, harvest scenes for adults.',
+  eyebrow: 'Fall coloring page generator',
+  h1: 'Fall and autumn coloring pages',
+  lead: `Describe an autumn scene and print it: one big maple leaf for a toddler, a scarecrow in a pumpkin patch for a first grader, a harvest crate of apples for an adult. Below are prompts by age, a leaf walk that ends in coloring pages, and why leaves turn yellow and red.`,
+  name: 'fall coloring page',
+  topic: 'fall coloring pages',
+  recipesHeading: 'Fall prompts by age',
+  toolHeading: 'Describe your fall page',
+  defaultStyle: 'simple',
+  presetPrompt: `a maple leaf, an oak leaf and an acorn, big simple shapes, no background`,
+  chips: ['hedgehog curled up in a pile of leaves', 'squirrel holding an acorn on a branch', 'basket of apples under an apple tree', 'owl on a branch with falling leaves'],
+  recipes: [
+    { who: 'Ages 2 to 5', style: 'simple', prompt: `a maple leaf, an oak leaf and an acorn, big simple shapes, no background`, why: `Three things children pick up on a walk, each one a single large shape.` },
+    { who: 'Ages 6 to 9', style: 'medium', prompt: `a friendly scarecrow in a pumpkin patch with a wheelbarrow of pumpkins and leaves falling, crows drawn as outlines`, why: `A busy farm scene with a friendly face. Outlined crows stay white instead of printing as black shapes.` },
+    { who: 'Ages 6 to 9', style: 'medium', prompt: `a hedgehog and a squirrel gathering acorns under an oak tree`, why: `Two animals getting ready for winter, which gives a science lesson something to color.` },
+    { who: 'Ages 9 to 12', style: 'medium', prompt: `five different tree leaves in a row: maple, oak, ginkgo, birch and sweetgum, each with an empty label box under it`, why: `A leaf identification sheet. Children write the names in the boxes, so the generator never has to spell them.` },
+    { who: 'Teens and adults', style: 'medium', prompt: `a wooden crate full of apples with pumpkins, gourds and maple leaves around it, clean bold outlines`, why: `A harvest still life with dozens of separate shapes to fill.` }
+  ],
+  sections: [
+    { h2: 'Fall pages by age', blocks: [
+      { table: { head: ['Ages', 'Subjects that work', 'Level'], rows: [
+        ['2 to 5', 'one leaf, an acorn, a pumpkin, an apple', 'Simple'],
+        ['6 to 9', 'scarecrows, pumpkin patches, animals storing food', 'Medium'],
+        ['9 to 12', 'leaf identification sheets, orchards, a hayride', 'Medium'],
+        ['Teens and adults', 'harvest still lifes, porches, leaf mandalas', 'Medium']
+      ] } },
+      { p: `Fall pages also bridge the season's holidays. Pumpkins without faces work from September to the end of November, while [Halloween pages](/halloween-coloring-pages) and [Thanksgiving pages](/thanksgiving-coloring-pages) each have their own few weeks.` }
+    ] },
+    { h2: 'A leaf walk that ends in coloring pages', blocks: [
+      { p: `Collecting leaves gives children a reason to look closely before they color.` },
+      { ul: [
+        `**Collect.** On a walk, each child picks three or four leaves of different shapes. Flat, dry leaves keep best.`,
+        `**Match.** Print the leaf identification prompt above, let children find their leaves on the sheet and write the names in the boxes.`,
+        `**Color from life.** Lay the real leaves next to the page and copy their colors, including the spots and the edges that turned first.`,
+        `**Rub.** Very young children can put a leaf under thin paper and rub a crayon over it, then color a page of the same leaf.`
+      ] }
+    ] },
+    { h2: 'Why leaves turn yellow, orange and red', blocks: [
+      { p: `Leaves are green because of chlorophyll. Before they fall, trees break the chlorophyll down and take back much of the nitrogen in it. Yellow and orange pigments, the carotenoids, are in the leaf too, and some of them stay after the green has gone. Red is different: it comes from anthocyanins, which many trees make just before their leaves fall. At the Harvard Forest in Massachusetts, about 70 percent of the shrubs and trees produce them (Harvard Forest).` },
+      { p: `That makes a good coloring lesson: hand out only yellow and orange first, then add red and purple once children have heard where those colors come from.` }
+    ] },
+    { h2: 'When fall starts and ends', blocks: [
+      { p: `Weather forecasters count fall as September, October and November. Astronomers start it at the September equinox, when the sun passes directly over the equator, and end it at the winter solstice in December (NOAA). Either way, fall pages stay in season until December, when [winter coloring pages](/winter-coloring-pages) take over.` }
+    ] }
+  ],
+  faq: [
+    { q: 'Which fall coloring pages suit toddlers?', a: `One large object on Simple: a maple leaf, an acorn, a pumpkin or an apple. Leave scarecrows and pumpkin patches until ages 5 or 6, when children can stay inside smaller shapes.` },
+    { q: 'Is there a difference between fall and autumn coloring pages?', a: `No. “Fall” is the usual word in the United States and “autumn” in Britain. Both work in a prompt, and the pages come out the same.` },
+    { q: 'Can I make fall coloring pages for adults?', a: `Yes. Ask for a scene with many separate shapes, such as a harvest crate of apples and gourds, a porch with pumpkins, or a mandala made of oak and maple leaves. See [adult coloring pages](/adult-coloring-pages) for paper and detail tips.` },
+    { q: 'How do I print a fall page without a gray sky?', a: `Describe the weather as outlines: “clouds drawn as outlines”, “leaves falling, drawn in outline”. Words such as dusk, sunset or silhouette pull the generator toward dark areas.` },
+    { q: 'Can I sell fall coloring pages I make here?', a: `With Pro, yes: it includes commercial use. Our [Etsy guide](/sell-coloring-books-on-etsy) covers fees, file limits and Etsy's rule that AI-made items must say so.` }
+  ],
+  sources: [
+    { text: 'Harvard Forest: The process of leaf color change', href: 'https://harvardforest.fas.harvard.edu/leaf-process' },
+    { text: 'NOAA NCEI: Meteorological versus astronomical seasons', href: 'https://www.ncei.noaa.gov/news/meteorological-versus-astronomical-seasons' }
+  ],
+  cta: `One leaf sheet photocopied covers a class, but 24 different autumn scenes take 12 days on the free plan. Pro makes them in one sitting, with no watermark and a commercial license, for $9 once.`,
+  related: [
+    { href: '/thanksgiving-coloring-pages', label: 'Thanksgiving coloring pages', note: 'pies, cornucopias and a thankful tree' },
+    { href: '/turkey-coloring-pages', label: 'Turkey coloring pages', note: 'cartoon, realistic or without feathers' },
+    { href: '/halloween-coloring-pages', label: 'Halloween coloring pages', note: 'from cute to spooky' },
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
+  ]
+},
+
+'thanksgiving-coloring-pages': {
+  updated: '2026-10-15',
+  checked: '15 October 2026',
+  title: 'Thanksgiving Coloring Pages: Free Printables and a Generator',
+  description: 'Free printable Thanksgiving coloring pages and a generator for more: pumpkin pie for toddlers, a cornucopia for kids, a full dinner table for adults, and a thankful tree for class.',
+  eyebrow: 'Thanksgiving coloring page generator',
+  h1: `Thanksgiving coloring pages for the kids' table and the classroom`,
+  lead: `Describe a Thanksgiving page and print it: a pumpkin pie for a toddler, a cornucopia for a first grader, a whole dinner table for an adult. Thanksgiving falls on Thursday 26 November 2026. Below are prompts by age, a plan for the kids' table, a thankful tree and what happened at the 1621 harvest.`,
+  name: 'Thanksgiving coloring page',
+  topic: 'Thanksgiving coloring pages',
+  recipesHeading: 'Thanksgiving prompts by age',
+  toolHeading: 'Describe your Thanksgiving page',
+  defaultStyle: 'simple',
+  presetPrompt: `a pumpkin pie on a plate with one slice cut out, big simple shapes, no background`,
+  chips: ['basket of corn, squash and apples', 'turkey in a pumpkin patch', 'harvest wagon with hay bales', 'apple pie cooling on a windowsill'],
+  recipes: [
+    { who: 'Ages 2 to 5', style: 'simple', prompt: `a pumpkin pie on a plate with one slice cut out, big simple shapes, no background`, why: `One food every child at the table knows, in a few large shapes.` },
+    { who: 'Ages 6 to 9', style: 'medium', prompt: `a cornucopia overflowing with pumpkins, apples, corn, pears and grapes`, why: `The horn of plenty is full of separate fruits, so a child can color it one piece at a time.` },
+    { who: 'Ages 6 to 9', style: 'medium', prompt: `a harvest wagon full of pumpkins, corn and hay bales on a farm road, clean bold outlines`, why: `A farm scene with no people, which keeps the page about the harvest.` },
+    { who: 'Class activity', style: 'simple', prompt: `a bare tree with a thick trunk and ten empty leaf shapes on its branches, big simple shapes, no background`, why: `A thankful tree: each child writes one thing they are thankful for in a leaf (see below).` },
+    { who: 'Teens and adults', style: 'medium', prompt: `a Thanksgiving table with a roast turkey on a platter, a pumpkin pie and a bowl of corn, clean bold outlines, no people`, why: `A full table gives adults dishes, textures and table linen to fill.` }
+  ],
+  sections: [
+    { h2: `Coloring pages for the kids' table`, blocks: [
+      { p: `A coloring page at each place keeps younger guests busy while the food is carved and passed. Plan it like the seating:` },
+      { ul: [
+        `**One page per child, by age.** A pie or a single turkey for the under-fives, a cornucopia or a harvest wagon for six- to nine-year-olds.`,
+        `**Tape it down.** A piece of tape at two corners stops the page from sliding, and it works as a place card if you write the child's name at the top.`,
+        `**Start a few days early.** Eight different pages take four days on the free plan (2 a day). Or make one page and photocopy it.`
+      ] }
+    ] },
+    { h2: 'A thankful tree for a class or a family', blocks: [
+      { p: `Print the bare tree with empty leaves from the prompts above. Each child writes or draws one thing they are thankful for in a leaf, then colors the tree. For a class display, give every child a copy and pin the trees up together. For a family, pass one copy around the table and let everyone fill a leaf.` }
+    ] },
+    { h2: 'What happened in 1621', blocks: [
+      { p: `In the fall of 1621, after their first harvest, the English colonists at Plymouth held a harvest celebration. Massasoit, a leader of the Wampanoag, came with about 90 of his men, and they joined the English for three days of feasting and entertainment. It took place sometime between 21 September and 9 November 1621, and only in the 19th century did it become known as the “First Thanksgiving” (Plimoth Patuxet Museums).` },
+      { p: `For a history lesson, a page of the harvest itself, with corn, squash and beans, teaches more than a page of costumes.` }
+    ] },
+    { h2: 'Why it is always a Thursday in November', blocks: [
+      { p: `President Lincoln's 1863 proclamation made Thanksgiving a yearly holiday on the last Thursday of November. In 1941 Congress fixed it on the fourth Thursday instead, because some Novembers have five Thursdays (National Archives). In 2026 that is Thursday 26 November, a federal holiday in the United States (OPM).` }
+    ] }
+  ],
+  faq: [
+    { q: 'When is Thanksgiving in 2026?', a: `In the United States, on Thursday 26 November 2026. It is always the fourth Thursday of November (National Archives, OPM).` },
+    { q: 'Which Thanksgiving coloring pages suit toddlers?', a: `One large object on Simple: a pumpkin pie, a single pumpkin, an apple or a [cartoon turkey](/turkey-coloring-pages). Leave full tables and cornucopias for children of 6 and up.` },
+    { q: 'Can I make Thanksgiving pages for church or Sunday school?', a: `Yes. Describe the scene, for example a harvest of wheat sheaves, grapes and bread, and write the verse in by hand. The generator draws pictures and cannot be relied on to spell words.` },
+    { q: `How many pages do I need for the kids' table?`, a: `One per child plus two spare. The free plan makes two different pages a day, so start four days ahead for eight children, or photocopy one design.` },
+    { q: 'Can I sell Thanksgiving coloring pages I make here?', a: `With Pro, yes: it includes commercial use. Leave cartoon and film characters out of anything you sell. Our [Etsy guide](/sell-coloring-books-on-etsy) covers fees and Etsy's rules for AI-made items.` }
+  ],
+  sources: [
+    { text: 'OPM: Federal holidays (2026 schedule)', href: 'https://www.opm.gov/policy-data-oversight/pay-leave/federal-holidays/' },
+    { text: 'National Archives: Congress establishes Thanksgiving', href: 'https://www.archives.gov/legislative/features/thanksgiving' },
+    { text: 'Plimoth Patuxet Museums: Thanksgiving history', href: 'https://plimoth.org/for-students/homework-help/thanksgiving-history' }
+  ],
+  cta: `A different page for each of eight children takes four days on the free plan. Pro makes up to 150 pages a day with no watermark and a commercial license, for $9 once.`,
+  related: [
+    { href: '/turkey-coloring-pages', label: 'Turkey coloring pages', note: 'cartoon, realistic or without feathers' },
+    { href: '/fall-coloring-pages', label: 'Fall coloring pages', note: 'leaves, scarecrows and pumpkin patches' },
+    { href: '/christmas-coloring-pages', label: 'Christmas coloring pages', note: 'with a 24-day Advent plan' },
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
+  ]
+},
+
+'turkey-coloring-pages': {
+  updated: '2026-10-15',
+  checked: '15 October 2026',
+  title: 'Turkey Coloring Pages: Cute, Realistic or Without Feathers',
+  description: 'Free printable turkey coloring pages: a cartoon turkey for toddlers, a turkey without feathers for the feather craft, a strutting wild turkey for older kids. Make your own in seconds.',
+  eyebrow: 'Turkey coloring page generator',
+  h1: 'Turkey coloring pages, with or without feathers',
+  lead: `Make a turkey page for any age: a round cartoon turkey for preschool, a turkey body without tail feathers for the add-your-own-feathers craft, or a wild turkey strutting with its tail fanned. Below are prompts, the feather craft step by step and a few true facts about wild turkeys.`,
+  name: 'turkey coloring page',
+  topic: 'turkey coloring pages',
+  recipesHeading: 'Turkey prompts by age',
+  toolHeading: 'Describe your turkey page',
+  defaultStyle: 'simple',
+  presetPrompt: `a smiling cartoon turkey with a big fan of rounded tail feathers, big simple shapes, black outlines only, no background`,
+  chips: ['turkey wearing a scarf and boots', 'mother turkey with three chicks', 'turkey hiding behind a pumpkin', 'turkey in a pumpkin patch'],
+  recipes: [
+    { who: 'Ages 2 to 5', style: 'simple', prompt: `a smiling cartoon turkey with a big fan of rounded tail feathers, big simple shapes, black outlines only, no background`, why: `Each tail feather is one big shape, so even a three-year-old can give every feather its own color.` },
+    { who: 'Feather craft', style: 'simple', prompt: `a plain turkey body without any tail feathers: round body, head with a wattle, small wings and feet, big simple shapes, no background`, why: `The starting page for paper, handprint or thankful feathers (see below).` },
+    { who: 'Ages 6 to 9', style: 'medium', prompt: `a mother turkey and three chicks walking through tall grass, clean bold outlines`, why: `A family scene, and a chance to show that a turkey hen looks quite different from a male.` },
+    { who: 'Ages 9 to 12', style: 'medium', prompt: `a wild turkey strutting on grass with its tail feathers fanned out, each feather a separate outline, clean bold lines, white background`, why: `Closer to the real bird, with every feather drawn as its own shape.` },
+    { who: 'Teens and adults', style: 'medium', prompt: `a wild turkey at the edge of a forest in autumn, each feather on its wings and fanned tail drawn as a separate outline, clean bold lines`, why: `Hundreds of feathers to fill with bronze, copper and brown.` }
+  ],
+  sections: [
+    { h2: 'The add-your-own-feathers turkey', blocks: [
+      { p: `Many families and classes make a turkey in November by starting from a bare turkey body and adding the feathers themselves. The page without feathers above is made for that.` },
+      { ul: [
+        `**Paper feathers.** Cut feather shapes from colored paper and glue them in a fan behind the body.`,
+        `**Handprint feathers.** Trace each child's hand on colored paper, cut the hands out and use the fingers as feathers.`,
+        `**Thankful feathers.** Write one thing to be thankful for on each feather before gluing it on. It pairs well with the [thankful tree](/thanksgiving-coloring-pages).`,
+        `**Disguise a turkey.** Some schools send home a turkey to disguise as something else, so it will not be eaten at Thanksgiving. Start from the same page, printed at full size, and dress it as a pumpkin, a firefighter or a scarecrow.`
+      ] }
+    ] },
+    { h2: 'Cartoon or realistic', blocks: [
+      { table: { head: ['Style', 'Words to use', 'Ages'], rows: [
+        ['Cartoon', 'smiling, round, big tail feathers, simple shapes', '2 to 6'],
+        ['Storybook', 'turkey family, pumpkin patch, scarf and boots', '5 to 9'],
+        ['Realistic', 'wild turkey, strutting, each feather as a separate outline', '9 and up']
+      ] } },
+      { p: `For realistic pages, ask for each feather “as a separate outline”. Words such as texture or shading pull the drawing toward gray strokes that print muddy.` }
+    ] },
+    { h2: 'Wild turkey facts for the classroom', blocks: [
+      { ul: [
+        `Turkeys are native to North America. Indigenous people in southern Mexico and Central America domesticated them about 2,000 years ago (Missouri Department of Conservation).`,
+        `Adult males have a bare red and blue head with red wattles on the throat and neck, and bronze, shiny feathers. Males, and some females, have a tuft of hairlike feathers on the breast called a beard.`,
+        `In spring, males gobble and strut for females, spreading their tails like a peacock. In winter, turkeys gather in flocks.`
+      ] },
+      { p: `Those colors make a good color-by-fact page: red and blue for the head, bronze and copper for the feathers, and a dark tuft for the beard.` }
+    ] }
+  ],
+  faq: [
+    { q: 'Where can I get a turkey coloring page without feathers?', a: `Download the example on this page, or use the feather craft prompt above. It draws the round body, head, wattle, wings and feet, and leaves the tail empty for paper or handprint feathers.` },
+    { q: 'Which turkey pages suit toddlers?', a: `A cartoon turkey on Simple with a few big tail feathers. Leave realistic turkeys for older children: the feathers are too small to color at this age.` },
+    { q: `What is the red part on a turkey's head?`, a: `The red flaps of skin on the throat and neck are wattles. The head itself is bare skin, red and blue on an adult male (Missouri Department of Conservation).` },
+    { q: 'Can I make a page for a disguise-a-turkey project?', a: `Yes. Print the turkey without feathers at full size so there is room for the disguise, and make a second copy if your child wants to try two ideas.` },
+    { q: 'Can I sell turkey coloring pages I make here?', a: `With Pro, yes: it includes commercial use. Our [Etsy guide](/sell-coloring-books-on-etsy) covers fees, file limits and Etsy's rule that AI-made items must say so.` }
+  ],
+  sources: [
+    { text: 'Missouri Department of Conservation: Wild turkey', href: 'https://mdc.mo.gov/discover-nature/field-guide/wild-turkey' }
+  ],
+  cta: `One turkey photocopied covers a class, but six different turkeys for six tables take three days on the free plan. Pro makes them in one sitting, with no watermark and a commercial license, for $9 once.`,
+  related: [
+    { href: '/thanksgiving-coloring-pages', label: 'Thanksgiving coloring pages', note: 'pies, cornucopias and a thankful tree' },
+    { href: '/fall-coloring-pages', label: 'Fall coloring pages', note: 'leaves, scarecrows and pumpkin patches' },
+    { href: '/animal-coloring-pages', label: 'Animal coloring pages', note: 'real animals, pets and habitats' },
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
+  ]
+},
+
+'winter-coloring-pages': {
+  updated: '2026-10-15',
+  checked: '15 October 2026',
+  title: 'Winter Coloring Pages: Snowmen, Snow Days and Polar Animals',
+  description: 'Free printable winter coloring pages and a generator for more: snowmen for toddlers, sledding hills and polar bear cubs for kids, snowflake patterns for adults. No signup.',
+  eyebrow: 'Winter coloring page generator',
+  h1: 'Winter coloring pages for snow days',
+  lead: `Describe a winter scene and print it: a snowman for a toddler, a polar bear cub sliding down a hill for a first grader, a six-sided snowflake pattern for an adult. Below are prompts by age, a snow-day plan, why snowflakes have six sides and why polar bears never meet penguins.`,
+  name: 'winter coloring page',
+  topic: 'winter coloring pages',
+  recipesHeading: 'Winter prompts by age',
+  toolHeading: 'Describe your winter page',
+  defaultStyle: 'simple',
+  presetPrompt: `a smiling snowman with a scarf, a top hat and stick arms, big simple shapes, no background`,
+  chips: ['mittens, a wool hat and a scarf', 'mug of hot cocoa with marshmallows', 'penguin family on the ice', 'cardinal on a snowy branch'],
+  recipes: [
+    { who: 'Ages 2 to 5', style: 'simple', prompt: `a smiling snowman with a scarf, a top hat and stick arms, big simple shapes, no background`, why: `Three circles and a hat: the first winter page most children can color on their own.` },
+    { who: 'Ages 2 to 5', style: 'simple', prompt: `a pair of mittens, a wool hat and a scarf, big simple shapes, no background`, why: `Clothes children wear every day, so they can copy their own colors.` },
+    { who: 'Ages 6 to 9', style: 'medium', prompt: `a polar bear cub sliding down a snowy slope with pine trees behind it, snowflakes drawn as outlines, clean bold lines`, why: `A playful animal and a whole landscape, with the snowflakes kept as outlines so the sky stays white.` },
+    { who: 'Ages 9 to 12', style: 'medium', prompt: `a log cabin in a snowy pine forest with smoke curling from the chimney, clean bold outlines`, why: `A quiet scene of logs, snow and trees that takes longer to color.` },
+    { who: 'Teens and adults', style: 'medium', prompt: `a large snowflake with six identical arms made of simple geometric shapes, bold clean lines, white background`, why: `A winter mandala: six identical arms for anyone who likes symmetrical patterns.` }
+  ],
+  sections: [
+    { h2: 'A snow-day plan', blocks: [
+      { p: `When school is called off, a short plan keeps the day from turning into one long screen session. Make the pages the night before: two on the free plan, or the whole set with Pro.` },
+      { ul: [
+        `**Morning:** a snowman page for the youngest and a cabin or polar bear scene for older children.`,
+        `**After lunch:** go outside, then color a page of what you saw: tracks in the snow, a bird at the feeder, the snowman you built.`,
+        `**Afternoon:** a snowflake pattern to color slowly, with a mug of cocoa.`
+      ] }
+    ] },
+    { h2: 'Why snowflakes have six sides', blocks: [
+      { p: `Every snowflake is a crystal of ice. As water freezes, its molecules bond into six-sided rings, and that hexagonal pattern carries on as the crystal grows, which is why snowflakes have six sides or six arms (Smithsonian Magazine). That gives a quick lesson for a snowflake page: count the arms before coloring, and color the same part of every arm the same way.` }
+    ] },
+    { h2: 'Polar bears and penguins never meet', blocks: [
+      { p: `Polar bears live on the sea ice of the Arctic, where they hunt seals (Polar Bears International). Penguins are found only in the Southern Hemisphere, most of them on Antarctic coasts and islands (Australian Antarctic Program). A page with a polar bear and a penguin side by side shows a pair that only meets in zoos and picture books.` },
+      { p: `For a science lesson, make two pages, one Arctic and one Antarctic, and let children sort the animals: polar bears, walruses and Arctic foxes on one, penguins on the other.` }
+    ] },
+    { h2: 'Winter pages after the holidays', blocks: [
+      { p: `Weather forecasters count winter as December, January and February (NOAA), so snowmen, mittens and snow days stay in season long after the [Christmas pages](/christmas-coloring-pages) are put away. Pages without Christmas symbols also suit classrooms where not every child celebrates it.` }
+    ] }
+  ],
+  faq: [
+    { q: 'Which winter coloring pages suit toddlers?', a: `One large object on Simple: a snowman, a mitten, a hat or a mug of cocoa. Leave forests and busy snow scenes until children can stay inside smaller shapes, around age 5.` },
+    { q: 'How do I keep a snowy night page from printing black?', a: `Describe the night as outlines: “moon and stars drawn as outlines”, “snowflakes drawn as outlines”. Words such as dark night or silhouette push the page toward large black areas.` },
+    { q: 'Can I make winter pages without Christmas?', a: `Yes. Snowmen, mittens, sledding, cabins and polar animals have nothing to do with the holiday, which makes them easy to use in mixed classrooms and in January and February.` },
+    { q: 'Can I make winter coloring pages for adults?', a: `Yes. Ask for a snowflake with six identical arms made of geometric shapes, a cabin in a snowy forest, or a winter bird on a branch with each feather outlined. See [adult coloring pages](/adult-coloring-pages) for paper tips.` },
+    { q: 'Can I sell winter coloring pages I make here?', a: `With Pro, yes: it includes commercial use. Our [Etsy guide](/sell-coloring-books-on-etsy) covers fees, file limits and Etsy's rule that AI-made items must say so.` }
+  ],
+  sources: [
+    { text: 'Smithsonian Magazine: Snowflakes always have six sides', href: 'https://www.smithsonianmag.com/smart-news/snowflakes-may-have-different-designs-but-they-always-have-six-sides-172052136/' },
+    { text: 'Polar Bears International: Polar bear facts', href: 'https://polarbearsinternational.org/polar-bears-changing-arctic/polar-bear-facts/' },
+    { text: 'Australian Antarctic Program: Penguins', href: 'https://www.antarctica.gov.au/about-antarctica/animals/penguins/' },
+    { text: 'NOAA NCEI: Meteorological versus astronomical seasons', href: 'https://www.ncei.noaa.gov/news/meteorological-versus-astronomical-seasons' }
+  ],
+  cta: `A snow-day set of five pages takes three days on the free plan. Pro makes up to 150 pages a day with no watermark and a commercial license, for $9 once.`,
+  related: [
+    { href: '/christmas-coloring-pages', label: 'Christmas coloring pages', note: 'with a 24-day Advent plan' },
+    { href: '/animal-coloring-pages', label: 'Animal coloring pages', note: 'polar bears, penguins and pets' },
+    { href: '/adult-coloring-pages', label: 'Adult coloring pages', note: 'detailed and bold-and-easy pages' },
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
   ]
 }
 

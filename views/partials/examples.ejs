@@ -1,0 +1,49 @@
+<% if (locals.examples && examples.items && examples.items.length) { %>
+<section class="examples" id="examples" aria-labelledby="examples-title">
+  <h2 id="examples-title"><%= examples.heading %></h2>
+  <p class="examples-intro">Example pages made with ColoringPageMaker's generator. Print them free for personal use, as a PNG or a letter-size PDF, or describe your own page in the generator above.</p>
+  <ul class="examples-grid">
+    <% examples.items.forEach(function (x) { var base = '/examples/' + examples.slug + '/' + x.name; %>
+    <li class="image-card">
+      <figure>
+        <img src="<%= base %>-400.webp" srcset="<%= base %>-400.webp 400w, <%= base %>-800.webp 800w" sizes="(max-width: 640px) calc(100vw - 40px), 276px" width="400" height="400" alt="<%= x.alt %>" loading="lazy" decoding="async">
+        <figcaption><strong><%= x.title %></strong><span><%= x.level %>, made with ColoringPageMaker</span></figcaption>
+      </figure>
+      <div class="actions">
+        <a class="btn-small" href="<%= base %>.png" download="<%= x.name %>-coloring-page.png">Download PNG</a>
+        <button type="button" class="btn-small btn-small-outline" data-example-pdf="<%= base %>.png" data-name="<%= x.name %>-coloring-page">Letter PDF</button>
+      </div>
+    </li>
+    <% }); %>
+  </ul>
+</section>
+<script>
+// "Letter PDF" sends the example PNG through the same /download-pdf route as the pages made here, so a free
+// visitor gets the usual free PDF and a Pro visitor gets it without the watermark. If anything fails, the PNG opens.
+(function () {
+  function save(blob, name) {
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 10000);
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target && e.target.closest ? e.target.closest('[data-example-pdf]') : null;
+    if (!b || b.disabled) return;
+    var png = b.getAttribute('data-example-pdf'), label = b.textContent;
+    b.disabled = true; b.textContent = 'Making PDF...';
+    fetch(png).then(function (r) { if (!r.ok) throw new Error('png'); return r.blob(); })
+      .then(function (blob) {
+        return new Promise(function (ok, fail) { var fr = new FileReader(); fr.onload = function () { ok(fr.result); }; fr.onerror = fail; fr.readAsDataURL(blob); });
+      })
+      .then(function (dataUrl) {
+        return fetch('/download-pdf', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ imageUrls: [dataUrl], token: window.cpmPro ? cpmPro.token() : '' }) });
+      })
+      .then(function (r) { if (!r.ok) throw new Error('pdf'); return r.blob(); })
+      .then(function (pdf) { save(pdf, b.getAttribute('data-name') + '.pdf'); })
+      .catch(function () { window.open(png, '_blank', 'noopener'); })
+      .then(function () { b.disabled = false; b.textContent = label; });
+  });
+})();
+</script>
+<% } %>
