@@ -39,7 +39,8 @@ test('every theme in the sitemap has examples, and every example file exists', (
   assert.deepEqual(themesInSitemap.slice().sort(), themePaths().sort());
   const alts = new Set();
   for (const [slug, g] of Object.entries(THEME_EXAMPLES)) {
-    assert.ok(g.items.length >= 2, slug + ' has at least two examples');
+    // Every theme page has three examples, except princess: no third one passed review within the 10-generation cap.
+    assert.ok(g.items.length >= (slug === 'princess-coloring-pages' ? 2 : 3), slug + ' has ' + g.items.length + ' examples');
     assert.match(g.heading, /^Free printable .+ coloring pages$/);
     for (const x of g.items) {
       for (const suffix of ['.png', '-400.webp', '-800.webp']) {
@@ -145,5 +146,13 @@ test('existing link lists keep their items and order; the seasonal pages are onl
   for (const [slug, added] of [['halloween', 'fall'], ['christmas', 'winter']]) {
     const related = THEME_GUIDES[t(slug)].related.map(r => r.href);
     assert.equal(related[related.length - 1], '/' + t(added), slug + ': the new related link is last');
+  }
+});
+
+test('pages that gained a third example carry the 2026-10-15 sitemap date', () => {
+  const xml = pages.get('/sitemap.xml').replace(/\s+/g, '');
+  for (const slug of ['halloween', 'christmas', 'animal', 'easter', 'adult', 'winter'].map(s => s + '-coloring-pages')) {
+    assert.ok(xml.includes(`${slug}</loc><lastmod>2026-10-15</lastmod>`), slug);
+    assert.equal(THEME_EXAMPLES[slug].items.length, 3, slug);
   }
 });
