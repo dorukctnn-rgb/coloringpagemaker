@@ -1,6 +1,7 @@
 // Theme pages: the "Free printable ... coloring pages" gallery on every theme page and the seasonal guides
-// (fall, Thanksgiving, turkey, winter). server.js runs as a child process with no KV and no OpenAI key, which is
-// enough to render pages, serve the example files and build a free PDF.
+// (fall, Thanksgiving, turkey, winter, nativity, New Year, gingerbread, snowman, Diwali, Hanukkah). server.js runs
+// as a child process with no KV and no OpenAI key, which is enough to render pages, serve the example files and
+// build a free PDF.
 const { test, before, after } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('fs');
@@ -9,7 +10,11 @@ const h = require('./helpers');
 const THEME_EXAMPLES = require('../theme-examples.js');
 const THEME_GUIDES = require('../theme-guides.js');
 
-const SEASONAL = ['fall-coloring-pages', 'thanksgiving-coloring-pages', 'turkey-coloring-pages', 'winter-coloring-pages'];
+const SEASONAL = ['fall-coloring-pages', 'thanksgiving-coloring-pages', 'turkey-coloring-pages', 'winter-coloring-pages',
+  'nativity-coloring-pages', 'new-year-coloring-pages', 'gingerbread-coloring-pages', 'snowman-coloring-pages',
+  'diwali-coloring-pages', 'hanukkah-coloring-pages'];
+// Pages that show two examples: none of their other candidates passed review within the generation cap.
+const TWO_EXAMPLES = ['princess-coloring-pages', 'snowman-coloring-pages'];
 let app;
 let sitemapPaths = [];
 const pages = new Map(); // path -> html
@@ -39,8 +44,8 @@ test('every theme in the sitemap has examples, and every example file exists', (
   assert.deepEqual(themesInSitemap.slice().sort(), themePaths().sort());
   const alts = new Set();
   for (const [slug, g] of Object.entries(THEME_EXAMPLES)) {
-    // Every theme page has three examples, except princess: no third one passed review within the 10-generation cap.
-    assert.ok(g.items.length >= (slug === 'princess-coloring-pages' ? 2 : 3), slug + ' has ' + g.items.length + ' examples');
+    // Every theme page has three examples, except the TWO_EXAMPLES pages.
+    assert.ok(g.items.length >= (TWO_EXAMPLES.includes(slug) ? 2 : 3), slug + ' has ' + g.items.length + ' examples');
     assert.match(g.heading, /^Free printable .+ coloring pages$/);
     for (const x of g.items) {
       for (const suffix of ['.png', '-400.webp', '-800.webp']) {
@@ -118,7 +123,7 @@ test('the seasonal pages render with their own content, JSON-LD and sitemap entr
     for (const t of ['WebPage', 'WebApplication', 'BreadcrumbList', 'FAQPage']) assert.ok(types.includes(t), slug + ' JSON-LD ' + t);
     assert.equal(ld['@graph'].find(n => n['@type'] === 'FAQPage').mainEntity.length, g.faq.length);
     assert.ok(g.sources.length >= 1 && g.sources.every(s => /^https:\/\//.test(s.href)), slug + ' sources');
-    assert.ok(!/disney|bluey|hello kitty|crayola|charlie brown/i.test(JSON.stringify(g)), slug + ': no trademarked characters');
+    assert.ok(!/disney|bluey|hello kitty|crayola|charlie brown|frosty|olaf|grinch|shrek|gingy|rudolph|peppa/i.test(JSON.stringify(g)), slug + ': no trademarked characters');
   }
 });
 
@@ -133,7 +138,8 @@ test('no seasonal page is orphaned', () => {
 test('existing link lists keep their items and order; the seasonal pages are only appended', () => {
   const t = s => s + '-coloring-pages';
   const home = [...pages.get('/').matchAll(/<li><a href="\/([a-z-]+-coloring-pages)"><strong>/g)].map(m => m[1]);
-  assert.deepEqual(home, ['unicorn', 'dinosaur', 'mandala', 'halloween', 'christmas', 'animal', 'princess', 'flower', 'adult', 'fall', 'thanksgiving', 'winter'].map(t));
+  assert.deepEqual(home, ['unicorn', 'dinosaur', 'mandala', 'halloween', 'christmas', 'animal', 'princess', 'flower', 'adult', 'fall', 'thanksgiving', 'winter',
+    'nativity', 'new-year', 'gingerbread', 'snowman', 'diwali', 'hanukkah'].map(t));
   // The rotation the niche pages had before: the next six of the original ten themes, wrapping around.
   const ORIGINAL = ['unicorn', 'dinosaur', 'mandala', 'halloween', 'christmas', 'animal', 'flower', 'princess', 'easter', 'adult'].map(t);
   for (const slug of ['mandala', 'flower', 'easter'].map(t)) {
@@ -143,9 +149,35 @@ test('existing link lists keep their items and order; the seasonal pages are onl
     const i = ORIGINAL.indexOf(slug);
     assert.deepEqual(links, [...[...ORIGINAL.slice(i + 1), ...ORIGINAL.slice(0, i)].slice(0, 6), ...SEASONAL], slug);
   }
-  for (const [slug, added] of [['halloween', 'fall'], ['christmas', 'winter']]) {
-    const related = THEME_GUIDES[t(slug)].related.map(r => r.href);
-    assert.equal(related[related.length - 1], '/' + t(added), slug + ': the new related link is last');
+  // Related lists on existing guides: the original links first, in their order, then the seasonal ones.
+  const related = {
+    halloween: ['christmas', 'animal', 'adult', 'coloring-pages-for-classroom-teachers', 'fall'],
+    christmas: ['halloween', 'animal', 'adult', 'coloring-pages-for-classroom-teachers', 'winter', 'nativity'],
+    winter: ['christmas', 'animal', 'adult', 'coloring-pages-for-classroom-teachers', 'snowman']
+  };
+  for (const [slug, expected] of Object.entries(related)) {
+    assert.deepEqual(THEME_GUIDES[t(slug)].related.map(r => r.href),
+      expected.map(s => '/' + (s.startsWith('coloring-pages-') ? s : t(s))), slug + ': related links');
+  }
+});
+
+test('the second seasonal batch: examples, dates and sources', () => {
+  const batch = { nativity: 3, 'new-year': 3, gingerbread: 3, snowman: 2, diwali: 3, hanukkah: 3 };
+  for (const [s, n] of Object.entries(batch)) {
+    const slug = s + '-coloring-pages';
+    assert.equal(THEME_EXAMPLES[slug].items.length, n, slug + ' examples');
+    assert.equal(THEME_GUIDES[slug].checked, '15 October 2026', slug + ' facts checked');
+    assert.ok(THEME_GUIDES[slug].sources.length >= 2, slug + ' has at least two sources');
+  }
+  // The dates in the copy, each taken from the page's sources.
+  const dates = {
+    'nativity-coloring-pages': 'Friday 25 December 2026',
+    'new-year-coloring-pages': 'Friday 1 January 2027',
+    'diwali-coloring-pages': 'Sunday 8 November',
+    'hanukkah-coloring-pages': 'Friday 4 December'
+  };
+  for (const [slug, date] of Object.entries(dates)) {
+    assert.ok(pages.get('/' + slug).includes(date), slug + ': ' + date);
   }
 });
 

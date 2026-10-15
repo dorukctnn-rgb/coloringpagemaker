@@ -324,7 +324,9 @@ const THEME_ORDER = [
 ];
 // Seasonal guides come after the original themes, so every existing list keeps its links and its order and
 // the seasonal pages are only added at the end (sitemap, guides hub and the "Browse more themes" rotation).
-const SEASONAL_THEMES = ['fall-coloring-pages', 'thanksgiving-coloring-pages', 'turkey-coloring-pages', 'winter-coloring-pages'];
+const SEASONAL_THEMES = ['fall-coloring-pages', 'thanksgiving-coloring-pages', 'turkey-coloring-pages', 'winter-coloring-pages',
+  'nativity-coloring-pages', 'new-year-coloring-pages', 'gingerbread-coloring-pages', 'snowman-coloring-pages',
+  'diwali-coloring-pages', 'hanukkah-coloring-pages'];
 const ALL_THEMES = [...THEME_ORDER, ...SEASONAL_THEMES];
 // The "Free printable ... coloring pages" gallery for a theme page, or null.
 const examplesFor = slug => (THEME_EXAMPLES[slug] ? { slug, ...THEME_EXAMPLES[slug] } : null);
@@ -699,7 +701,13 @@ const THEME_NOTES = {
   'fall-coloring-pages': ['Fall', 'Leaves, scarecrows and why leaves turn red'],
   'thanksgiving-coloring-pages': ['Thanksgiving', "The kids' table, a thankful tree and 1621"],
   'turkey-coloring-pages': ['Turkeys', 'Cartoon, realistic or without feathers'],
-  'winter-coloring-pages': ['Winter', 'Snow days, snowflakes and polar animals']
+  'winter-coloring-pages': ['Winter', 'Snow days, snowflakes and polar animals'],
+  'nativity-coloring-pages': ['Nativity', 'The story in six pages, the ox and the donkey'],
+  'new-year-coloring-pages': ['New Year', 'Fireworks, a countdown clock and the Times Square ball'],
+  'gingerbread-coloring-pages': ['Gingerbread', 'Cookies, candy houses and the 1875 Gingerbread Boy'],
+  'snowman-coloring-pages': ['Snowmen', 'A blank snowman to dress and the best snowman snow'],
+  'diwali-coloring-pages': ['Diwali', 'Diyas, rangoli patterns and the festival of lights'],
+  'hanukkah-coloring-pages': ['Hanukkah', 'A nine-branch menorah, dreidels and latkes']
 };
 app.get('/blog', (req, res) => {
   const listed = new Set(BLOG_GROUPS.flatMap(g => g.slugs));
