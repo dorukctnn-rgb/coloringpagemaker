@@ -1,5 +1,5 @@
 // Example coloring pages on each theme page, under "Free printable ... coloring pages" (views/partials/examples.ejs).
-// Every page was made with this site's own generator: 13 were first made for the Pinterest boards, 28 on
+// Every page was made with this site's own generator: 13 were first made for the Pinterest boards, 45 on
 // 15 October 2026. Files: public/examples/<slug>/<name>.png (1024 px greyscale, the download and the source for
 // the PDF) and <name>-400.webp and <name>-800.webp for display. Keep a name once published: the files are cached
 // for 30 days.
@@ -155,6 +155,70 @@ module.exports = {
         alt: 'Winter coloring page of a polar bear cub sliding down a snowy slope, with pine trees and snowflakes behind it.' },
       { name: 'winter-mittens-hat-scarf', level: 'Simple', title: 'Mittens, a hat and a scarf',
         alt: 'Simple winter coloring page of a pair of mittens, a knitted hat with a pompom and a scarf with fringed ends, thick outlines.' }
+    ]
+  },
+  'nativity-coloring-pages': {
+    heading: 'Free printable nativity coloring pages',
+    items: [
+      { name: 'nativity-baby-manger', level: 'Simple', title: 'Baby in the manger',
+        alt: 'Simple nativity coloring page of baby Jesus asleep in a wooden manger full of hay, with a star above, thick outlines.' },
+      { name: 'nativity-stable-animals', level: 'Simple', title: 'Stable with a donkey, an ox and a sheep',
+        alt: 'Nativity coloring page of the stable at Bethlehem with a donkey, an ox and a sheep beside an empty manger of hay, and a star on the roof.' },
+      { name: 'nativity-shepherd-sheep', level: 'Simple', title: 'Shepherd and his sheep',
+        alt: 'Simple nativity coloring page of a shepherd with a staff and two sheep on a hill, with a bright star in the sky.' }
+    ]
+  },
+  'new-year-coloring-pages': {
+    heading: 'Free printable New Year coloring pages',
+    items: [
+      { name: 'new-year-party-hat', level: 'Simple', title: 'Party hat, balloons and a noisemaker',
+        alt: 'Simple New Year coloring page of a striped party hat, three balloons, a noisemaker and confetti, thick outlines.' },
+      { name: 'new-year-fireworks', level: 'Simple', title: 'Fireworks over the houses',
+        alt: 'Simple New Year\'s Eve coloring page of three fireworks bursting over a row of three small houses, with stars and dots in a white sky.' },
+      { name: 'new-year-clock', level: 'Medium', title: 'Clock with party hats and balloons',
+        alt: 'New Year coloring page of a round clock with tick marks and no numbers, surrounded by party hats, balloons and curly streamers.' }
+    ]
+  },
+  'gingerbread-coloring-pages': {
+    heading: 'Free printable gingerbread coloring pages',
+    items: [
+      { name: 'gingerbread-man', level: 'Simple', title: 'Gingerbread man',
+        alt: 'Simple gingerbread coloring page of a smiling gingerbread man with icing on his arms and feet, three buttons and a bow tie.' },
+      { name: 'gingerbread-house', level: 'Simple', title: 'Gingerbread house',
+        alt: 'Simple gingerbread house coloring page with a scalloped icing roof, round candy decorations, an arched door and a candy cane.' },
+      { name: 'gingerbread-cookie-tray', level: 'Medium', title: 'Tray of gingerbread cookies',
+        alt: 'Gingerbread coloring page of a baking tray of iced cookies: a star, a heart, a Christmas tree and two gingerbread people.' }
+    ]
+  },
+  'snowman-coloring-pages': {
+    heading: 'Free printable snowman coloring pages',
+    items: [
+      { name: 'snowman-family', level: 'Simple', title: 'Big and little snowman',
+        alt: 'Simple snowman coloring page of a big snowman and a little snowman holding hands, both in knitted hats and scarves.' },
+      { name: 'snowman-forest-friends', level: 'Medium', title: 'Snowman with a fox and a rabbit',
+        alt: 'Snowman coloring page of a snowman in a hat and scarf in a snowy pine forest, with a fox and a rabbit sitting beside it.' }
+    ]
+  },
+  'diwali-coloring-pages': {
+    heading: 'Free printable Diwali coloring pages',
+    items: [
+      { name: 'diwali-diya', level: 'Simple', title: 'Diya on a flower',
+        alt: 'Simple Diwali coloring page of a lit diya, a small clay oil lamp with one flame, resting on a large flower, thick outlines.' },
+      { name: 'diwali-rangoli', level: 'Medium', title: 'Round rangoli',
+        alt: 'Diwali coloring page of a round, symmetrical rangoli of flowers, leaves and petals, with small diyas around the center.' },
+      { name: 'diwali-doorway-lanterns', level: 'Medium', title: 'Doorway with lanterns and diyas',
+        alt: 'Diwali coloring page of a front door with two hanging paper lanterns, a string of marigold flowers above it and diyas on the steps.' }
+    ]
+  },
+  'hanukkah-coloring-pages': {
+    heading: 'Free printable Hanukkah coloring pages',
+    items: [
+      { name: 'hanukkah-menorah', level: 'Simple', title: 'Menorah with nine candles',
+        alt: 'Simple Hanukkah coloring page of a menorah with nine lit candles: four on each side and the shamash raised in the middle.' },
+      { name: 'hanukkah-latkes', level: 'Simple', title: 'Latkes and applesauce',
+        alt: 'Simple Hanukkah coloring page of four potato latkes on a plate with a small bowl of applesauce, thick outlines.' },
+      { name: 'hanukkah-sufganiyot', level: 'Simple', title: 'Sufganiyot',
+        alt: 'Simple Hanukkah coloring page of four sufganiyot, round jelly doughnuts dusted with sugar, on a plate.' }
     ]
   }
 };

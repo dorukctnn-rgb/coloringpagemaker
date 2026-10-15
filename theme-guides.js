@@ -144,7 +144,8 @@ const THEME_GUIDES = {
     { href: '/animal-coloring-pages', label: 'Animal coloring pages', note: 'reindeer, robins and polar bears' },
     { href: '/adult-coloring-pages', label: 'Adult coloring pages', note: 'intricate wreaths and villages' },
     { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'building a year of themed pages' },
-    { href: '/winter-coloring-pages', label: 'Winter coloring pages', note: 'snowmen, snow days and polar animals' }
+    { href: '/winter-coloring-pages', label: 'Winter coloring pages', note: 'snowmen, snow days and polar animals' },
+    { href: '/nativity-coloring-pages', label: 'Nativity coloring pages', note: 'the manger, the shepherds and the star' }
   ]
 },
 
@@ -751,6 +752,399 @@ const THEME_GUIDES = {
     { href: '/christmas-coloring-pages', label: 'Christmas coloring pages', note: 'with a 24-day Advent plan' },
     { href: '/animal-coloring-pages', label: 'Animal coloring pages', note: 'polar bears, penguins and pets' },
     { href: '/adult-coloring-pages', label: 'Adult coloring pages', note: 'detailed and bold-and-easy pages' },
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' },
+    { href: '/snowman-coloring-pages', label: 'Snowman coloring pages', note: 'snow families, forest friends and snow science' }
+  ]
+},
+
+'nativity-coloring-pages': {
+  updated: '2026-10-15',
+  checked: '15 October 2026',
+  title: 'Nativity Coloring Pages: Free Printables and a Generator',
+  description: 'Free printable nativity coloring pages and a generator for more: the baby in the manger for toddlers, shepherds and the star for kids, a full stable scene for Sunday school.',
+  eyebrow: 'Nativity coloring page generator',
+  h1: 'Nativity coloring pages for home, church and Sunday school',
+  lead: `Describe a nativity page and print it: the baby asleep in the manger for a toddler, a shepherd and his sheep for a first grader, the whole stable for a Sunday school class. Christmas Day falls on Friday 25 December 2026. Below are prompts by age, the story in six pages, and where the ox, the donkey and the three kings come from.`,
+  name: 'nativity coloring page',
+  topic: 'nativity coloring pages',
+  recipesHeading: 'Nativity prompts by age',
+  toolHeading: 'Describe your nativity page',
+  defaultStyle: 'simple',
+  presetPrompt: `baby Jesus asleep in a wooden manger filled with hay, a bright star above, big simple shapes, no background`,
+  chips: ['donkey, ox and sheep beside an empty manger', 'shepherd with a staff and two sheep under a star', 'angel with wide wings above a stable', 'three wise men carrying gifts, seen from a distance'],
+  recipes: [
+    { who: 'Ages 2 to 5', style: 'simple', prompt: `baby Jesus asleep in a wooden manger filled with hay, a bright star above, big simple shapes, no background`, why: `One gentle figure, the hay and a star: the story on a single page.` },
+    { who: 'Ages 3 to 6', style: 'simple', prompt: `the stable at Bethlehem with an empty manger full of hay, a donkey, an ox and a sheep, a star above the roof, big simple shapes`, why: `Animals young children can name, each one a large shape to color.` },
+    { who: 'Ages 6 to 9', style: 'medium', prompt: `shepherds with their sheep on a hillside at night, an angel above them, moon and stars drawn as outlines`, why: `Luke's Gospel puts the shepherds in the fields at night (Luke 2:8). Outlined stars keep the sky white.` },
+    { who: 'Sunday school', style: 'medium', prompt: `a nativity scene in a stable: Mary and Joseph beside baby Jesus in the manger, a donkey, an ox, two shepherds with a lamb and a star above the roof, gentle faces, clean bold outlines`, why: `Every figure is named, so none is left out. Look at the faces on screen before you print a class set.` },
+    { who: 'Ages 9 and up', style: 'medium', prompt: `three wise men on camels crossing the desert toward a bright star, seen from a distance, clean bold outlines, white sky`, why: `Figures seen from a distance have small, simple faces, and the camels and dunes give older children plenty to color.` }
+  ],
+  sections: [
+    { h2: 'The story in six pages', blocks: [
+      { p: `The nativity story comes from two Gospels. Luke tells of the journey to Bethlehem, the manger and the shepherds (Luke 2), and Matthew of the star, the magi and their gifts (Matthew 2). These six scenes follow both in order. Choose one to put it in the generator, on Simple for younger children and Medium for older ones.` },
+      { groups: [
+        { title: 'From Luke 2', start: 1, items: ['Mary and Joseph on the road to Bethlehem', 'baby Jesus wrapped in cloth, asleep in a manger of hay', 'shepherds and their sheep in a field at night, an angel above them', 'shepherds visiting the baby in the manger, with Mary and Joseph'] },
+        { title: 'From Matthew 2', start: 5, items: ['wise men following a bright star', 'wise men offering gifts of gold, frankincense and myrrh'] }
+      ] },
+      { p: `Six pages take three days on the free plan (2 a day), so a family can start on a weekend in December and finish well before Christmas. For one page a day from 1 to 24 December, use the Advent plan on the [Christmas coloring pages](/christmas-coloring-pages).` }
+    ] },
+    { h2: 'Where the ox and the donkey come from', blocks: [
+      { p: `Neither Luke nor Matthew mentions an ox or a donkey in the nativity story. Luke says that Mary wrapped the baby in swaddling clothes and laid him in a manger, “because there was no room for them in the inn” (Luke 2:7), and a manger is a feeding trough for animals (USCCB notes on Luke 2).` },
+      { p: `The animals came into the scene through Saint Francis of Assisi. For Christmas 1223 he prepared a nativity scene in Greccio, a small town in Italy, and when he arrived he “found a manger full of hay, an ox and a donkey”. There were no statues: the people who were there enacted the scene themselves. Pope Francis tells the story in his 2019 letter on the nativity scene, and adds that its Italian name, presepe, comes from the Latin praesepium, meaning manger (Admirabile signum).` }
+    ] },
+    { h2: 'Three gifts, and how many wise men?', blocks: [
+      { p: `Matthew writes that magi from the east followed a star to the place where the child was and, on entering the house, offered him gifts of gold, frankincense and myrrh (Matthew 2:9 to 11). He names three gifts but does not say how many magi there were. Old Testament verses later led readers to think of them as kings (USCCB notes on Matthew 2), and Pope Francis's letter speaks of placing the statues of the Three Kings in the crèche as the feast of Epiphany approaches.` },
+      { p: `That makes a good question for a class to color around: draw the three gifts on one page, and ask the children how many visitors they think brought them.` }
+    ] },
+    { h2: 'Keep the faces gentle', blocks: [
+      { p: `When we made the examples on this page, the faces were what most often went wrong. On a nativity page they matter most, so a few habits help:` },
+      { ul: [
+        `Add “gentle faces” or “peaceful faces” to any prompt with people in it.`,
+        `For scenes with many people, ask for figures “seen from a distance”, so each face is small and simple.`,
+        `Look at every face on screen before you print. If one looks odd, generate the page again rather than printing it for a class.`
+      ] }
+    ] }
+  ],
+  faq: [
+    { q: 'Which nativity coloring pages suit toddlers?', a: `One figure or one object on Simple: the baby in the manger, a sheep, a donkey or the star. Leave the full stable with many figures until ages 5 or 6.` },
+    { q: 'Do the Gospels mention the ox and the donkey?', a: `Not in the nativity story. Luke tells of the manger and the shepherds, and Matthew of the star, the magi and their gifts. The ox and the donkey come from tradition: they were part of the nativity scene Saint Francis prepared at Greccio in 1223 (Admirabile signum).` },
+    { q: 'How many wise men were there?', a: `Matthew's Gospel does not say. It names three gifts, gold, frankincense and myrrh (Matthew 2:11), and later tradition speaks of three kings.` },
+    { q: 'How do I add a Bible verse to a nativity page?', a: `Print the page and write the verse by hand, or add it in a document before printing. The generator draws pictures and cannot be relied on to spell words.` },
+    { q: 'Can I sell nativity coloring pages I make here?', a: `With Pro, yes: it includes commercial use. Our [Etsy guide](/sell-coloring-books-on-etsy) covers fees, file limits and Etsy's rule that AI-made items must say so.` }
+  ],
+  sources: [
+    { text: 'USCCB: Luke, chapter 2, with notes', href: 'https://bible.usccb.org/bible/luke/2' },
+    { text: 'USCCB: Matthew, chapter 2, with notes', href: 'https://bible.usccb.org/bible/matthew/2' },
+    { text: 'Vatican: Apostolic Letter Admirabile signum on the nativity scene (1 December 2019)', href: 'https://www.vatican.va/content/francesco/en/apost_letters/documents/papa-francesco-lettera-ap_20191201_admirabile-signum.html' },
+    { text: 'OPM: Federal holidays (2026 schedule)', href: 'https://www.opm.gov/policy-data-oversight/pay-leave/federal-holidays/' }
+  ],
+  cta: `Six nativity pages take three days on the free plan. Pro makes them in one sitting, with no watermark and a commercial license, for $9 once.`,
+  related: [
+    { href: '/christmas-coloring-pages', label: 'Christmas coloring pages', note: 'with a 24-day Advent plan' },
+    { href: '/gingerbread-coloring-pages', label: 'Gingerbread coloring pages', note: 'gingerbread men, houses and cookies' },
+    { href: '/winter-coloring-pages', label: 'Winter coloring pages', note: 'snowmen, snow days and polar animals' },
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
+  ]
+},
+
+'new-year-coloring-pages': {
+  updated: '2026-10-15',
+  checked: '15 October 2026',
+  title: 'New Year Coloring Pages: Free Printables and a Generator',
+  description: 'Free printable New Year coloring pages and a generator for more: party hats for toddlers, fireworks and a countdown clock for kids, and a goals page for January.',
+  eyebrow: 'New Year coloring page generator',
+  h1: `New Year coloring pages for New Year's Eve and January`,
+  lead: `Describe a New Year page and print it: a party hat and balloons for a toddler, fireworks over a row of houses for a first grader, a countdown clock for an older child. New Year's Day falls on Friday 1 January 2027. Below are prompts by age, how to add the year without spelling mistakes, a plan for the evening and why a ball drops in Times Square.`,
+  name: 'New Year coloring page',
+  topic: 'New Year coloring pages',
+  recipesHeading: 'New Year prompts by age',
+  toolHeading: 'Describe your New Year page',
+  defaultStyle: 'simple',
+  presetPrompt: `a party hat, a noisemaker and balloons with confetti, big simple shapes, no background`,
+  chips: ['snowman in a party hat with confetti', 'party table with a cake and paper hats', 'owl in a party hat holding a noisemaker', 'fireworks over a lake, drawn as outlines'],
+  recipes: [
+    { who: 'Ages 2 to 5', style: 'simple', prompt: `a party hat, a noisemaker and balloons with confetti, big simple shapes, no background`, why: `Three party things in big shapes, with confetti small enough to dot with a marker.` },
+    { who: 'Ages 5 to 8', style: 'simple', prompt: `fireworks bursting in the sky above a row of three small houses, big simple shapes, white sky`, why: `Each burst is an outline on a white sky, so every firework can get its own colors.` },
+    { who: 'Ages 6 to 9', style: 'medium', prompt: `a round clock with tick marks and no numbers, surrounded by party hats, streamers and balloons, clean bold outlines`, why: `With no numbers on the clock, none can come out wrong: children write in 1 to 12 themselves, a time lesson for the last day of the year.` },
+    { who: 'Class activity', style: 'simple', prompt: `a wide empty banner across the middle of the page with stars, confetti and streamers around the edges, big simple shapes`, why: `Room for the year or a wish for January, written by hand (see below).` },
+    { who: 'Teens and adults', style: 'medium', prompt: `firework bursts and stars filling the whole page in a symmetrical pattern, each burst a separate outline, clean bold lines`, why: `A page of separate bursts to fill slowly, like a mandala made of fireworks.` }
+  ],
+  sections: [
+    { h2: 'Write the year by hand', blocks: [
+      { p: `The generator draws pictures and cannot be relied on to write words or numbers, so a prompt that asks for “2027” or “Happy New Year” can come back with letters that are wrong or not letters at all. Leave the words out of the prompt and add them yourself:` },
+      { ul: [
+        `Ask for “an empty banner” or “an empty sign” where the words should go, as in the class activity prompt above.`,
+        `Write 2027 in pencil on one copy before you photocopy it, so every child's page has it.`,
+        `Let older children draw the year in bubble letters and color it as part of the page.`
+      ] }
+    ] },
+    { h2: `A plan for New Year's Eve`, blocks: [
+      { p: `Midnight is late for young children, so pick an earlier time to count down if you need to. Make the pages a day or two ahead: two on the free plan, or the whole set with Pro.` },
+      { ul: [
+        `**Early evening:** the party hat page for the youngest, fireworks or the clock for older children.`,
+        `**An hour before your countdown:** children draw the clock hands at the time you will count down, and hang the page up.`,
+        `**At the countdown:** everyone holds up a finished page for a photo.`,
+        `**On 1 January:** a goals page from the banner prompt, for the year ahead.`
+      ] }
+    ] },
+    { h2: 'Why a ball drops in Times Square', blocks: [
+      { p: `People were celebrating New Year's Eve in Times Square by 1904, and in 1907 the first New Year's Eve Ball was lowered from the flagpole on top of One Times Square. It was made of iron and wood, lit by one hundred 25-watt bulbs, 5 feet across and 700 pounds in weight. The ball has been lowered every year since, except in 1942 and 1943, when the wartime “dimout” of New York's lights stopped it; the crowds still came and greeted the new year with a minute of silence and chimes (Times Square Alliance).` },
+      { p: `The idea is older than the party. In 1833 a “time-ball” was put up on the Royal Observatory at Greenwich, in England. It dropped at one o'clock every afternoon, so that captains of ships nearby could set their chronometers (Times Square Alliance). That makes a good page for a history lesson: a ball on a mast above an old observatory, drawn as outlines.` }
+    ] }
+  ],
+  faq: [
+    { q: `When is New Year's Day 2027?`, a: `On Friday 1 January 2027, a federal holiday in the United States (OPM). New Year's Eve is Thursday 31 December 2026.` },
+    { q: 'Can the generator write “2027” or “Happy New Year” on a page?', a: `Not reliably. It draws pictures and can turn letters and numbers into shapes that are neither. Ask for an empty banner and write the words by hand.` },
+    { q: 'Which New Year pages suit toddlers?', a: `One or two big objects on Simple: a party hat, balloons or a noisemaker. Fireworks suit children of 5 and up, who can stay inside thinner shapes.` },
+    { q: 'How do I keep a fireworks page from printing a black sky?', a: `Ask for “fireworks drawn as outlines on a white sky”. Words such as night sky, dark or glowing pull the page toward large black areas that use up ink and leave little to color.` },
+    { q: 'Can I sell New Year coloring pages I make here?', a: `With Pro, yes: it includes commercial use. Our [Etsy guide](/sell-coloring-books-on-etsy) covers fees, file limits and Etsy's rule that AI-made items must say so.` }
+  ],
+  sources: [
+    { text: 'OPM: Federal holidays (2027 schedule)', href: 'https://www.opm.gov/policy-data-oversight/pay-leave/federal-holidays/' },
+    { text: `Times Square Alliance: History of New Year's Eve and the Times Square Ball`, href: 'https://www.timessquarenyc.org/nye/nye-history-times-square-ball' }
+  ],
+  cta: `A party set of five pages takes three days on the free plan. Pro makes up to 150 pages a day with no watermark and a commercial license, for $9 once.`,
+  related: [
+    { href: '/winter-coloring-pages', label: 'Winter coloring pages', note: 'snowmen, snow days and polar animals' },
+    { href: '/snowman-coloring-pages', label: 'Snowman coloring pages', note: 'snow families, forest friends and snow science' },
+    { href: '/christmas-coloring-pages', label: 'Christmas coloring pages', note: 'with a 24-day Advent plan' },
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
+  ]
+},
+
+'gingerbread-coloring-pages': {
+  updated: '2026-10-15',
+  checked: '15 October 2026',
+  title: 'Gingerbread Coloring Pages: Gingerbread Men, Houses and Cookies',
+  description: 'Free printable gingerbread coloring pages: a gingerbread man for toddlers, a candy house and a cookie tray for kids, a plain house to decorate, and the 1875 Gingerbread Boy.',
+  eyebrow: 'Gingerbread coloring page generator',
+  h1: 'Gingerbread coloring pages, from cookies to candy houses',
+  lead: `Describe a gingerbread page and print it: a gingerbread man with icing buttons for a toddler, a tray of cookie shapes for a first grader, a plain house that children decorate themselves. Below are prompts by age, a fractions lesson from the Gingerbread Boy of 1875, and what the house in Hansel and Gretel was made of.`,
+  name: 'gingerbread coloring page',
+  topic: 'gingerbread coloring pages',
+  recipesHeading: 'Gingerbread prompts by age',
+  toolHeading: 'Describe your gingerbread page',
+  defaultStyle: 'simple',
+  presetPrompt: `a smiling gingerbread man with icing buttons and a bow tie, big simple shapes, no background`,
+  chips: ['gingerbread girl with a heart on her dress', 'gingerbread train with candy wheels', 'mug of cocoa next to a gingerbread man', 'gingerbread house with a snowy roof'],
+  recipes: [
+    { who: 'Ages 2 to 5', style: 'simple', prompt: `a smiling gingerbread man with icing buttons and a bow tie, big simple shapes, no background`, why: `One big cookie with a few icing details: buttons, a bow tie and wavy lines.` },
+    { who: 'Ages 3 to 6', style: 'simple', prompt: `a gingerbread house with icing on the roof, candy buttons and a candy cane by the door, big simple shapes, no background`, why: `Round candies and a striped cane, each a shape of its own.` },
+    { who: 'Ages 6 to 9', style: 'medium', prompt: `a baking tray of gingerbread cookies: a star, a heart, a tree, a gingerbread man and a gingerbread woman, decorated with icing, clean bold outlines`, why: `Five cookies on one tray, so a child can color one at a time.` },
+    { who: 'Fractions lesson', style: 'simple', prompt: `four identical gingerbread men standing in a row, big simple shapes, no background`, why: `For the 1875 story below: color a quarter of the first, half of the second, three quarters of the third and all of the fourth.` },
+    { who: 'Teens and adults', style: 'medium', prompt: `a large gingerbread house covered in patterned icing: scalloped roof tiles, candy windows, a wreath on the door and a path of round candies, clean bold outlines`, why: `Every roof tile and candy is its own shape, which makes a long, slow page.` }
+  ],
+  sections: [
+    { h2: 'Gingerbread pages by age', blocks: [
+      { table: { head: ['Ages', 'Subjects that work', 'Level'], rows: [
+        ['2 to 5', 'one gingerbread man, a single cookie, a candy cane', 'Simple'],
+        ['6 to 9', 'cookie trays, a decorated house, a gingerbread family', 'Medium'],
+        ['9 to 12', 'a gingerbread village, a bakery window, the 1875 story in scenes', 'Medium'],
+        ['Teens and adults', 'houses covered in patterned icing, cookie wreaths', 'Medium']
+      ] } }
+    ] },
+    { h2: 'Decorate a gingerbread house on paper', blocks: [
+      { p: `A paper house needs no icing bag. Ask the generator for a plain one, “a gingerbread house outline with an empty roof and plain walls, no decorations, big simple shapes”, and let children add the sweets themselves:` },
+      { ul: [
+        `**Draw them.** Icing along the roof, candy windows and a path, drawn in pencil and then colored.`,
+        `**Glue them on.** Circles and stripes cut from colored paper make candies and canes; stickers work too.`,
+        `**Build a street.** Every child decorates one house, and the houses go up side by side on a wall as a gingerbread village.`
+      ] },
+      { p: `A paper house also works in classrooms where real candy is not allowed in craft projects.` }
+    ] },
+    { h2: 'The Gingerbread Boy of 1875', blocks: [
+      { p: `In May 1875, St. Nicholas Magazine printed a story called “The Gingerbread Boy”. Its author wrote that a servant girl from Maine had told it to the author's children, and that it might have been in print before (University of Pittsburgh folktexts). In this version the boy never says “Run, run, as fast as you can.” He calls out to everyone he passes: “I've run away from a little old woman, a little old man... and I can run away from you, I can!”` },
+      { p: `The ending is a ready-made fractions lesson. As the fox eats him, the gingerbread boy says “I'm quarter gone!”, then “I'm half gone!”, then “I'm three-quarters gone!” and at last “I'm all gone!” Print the fractions prompt above, read the ending aloud and let children color each gingerbread man to match.` }
+    ] },
+    { h2: 'The house in Hansel and Gretel', blocks: [
+      { p: `In the Grimm brothers' tale (1857 edition), a snow-white bird leads the children to a little house that is “built entirely from bread with a roof made of cake, and the windows were made of clear sugar” (Grimm, translated by D. L. Ashliman). Ask the generator for that house just as the tale describes it, then for a gingerbread house, and let children compare the two.` }
+    ] }
+  ],
+  faq: [
+    { q: 'Which gingerbread pages suit toddlers?', a: `A single gingerbread man or one cookie on Simple: a big shape with a few icing details. Houses covered in candies suit children of 5 and up.` },
+    { q: 'Can I get a plain gingerbread house to decorate?', a: `Yes. Ask for “a gingerbread house outline with an empty roof and plain walls, no decorations” and let children draw or glue on their own icing and candies.` },
+    { q: 'Where does the Gingerbread Man story come from?', a: `A version called “The Gingerbread Boy” was printed in St. Nicholas Magazine in May 1875. Its author said a servant girl from Maine had told it to the author's children (University of Pittsburgh folktexts).` },
+    { q: 'Is the house in Hansel and Gretel made of gingerbread?', a: `Not in the Grimms' text. The little house is built of bread, with a roof of cake and windows of clear sugar.` },
+    { q: 'Can I sell gingerbread coloring pages I make here?', a: `With Pro, yes: it includes commercial use. Leave film and TV characters out of anything you sell. Our [Etsy guide](/sell-coloring-books-on-etsy) covers fees, file limits and Etsy's rule that AI-made items must say so.` }
+  ],
+  sources: [
+    { text: 'University of Pittsburgh folktexts (D. L. Ashliman): The Gingerbread Boy, St. Nicholas Magazine, May 1875', href: 'https://sites.pitt.edu/~dash/type2025.html#gingerbread' },
+    { text: 'University of Pittsburgh folktexts (D. L. Ashliman): Hansel and Gretel, Grimm', href: 'https://sites.pitt.edu/~dash/grimm015.html' }
+  ],
+  cta: `One gingerbread man photocopied covers a class, but a different page for each of six tables takes three days on the free plan. Pro makes them in one sitting, with no watermark and a commercial license, for $9 once.`,
+  related: [
+    { href: '/christmas-coloring-pages', label: 'Christmas coloring pages', note: 'with a 24-day Advent plan' },
+    { href: '/snowman-coloring-pages', label: 'Snowman coloring pages', note: 'snow families, forest friends and snow science' },
+    { href: '/nativity-coloring-pages', label: 'Nativity coloring pages', note: 'the manger, the shepherds and the star' },
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
+  ]
+},
+
+'snowman-coloring-pages': {
+  updated: '2026-10-15',
+  checked: '15 October 2026',
+  title: 'Snowman Coloring Pages: Free Printables and a Generator',
+  description: 'Free printable snowman coloring pages and a generator for more: a snowman family for toddlers, a blank snowman to dress, forest friends for kids, and the best snowman snow.',
+  eyebrow: 'Snowman coloring page generator',
+  h1: 'Snowman coloring pages, from three circles to a snowy forest',
+  lead: `Describe a snowman and print it: a big and a little snowman holding hands for a toddler, a blank snowman to dress for a preschool class, a snowman with a fox and a rabbit in a pine forest for a first grader. Below are prompts by age, a build-a-snowman activity, which snow makes the best snowman and how tall the tallest one stood.`,
+  name: 'snowman coloring page',
+  topic: 'snowman coloring pages',
+  recipesHeading: 'Snowman prompts by age',
+  toolHeading: 'Describe your snowman page',
+  defaultStyle: 'simple',
+  presetPrompt: `a big snowman and a little snowman holding hands, both with scarves and hats, big simple shapes, no background`,
+  chips: ['snowman with earmuffs and a carrot nose', 'snowman holding a broom by a fence', 'snowman with a bird on its hat', 'snowman sledding down a hill'],
+  recipes: [
+    { who: 'Ages 2 to 5', style: 'simple', prompt: `a big snowman and a little snowman holding hands, both with scarves and hats, big simple shapes, no background`, why: `Two friendly figures made of big circles, easy to stay inside.` },
+    { who: 'Ages 3 to 6', style: 'simple', prompt: `a snowman made of three plain circles with no face, no hat and no scarf, big simple shapes, no background`, why: `A blank snowman: children draw the face, hat and scarf, then color them (see below).` },
+    { who: 'Ages 6 to 9', style: 'medium', prompt: `a snowman in a snowy pine forest with a fox and a rabbit, clean bold outlines`, why: `Two animals and a forest behind them, so the page lasts longer.` },
+    { who: 'Ages 9 to 12', style: 'medium', prompt: `children rolling three big snowballs to build a snowman in a backyard, clean bold outlines`, why: `The building steps in one picture, which pairs with the snow science below.` },
+    { who: 'Teens and adults', style: 'medium', prompt: `a row of five snowmen in different hats and scarves, each scarf with its own stripe or zigzag pattern, clean bold outlines`, why: `Five scarves and five hats, each one a separate pattern to fill.` }
+  ],
+  sections: [
+    { h2: 'Build a snowman on paper', blocks: [
+      { p: `The blank snowman prompt above gives every child the same three circles. What goes on them is up to the child:` },
+      { ul: [
+        `**A face.** A carrot nose, coal eyes, a smile of small stones: drawn in pencil first, then colored.`,
+        `**Clothes.** A hat, a scarf, mittens on stick arms. Scraps of fabric or yarn glued on make a scarf that stands out from the page.`,
+        `**A crowd.** Print at 4 pages per sheet in your printer settings for four small snowmen, and line them up along a wall.`
+      ] }
+    ] },
+    { h2: 'Which snow makes the best snowman', blocks: [
+      { p: `Snow scientists sort snow into five classes by how much liquid water it holds, from dry to slush. Moist to wet snow is best for a snowman, according to a snow scientist at Montana State University: dry snow is like a loose powder that does not stick together, and slush is too fluid to hold a shape. Wet and moist snow falls at around 32°F (0°C), and the best storms for it are a degree or two either side of freezing (Smithsonian Magazine).` },
+      { p: `On a cold, dry day, build the snowman on paper instead, and try outside again when the temperature rises toward freezing.` }
+    ] },
+    { h2: 'The tallest snowman on record', blocks: [
+      { p: `Guinness World Records lists a snow woman built by residents of Bethel, Maine, and the towns around it. She stood 37.21 meters (122 feet 1 inch) tall, took a month to build and was finished on 26 February 2008 (Guinness World Records). Measure your own snowman, on paper or outside, and work out how many of them would have to stand on each other's heads to reach her.` }
+    ] }
+  ],
+  faq: [
+    { q: 'Which snowman pages suit toddlers?', a: `One snowman, or a big and a little one, on Simple. Big round shapes are easy to stay inside; save forests and busy snow scenes for children of 5 and up.` },
+    { q: 'Can I get a blank snowman for children to dress?', a: `Yes. Ask for “a snowman made of three plain circles with no face, no hat and no scarf”. If a face or a hat appears anyway, generate the page again.` },
+    { q: 'What snow is best for building a snowman?', a: `Moist to wet snow, which falls at around 32°F. Dry powder does not stick together, and slush cannot hold a shape (Smithsonian Magazine).` },
+    { q: 'How tall is the tallest snowman?', a: `Guinness World Records lists a snow woman 37.21 meters (122 feet 1 inch) tall, built by residents of Bethel, Maine, and nearby towns and finished on 26 February 2008.` },
+    { q: 'Can I sell snowman coloring pages I make here?', a: `With Pro, yes: it includes commercial use. Leave film and TV characters out of anything you sell. Our [Etsy guide](/sell-coloring-books-on-etsy) covers fees, file limits and Etsy's rule that AI-made items must say so.` }
+  ],
+  sources: [
+    { text: 'Smithsonian Magazine: Do You Want To Build a Snowman? Physics Can Help', href: 'https://www.smithsonianmag.com/science-nature/do-you-want-build-snowman-physics-180954024/' },
+    { text: 'Guinness World Records: Tallest snowperson', href: 'https://www.guinnessworldrecords.com/world-records/tallest-snowman' }
+  ],
+  cta: `A blank snowman photocopied covers a class, but five different snowman pages take three days on the free plan. Pro makes them in one sitting, with no watermark and a commercial license, for $9 once.`,
+  related: [
+    { href: '/winter-coloring-pages', label: 'Winter coloring pages', note: 'snow days, snowflakes and polar animals' },
+    { href: '/christmas-coloring-pages', label: 'Christmas coloring pages', note: 'with a 24-day Advent plan' },
+    { href: '/new-year-coloring-pages', label: 'New Year coloring pages', note: 'party hats, fireworks and a countdown clock' },
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
+  ]
+},
+
+'diwali-coloring-pages': {
+  updated: '2026-10-15',
+  checked: '15 October 2026',
+  title: 'Diwali Coloring Pages: Diyas, Rangoli and Lanterns',
+  description: 'Free printable Diwali coloring pages for Sunday 8 November 2026: a diya for toddlers, rangoli patterns for kids and adults, and a doorway lit with lanterns.',
+  eyebrow: 'Diwali coloring page generator',
+  h1: 'Diwali coloring pages: diyas, rangoli and lanterns',
+  lead: `Describe a Diwali page and print it: one lit diya for a toddler, a round rangoli for an older child, a doorway with lanterns and lamps for a class display. In 2026, Diwali falls on Sunday 8 November. Below are prompts by age, how to color a rangoli, a row-of-lamps display and what the festival of lights celebrates.`,
+  name: 'Diwali coloring page',
+  topic: 'Diwali coloring pages',
+  recipesHeading: 'Diwali prompts by age',
+  toolHeading: 'Describe your Diwali page',
+  defaultStyle: 'simple',
+  presetPrompt: `a lit diya, a small clay oil lamp with one flame, on a simple flower pattern, big simple shapes, no background`,
+  chips: ['plate of sweets next to a lit diya', 'hanging paper lantern with a star pattern', 'string of marigold flowers over a door', 'family lighting a row of diyas on the steps'],
+  recipes: [
+    { who: 'Ages 2 to 5', style: 'simple', prompt: `a lit diya, a small clay oil lamp with one flame, on a simple flower pattern, big simple shapes, no background`, why: `One lamp on a flower: a first Diwali page with only a few shapes.` },
+    { who: 'Ages 5 to 8', style: 'simple', prompt: `a row of five lit diyas on a step, each lamp with a different simple pattern, big simple shapes, no background`, why: `A row of lamps, as in the name Diwali (see below), each with a pattern of its own.` },
+    { who: 'Ages 6 to 9', style: 'medium', prompt: `a round rangoli design of flower petals, leaves and small diyas, symmetrical, clean bold outlines`, why: `A symmetrical design that children color ring by ring.` },
+    { who: 'Ages 9 to 12', style: 'medium', prompt: `a doorway decorated for Diwali with hanging paper lanterns, a string of marigold flowers above the door and diyas on the steps, no people, clean bold outlines`, why: `A whole doorway to decorate: lanterns, flowers, lamps and the door itself.` },
+    { who: 'Teens and adults', style: 'medium', prompt: `a kolam pattern of dots joined by looping lines into a symmetrical design, white background, clean bold outlines`, why: `Kolam, the dot-and-line floor art of Tamil Nadu, makes a calm page with many small shapes (see below).` }
+  ],
+  sections: [
+    { h2: 'How to color a rangoli', blocks: [
+      { p: `Rangoli is floor art made at the doorways of homes, and in more elaborate forms for festivals, across India. The word comes from the Sanskrit rangavali, “line of color”, and rangolis are made with colored powders, rice flour, flowers, chalk or colored sand. For Diwali they are especially elaborate, with lit lamps set among the colored lines. In Tamil Nadu the same art is called kolam, and it is mostly white, made with rice flour or chalk (Britannica).` },
+      { ul: [
+        `**Work from the center out.** Give each ring its own color before moving to the next, so the symmetry shows.`,
+        `**Repeat the colors.** Color one petal, then every matching petal the same way, as in a mandala.`,
+        `**Try a kolam in white.** Color the space around the pattern in one dark color and leave the pattern white, like rice flour on a doorstep.`
+      ] }
+    ] },
+    { h2: 'A row of lamps for a class display', blocks: [
+      { p: `The name Diwali comes from the Sanskrit dipavali, “row of lights”. Diyas, small earthenware lamps filled with oil, are lit and set in rows along the parapets of temples and houses (Britannica). A class display can follow the name: every child colors a diya page, and the pages go up side by side in one long row along a wall or a window.` }
+    ] },
+    { h2: 'What Diwali celebrates', blocks: [
+      { p: `Diwali is one of the major festivals of Hinduism, Jainism and Sikhism. It lasts five days, usually in late October or November, and generally symbolizes the victory of light over darkness. Homes are decorated and floors inside and out are covered with rangolis. For Jains the festival commemorates the liberation of Mahavira, and since the 18th century Sikhs have celebrated it as the time of Guru Hargobind's return to Amritsar from captivity (Britannica).` },
+      { p: `Many people clean their homes before Diwali, wear new clothes and give gifts of sweets to family and friends (timeanddate.com). Each of those makes a page: a plate of sweets, a family lighting lamps on the steps, a freshly decorated doorway.` }
+    ] },
+    { h2: 'Diwali 2026: Sunday 8 November', blocks: [
+      { p: `The Government of India's list of holidays for 2026 puts Diwali (Deepavali) on Sunday 8 November, and so does timeanddate.com. The date can differ by region, because traditional lunar calendars are read in different ways; in Tamil Nadu, for example, Deepavali falls in the Tamil month of Aipasi (timeanddate.com). In 2027, Diwali falls on Friday 29 October.` }
+    ] }
+  ],
+  faq: [
+    { q: 'When is Diwali in 2026?', a: `On Sunday 8 November 2026, according to the Government of India's 2026 holiday list and timeanddate.com. Some regions mark it on a different day, because traditional lunar calendars are read in different ways.` },
+    { q: 'What is a diya?', a: `A small earthenware lamp filled with oil. Rows of lit diyas give Diwali its name, from the Sanskrit dipavali, “row of lights” (Britannica).` },
+    { q: 'What is a rangoli made of?', a: `Colored powders, rice flour, flowers, chalk or colored sand, laid out on the floor, often at a doorway. In Tamil Nadu it is called kolam and is mostly white (Britannica).` },
+    { q: 'Why are there no gods or goddesses on these pages?', a: `The prompts here stick to lamps, rangoli, lanterns, sweets and family scenes. The generator does not know the details each tradition cares about, so for a page with a deity, ask someone who knows the tradition and check the drawing carefully before sharing it.` },
+    { q: 'Can I sell Diwali coloring pages I make here?', a: `With Pro, yes: it includes commercial use. Our [Etsy guide](/sell-coloring-books-on-etsy) covers fees, file limits and Etsy's rule that AI-made items must say so.` }
+  ],
+  sources: [
+    { text: 'timeanddate.com: Diwali/Deepavali 2026 in India', href: 'https://www.timeanddate.com/holidays/india/diwali' },
+    { text: 'Government of India (DoPT order of 3 July 2025): gazetted holidays for 2026, as listed by the Directorate of Forest Education (PDF)', href: 'https://dfe.gov.in/uploads/documents/list-of-gazetted-holidays-2026.pdf' },
+    { text: 'Britannica: Diwali', href: 'https://www.britannica.com/topic/Diwali-Hindu-festival' },
+    { text: 'Britannica: Rangoli', href: 'https://www.britannica.com/art/rangoli' }
+  ],
+  cta: `A diya for every child photocopied makes a class display, but five different Diwali pages take three days on the free plan. Pro makes them in one sitting, with no watermark and a commercial license, for $9 once.`,
+  related: [
+    { href: '/mandala-coloring-pages', label: 'Mandala coloring pages', note: 'symmetrical designs for a quiet evening' },
+    { href: '/hanukkah-coloring-pages', label: 'Hanukkah coloring pages', note: 'menorahs, dreidels and latkes' },
+    { href: '/fall-coloring-pages', label: 'Fall coloring pages', note: 'leaves, scarecrows and pumpkin patches' },
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
+  ]
+},
+
+'hanukkah-coloring-pages': {
+  updated: '2026-10-15',
+  checked: '15 October 2026',
+  title: 'Hanukkah Coloring Pages: Menorahs, Dreidels and Latkes',
+  description: 'Free printable Hanukkah coloring pages for 4 to 12 December 2026: a nine-branch menorah, latkes, sufganiyot, a blank dreidel and a candle-counting page.',
+  eyebrow: 'Hanukkah coloring page generator',
+  h1: 'Hanukkah coloring pages: menorahs, dreidels and latkes',
+  lead: `Describe a Hanukkah page and print it: a menorah with all nine candles for a toddler, latkes or sufganiyot for a first grader, a dreidel with blank sides for an older child to letter. Hanukkah 2026 begins at sundown on Friday 4 December and ends at nightfall on Saturday 12 December. Below are prompts by age, how to check the menorah before you print, a candle-counting page for the eight nights and the dreidel letters.`,
+  name: 'Hanukkah coloring page',
+  topic: 'Hanukkah coloring pages',
+  recipesHeading: 'Hanukkah prompts by age',
+  toolHeading: 'Describe your Hanukkah page',
+  defaultStyle: 'simple',
+  presetPrompt: `a Hanukkah menorah with exactly nine candle holders: four on the left, four on the right and one raised holder in the middle, all nine candles lit, big simple shapes, no background`,
+  chips: ['dreidel with four blank sides, no letters', 'latkes with sour cream and applesauce', 'cat batting a dreidel across the floor', 'wrapped gifts with ribbons and a dreidel'],
+  recipes: [
+    { who: 'Ages 2 to 5', style: 'simple', prompt: `a Hanukkah menorah with exactly nine candle holders: four on the left, four on the right and one raised holder in the middle, all nine candles lit, big simple shapes, no background`, why: `Spelling out four, four and one in the middle helps the generator get all nine branches right (see below).` },
+    { who: 'Ages 3 to 6', style: 'simple', prompt: `a plate of potato latkes with a small bowl of applesauce, big simple shapes, no background`, why: `Round latkes and a bowl: a few big shapes for small hands.` },
+    { who: 'Ages 5 to 8', style: 'simple', prompt: `round jelly doughnuts dusted with sugar on a plate, big simple shapes, no background`, why: `Sufganiyot, the jelly doughnuts of Hanukkah, with sugar dots to color.` },
+    { who: 'Ages 6 to 9', style: 'simple', prompt: `a dreidel with four blank sides and no letters, next to a few round coins, big simple shapes, no background`, why: `Blank sides, so children write the Hebrew letters themselves (see below).` },
+    { who: 'Teens and adults', style: 'medium', prompt: `a Hanukkah menorah with exactly nine candle holders, four on each side and one raised in the middle, standing in a window with a border of Stars of David drawn as outlines, clean bold outlines`, why: `A window scene with a patterned border. A menorah in a window facing the street publicizes the miracle (My Jewish Learning).` }
+  ],
+  sections: [
+    { h2: 'Count the branches before you print', blocks: [
+      { p: `A Hanukkah menorah, or hanukkiah, has room for nine candles: one for each of the eight nights and the shamash, the helper candle used to light the others. The eight stand at the same height, and the shamash is often placed higher or set off to the side. A menorah with seven branches is a different lamp, the one used in the ancient Temple in Jerusalem (My Jewish Learning).` },
+      { p: `When we made the examples on this page, the generator drew seven branches until the prompt spelled out four on each side and one raised in the middle. Count them on screen before you print a class set.` }
+    ] },
+    { h2: 'A candle-counting page for the eight nights', blocks: [
+      { p: `On the first night, two candles go in the menorah: the shamash and one candle at the far right. One more is added each night, until all nine burn on the eighth night. Candles are placed from right to left and lit from left to right, and the whole holiday takes 44 candles for one menorah (My Jewish Learning).` },
+      { ul: [
+        `**One page, eight nights.** Print the menorah once and color one more candle each night, plus the shamash.`,
+        `**A counting sheet.** Print eight copies and number them 1 to 8; children color the right number of candles on each.`,
+        `**The 44 question.** Ask older children to work out why one menorah needs 44 candles for the whole holiday.`
+      ] }
+    ] },
+    { h2: 'Write the dreidel letters by hand', blocks: [
+      { p: `A dreidel is a spinning top with four sides, each marked with a Hebrew letter: nun, gimel, hey and shin. Together they stand for a Hebrew phrase meaning “a great miracle happened there”; in Israel, a peh replaces the shin, for “a great miracle happened here” (My Jewish Learning).` },
+      { p: `The generator cannot be relied on to draw Hebrew letters: in our tests it drew shapes that looked like letters but were not. Ask for blank sides, copy the four letters from a real dreidel, and play a round once the page is colored: nun, nothing; gimel, take the whole pot; hey, take half; shin, put one in.` }
+    ] },
+    { h2: 'Foods fried in oil', blocks: [
+      { p: `Hanukkah, the festival of rededication, recalls the rededication of the Temple in Jerusalem in 164 BCE. Much later rabbinic tradition tells of a small amount of oil that burned for eight days, and in memory of it, foods fried in oil are traditional: potato pancakes, or latkes, and jelly doughnuts, or sufganiyot (My Jewish Learning). Both are among the example pages above.` }
+    ] }
+  ],
+  faq: [
+    { q: 'When is Hanukkah in 2026?', a: `It begins at sundown on Friday 4 December 2026 and ends at nightfall on Saturday 12 December 2026: eight nights, starting on the 25th of Kislev (Hebcal).` },
+    { q: 'How many candles does a Hanukkah menorah have?', a: `Nine: eight for the nights and the shamash, the helper candle, which is often set higher or to the side. A seven-branched menorah is the lamp of the ancient Temple, a different object (My Jewish Learning).` },
+    { q: 'Why does the dreidel page have blank sides?', a: `The generator cannot be relied on to draw Hebrew letters. Blank sides let children write nun, gimel, hey and shin themselves, copied from a real dreidel.` },
+    { q: 'Which Hanukkah pages suit toddlers?', a: `One object on Simple: the menorah, a dreidel or a plate of latkes. Scenes with a table or a window suit children of 6 and up.` },
+    { q: 'Can I sell Hanukkah coloring pages I make here?', a: `With Pro, yes: it includes commercial use. Our [Etsy guide](/sell-coloring-books-on-etsy) covers fees, file limits and Etsy's rule that AI-made items must say so.` }
+  ],
+  sources: [
+    { text: 'Hebcal: Chanukah 2026', href: 'https://www.hebcal.com/holidays/hanukkah-2026' },
+    { text: 'My Jewish Learning: Hanukkah 101', href: 'https://www.myjewishlearning.com/article/hanukkah-101/' },
+    { text: 'My Jewish Learning: The hanukkiah (menorah)', href: 'https://www.myjewishlearning.com/article/the-hanukkiyah-menorah/' },
+    { text: 'My Jewish Learning: How to light the Hanukkah menorah', href: 'https://www.myjewishlearning.com/article/hanukkah-candle-lighting-ceremony/' },
+    { text: 'My Jewish Learning: How to play dreidel', href: 'https://www.myjewishlearning.com/article/how-to-play-dreidel/' }
+  ],
+  cta: `Eight different Hanukkah pages, one for each night, take four days on the free plan. Pro makes them in one sitting, with no watermark and a commercial license, for $9 once.`,
+  related: [
+    { href: '/winter-coloring-pages', label: 'Winter coloring pages', note: 'snow days, snowflakes and polar animals' },
+    { href: '/diwali-coloring-pages', label: 'Diwali coloring pages', note: 'diyas, rangoli and lanterns' },
+    { href: '/new-year-coloring-pages', label: 'New Year coloring pages', note: 'party hats, fireworks and a countdown clock' },
     { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
   ]
 }
