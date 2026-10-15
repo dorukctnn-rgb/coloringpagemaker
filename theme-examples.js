@@ -1,5 +1,5 @@
 // Example coloring pages on each theme page, under "Free printable ... coloring pages" (views/partials/examples.ejs).
-// Every page was made with this site's own generator: 13 were first made for the Pinterest boards, 22 on
+// Every page was made with this site's own generator: 13 were first made for the Pinterest boards, 28 on
 // 15 October 2026. Files: public/examples/<slug>/<name>.png (1024 px greyscale, the download and the source for
 // the PDF) and <name>-400.webp and <name>-800.webp for display. Keep a name once published: the files are cached
 // for 30 days.
@@ -44,7 +44,9 @@ module.exports = {
       { name: 'halloween-pumpkin-ghost', level: 'Simple', title: 'Jack-o\'-lantern and a friendly ghost',
         alt: 'Halloween coloring page of a smiling jack-o\'-lantern next to a waving friendly ghost, in thick outlines for young children.' },
       { name: 'halloween-trick-or-treat', level: 'Medium', title: 'Trick-or-treaters at the door',
-        alt: 'Halloween coloring page of three children dressed as a witch, a skeleton and a vampire trick-or-treating at a front door, with a bowl of candy and pumpkin buckets.' }
+        alt: 'Halloween coloring page of three children dressed as a witch, a skeleton and a vampire trick-or-treating at a front door, with a bowl of candy and pumpkin buckets.' },
+      { name: 'halloween-cottage-jack-o-lantern', level: 'Medium', title: 'Jack-o\'-lantern on a cottage windowsill',
+        alt: 'Halloween coloring page of a carved jack-o\'-lantern on the windowsill of a stone cottage, under the edge of a thatched roof.' }
     ]
   },
   'christmas-coloring-pages': {
@@ -53,7 +55,9 @@ module.exports = {
       { name: 'christmas-tree-ornaments', level: 'Simple', title: 'Christmas tree with ornaments',
         alt: 'Simple coloring page of a Christmas tree with round ornaments and a star on top, thick black outlines on white.' },
       { name: 'christmas-gingerbread-house', level: 'Medium', title: 'Gingerbread house',
-        alt: 'Coloring page of a gingerbread house with peppermint candy windows, an arched door, a candy cane fence and snow on the roof.' }
+        alt: 'Coloring page of a gingerbread house with peppermint candy windows, an arched door, a candy cane fence and snow on the roof.' },
+      { name: 'christmas-stockings-fireplace', level: 'Medium', title: 'Stockings on the fireplace',
+        alt: 'Christmas coloring page of three stockings hanging from a fireplace mantel above the fire, with a wreath above, a decorated tree and presents beside it.' }
     ]
   },
   'animal-coloring-pages': {
@@ -62,7 +66,9 @@ module.exports = {
       { name: 'animal-cartoon-elephant', level: 'Simple', title: 'Cartoon elephant',
         alt: 'Coloring page of a happy cartoon elephant with big round ears and a raised trunk, thick black outlines on white.' },
       { name: 'animal-kangaroo-joey', level: 'Medium', title: 'Kangaroo with a joey',
-        alt: 'Coloring page of a mother kangaroo with a joey peeking out of her pouch in the Australian outback, with a tree, clouds and a large rock behind.' }
+        alt: 'Coloring page of a mother kangaroo with a joey peeking out of her pouch in the Australian outback, with a tree, clouds and a large rock behind.' },
+      { name: 'animal-pug-cushion', level: 'Medium', title: 'Pug asleep on a cushion',
+        alt: 'Coloring page of a pug with a wrinkled face and a curly tail asleep on a round cushion, black outlines on white.' }
     ]
   },
   'flower-coloring-pages': {
@@ -91,7 +97,9 @@ module.exports = {
       { name: 'easter-chick-hatching', level: 'Simple', title: 'Chick hatching from an egg',
         alt: 'Easter coloring page of a baby chick hatching from a cracked egg, thick black outlines for young children.' },
       { name: 'easter-bunny-basket', level: 'Medium', title: 'Bunny with an egg basket',
-        alt: 'Easter coloring page of a smiling bunny beside a woven basket filled with patterned eggs.' }
+        alt: 'Easter coloring page of a smiling bunny beside a woven basket filled with patterned eggs.' },
+      { name: 'easter-egg-nest', level: 'Simple', title: 'Nest of Easter eggs',
+        alt: 'Easter coloring page of a nest holding five Easter eggs decorated with stripes, dots and zigzags, thick outlines for young children.' }
     ]
   },
   'adult-coloring-pages': {
@@ -100,7 +108,9 @@ module.exports = {
       { name: 'adult-cafe-table', level: 'Bold and easy', title: 'Café table by a window',
         alt: 'Bold-line adult coloring page of a round café table with a cup of coffee, a croissant on a plate and tulips in a vase by a window.' },
       { name: 'adult-cottage-garden', level: 'Medium', title: 'Cottage garden gate',
-        alt: 'Adult coloring page of a cottage garden with tall foxgloves, a watering can and a wooden gate under a leafy arch.' }
+        alt: 'Adult coloring page of a cottage garden with tall foxgloves, a watering can and a wooden gate under a leafy arch.' },
+      { name: 'adult-monstera-palm-leaves', level: 'Bold and easy', title: 'Monstera and palm leaves',
+        alt: 'Bold-line adult coloring page of a large monstera leaf crossing a palm leaf, with two small leaves below, thick outlines and large spaces.' }
     ]
   },
   'fall-coloring-pages': {
@@ -142,7 +152,9 @@ module.exports = {
       { name: 'winter-snowman', level: 'Simple', title: 'Snowman with a top hat',
         alt: 'Simple winter coloring page of a smiling snowman with a top hat, a scarf, stick arms and three buttons, thick outlines.' },
       { name: 'winter-polar-bear-cub', level: 'Medium', title: 'Polar bear cub sliding on snow',
-        alt: 'Winter coloring page of a polar bear cub sliding down a snowy slope, with pine trees and snowflakes behind it.' }
+        alt: 'Winter coloring page of a polar bear cub sliding down a snowy slope, with pine trees and snowflakes behind it.' },
+      { name: 'winter-mittens-hat-scarf', level: 'Simple', title: 'Mittens, a hat and a scarf',
+        alt: 'Simple winter coloring page of a pair of mittens, a knitted hat with a pompom and a scarf with fringed ends, thick outlines.' }
     ]
   }
 };
