@@ -217,6 +217,8 @@ test('only the Detailed instruction changed in the prompt', async () => {
   const shared = 'Pure white background, only black outlines, NO color, NO shading, NO gray, NO gradients. Clean printable coloring page style with thick uniform black lines on white. Suitable for printing on standard paper.';
   assert.ok(simple.includes('Use simple thick black outlines with very few details. Designed for young children ages 3-6.') && simple.endsWith(shared));
   assert.ok(medium.includes('Use medium-detail clear black outlines. Designed for kids ages 6-12.') && medium.endsWith(shared));
-  assert.ok(detailed.includes('built from many small closed shapes and repeating patterns') && detailed.includes('never with hatching, cross-hatching, stippling, pencil texture or shading') && detailed.endsWith(shared));
-  assert.ok(!detailed.includes('highly detailed intricate lines'), 'the old Detailed wording is gone');
+  // Detailed borrows Simple's thick-line wording and gets its richness from more elements and patterns: in a live test
+  // (15 October 2026) that came out clean far more often than asking for intricate detail, which drew hairline sketches.
+  assert.ok(detailed.includes('Make it an adult coloring page with many elements and repeating patterns, bold clean outlines. Use simple thick black outlines and no tiny details.') && detailed.endsWith(shared));
+  assert.ok(!/intricate|hairline|highly detailed/.test(detailed), 'no wording that asks for fine detail');
 });

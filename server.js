@@ -419,7 +419,7 @@ app.post('/generate', async (req, res) => {
     const styleModifier = style === 'simple'
       ? 'Use simple thick black outlines with very few details. Designed for young children ages 3-6.'
       : style === 'detailed'
-        ? 'Use intricate designs built from many small closed shapes and repeating patterns, all drawn with crisp, solid black lines of even, medium weight, never hairline-thin. Add detail with more shapes and patterns, never with hatching, cross-hatching, stippling, pencil texture or shading. Designed for adults or older kids.'
+        ? 'Make it an adult coloring page with many elements and repeating patterns, bold clean outlines. Use simple thick black outlines and no tiny details.'
         : 'Use medium-detail clear black outlines. Designed for kids ages 6-12.';
 
     const fullPrompt = `Black and white coloring book page line art of: ${prompt.trim()}. ${styleModifier} Pure white background, only black outlines, NO color, NO shading, NO gray, NO gradients. Clean printable coloring page style with thick uniform black lines on white. Suitable for printing on standard paper.`;
