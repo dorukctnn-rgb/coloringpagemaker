@@ -27,6 +27,7 @@ try {
 
 const BLOG_POSTS = require('./blog-posts.js');
 const THEME_GUIDES = require('./theme-guides.js');
+const THEME_EXAMPLES = require('./theme-examples.js');
 
 // Inline markup for trusted page copy (theme guides, blog posts): [label](href) and **bold**.
 function escHtml(s) {
@@ -73,6 +74,8 @@ app.use((req, res, next) => {
   next();
 });
 app.use('/fonts', express.static(path.join(__dirname, 'public', 'fonts'), { maxAge: '365d', immutable: true }));
+// Example pages keep their file names once published (see theme-examples.js), so they can be cached for a month.
+app.use('/examples', express.static(path.join(__dirname, 'public', 'examples'), { maxAge: '30d' }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '20mb' }));
@@ -281,6 +284,7 @@ async function checkAndIncrementUsage(ip, pro) {
 // The pages below still use the shorter shared layout (views/niche.ejs).
 const NICHE_PAGES = {
   'mandala-coloring-pages': {
+    updated: '2026-10-15',
     title: 'Free Mandala Coloring Pages (AI Generator for Adults)',
     h1: 'Mandala coloring pages',
     description: 'Free AI-generated mandala coloring pages for adults. Intricate, symmetrical designs for stress relief and mindfulness. Download printable PDFs.',
@@ -290,6 +294,7 @@ const NICHE_PAGES = {
     examples: ['floral mandala with lotus center', 'geometric mandala with stars', 'animal mandala with deer', 'celtic knot mandala']
   },
   'flower-coloring-pages': {
+    updated: '2026-10-15',
     title: 'Free Flower Coloring Pages (AI Generator for Kids and Adults)',
     h1: 'Flower coloring pages',
     description: 'Free AI flower coloring pages: roses, sunflowers, tulips, lilies, bouquets. Detailed adult or simple kid versions. Download PDFs.',
@@ -299,6 +304,7 @@ const NICHE_PAGES = {
     examples: ['rose with leaves and thorns', 'sunflower in a field', 'bouquet of mixed wildflowers', 'cherry blossom branch']
   },
   'easter-coloring-pages': {
+    updated: '2026-10-15',
     title: 'Free Easter Coloring Pages (AI Generator for Bunnies and Eggs)',
     h1: 'Easter coloring pages',
     description: 'Free AI Easter coloring pages. Bunnies, eggs, chicks, spring scenes. Generate custom designs for kids and print instantly.',
@@ -315,6 +321,12 @@ const THEME_ORDER = [
   'christmas-coloring-pages', 'animal-coloring-pages', 'flower-coloring-pages', 'princess-coloring-pages',
   'easter-coloring-pages', 'adult-coloring-pages'
 ];
+// Seasonal guides come after the original themes, so every existing list keeps its links and its order and
+// the seasonal pages are only added at the end (sitemap, guides hub and the "Browse more themes" rotation).
+const SEASONAL_THEMES = ['fall-coloring-pages', 'thanksgiving-coloring-pages', 'turkey-coloring-pages', 'winter-coloring-pages'];
+const ALL_THEMES = [...THEME_ORDER, ...SEASONAL_THEMES];
+// The "Free printable ... coloring pages" gallery for a theme page, or null.
+const examplesFor = slug => (THEME_EXAMPLES[slug] ? { slug, ...THEME_EXAMPLES[slug] } : null);
 const themeLabel = slug => (THEME_GUIDES[slug] ? THEME_GUIDES[slug].h1 : NICHE_PAGES[slug].h1);
 const SITE = 'https://www.coloringpagemaker.app';
 const LEVEL_NAMES = { simple: 'Simple', medium: 'Medium', detailed: 'Detailed' };
@@ -671,14 +683,18 @@ const THEME_NOTES = {
   'unicorn-coloring-pages': ['Unicorns', 'Winged unicorns, the narwhal, party pages'],
   'mandala-coloring-pages': ['Mandalas', 'Symmetrical designs for a quiet evening'],
   'flower-coloring-pages': ['Flowers', 'Roses, sunflowers and bouquets'],
-  'easter-coloring-pages': ['Easter', 'Bunnies, eggs and chicks for spring']
+  'easter-coloring-pages': ['Easter', 'Bunnies, eggs and chicks for spring'],
+  'fall-coloring-pages': ['Fall', 'Leaves, scarecrows and why leaves turn red'],
+  'thanksgiving-coloring-pages': ['Thanksgiving', "The kids' table, a thankful tree and 1621"],
+  'turkey-coloring-pages': ['Turkeys', 'Cartoon, realistic or without feathers'],
+  'winter-coloring-pages': ['Winter', 'Snow days, snowflakes and polar animals']
 };
 app.get('/blog', (req, res) => {
   const listed = new Set(BLOG_GROUPS.flatMap(g => g.slugs));
   const extra = Object.keys(BLOG_POSTS).filter(s => !listed.has(s));
   const groups = [...BLOG_GROUPS, ...(extra.length ? [{ id: 'more', title: 'More guides', intro: '', slugs: extra }] : [])]
     .map(g => ({ ...g, posts: g.slugs.filter(s => BLOG_POSTS[s]).map(s => ({ slug: s, ...BLOG_POSTS[s] })) }));
-  const themes = THEME_ORDER.filter(s => THEME_NOTES[s]).map(s => ({ slug: s, label: THEME_NOTES[s][0], note: THEME_NOTES[s][1] }));
+  const themes = ALL_THEMES.filter(s => THEME_NOTES[s]).map(s => ({ slug: s, label: THEME_NOTES[s][0], note: THEME_NOTES[s][1] }));
   const ld = jsonLd({
     '@context': 'https://schema.org',
     '@graph': [
@@ -709,6 +725,7 @@ app.get('/:slug', (req, res, next) => {
       g: THEME_GUIDES[slug],
       slug,
       levelNames: LEVEL_NAMES,
+      examples: examplesFor(slug),
       ld: themeJsonLd(slug, THEME_GUIDES[slug])
     });
   }
@@ -716,8 +733,10 @@ app.get('/:slug', (req, res, next) => {
     return res.render('niche', {
       page: NICHE_PAGES[slug],
       slug,
-      // The next six themes after this one, wrapping around, so every theme page gets links from six others.
-      allPages: [...THEME_ORDER.slice(THEME_ORDER.indexOf(slug) + 1), ...THEME_ORDER.slice(0, Math.max(0, THEME_ORDER.indexOf(slug)))].filter(s => s !== slug).slice(0, 6).map(s => ({ slug: s, h1: themeLabel(s) }))
+      examples: examplesFor(slug),
+      // The next six themes after this one, wrapping around, so every theme page gets links from six others,
+      // followed by the seasonal guides.
+      allPages: [...[...THEME_ORDER.slice(THEME_ORDER.indexOf(slug) + 1), ...THEME_ORDER.slice(0, Math.max(0, THEME_ORDER.indexOf(slug)))].filter(s => s !== slug).slice(0, 6), ...SEASONAL_THEMES].map(s => ({ slug: s, h1: themeLabel(s) }))
     });
   }
   if (BLOG_POSTS[slug]) {
@@ -733,15 +752,16 @@ app.get('/:slug', (req, res, next) => {
 // === SITEMAP ===
 // Only canonical URLs (www host, no trailing slash), each with the date its content last changed.
 const SITEMAP_LASTMOD = '2026-10-07';
-const BLOG_INDEX_UPDATED = '2026-10-09';
+const BLOG_INDEX_UPDATED = '2026-10-15';
+const HOME_UPDATED = '2026-10-15';
 const PRIVACY_UPDATED = '2026-10-15';
 const TERMS_UPDATED = '2026-10-11';
 app.get('/sitemap.xml', (req, res) => {
   res.set('Content-Type', 'text/xml');
   const entries = [
-    ['/', SITEMAP_LASTMOD],
+    ['/', HOME_UPDATED],
     ['/blog', BLOG_INDEX_UPDATED],
-    ...THEME_ORDER.map(s => ['/' + s, (THEME_GUIDES[s] && THEME_GUIDES[s].updated) || SITEMAP_LASTMOD]),
+    ...ALL_THEMES.map(s => ['/' + s, (THEME_GUIDES[s] || NICHE_PAGES[s] || {}).updated || SITEMAP_LASTMOD]),
     ...Object.keys(BLOG_POSTS).map(s => ['/' + s, BLOG_POSTS[s].updated || SITEMAP_LASTMOD]),
     ['/privacy', PRIVACY_UPDATED],
     ['/terms', TERMS_UPDATED]

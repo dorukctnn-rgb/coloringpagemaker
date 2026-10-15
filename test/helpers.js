@@ -169,7 +169,8 @@ async function startApp(env) {
   child.stdout.on('data', d => { log += d; });
   child.stderr.on('data', d => { log += d; });
   const base = `http://127.0.0.1:${port}`;
-  const deadline = Date.now() + 15000;
+  // Loading the server modules can take over 15 s on a busy Windows machine, so allow 45 s before giving up.
+  const deadline = Date.now() + 45000;
   for (;;) {
     if (child.exitCode !== null) throw new Error('server exited early:\n' + log);
     try { const r = await fetch(base + '/robots.txt'); if (r.ok) break; } catch (e) {}

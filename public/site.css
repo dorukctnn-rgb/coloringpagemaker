@@ -251,6 +251,18 @@ article.post .sources p{font-size:12px;margin-bottom:6px}
 .usage-bar.is-alert{border-style:solid;border-color:var(--accent);color:var(--ink)}
 .gallery-note{margin-top:14px;font-size:14px;color:var(--muted)}
 .gallery-note a{color:var(--ink);font-weight:600;text-underline-offset:3px}
+/* Free printable examples on theme pages (views/partials/examples.ejs) */
+.examples{max-width:900px;margin:clamp(40px,7vw,60px) auto 0;padding:0 20px}
+.examples h2{font-size:clamp(1.5rem,3vw,1.9rem);margin-bottom:8px}
+.examples-intro{color:var(--muted);max-width:62ch;margin-bottom:18px}
+.examples-grid{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.examples-grid figure{margin:0}
+.examples-grid img{height:auto;aspect-ratio:1/1}
+.examples-grid figcaption{padding:10px 12px 0;font-size:14px;line-height:1.4}
+.examples-grid figcaption strong{display:block;font-size:15px}
+.examples-grid figcaption span{color:var(--muted)}
+.examples .actions a{display:inline-block;text-decoration:none}
+@media (max-width:640px){.examples-grid{grid-template-columns:1fr}}
 .recipes-intro{color:var(--muted);font-size:16px}
 .recipes{width:100%;border-collapse:collapse;margin:20px 0 8px;border-top:2px solid var(--ink)}
 .recipes thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
