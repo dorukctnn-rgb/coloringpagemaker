@@ -1,5 +1,5 @@
-// Unit tests for views/partials/pro-source.ejs: the landing-tag and referrer classifier, the per-tab and
-// per-browser source words, and the Pro link swap. The script runs exactly as browsers get it, inside a vm
+// Unit tests for views/partials/pro-source.ejs: the landing-tag, referrer and in-app browser classifier, the
+// per-tab and per-browser source words, and the Pro link swap. The script runs exactly as browsers get it, inside a vm
 // sandbox with a fake document, location, sessionStorage and localStorage. The last test renders every page
 // and checks that each one carries the script.
 const { test } = require('node:test');
@@ -42,7 +42,9 @@ function area(ctx, name, map, mode, writes) {
 }
 // One page load. Pass the same `browser` (its localStorage) and `tab` (its sessionStorage) to model later pages
 // and later visits. `stored` and `first` preset the tab's and the browser's words.
-function load({ referrer = '', search = '', host = OWN, stored, first, tab = new Map(), browser = new Map(), session = 'ok', local = 'ok', prerendering = false } = {}) {
+// `ua` sets navigator.userAgent (no navigator at all when it is left out); UA_THROWS makes reading it throw.
+const UA_THROWS = Symbol('throws');
+function load({ referrer = '', search = '', host = OWN, stored, first, tab = new Map(), browser = new Map(), session = 'ok', local = 'ok', prerendering = false, ua } = {}) {
   if (stored !== undefined) tab.set('cpm_source', stored);
   if (first !== undefined) browser.set('cpm_first_source', first);
   const writes = [];
@@ -56,6 +58,8 @@ function load({ referrer = '', search = '', host = OWN, stored, first, tab = new
       addEventListener(type, fn, opts) { (listeners[type] = listeners[type] || []).push({ fn, opts }); }
     }
   };
+  if (ua === UA_THROWS) ctx.navigator = { get userAgent() { throw new Error('blocked'); } };
+  else if (ua !== undefined) ctx.navigator = { userAgent: ua };
   area(ctx, 'sessionStorage', tab, session, writes);
   area(ctx, 'localStorage', browser, local, writes);
   vm.createContext(ctx);
@@ -75,6 +79,7 @@ const api = load().api;
 const classify = (referrer, host = OWN) => api.classify(referrer, host);
 const classifyTag = (value, host = OWN) => api.classifyTag(value, host);
 const fromUrl = (search, host = OWN) => api.fromUrl(search, host);
+const fromAgent = ua => api.fromAgent(ua);
 // A fake <a> element, and a <span> inside it.
 function anchor(href) { const a = { href, closest: sel => (sel === 'a[href]' ? a : null) }; return a; }
 const inside = a => ({ closest: sel => (sel === 'a[href]' ? a : null) });
@@ -296,6 +301,83 @@ const URLS = [
   ['', '']
 ];
 
+// User agents of in-app browsers and real browsers, from public test corpora: ua-parser/uap-core
+// (tests/test_ua.yaml), ua-parser/uap-cpp (benchmarks/useragents.txt) and shalanah/inapp-spy (src/tests). Strings
+// built on IOS_WEBVIEW or ANDROID_WEBVIEW add an app's marker to a plain WebView, as PostHog's webview tests do
+// (posthog-js, packages/core/src/utils/webview-app-utils.spec.ts).
+const IOS_WEBVIEW = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148';
+const ANDROID_WEBVIEW = 'Mozilla/5.0 (Linux; Android 13; Pixel 7 Build/TQ3A.230805.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/120.0.6099.230 Mobile Safari/537.36';
+const UA = {
+  pinterestIos: 'Mozilla/5.0 (iPhone; CPU iPhone OS 6_1_4 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Mobile/10B350 [Pinterest/iOS]',
+  pinterestAndroid: 'Mozilla/5.0 (Linux; Android 9; SM-J737V Build/PPR1.180610.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/75.0.3770.101 Mobile Safari/537.36 [Pinterest/Android]',
+  instagramIos: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/22B83 Instagram 354.0.0.29.90 (iPhone12,8; iOS 18_1; en_US; en; scale=2.00; 750x1334; 654111336; IABMV/1)',
+  googleIos: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) GSA/334.0.674067880 Mobile/15E148 Safari/604.1',
+  safariIos: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.1 Mobile/15E148 Safari/604.1'
+};
+const AGENTS = [
+  // Pinterest's in-app browser
+  [UA.pinterestIos, 'pinterest'],
+  [UA.pinterestAndroid, 'pinterest'],
+  [IOS_WEBVIEW + ' Pinterest for iOS/7.11 (iPhone7,2; 12.1.4)', 'pinterest'],
+  [ANDROID_WEBVIEW + ' Pinterest for Android/9.0.4 (K83CA; 9)', 'pinterest'],
+  // Instagram, and Threads, which calls itself Barcelona
+  [UA.instagramIos, 'social'],
+  ['Mozilla/5.0 (Linux; Android 14; Pixel 8 Build/AP2A.240905.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/130.0.6723.58 Mobile Safari/537.36 Instagram 355.1.0.44.103 Android (34/14; 420dpi; 1080x2205; Google/google; Pixel 8; shiba; shiba; en_US; 658190016)', 'social'],
+  ['Mozilla/5.0 (Linux; Android 14; Pixel 8 Build/AP2A.240905.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/130.0.6723.58 Mobile Safari/537.36 Barcelona 355.0.0.39.109 Android (34/14; 420dpi; 1080x2205; Google/google; Pixel 8; shiba; shiba; en_US; 657318936)', 'social'],
+  [IOS_WEBVIEW + ' Barcelona/300.0.0.17.109', 'social'],
+  // Facebook and Messenger
+  ['Mozilla/5.0 (iPhone; CPU iPhone OS 18_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 [FBAN/FBIOS;FBAV/482.2.0.68.110;FBBV/658316928;FBDV/iPhone12,8;FBMD/iPhone;FBSN/iOS;FBSV/18.1;FBSS/2;FBCR/;FBID/phone;FBLC/en_US;FBOP/80]', 'social'],
+  ['Mozilla/5.0 (Linux; Android 14; Pixel 8 Build/AP2A.240905.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/130.0.6723.83 Mobile Safari/537.36 [FB_IAB/FB4A;FBAV/488.0.0.62.79;IABMV/1;]', 'social'],
+  [IOS_WEBVIEW + ' [FBAN/MessengerForiOS;FBAV/132.0.0.41.90;]', 'social'],
+  [IOS_WEBVIEW + ' [FBIOS;FBAV/440.0.0.35.117;]', 'social'],
+  // TikTok (musical_ly, and trill in some countries)
+  ['Mozilla/5.0 (iPhone; CPU iPhone OS 17_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 BytedanceWebview/d8a21c6 musical_ly_33.2.1 JsSdk/2.0 NetType/WIFI Channel/App Store ByteLocale/en Region/US FalconTag/BDB55B46-0286-4504-847E-C8300CB9F79D', 'social'],
+  ['Mozilla/5.0 (iPhone; CPU iPhone OS 18_6_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Safari/604.1 musical_ly_41.9.0', 'social'],
+  ['Mozilla/5.0 (iPhone; CPU iPhone OS 17_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 BytedanceWebview/d8a21c6 trill_34.9.0 JsSdk/2.0 NetType/4G Channel/App Store ByteLocale/en Region/MY FalconTag/31CFA6E0-CAE5-4ECF-A13A-ADFCAFC2428F', 'social'],
+  ['Mozilla/5.0 (Linux; Android 14; Pixel 8 Build/UQ1A.240105.004; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/121.0.6167.143 Mobile Safari/537.36 musical_ly_2023303040 JsSdk/1.0 NetType/WIFI Channel/googleplay AppName/musical_ly app_version/33.3.4 ByteLocale/en ByteFullLocale/en Region/US AppId/1233 Spark/1.5.0.5-alpha.2 AppVersion/33.3.4 BytedanceWebview/d8a21c6', 'social'],
+  // Snapchat
+  ['Mozilla/5.0 (iPhone; CPU iPhone OS 17_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3.1 Mobile/15E148 Snapchat/12.72.0.39 (like Safari/8617.2.4.10.8, panda)', 'social'],
+  ['Mozilla/5.0 (iPhone; CPU iPhone OS 11_2_6 like Mac OS X) AppleWebKit/604.5.6 (KHTML, like Gecko) Snapchat/10.38.0.25 (iPhone8,1; iOS 11.2.6; gzip)', 'social'],
+  // X (Twitter)
+  ['Mozilla/5.0 (iPhone; CPU iPhone OS 11_2_1 like Mac OS X) AppleWebKit/604.4.7 (KHTML, like Gecko) Mobile/15C153 Twitter for iPhone/7.19', 'social'],
+  ['Mozilla/5.0 (Linux; Android 9; Nokia 2.1 Build/PKQ1.181105.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/74.0.3729.157 Mobile Safari/537.36 TwitterAndroid', 'social'],
+  // LinkedIn
+  ['Mozilla/5.0 (iPhone; CPU iPhone OS 18_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 [LinkedInApp]/9.30.1753', 'social'],
+  [ANDROID_WEBVIEW + ' LinkedInApp/2.295.106', 'social'],
+  // Line
+  ['Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Mobile/15A372 Safari Line/7.12.0', 'social'],
+  ['Mozilla/5.0 (Linux; Android 6.0.1; D6653 Build/23.5.A.0.575; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/58.0.3029.83 Mobile Safari/537.36 Line/7.4.0/IAB', 'social'],
+  // Reddit, a social network like reddit.com as a referrer
+  ['Mozilla/5.0 (Linux; Android 14; Pixel 8 Build/AP2A.240905.003; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/130.0.6723.58 Mobile Safari/537.36 Reddit/Version 2024.41.0/Build 2102450/Android 14', 'social'],
+  // The Google app, on iOS and Android
+  [UA.googleIos, 'google'],
+  ['Mozilla/5.0 (Linux; Android 9; Pixel 3 Build/PQ1A.181205.006; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/71.0.3578.99 Mobile Safari/537.36 GSA/8.65.5.21.arm64', 'google'],
+  // Any other Android app's WebView
+  [ANDROID_WEBVIEW, 'referral'],
+  ['Mozilla/5.0 (Linux; Android 6.0.1; D6653 Build/23.5.A.0.575; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/58.0.3029.83 Mobile Safari/537.36 MicroMessenger/6.5.7.1041 NetType/WIFI Language/zh_TW', 'referral'],
+  // Real browsers, desktop and mobile, stay direct
+  ['Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15', ''],
+  [UA.safariIos, ''],
+  ['Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', ''],
+  ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', ''],
+  ['Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Mobile Safari/537.36', ''],
+  ['Mozilla/5.0 (iPhone; CPU iPhone OS 10_2_1 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/58.0.3029.113 Mobile/14D27 Safari/602.1', ''],
+  ['Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:141.0) Gecko/20100101 Firefox/141.0', ''],
+  ['Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0', ''],
+  ['Mozilla/5.0 (Android 9; Mobile; rv:68.0) Gecko/68.0 Firefox/68.0', ''],
+  ['Mozilla/5.0 (iPhone; CPU iPhone OS 18_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/130.1  Mobile/15E148 Safari/605.1.15', ''],
+  ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3763.0 Safari/537.36 Edg/75.0.131.0', ''],
+  ['Mozilla/5.0 (iPhone; CPU iPhone OS 18_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) EdgiOS/128.0.2739.82 Version/18.0 Mobile/15E148 Safari/604.1', ''],
+  ['Mozilla/5.0 (Linux; Android 5.1.1; SAMSUNG SM-G920F Build/LMY47X) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/3.2 Chrome/38.0.2125.102 Mobile Safari/537.36', ''],
+  // Crawlers named after an app, and no user agent at all
+  ['Mozilla/5.0 (compatible; Pinterestbot/1.0; +http://www.pinterest.com/bot.html)', ''],
+  ['Twitterbot/1.0', ''],
+  ['LinkedInBot/1.0', ''],
+  ['facebookexternalhit/1.1', ''],
+  ['', ''],
+  [undefined, '']
+];
+
 test('classifies referrers into one kind of site', () => {
   for (const [referrer, want] of CASES) assert.equal(classify(referrer), want, JSON.stringify(referrer));
 });
@@ -307,6 +389,53 @@ test('classifies landing tags: addresses like referrers, names by brand, anythin
 
 test('reads utm_source, then ref, then source, then fbclid from the landing address', () => {
   for (const [search, want] of URLS) assert.equal(fromUrl(search), want, JSON.stringify(search));
+});
+
+test('names the app of an in-app browser from its user agent; real browsers and crawlers name nothing', () => {
+  for (const [ua, want] of AGENTS) assert.equal(fromAgent(ua), want, JSON.stringify(ua));
+});
+
+test('an in-app browser with no referrer counts for its app, stored like any other word', () => {
+  const r = load({ ua: UA.pinterestAndroid });
+  assert.equal(r.api.source, 'pinterest');
+  assert.deepEqual(r.writes, [['sessionStorage', 'cpm_source', 'pinterest'], ['localStorage', 'cpm_first_source', 'pinterest']]);
+  assert.equal(r.proLink(), LINKS.pinterest);
+  for (const [ua, want] of [[UA.instagramIos, 'social'], [UA.googleIos, 'google'], [ANDROID_WEBVIEW, 'referral']]) {
+    const v = load({ ua });
+    assert.equal(v.api.source, want, ua);
+    assert.deepEqual(v.writes, [['sessionStorage', 'cpm_source', want], ['localStorage', 'cpm_first_source', want]], ua);
+    assert.equal(v.proLink(), LINKS[want], ua);
+  }
+  // A real browser with no referrer stays direct, and direct is never the browser's first word.
+  const safari = load({ ua: UA.safariIos });
+  assert.equal(safari.api.source, 'direct');
+  assert.deepEqual(safari.writes, [['sessionStorage', 'cpm_source', 'direct']]);
+  assert.equal(safari.proLink(), LINKS.direct);
+});
+
+test('the user agent decides only when there is no tag, no usable referrer and no first word', () => {
+  assert.equal(load({ ua: UA.pinterestAndroid, search: '?utm_source=chatgpt.com' }).api.source, 'ai-assistant', 'a tag wins');
+  assert.equal(load({ ua: UA.pinterestAndroid, referrer: 'https://www.google.com/' }).api.source, 'google', 'a referrer wins');
+  assert.equal(load({ ua: UA.googleIos, search: '?fbclid=IwAR0abc' }).api.source, 'social', 'fbclid wins');
+  // The browser's first word wins: this visit stays direct and the click keeps the first word.
+  const returning = load({ ua: UA.pinterestAndroid, first: 'bing' });
+  assert.equal(returning.api.source, 'direct');
+  assert.deepEqual(returning.writes, [['sessionStorage', 'cpm_source', 'direct']]);
+  assert.equal(returning.proLink(), LINKS.bing);
+  // Later pages keep the tab's word from its first page, even "direct".
+  for (const [stored, first] of [['direct', undefined], ['google', 'google']]) {
+    const later = load({ ua: UA.instagramIos, stored, first, referrer: 'https://www.coloringpagemaker.app/' });
+    assert.equal(later.api.source, stored, stored);
+    assert.deepEqual(later.writes, [], stored);
+  }
+  // No usable referrer (this site) and no tab word, as when session storage is blocked: the app still counts.
+  const blocked = load({ ua: UA.instagramIos, referrer: 'https://www.coloringpagemaker.app/blog', session: 'methods-throw' });
+  assert.equal(blocked.api.source, 'social');
+  assert.equal(blocked.proLink(), LINKS.social);
+  // No navigator, or one that throws: nothing changes and nothing throws.
+  assert.equal(load({ referrer: '' }).api.source, 'direct');
+  assert.equal(load({ ua: UA_THROWS }).api.source, 'direct');
+  assert.equal(load({ ua: UA_THROWS }).proLink(), LINKS.direct);
 });
 
 test('the page\'s own host is ignored, whatever it is', () => {
@@ -496,6 +625,7 @@ test('every page carries the script in its head, and serves the plain product li
     }
     const privacy = await (await fetch(app.base + '/privacy')).text();
     assert.match(privacy, /what kind of site sent you/);
+    assert.match(privacy, /the kind of app you opened the page in, for example Pinterest or Instagram, counts the same way/);
     assert.match(privacy, /local storage/);
     assert.match(privacy, /until you clear this site's data/);
     assert.match(privacy, /no cookies and no analytics/);

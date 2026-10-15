@@ -2,11 +2,14 @@
 // Which kind of site brought a visitor, so each Pro sale in Gumroad shows its channel. A kind of site is one word:
 // google, bing, other-search, ai-assistant, pinterest, social, referral or direct. It is read first from a tag in
 // the landing address (utm_source, then ref, then source, such as utm_source=chatgpt.com), then from the host of
-// the referrer. Only that word is ever kept, never an address: for this tab in sessionStorage (the first page of
-// the visit decides), and in localStorage the first word other than "direct" this browser ever got, set once and
-// never replaced. Nothing leaves the browser until a Pro button is clicked. The click then goes through the Gumroad
-// UTM link (gumroad.com/dashboard/utm_links, campaign "coloringpagemaker") of the browser's first word, else this
-// visit's word, else "direct". If this script fails, the button keeps its plain Gumroad link.
+// the referrer. In-app browsers (Pinterest, Instagram, Facebook, TikTok and others) often send no referrer, so when
+// neither gives a word and the browser has no first word yet, the app named in the user agent decides; a real
+// browser with no referrer stays "direct". Only that word is ever kept, never an address: for this tab in
+// sessionStorage (the first page of the visit decides), and in localStorage the first word other than "direct" this
+// browser ever got, set once and never replaced. Nothing leaves the browser until a Pro button is clicked. The click
+// then goes through the Gumroad UTM link (gumroad.com/dashboard/utm_links, campaign "coloringpagemaker") of the
+// browser's first word, else this visit's word, else "direct". If this script fails, the button keeps its plain
+// Gumroad link.
 window.cpmSource = (function () {
   var VISIT = 'cpm_source', FIRST = 'cpm_first_source';
   var PRO = /^https:\/\/dorukctn\.gumroad\.com\/l\/uynqt(?:[\/?#]|$)/;
@@ -63,6 +66,16 @@ window.cpmSource = (function () {
     ['pinterest', /^pinterest|^pinit$/],
     ['social', /^(facebook|instagram|reddit|twitter|youtube|tiktok|threads|linkedin|quora)|^(fb|ig|x|tco|yt)$/]
   ];
+  // In-app browsers name their app in the user agent. Tested in this order; a crawler such as Pinterestbot or
+  // Twitterbot matches nothing. Any other Android app's WebView ("; wv)") counts as a referral.
+  var AGENTS = [
+    ['pinterest', /\bPinterest(\/|\s+for\s)/i],
+    ['social', /\bInstagram\b|\bBarcelona\b|\b(FBAN|FBAV|FB_IAB|FBIOS)\b/i],
+    ['social', /musical_ly|bytedance|\btrill_\d|\btiktok\b/i],
+    ['social', /\bSnapchat\/|\bTwitter for |\bTwitterAndroid\b|\bLinkedInApp\b|\bLine\/|\bReddit\//i],
+    ['google', /\bGSA\/\d/],
+    ['referral', /;\s*wv\)/]
+  ];
   function own(map, k) { return Object.prototype.hasOwnProperty.call(map, k) ? map[k] : ''; }
 
   // The kind of site a referrer belongs to. '' means "do not record": this site, Gumroad, or nothing readable.
@@ -109,6 +122,13 @@ window.cpmSource = (function () {
     return param(search, 'fbclid') ? 'social' : '';
   }
 
+  // The kind of site an in-app browser's user agent names, '' for a real browser or anything unknown.
+  function fromAgent(ua) {
+    var s = String(ua || '');
+    for (var i = 0; i < AGENTS.length; i++) if (AGENTS[i][1].test(s)) return AGENTS[i][0];
+    return '';
+  }
+
   // Storage can be missing or throw (private modes, blocked site data), so every read and write is guarded.
   function get(local, k) { try { return (local ? localStorage : sessionStorage).getItem(k) || ''; } catch (e) { return ''; } }
   function put(local, k, v) { try { (local ? localStorage : sessionStorage).setItem(k, v); } catch (e) {} }
@@ -122,6 +142,12 @@ window.cpmSource = (function () {
     visit = '';
     try { visit = fromUrl(location.search, host) || classify(document.referrer, host); } catch (e) {}
     if (!own(LINKS, visit)) visit = '';
+    // No tag, no usable referrer and no first word in this browser: the app named in the user agent, if any.
+    if ((!visit || visit === 'direct') && !firstWord()) {
+      var app = '';
+      try { app = fromAgent(navigator.userAgent); } catch (e) {}
+      if (app) visit = app;
+    }
   }
   function remember() {
     if (visit && !own(LINKS, get(false, VISIT))) put(false, VISIT, visit);
@@ -146,6 +172,6 @@ window.cpmSource = (function () {
     document.addEventListener('touchstart', swap, { capture: true, passive: true });
     document.addEventListener('click', swap, true);
   }
-  return { source: visit, first: firstWord(), chosen: chosen, classify: classify, classifyTag: classifyTag, fromUrl: fromUrl };
+  return { source: visit, first: firstWord(), chosen: chosen, classify: classify, classifyTag: classifyTag, fromUrl: fromUrl, fromAgent: fromAgent };
 })();
 </script>
