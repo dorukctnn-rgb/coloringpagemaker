@@ -327,7 +327,11 @@ const THEME_ORDER = [
 const SEASONAL_THEMES = ['fall-coloring-pages', 'thanksgiving-coloring-pages', 'turkey-coloring-pages', 'winter-coloring-pages',
   'nativity-coloring-pages', 'new-year-coloring-pages', 'gingerbread-coloring-pages', 'snowman-coloring-pages',
   'diwali-coloring-pages', 'hanukkah-coloring-pages'];
-const ALL_THEMES = [...THEME_ORDER, ...SEASONAL_THEMES];
+// Evergreen guides come after the seasonal ones, appended to the same lists in the same way.
+const EVERGREEN_THEMES = ['dragon-coloring-pages', 'cat-coloring-pages', 'car-coloring-pages', 'dog-coloring-pages',
+  'mermaid-coloring-pages', 'horse-coloring-pages', 'fairy-coloring-pages', 'butterfly-coloring-pages',
+  'space-coloring-pages', 'ocean-coloring-pages'];
+const ALL_THEMES = [...THEME_ORDER, ...SEASONAL_THEMES, ...EVERGREEN_THEMES];
 // The "Free printable ... coloring pages" gallery for a theme page, or null.
 const examplesFor = slug => (THEME_EXAMPLES[slug] ? { slug, ...THEME_EXAMPLES[slug] } : null);
 const themeLabel = slug => (THEME_GUIDES[slug] ? THEME_GUIDES[slug].h1 : NICHE_PAGES[slug].h1);
@@ -707,7 +711,17 @@ const THEME_NOTES = {
   'gingerbread-coloring-pages': ['Gingerbread', 'Cookies, candy houses and the 1875 Gingerbread Boy'],
   'snowman-coloring-pages': ['Snowmen', 'A blank snowman to dress and the best snowman snow'],
   'diwali-coloring-pages': ['Diwali', 'Diyas, rangoli patterns and the festival of lights'],
-  'hanukkah-coloring-pages': ['Hanukkah', 'A nine-branch menorah, dreidels and latkes']
+  'hanukkah-coloring-pages': ['Hanukkah', 'A nine-branch menorah, dreidels and latkes'],
+  'dragon-coloring-pages': ['Dragons', 'European and East Asian dragons, and the Komodo'],
+  'cat-coloring-pages': ['Cats', 'Kittens and six breeds that are easy to draw'],
+  'car-coloring-pages': ['Cars', 'The Model T and a buckle-up page'],
+  'dog-coloring-pages': ['Dogs', 'The seven dog groups, a breed from each'],
+  'mermaid-coloring-pages': ['Mermaids', 'Tails scale by scale, and where the legend came from'],
+  'horse-coloring-pages': ['Horses', 'Hands, Miniature Horses and newborn foals'],
+  'fairy-coloring-pages': ['Fairies', 'Fairy houses and the plants of fairy lore'],
+  'butterfly-coloring-pages': ['Butterflies', "A monarch's real colors and life cycle"],
+  'space-coloring-pages': ['Space', 'The eight planets and the first Moon landing'],
+  'ocean-coloring-pages': ['Ocean', 'Blue whales and the unexplored deep sea']
 };
 app.get('/blog', (req, res) => {
   const listed = new Set(BLOG_GROUPS.flatMap(g => g.slugs));
@@ -756,7 +770,7 @@ app.get('/:slug', (req, res, next) => {
       examples: examplesFor(slug),
       // The next six themes after this one, wrapping around, so every theme page gets links from six others,
       // followed by the seasonal guides.
-      allPages: [...[...THEME_ORDER.slice(THEME_ORDER.indexOf(slug) + 1), ...THEME_ORDER.slice(0, Math.max(0, THEME_ORDER.indexOf(slug)))].filter(s => s !== slug).slice(0, 6), ...SEASONAL_THEMES].map(s => ({ slug: s, h1: themeLabel(s) }))
+      allPages: [...[...THEME_ORDER.slice(THEME_ORDER.indexOf(slug) + 1), ...THEME_ORDER.slice(0, Math.max(0, THEME_ORDER.indexOf(slug)))].filter(s => s !== slug).slice(0, 6), ...SEASONAL_THEMES, ...EVERGREEN_THEMES].map(s => ({ slug: s, h1: themeLabel(s) }))
     });
   }
   if (BLOG_POSTS[slug]) {

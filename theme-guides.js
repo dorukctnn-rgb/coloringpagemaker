@@ -431,7 +431,11 @@ const THEME_GUIDES = {
     { href: '/dinosaur-coloring-pages', label: 'Dinosaur coloring pages', note: 'species that really lived together' },
     { href: '/halloween-coloring-pages', label: 'Halloween coloring pages', note: 'bats, owls and black cats' },
     { href: '/unicorn-coloring-pages', label: 'Unicorn coloring pages', note: 'including the narwhal' },
-    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'subject-aligned page ideas' }
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'subject-aligned page ideas' },
+    { href: '/cat-coloring-pages', label: 'Cat coloring pages', note: 'kittens, cozy cats and real breeds' },
+    { href: '/dog-coloring-pages', label: 'Dog coloring pages', note: 'puppies and the seven dog groups' },
+    { href: '/horse-coloring-pages', label: 'Horse coloring pages', note: 'ponies, foals and galloping horses' },
+    { href: '/butterfly-coloring-pages', label: 'Butterfly coloring pages', note: `a monarch's real colors and life cycle` }
   ]
 },
 
@@ -1145,6 +1149,567 @@ const THEME_GUIDES = {
     { href: '/winter-coloring-pages', label: 'Winter coloring pages', note: 'snow days, snowflakes and polar animals' },
     { href: '/diwali-coloring-pages', label: 'Diwali coloring pages', note: 'diyas, rangoli and lanterns' },
     { href: '/new-year-coloring-pages', label: 'New Year coloring pages', note: 'party hats, fireworks and a countdown clock' },
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
+  ]
+},
+
+'dragon-coloring-pages': {
+  updated: '2026-10-16',
+  checked: '16 October 2026',
+  title: 'Dragon Coloring Pages: From Baby Dragons to Castle Towers',
+  description: 'Free printable dragon coloring pages: a baby dragon hatching for toddlers, a dragon on a castle tower for older kids, and the two kinds of dragon in legend.',
+  eyebrow: 'Dragon coloring page generator',
+  h1: 'Dragon coloring pages, from baby dragons to castle towers',
+  lead: `Describe a dragon and print it: a baby dragon hatching from its egg for a toddler, a dragon flying over the clouds for a first grader, a dragon guarding a castle tower for an older child. Below are prompts by age, the difference between European and East Asian dragons, and the real lizard that carries the name.`,
+  name: 'dragon coloring page',
+  topic: 'dragon coloring pages',
+  recipesHeading: 'Dragon prompts by age',
+  toolHeading: 'Describe your dragon page',
+  defaultStyle: 'simple',
+  presetPrompt: `a friendly baby dragon hatching from a cracked egg, small horns and little wings, big simple shapes, no background`,
+  chips: ['dragon reading a book under a tree', 'dragon and a knight sharing a picnic', 'dragon curled around a pile of gold coins', 'baby dragon asleep in a nest'],
+  recipes: [
+    { who: 'Ages 2 to 5', style: 'simple', prompt: `a friendly baby dragon hatching from a cracked egg, small horns and little wings, big simple shapes, no background`, why: `A round, smiling face and a cracked egg: a dragon with nothing scary about it.` },
+    { who: 'Ages 4 to 7', style: 'simple', prompt: `a friendly dragon flying with its wings spread wide above a few clouds, big simple shapes, no background`, why: `Two big wings to color, each one a separate shape.` },
+    { who: 'Ages 6 to 9', style: 'medium', prompt: `a dragon with large bat-like wings, horns and spikes along its back, perched on a castle tower, clean bold outlines, white sky`, why: `A storybook scene with bricks, battlements and spikes for an older child to work through.` },
+    { who: 'Ages 9 to 12', style: 'medium', prompt: `a long wingless East Asian dragon curling through clouds, with a flowing mane and scales drawn as outlines, clean bold outlines`, why: `The other kind of dragon (see below): long, wingless and at home among the clouds.` },
+    { who: 'Teens and adults', style: 'medium', prompt: `a dragon coiled around a tall rock, every scale on its body drawn as a separate outline, clean bold lines`, why: `Hundreds of scales, each one its own shape, for a long evening of coloring.` }
+  ],
+  sections: [
+    { h2: 'Two kinds of dragon', blocks: [
+      { p: `Dragons in legend come in two broad kinds. In medieval Europe they were usually shown with wings and a barbed tail, breathing fire. In East Asian mythologies the dragon is a beneficent creature, and Chinese and Japanese dragons, though regarded as powers of the air, are usually wingless (Britannica). The English word comes from the Greek drakōn, which first meant any large serpent.` },
+      { ul: [
+        `**A European dragon:** “a dragon with bat-like wings, horns and a barbed tail”.`,
+        `**An East Asian dragon:** “a long wingless dragon with a flowing mane curling through clouds”.`
+      ] },
+      { p: `Norse warriors painted dragons on their shields and carved dragon heads on the prows of their ships (Britannica). A dragon-prow ship makes a good page for a history lesson.` }
+    ] },
+    { h2: 'Choose how fierce the dragon is', blocks: [
+      { table: { head: ['Mood', 'Words to use', 'Ages'], rows: [
+        ['Friendly', 'baby, smiling, round, little wings', '2 to 5'],
+        ['Adventurous', 'flying, castle, knight, treasure', '6 to 9'],
+        ['Fierce', 'spikes, horns, scales, smoke drawn as outlines', '10 and up']
+      ] } },
+      { p: `Fire and smoke print best as outlines. Write “flames drawn as outlines” so they stay white to color; words such as glowing or dark pull the page toward large black areas.` }
+    ] },
+    { h2: 'The real dragon: the Komodo', blocks: [
+      { p: `One dragon is real. The Komodo dragon is the largest living lizard in the world: the largest verified one reached 10.3 feet (3.13 meters) and weighed 366 pounds, and wild Komodo dragons live only on a few islands in Indonesia (Smithsonian's National Zoo). Make one page of a dragon from legend and one of the Komodo, and let children compare.` }
+    ] }
+  ],
+  faq: [
+    { q: 'Which dragon coloring pages suit toddlers?', a: `A baby dragon on Simple: a round face, small horns and little wings, or a dragon hatching from an egg. Leave spikes, scales and castles until ages 5 or 6.` },
+    { q: 'Do all dragons have wings?', a: `No. Dragons from medieval Europe usually have wings, but Chinese and Japanese dragons are usually wingless (Britannica). Ask for “a long wingless dragon” to draw the East Asian kind.` },
+    { q: 'How do I draw fire without a black page?', a: `Ask for “flames drawn as outlines” or “a small puff of smoke drawn as an outline”. Words like dark, glowing or silhouette push the page toward large black areas.` },
+    { q: 'Is the Komodo dragon a real dragon?', a: `It is a real lizard that carries the name: the largest living lizard in the world, found only on a few Indonesian islands (Smithsonian's National Zoo).` },
+    { q: 'Can I sell dragon coloring pages I make here?', a: `With Pro, yes: it includes commercial use. Leave film and game characters out of anything you sell. Our [Etsy guide](/sell-coloring-books-on-etsy) covers fees, file limits and Etsy's rule that AI-made items must say so.` }
+  ],
+  sources: [
+    { text: 'Britannica: Dragon', href: 'https://www.britannica.com/topic/dragon-mythological-creature' },
+    { text: `Smithsonian's National Zoo: Komodo dragon`, href: 'https://nationalzoo.si.edu/animals/komodo-dragon' }
+  ],
+  cta: `A different dragon for each of six tables takes three days on the free plan. Pro makes them in one sitting, with no watermark and a commercial license, for $9 once.`,
+  related: [
+    { href: '/unicorn-coloring-pages', label: 'Unicorn coloring pages', note: 'winged unicorns and party pages' },
+    { href: '/fairy-coloring-pages', label: 'Fairy coloring pages', note: 'fairy houses, wings and gardens' },
+    { href: '/dinosaur-coloring-pages', label: 'Dinosaur coloring pages', note: 'species that really lived together' },
+    { href: '/princess-coloring-pages', label: 'Princess coloring pages', note: 'fairy tales that are free to draw' }
+  ]
+},
+
+'cat-coloring-pages': {
+  updated: '2026-10-16',
+  checked: '16 October 2026',
+  title: 'Cat Coloring Pages: Kittens, Cozy Cats and Real Breeds',
+  description: 'Free printable cat coloring pages: a kitten with yarn for toddlers, a cat asleep on a windowsill for kids, and real breeds to color, from the Siamese to the Manx.',
+  eyebrow: 'Cat coloring page generator',
+  h1: 'Cat coloring pages: kittens, cozy cats and real breeds',
+  lead: `Describe a cat and print it: a cat with a ball of yarn for a toddler, kittens in a basket for a first grader, a cat asleep on a windowsill for an older child. Below are prompts by age, six breeds that are easy to tell apart on paper, and how to color a Siamese the way the breed really looks.`,
+  name: 'cat coloring page',
+  topic: 'cat coloring pages',
+  recipesHeading: 'Cat prompts by age',
+  toolHeading: 'Describe your cat page',
+  defaultStyle: 'simple',
+  presetPrompt: `a cat sitting next to a ball of yarn, big simple shapes, no background`,
+  chips: ['cat playing in a cardboard box', 'cat watching a fish bowl', 'two cats sharing a cushion', 'cat chasing a butterfly in the grass'],
+  recipes: [
+    { who: 'Ages 2 to 5', style: 'simple', prompt: `a cat sitting next to a ball of yarn, big simple shapes, no background`, why: `One cat and one ball of yarn: two big shapes, easy to stay inside.` },
+    { who: 'Ages 4 to 7', style: 'simple', prompt: `a kitten peeking out of a cardboard box, big simple shapes, no background`, why: `A kitten and a box, both made of big simple shapes.` },
+    { who: 'Ages 6 to 9', style: 'medium', prompt: `three kittens playing in a wicker basket with a blanket, clean bold outlines`, why: `Three kittens to color three ways: one striped, one spotted, one plain.` },
+    { who: 'Ages 9 to 12', style: 'medium', prompt: `a cat curled up asleep on a windowsill with potted plants and curtains, clean bold outlines`, why: `A whole cozy corner: curtains, plants and a sleeping cat.` },
+    { who: 'Teens and adults', style: 'medium', prompt: `a long-haired cat sitting in a garden of flowers, every lock of fur drawn as a separate outline, clean bold lines`, why: `Long fur in separate locks gives adults many small shapes to fill.` }
+  ],
+  sections: [
+    { h2: 'Six breeds that are easy to tell apart on paper', blocks: [
+      { p: `The Cat Fanciers' Association recognizes over 40 breeds (CFA). These six each have one feature a drawing can show. Ask the generator for the breed by name and its feature, for example “a Manx cat with no tail”, then color it from the table.` },
+      { table: { head: ['Breed', 'What makes it different'], rows: [
+        ['Siamese', 'a “pointed” cat: color on the head, ears, legs and tail, and always blue eyes'],
+        ['Manx', 'usually no tail, and back legs longer than the front legs'],
+        ['American Curl', 'ears that curl backwards'],
+        ['Selkirk Rex', 'naturally curly fur, and even curly whiskers'],
+        ['Egyptian Mau', 'the only natural spotted breed of domestic cat'],
+        ['Maine Coon', 'often called the biggest domestic cat, up to 20 pounds full grown']
+      ] } }
+    ] },
+    { h2: 'Color a Siamese the way it really looks', blocks: [
+      { p: `Because a Siamese keeps its color on the points, the head, ears, legs and tail, it is a good first lesson in coloring with a plan: leave the body pale, color the points dark, and save the blue for the eyes (CFA). White Persians can have copper eyes, blue eyes, or one of each, called odd-eyed (CFA): another chance to color with a plan.` }
+    ] }
+  ],
+  faq: [
+    { q: 'Which cat coloring pages suit toddlers?', a: `One cat on Simple, sitting or lying down, with one toy such as a ball of yarn. Leave baskets of kittens and window scenes for children of 5 and up.` },
+    { q: 'How many cat breeds are there?', a: `The Cat Fanciers' Association recognizes over 40 breeds (CFA). The table above lists six that are easy to draw.` },
+    { q: 'Can I make a coloring page of my own cat?', a: `Describe it: the coat (“a fluffy long-haired cat”, “a cat with one white paw”), the pose and its favorite spot. The generator draws a new picture from your words, so the page shows your cat's type rather than a copy of a photo.` },
+    { q: 'Can I make cat coloring pages for adults?', a: `Yes. Ask for long fur drawn in separate locks, a cat among flowers or a pattern of cats, and choose Medium or Detailed. See [adult coloring pages](/adult-coloring-pages) for paper tips.` },
+    { q: 'Can I sell cat coloring pages I make here?', a: `With Pro, yes: it includes commercial use. Leave comic-strip and film cats out of anything you sell. Our [Etsy guide](/sell-coloring-books-on-etsy) covers fees, file limits and Etsy's rule that AI-made items must say so.` }
+  ],
+  sources: [
+    { text: `The Cat Fanciers' Association: Breeds and colors (for kids)`, href: 'https://cfa.org/kids/breeds-and-colors/' }
+  ],
+  cta: `Six kittens for six tables take three days on the free plan. Pro makes them in one sitting, with no watermark and a commercial license, for $9 once.`,
+  related: [
+    { href: '/dog-coloring-pages', label: 'Dog coloring pages', note: 'puppies and the seven dog groups' },
+    { href: '/animal-coloring-pages', label: 'Animal coloring pages', note: 'black markings, life cycles, pet portraits' },
+    { href: '/halloween-coloring-pages', label: 'Halloween coloring pages', note: 'black cats drawn as outlines' },
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
+  ]
+},
+
+'car-coloring-pages': {
+  updated: '2026-10-16',
+  checked: '16 October 2026',
+  title: 'Car Coloring Pages: Classic Cars, Race Cars and Road Trips',
+  description: 'Free printable car coloring pages: a classic car for toddlers, a race car and a camper van for kids, the Model T story and a buckle-up page for young passengers.',
+  eyebrow: 'Car coloring page generator',
+  h1: 'Car coloring pages: classic cars, race cars and road trips',
+  lead: `Describe a car and print it: a classic car in big shapes for a toddler, a race car at the checkered flag for a first grader, a camper van by a lake for a family road trip. Below are prompts by age, how the Model T put families on the road, and a back-seat safety page for young passengers.`,
+  name: 'car coloring page',
+  topic: 'car coloring pages',
+  recipesHeading: 'Car prompts by age',
+  toolHeading: 'Describe your car page',
+  defaultStyle: 'simple',
+  presetPrompt: `a classic car seen from the side with round headlights and big wheels, no face, no letters, big simple shapes, no background`,
+  chips: ['fire truck with a ladder, no letters', 'tow truck pulling a small car', 'tractor in a field', 'ice cream truck by a park, no letters'],
+  recipes: [
+    { who: 'Ages 2 to 5', style: 'simple', prompt: `a classic car seen from the side with round headlights and big wheels, no face, no letters, big simple shapes, no background`, why: `Round wheels and headlights in big shapes. “No face” keeps it a real car rather than a cartoon character.` },
+    { who: 'Ages 4 to 7', style: 'simple', prompt: `a fire truck with a long ladder and big wheels, no letters, big simple shapes, no background`, why: `A favorite vehicle for small children, with ladder rungs to count.` },
+    { who: 'Ages 6 to 9', style: 'medium', prompt: `a race car speeding on a track with a checkered flag, no numbers or letters on the car, no face, clean bold outlines`, why: `The car comes without numbers, so each child can paint on a race number of their own.` },
+    { who: 'Ages 9 to 12', style: 'medium', prompt: `a camper van parked by a lake with pine trees and mountains behind, no letters, clean bold outlines`, why: `A road-trip scene with a whole landscape to color.` },
+    { who: 'Teens and adults', style: 'medium', prompt: `a vintage car from the 1920s with spoked wheels, a folding roof and running boards, no letters, clean bold outlines`, why: `Spokes, lamps and running boards give older children and adults plenty of detail.` }
+  ],
+  sections: [
+    { h2: 'Keep the car a car', blocks: [
+      { p: `If you want a real car rather than a cartoon character, two habits keep the page clean:` },
+      { ul: [
+        `Add “no face” to the prompt, so the headlights stay headlights.`,
+        `Add “no letters” or “no numbers”. The generator cannot be relied on to spell, so a race number or a name on the door is best written in by hand.`
+      ] }
+    ] },
+    { h2: 'The car that put families on the road', blocks: [
+      { p: `Ford Motor Company introduced the Model T on 1 October 1908, at $850, cheap for its day. The 15 millionth Model T came off the Highland Park assembly line on 26 May 1927, and by then Model Ts were being made in 19 other countries (The Henry Ford). A page of a car from the 1920s next to a modern car makes a good before-and-after lesson.` }
+    ] },
+    { h2: 'A buckle-up page for young passengers', blocks: [
+      { p: `NHTSA, the US road safety agency, advises keeping children in the back seat at least through age 12, and in a booster seat until the seat belt fits: the lap belt across the upper thighs, not the stomach, and the shoulder belt across the shoulder and chest, not the neck or face (NHTSA).` },
+      { p: `Color a car seen from the side with its windows showing the back seat, and let children draw themselves in it, buckled up the right way.` }
+    ] }
+  ],
+  faq: [
+    { q: 'Which car coloring pages suit toddlers?', a: `One vehicle from the side on Simple: a car, a fire truck or a tractor. Big round wheels are easy to color. Leave busy road scenes until ages 5 or 6.` },
+    { q: 'How do I stop the car from getting a face?', a: `Add “no face” to the prompt. If a face appears anyway, generate the page again.` },
+    { q: 'Can the generator write a race number or a name on the car?', a: `Not reliably. It draws pictures and can turn letters and numbers into shapes that are neither. Ask for “no numbers or letters” and write them in by hand.` },
+    { q: 'When was the Model T made?', a: `Ford introduced it on 1 October 1908, and the 15 millionth came off the line on 26 May 1927 (The Henry Ford).` },
+    { q: 'Can I sell car coloring pages I make here?', a: `With Pro, yes: it includes commercial use. Leave car brands, logos and film characters out of anything you sell. Our [Etsy guide](/sell-coloring-books-on-etsy) covers fees, file limits and Etsy's rule that AI-made items must say so.` }
+  ],
+  sources: [
+    { text: `The Henry Ford: Ford's Model T, a car for the great multitude`, href: 'https://www.thehenryford.org/collections/explore/articles/fords-model-t' },
+    { text: 'NHTSA: Car seats and booster seats', href: 'https://www.nhtsa.gov/vehicle-safety/car-seats-and-booster-seats' }
+  ],
+  cta: `A fire truck, a race car and a camper van for three children take two days on the free plan. Pro makes them in one sitting, with no watermark and a commercial license, for $9 once.`,
+  related: [
+    { href: '/space-coloring-pages', label: 'Space coloring pages', note: 'rockets, planets and astronauts' },
+    { href: '/dinosaur-coloring-pages', label: 'Dinosaur coloring pages', note: 'species that really lived together' },
+    { href: '/dog-coloring-pages', label: 'Dog coloring pages', note: 'puppies and the seven dog groups' },
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
+  ]
+},
+
+'dog-coloring-pages': {
+  updated: '2026-10-16',
+  checked: '16 October 2026',
+  title: 'Dog Coloring Pages: Puppies, Breeds and the Seven Dog Groups',
+  description: 'Free printable dog coloring pages: a puppy with a bone for toddlers, a dog in the bath for kids, and the seven AKC dog groups with a breed to draw from each.',
+  eyebrow: 'Dog coloring page generator',
+  h1: 'Dog coloring pages: puppies, breeds and the seven dog groups',
+  lead: `Describe a dog and print it: a puppy with a bone for a toddler, a dog in a bubble bath for a first grader, a breed from each of the seven dog groups for an older child. Below are prompts by age, the groups that dog shows use, and how to draw your own dog.`,
+  name: 'dog coloring page',
+  topic: 'dog coloring pages',
+  recipesHeading: 'Dog prompts by age',
+  toolHeading: 'Describe your dog page',
+  defaultStyle: 'simple',
+  presetPrompt: `a happy puppy sitting with a bone, floppy ears, big simple shapes, no background`,
+  chips: ['dog wearing a raincoat in the rain', 'puppy asleep with a teddy bear', 'dog carrying a stick in a park', 'two puppies sharing a big bone'],
+  recipes: [
+    { who: 'Ages 2 to 5', style: 'simple', prompt: `a happy puppy sitting with a bone, floppy ears, big simple shapes, no background`, why: `A round puppy and a bone: big shapes and a friendly face.` },
+    { who: 'Ages 4 to 7', style: 'medium', prompt: `a dog asleep in a round dog bed with a blanket and a chew toy beside it, clean bold outlines`, why: `A calm page: one dog, one bed, one toy.` },
+    { who: 'Ages 6 to 9', style: 'medium', prompt: `a dog in a bathtub full of bubbles with a rubber duck and a towel, clean bold outlines`, why: `Bubbles, a duck and a towel: lots of small shapes around one big dog.` },
+    { who: 'Ages 9 to 12', style: 'medium', prompt: `a Border Collie herding sheep across a field, clean bold outlines`, why: `A dog at work, from the Herding Group (see below).` },
+    { who: 'Teens and adults', style: 'medium', prompt: `a portrait of a long-haired dog with every lock of fur drawn as a separate outline, clean bold lines`, why: `A pet portrait with fur in separate locks to fill slowly.` }
+  ],
+  sections: [
+    { h2: 'Seven dog groups, a breed from each', blocks: [
+      { p: `At American Kennel Club dog shows, breeds are shown in seven groups, each organized by the work its breeds were developed to do (AKC). One page per group makes a set of seven, a week of coloring.` },
+      { table: { head: ['Group', 'Bred for', 'Breeds to draw'], rows: [
+        ['Sporting', 'helping hunters find and retrieve birds', 'Labrador Retriever, Cocker Spaniel, German Shorthaired Pointer'],
+        ['Hound', 'chasing by sight or trailing by scent', 'Bloodhound, Dachshund, Greyhound'],
+        ['Working', 'pulling sleds and carts, guarding flocks and homes', 'Boxer, Great Dane, Rottweiler'],
+        ['Terrier', 'going after rodents and other vermin', 'Bull Terrier, Scottish Terrier, West Highland White Terrier'],
+        ['Toy', 'being a companion small enough to sit on a lap', 'Chihuahua, Pug, Shih Tzu'],
+        ['Non-Sporting', 'jobs that fit none of the other groups', 'Bulldog, Dalmatian, Poodle'],
+        ['Herding', 'moving livestock such as sheep and cattle', 'Border Collie, German Shepherd Dog, Pembroke Welsh Corgi']
+      ] } }
+    ] },
+    { h2: 'Draw your own dog', blocks: [
+      { p: `To make a page that looks like your dog, describe it: the breed or the mix, the ears (floppy or pointed), the coat (curly, long or smooth), and one thing it always does, like carrying a ball. Print two copies: one to color as the dog really looks, and one in any colors your child likes.` }
+    ] }
+  ],
+  faq: [
+    { q: 'Which dog coloring pages suit toddlers?', a: `One puppy on Simple, sitting or lying down, with one toy. Leave parks, herding scenes and breed portraits for children of 5 and up.` },
+    { q: 'What are the seven dog groups?', a: `Sporting, Hound, Working, Terrier, Toy, Non-Sporting and Herding: the groups breeds are shown in at American Kennel Club dog shows (AKC).` },
+    { q: 'Can I make a coloring page of my own dog?', a: `Describe it in the prompt: breed or mix, ears, coat and a favorite toy. The generator draws a new picture from your words, so the page shows your dog's type rather than a copy of a photo.` },
+    { q: 'Can I make dog coloring pages for adults?', a: `Yes: a pet portrait with fur drawn in separate locks, a dog in a detailed garden, or a pattern of paw prints. Choose Medium or Detailed; [adult coloring pages](/adult-coloring-pages) has paper tips.` },
+    { q: 'Can I sell dog coloring pages I make here?', a: `With Pro, yes: it includes commercial use. Leave comic-strip, TV and film dogs out of anything you sell. Our [Etsy guide](/sell-coloring-books-on-etsy) covers fees, file limits and Etsy's rule that AI-made items must say so.` }
+  ],
+  sources: [
+    { text: 'American Kennel Club: The seven AKC breed groups explained', href: 'https://www.akc.org/expert-advice/lifestyle/7-akc-dog-breed-groups-explained/' }
+  ],
+  cta: `Seven dog groups, seven pages: four days on the free plan. Pro makes them in one sitting, with no watermark and a commercial license, for $9 once.`,
+  related: [
+    { href: '/cat-coloring-pages', label: 'Cat coloring pages', note: 'kittens, cozy cats and real breeds' },
+    { href: '/animal-coloring-pages', label: 'Animal coloring pages', note: 'black markings, life cycles, pet portraits' },
+    { href: '/horse-coloring-pages', label: 'Horse coloring pages', note: 'ponies, foals and galloping horses' },
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
+  ]
+},
+
+'mermaid-coloring-pages': {
+  updated: '2026-10-16',
+  checked: '16 October 2026',
+  title: 'Mermaid Coloring Pages: Free Printables and a Generator',
+  description: 'Free printable mermaid coloring pages: a mermaid on a rock for toddlers, an underwater reef for kids, and the sea animals some people link to the legend.',
+  eyebrow: 'Mermaid coloring page generator',
+  h1: 'Mermaid coloring pages, on the rocks and under the sea',
+  lead: `Describe a mermaid and print it: a smiling mermaid on a rock for a toddler, a mermaid with a seagull by the waves for a first grader, a mermaid swimming through a coral reef for an older child. Below are prompts by age, how to color a tail scale by scale, and where the legend may have come from.`,
+  name: 'mermaid coloring page',
+  topic: 'mermaid coloring pages',
+  recipesHeading: 'Mermaid prompts by age',
+  toolHeading: 'Describe your mermaid page',
+  defaultStyle: 'simple',
+  presetPrompt: `a smiling mermaid with long wavy hair and a simple top, sitting on a rock holding a seashell, big simple shapes, no background`,
+  chips: ['mermaid riding a dolphin', 'mermaid reading a book on a rock', 'merman with a trident and a sea turtle', 'mermaid and a manatee under the sea'],
+  recipes: [
+    { who: 'Ages 2 to 5', style: 'simple', prompt: `a smiling mermaid with long wavy hair and a simple top, sitting on a rock holding a seashell, big simple shapes, no background`, why: `One figure with a big tail and a shell: simple shapes and a happy face.` },
+    { who: 'Ages 4 to 7', style: 'medium', prompt: `a mermaid with long wavy hair and a plain short-sleeved top sitting on a rock, waves and a seagull around her, clean bold outlines`, why: `Waves and a seagull add a seaside scene around one figure.` },
+    { who: 'Ages 6 to 9', style: 'medium', prompt: `a mermaid with long braided hair and a simple top swimming among coral and seaweed with small fish and a starfish, clean bold outlines`, why: `An underwater scene with coral and fish to fill around the mermaid.` },
+    { who: 'Ages 9 to 12', style: 'medium', prompt: `a mermaid and a manatee swimming side by side through seagrass, clean bold outlines`, why: `A legend next to one of the sea animals some people link it to (see below).` },
+    { who: 'Teens and adults', style: 'medium', prompt: `a mermaid's tail curled on a rock, every scale drawn as a separate outline, with shells and starfish around it, clean bold lines`, why: `Hundreds of scales to color one by one, in two or three shades.` }
+  ],
+  sections: [
+    { h2: 'Color the tail scale by scale', blocks: [
+      { ul: [
+        `**Rows of color.** Give each row of scales a slightly different shade, light at the waist and darker toward the fin.`,
+        `**A pattern.** Repeat two colors across the scales, like a checkerboard.`,
+        `**The fin last.** Color the fin in long strokes along its lines, so it looks as if it is moving.`
+      ] }
+    ] },
+    { h2: 'Where the legend may have come from', blocks: [
+      { p: `In European folklore, mermaids had the head and upper body of a human and the tail of a fish, and they loved music and often sang. Some people think sea mammals such as the dugong and the manatee, which nurse their young above water, lie behind the legend (Britannica). NOAA's answer to “are mermaids real?” is plain: no evidence of aquatic humanoids has ever been found (NOAA).` },
+      { p: `A bronze Little Mermaid by Edvard Eriksen, made in 1913 after Hans Christian Andersen's fairy tale, is in Copenhagen harbor (Britannica).` }
+    ] }
+  ],
+  faq: [
+    { q: 'Which mermaid coloring pages suit toddlers?', a: `One mermaid on Simple, sitting on a rock or holding a shell. Leave reefs full of fish and coral for children of 5 and up.` },
+    { q: 'Are mermaids real?', a: `No. NOAA says no evidence of aquatic humanoids has ever been found. Mermaids belong to folklore, and some people think manatees and dugongs helped the legend along (NOAA, Britannica).` },
+    { q: 'How do I make a mermaid that is not a film character?', a: `Describe your own: the hair (braided, curly, short), the top, the tail and the setting. Leaving out film characters' names also keeps any page you sell free of trademarks.` },
+    { q: 'Can I make a merman?', a: `Yes. Mermen appear alongside mermaids in European folklore (Britannica). Try “a merman with a trident and a sea turtle”.` },
+    { q: 'Can I sell mermaid coloring pages I make here?', a: `With Pro, yes: it includes commercial use. Leave film characters out of anything you sell. Our [Etsy guide](/sell-coloring-books-on-etsy) covers fees, file limits and Etsy's rule that AI-made items must say so.` }
+  ],
+  sources: [
+    { text: 'Britannica: Mermaid', href: 'https://www.britannica.com/topic/mermaid' },
+    { text: 'NOAA Ocean Service: Are mermaids real?', href: 'https://oceanservice.noaa.gov/facts/mermaids.html' }
+  ],
+  cta: `Five mermaids for a party table take three days on the free plan. Pro makes them in one sitting, with no watermark and a commercial license, for $9 once.`,
+  related: [
+    { href: '/ocean-coloring-pages', label: 'Ocean coloring pages', note: 'sea turtles, reefs and whales' },
+    { href: '/fairy-coloring-pages', label: 'Fairy coloring pages', note: 'fairy houses, wings and gardens' },
+    { href: '/princess-coloring-pages', label: 'Princess coloring pages', note: 'fairy tales that are free to draw' },
+    { href: '/unicorn-coloring-pages', label: 'Unicorn coloring pages', note: 'winged unicorns and party pages' }
+  ]
+},
+
+'horse-coloring-pages': {
+  updated: '2026-10-16',
+  checked: '16 October 2026',
+  title: 'Horse Coloring Pages: Ponies, Foals and Galloping Horses',
+  description: 'Free printable horse coloring pages: a pony for toddlers, a galloping horse for kids, a saddled horse for young riders, and how horses are measured in hands.',
+  eyebrow: 'Horse coloring page generator',
+  h1: 'Horse coloring pages: ponies, foals and galloping horses',
+  lead: `Describe a horse and print it: a pony in a meadow for a toddler, a horse galloping across a field for a first grader, a saddled horse at the stable door for a young rider. Below are prompts by age, how horses are measured, and how soon a newborn foal gets to its feet.`,
+  name: 'horse coloring page',
+  topic: 'horse coloring pages',
+  recipesHeading: 'Horse prompts by age',
+  toolHeading: 'Describe your horse page',
+  defaultStyle: 'simple',
+  presetPrompt: `a pony standing in a meadow with flowers, a long mane and tail, big simple shapes, no background`,
+  chips: ['horse eating hay in a stable', 'pony with a braided mane and ribbons', 'horse and foal by a pond', 'cowboy boots and a horseshoe'],
+  recipes: [
+    { who: 'Ages 2 to 5', style: 'simple', prompt: `a pony standing in a meadow with flowers, a long mane and tail, big simple shapes, no background`, why: `A short pony with a big mane, easy to color in a few strokes.` },
+    { who: 'Ages 6 to 9', style: 'medium', prompt: `a horse galloping across a field with its mane and tail flowing, clean bold outlines`, why: `Four legs in motion and a flowing mane: a page that feels fast.` },
+    { who: 'Ages 7 to 10', style: 'medium', prompt: `a mare and her newborn foal standing in straw in a stable, clean bold outlines`, why: `For the foal facts below: a healthy foal is on its feet within an hour.` },
+    { who: 'Ages 9 to 12', style: 'medium', prompt: `a horse wearing a saddle and bridle standing in front of a stable door, no signs or letters, clean bold outlines`, why: `The tack gives young riders parts to name while they color: saddle, bridle and reins.` },
+    { who: 'Teens and adults', style: 'medium', prompt: `a horse's head in profile with a braided mane, every braid and strand drawn as a separate outline, clean bold lines`, why: `A detailed portrait with braids to fill one by one.` }
+  ],
+  sections: [
+    { h2: 'How horses are measured', blocks: [
+      { p: `Horses are measured at the highest point of the withers, in hands of four inches each (The Horse), so a horse of 15 hands stands 60 inches tall at the withers. Miniature Horses are measured at the withers too: to be registered with the American Miniature Horse Association, a horse cannot be taller than 34 inches (AMHA).` },
+      { p: `That makes a quick math page: measure each child in inches, divide by four to get their height in hands, and write it on the horse page they color.` }
+    ] },
+    { h2: 'A newborn foal stands within an hour', blocks: [
+      { p: `A healthy newborn foal should stand on its own within 1 hour of birth and start nursing within 2 hours, and after that foals nurse about every 30 minutes (Colorado State University Equine Reproduction Laboratory). The mare and foal prompt above makes a page to go with it.` }
+    ] }
+  ],
+  faq: [
+    { q: 'Which horse coloring pages suit toddlers?', a: `A pony on Simple: short legs, a big mane and a few flowers. Galloping horses, with four legs in motion, suit children of 6 and up.` },
+    { q: 'How many inches is a hand?', a: `Four inches. Horses are measured in hands at the highest point of the withers (The Horse).` },
+    { q: 'How small is a Miniature Horse?', a: `To be registered with the American Miniature Horse Association, no taller than 34 inches at the withers (AMHA).` },
+    { q: 'How soon can a foal stand?', a: `A healthy foal should stand on its own within an hour of birth and nurse within two hours (Colorado State University).` },
+    { q: 'Can I sell horse coloring pages I make here?', a: `With Pro, yes: it includes commercial use. Leave toy-brand and film characters out of anything you sell. Our [Etsy guide](/sell-coloring-books-on-etsy) covers fees, file limits and Etsy's rule that AI-made items must say so.` }
+  ],
+  sources: [
+    { text: 'The Horse: How to measure a horse', href: 'https://thehorse.com/148636/how-to-measure-a-horse/' },
+    { text: 'American Miniature Horse Association: About AMHA', href: 'https://www.amha.org/about-amha' },
+    { text: 'Colorado State University Equine Reproduction Laboratory: Foaling out, easy as 1-2-3 (2024)', href: 'https://vetmedbiosci.colostate.edu/erl/2024/02/15/foaling-1-2-3/' }
+  ],
+  cta: `A pony, a foal and a galloping horse for three riders take two days on the free plan. Pro makes them in one sitting, with no watermark and a commercial license, for $9 once.`,
+  related: [
+    { href: '/unicorn-coloring-pages', label: 'Unicorn coloring pages', note: 'winged unicorns and party pages' },
+    { href: '/animal-coloring-pages', label: 'Animal coloring pages', note: 'black markings, life cycles, pet portraits' },
+    { href: '/dog-coloring-pages', label: 'Dog coloring pages', note: 'puppies and the seven dog groups' },
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
+  ]
+},
+
+'fairy-coloring-pages': {
+  updated: '2026-10-16',
+  checked: '16 October 2026',
+  title: 'Fairy Coloring Pages: Fairies, Fairy Houses and Gardens',
+  description: 'Free printable fairy coloring pages: a fairy on a mushroom for toddlers, a fairy house in a tree stump for kids, and the plants folklore says fairies hold dear.',
+  eyebrow: 'Fairy coloring page generator',
+  h1: 'Fairy coloring pages: fairies, fairy houses and gardens',
+  lead: `Describe a fairy and print it: a little fairy on a mushroom for a toddler, a fairy house in a tree stump for a first grader, a fairy flying through a flower garden for an older child. Below are prompts by age, a fairy garden to plan on paper, and what folklore says fairies are like.`,
+  name: 'fairy coloring page',
+  topic: 'fairy coloring pages',
+  recipesHeading: 'Fairy prompts by age',
+  toolHeading: 'Describe your fairy page',
+  defaultStyle: 'simple',
+  presetPrompt: `a little fairy with butterfly wings sitting on a mushroom, big simple shapes, no background`,
+  chips: ['fairy asleep inside a tulip', 'fairy riding a snail', 'fairy door at the foot of a tree', 'fairy holding a lantern in a garden'],
+  recipes: [
+    { who: 'Ages 2 to 5', style: 'simple', prompt: `a little fairy with butterfly wings sitting on a mushroom, big simple shapes, no background`, why: `Butterfly wings and a spotted mushroom: big shapes for small hands.` },
+    { who: 'Ages 4 to 7', style: 'medium', prompt: `a fairy house built into a tree stump with a round door, tiny windows, mushrooms and flowers around it, clean bold outlines`, why: `A house with nobody home yet, so children can draw their own fairy at the door.` },
+    { who: 'Ages 6 to 9', style: 'medium', prompt: `a fairy with long hair and petal-shaped wings flying among tall flowers and butterflies, clean bold outlines`, why: `A flying figure among flowers, with wings to color like petals.` },
+    { who: 'Ages 9 to 12', style: 'medium', prompt: `a fairy garden with foxgloves, a hawthorn tree, a tiny bridge and a fairy door, clean bold outlines`, why: `The plants folklore says fairies hold dear (see below).` },
+    { who: 'Teens and adults', style: 'medium', prompt: `a fairy sitting on a crescent of leaves, her wings patterned like stained glass, clean bold outlines`, why: `Stained-glass wings give adults dozens of small shapes.` }
+  ],
+  sections: [
+    { h2: 'Plan a fairy garden on paper', blocks: [
+      { ul: [
+        `**Start with the house.** Print the tree-stump house and draw a path to its door.`,
+        `**Add the plants.** Folklore holds that hawthorn trees, foxglove and groundsel are so dear to fairies that harming them may anger the fairies (Britannica), so draw them around the house and keep them safe.`,
+        `**Finish with a fairy.** Children draw their own fairy at the door, or color the flying fairy and cut it out.`
+      ] }
+    ] },
+    { h2: 'What folklore says fairies are like', blocks: [
+      { p: `In folklore a fairy can be many things: a small creature with green clothes and hair living underground, a delicate winged figure in white who lives in fairyland, or a tiny protective sprite by the household hearth. Fairies were said to be anything from human size down to 3 inches (7.5 cm) tall, and fairy lore is especially strong in Ireland, Cornwall, Wales and Scotland (Britannica).` },
+      { p: `That gives three different pages to make: describe each kind and see which one children like best.` }
+    ] }
+  ],
+  faq: [
+    { q: 'Which fairy coloring pages suit toddlers?', a: `One fairy on Simple, sitting on a mushroom or a flower. Leave gardens full of flowers and butterflies for children of 5 and up.` },
+    { q: 'How big are fairies in folklore?', a: `Anything from human size down to about 3 inches (7.5 cm), according to the legends Britannica describes.` },
+    { q: 'How do I make a fairy that is not a film character?', a: `Describe your own fairy: the hair, the wings, the clothes and the setting. Leaving out film and toy characters' names also keeps any page you sell free of trademarks.` },
+    { q: 'Can I make fairy coloring pages for adults?', a: `Yes: wings patterned like stained glass, a detailed fairy garden, or a fairy house with every shingle drawn. Choose Medium or Detailed; see [adult coloring pages](/adult-coloring-pages).` },
+    { q: 'Can I sell fairy coloring pages I make here?', a: `With Pro, yes: it includes commercial use. Our [Etsy guide](/sell-coloring-books-on-etsy) covers fees, file limits and Etsy's rule that AI-made items must say so.` }
+  ],
+  sources: [
+    { text: 'Britannica: Fairy', href: 'https://www.britannica.com/topic/fairy' }
+  ],
+  cta: `A fairy, a fairy house and a garden for three children take two days on the free plan. Pro makes them in one sitting, with no watermark and a commercial license, for $9 once.`,
+  related: [
+    { href: '/unicorn-coloring-pages', label: 'Unicorn coloring pages', note: 'winged unicorns and party pages' },
+    { href: '/princess-coloring-pages', label: 'Princess coloring pages', note: 'fairy tales that are free to draw' },
+    { href: '/butterfly-coloring-pages', label: 'Butterfly coloring pages', note: `a monarch's real colors` },
+    { href: '/mermaid-coloring-pages', label: 'Mermaid coloring pages', note: 'on the rocks and under the sea' }
+  ]
+},
+
+'butterfly-coloring-pages': {
+  updated: '2026-10-16',
+  checked: '16 October 2026',
+  title: 'Butterfly Coloring Pages: Monarchs, Caterpillars and Gardens',
+  description: 'Free printable butterfly coloring pages: spotted wings for toddlers, a caterpillar to butterfly page for kids, and how to color a monarch like the real thing.',
+  eyebrow: 'Butterfly coloring page generator',
+  h1: 'Butterfly coloring pages: monarchs, caterpillars and gardens',
+  lead: `Describe a butterfly and print it: big spotted wings for a toddler, a caterpillar, a chrysalis and a butterfly for a first grader, a butterfly on a flower for an older child. Below are prompts by age, a monarch's real colors, and its life on milkweed.`,
+  name: 'butterfly coloring page',
+  topic: 'butterfly coloring pages',
+  recipesHeading: 'Butterfly prompts by age',
+  toolHeading: 'Describe your butterfly page',
+  defaultStyle: 'simple',
+  presetPrompt: `a butterfly with big symmetrical wings decorated with circles and dots, big simple shapes, no background`,
+  chips: ['butterfly on a sunflower', 'caterpillar eating a leaf', 'butterfly with heart-shaped spots', 'butterflies around a watering can'],
+  recipes: [
+    { who: 'Ages 2 to 5', style: 'simple', prompt: `a butterfly with big symmetrical wings decorated with circles and dots, big simple shapes, no background`, why: `Both wings match, so children can copy each color from one side to the other.` },
+    { who: 'Ages 4 to 7', style: 'simple', prompt: `a striped caterpillar on a leaf, a chrysalis hanging from a twig and a butterfly, no words, big simple shapes, no background`, why: `Three stages of the life cycle, to color in order.` },
+    { who: 'Ages 6 to 9', style: 'medium', prompt: `a butterfly resting on a large flower with its wings open, each wing with a pattern of veins and spots, clean bold outlines`, why: `Veins divide the wings into many small shapes.` },
+    { who: 'Ages 9 to 12', style: 'medium', prompt: `a monarch butterfly with its wings open, black veins and white spots along the wing edges drawn as outlines, clean bold outlines`, why: `Ready to color like a real monarch (see below).` },
+    { who: 'Teens and adults', style: 'medium', prompt: `butterflies arranged in a circle like a mandala, each with a different wing pattern, clean bold outlines`, why: `A mandala made of butterflies, with every wing its own pattern.` }
+  ],
+  sections: [
+    { h2: 'Color it like a real monarch', blocks: [
+      { p: `Monarch wings are deep orange with black borders and veins and white spots along the edges, and males have two black spots on the hind wings. The caterpillar is striped with yellow, black and white bands, and the chrysalis is seafoam green with tiny yellow spots (National Wildlife Federation).` },
+      { p: `The bright orange is a warning. Monarch caterpillars eat milkweed and store its toxins, which makes them taste bad to predators, and the protection lasts into the butterfly (NWF).` }
+    ] },
+    { h2: 'From egg to butterfly on milkweed', blocks: [
+      { ul: [
+        `**Egg:** laid on milkweed, the only plant monarch caterpillars eat. It hatches in three to five days.`,
+        `**Caterpillar:** eats milkweed and grows for about two weeks.`,
+        `**Chrysalis:** about two more weeks of change inside.`,
+        `**Butterfly:** most adults live only a few weeks, but the generation that hatches in late summer migrates and can live upward of eight months (NWF).`
+      ] },
+      { p: `The caterpillar page above shows three of the four stages; children can add the egg themselves, a tiny dot on a leaf.` }
+    ] }
+  ],
+  faq: [
+    { q: 'Which butterfly coloring pages suit toddlers?', a: `One butterfly on Simple with big spots on matching wings. Gardens full of flowers suit children of 5 and up.` },
+    { q: 'What do monarch caterpillars eat?', a: `Only milkweed. Monarchs lay their eggs on milkweed, the caterpillars' only host plant (National Wildlife Federation).` },
+    { q: 'What colors is a monarch butterfly?', a: `Deep orange wings with black borders and veins and white spots along the edges, and a black body with white markings (NWF).` },
+    { q: 'Where do monarchs go in winter?', a: `The eastern population migrates to the cool, high mountains of central Mexico, and the western population to coastal California (NWF).` },
+    { q: 'Can I sell butterfly coloring pages I make here?', a: `With Pro, yes: it includes commercial use. Our [Etsy guide](/sell-coloring-books-on-etsy) covers fees, file limits and Etsy's rule that AI-made items must say so.` }
+  ],
+  sources: [
+    { text: 'National Wildlife Federation: Monarch butterfly', href: 'https://www.nwf.org/Educational-Resources/Wildlife-Guide/Invertebrates/Monarch-Butterfly' }
+  ],
+  cta: `Four stages of the life cycle, one page each, take two days on the free plan. Pro makes them in one sitting, with no watermark and a commercial license, for $9 once.`,
+  related: [
+    { href: '/animal-coloring-pages', label: 'Animal coloring pages', note: 'black markings, life cycles, pet portraits' },
+    { href: '/flower-coloring-pages', label: 'Flower coloring pages', note: 'roses, sunflowers and bouquets' },
+    { href: '/fairy-coloring-pages', label: 'Fairy coloring pages', note: 'fairy houses, wings and gardens' },
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
+  ]
+},
+
+'space-coloring-pages': {
+  updated: '2026-10-16',
+  checked: '16 October 2026',
+  title: 'Space Coloring Pages: Rockets, Planets and Astronauts',
+  description: 'Free printable space coloring pages: a rocket for toddlers, the Sun and eight planets for kids, an astronaut near the Moon, and NASA facts to color along with.',
+  eyebrow: 'Space coloring page generator',
+  h1: 'Space coloring pages: rockets, planets and astronauts',
+  lead: `Describe a space scene and print it: a rocket passing the Moon for a toddler, the Sun and its eight planets for a first grader, an astronaut floating near the Moon for an older child. Below are prompts by age, the planets in order, and the first Moon landing.`,
+  name: 'space coloring page',
+  topic: 'space coloring pages',
+  recipesHeading: 'Space prompts by age',
+  toolHeading: 'Describe your space page',
+  defaultStyle: 'simple',
+  presetPrompt: `a rocket flying past the Moon and a ringed planet with stars, no letters, big simple shapes, no background`,
+  chips: ['astronaut planting a garden on Mars', 'friendly alien waving from a flying saucer', 'Moon with craters and footprints', 'space station with solar panels'],
+  recipes: [
+    { who: 'Ages 2 to 5', style: 'simple', prompt: `a rocket flying past the Moon and a ringed planet with stars, no letters, big simple shapes, no background`, why: `A rocket, the Moon and a ringed planet: three big shapes and a few stars.` },
+    { who: 'Ages 4 to 7', style: 'simple', prompt: `the Sun and the eight planets of the solar system arranged in a curved line across the whole page, Saturn with rings, no labels, big simple shapes`, why: `Count the planets before coloring, then write their names underneath (see below).` },
+    { who: 'Ages 6 to 9', style: 'medium', prompt: `an astronaut floating in space near the Moon with Earth in the distance, stars drawn as outlines, no logos or letters, clean bold outlines, white background`, why: `Stars as outlines keep the sky white, and “no logos” keeps the suit plain.` },
+    { who: 'Ages 9 to 12', style: 'medium', prompt: `a lunar lander standing on the Moon's surface with footprints in the dust and Earth in the sky, no flags or letters, clean bold outlines`, why: `A page to go with the Apollo 11 story below.` },
+    { who: 'Teens and adults', style: 'medium', prompt: `a space station orbiting Earth with solar panels, modules and docking ports, no letters, clean bold outlines`, why: `Panels and modules in many small shapes.` }
+  ],
+  sections: [
+    { h2: 'Color the planets in order', blocks: [
+      { p: `Our solar system has eight planets: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus and Neptune. The first four have solid surfaces; Jupiter and Saturn are gas giants, and Uranus and Neptune are ice giants. Jupiter is the largest (NASA).` },
+      { p: `Pluto counted as a planet until 2006, when astronomers agreed on a new definition and Pluto became a dwarf planet (NASA). Ask a class how many planets their parents learned.` },
+      { p: `The generator cannot be relied on to write names, so print the solar system page and let children write each name under its planet.` }
+    ] },
+    { h2: 'The first Moon landing', blocks: [
+      { p: `Apollo 11 launched on 16 July 1969 with Neil Armstrong, Buzz Aldrin and Michael Collins. Its goal, set by President John F. Kennedy in 1961, was to land a crew on the Moon and bring it home; the lunar module Eagle landed on the Moon, and the crew splashed down on 24 July 1969 (NASA).` },
+      { p: `The lunar lander prompt above makes a page to go with the story. Leave flags and mission patches out of the prompt and draw them in by hand if you want them.` }
+    ] }
+  ],
+  faq: [
+    { q: 'Which space coloring pages suit toddlers?', a: `A rocket, the Moon or a single planet on Simple. Astronauts and space stations, with many small parts, suit children of 6 and up.` },
+    { q: 'How many planets are there?', a: `Eight: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus and Neptune. Pluto has been a dwarf planet since 2006 (NASA).` },
+    { q: 'Which planet is the biggest?', a: `Jupiter, the fifth planet from the Sun (NASA).` },
+    { q: 'How do I keep a space page from printing black?', a: `Ask for a “white background” and “stars drawn as outlines”. A night sky or “dark space” turns most of the page black.` },
+    { q: 'Can I sell space coloring pages I make here?', a: `With Pro, yes: it includes commercial use. Leave agency logos, mission patches and film characters out of anything you sell. Our [Etsy guide](/sell-coloring-books-on-etsy) covers fees, file limits and Etsy's rule that AI-made items must say so.` }
+  ],
+  sources: [
+    { text: 'NASA Science: About the planets', href: 'https://science.nasa.gov/solar-system/planets/' },
+    { text: 'NASA: Apollo 11', href: 'https://www.nasa.gov/mission/apollo-11/' }
+  ],
+  cta: `Eight planets, one page each, take four days on the free plan. Pro makes them in one sitting, with no watermark and a commercial license, for $9 once.`,
+  related: [
+    { href: '/ocean-coloring-pages', label: 'Ocean coloring pages', note: 'sea turtles, reefs and whales' },
+    { href: '/car-coloring-pages', label: 'Car coloring pages', note: 'classic cars, race cars and road trips' },
+    { href: '/dinosaur-coloring-pages', label: 'Dinosaur coloring pages', note: 'species that really lived together' },
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
+  ]
+},
+
+'ocean-coloring-pages': {
+  updated: '2026-10-16',
+  checked: '16 October 2026',
+  title: 'Ocean Coloring Pages: Sea Turtles, Coral Reefs and Whales',
+  description: 'Free printable ocean coloring pages: a sea turtle for toddlers, an octopus by a treasure chest for kids, a whale with dolphins, and NOAA facts about the deep sea.',
+  eyebrow: 'Ocean coloring page generator',
+  h1: 'Ocean coloring pages: sea turtles, reefs and whales',
+  lead: `Describe an ocean scene and print it: a sea turtle for a toddler, an octopus beside a treasure chest for a first grader, a whale and two dolphins for an older child. Below are prompts by age, the biggest animal that has ever lived, and how little of the deep ocean anyone has seen.`,
+  name: 'ocean coloring page',
+  topic: 'ocean coloring pages',
+  recipesHeading: 'Ocean prompts by age',
+  toolHeading: 'Describe your ocean page',
+  defaultStyle: 'simple',
+  presetPrompt: `a sea turtle swimming with bubbles, big simple shapes, no background`,
+  chips: ['jellyfish with long trailing tentacles', 'crab on a sandy beach', 'shark swimming past coral', 'seahorse holding seagrass with its tail'],
+  recipes: [
+    { who: 'Ages 2 to 5', style: 'simple', prompt: `a sea turtle swimming with bubbles, big simple shapes, no background`, why: `A turtle with a patterned shell: each shell plate is its own shape.` },
+    { who: 'Ages 4 to 7', style: 'medium', prompt: `an octopus waving its arms next to a treasure chest on the sea floor with shells and seaweed, clean bold outlines`, why: `Eight arms to count and color.` },
+    { who: 'Ages 6 to 9', style: 'medium', prompt: `a whale and two dolphins swimming in the ocean below the waves, clean bold outlines`, why: `Big shapes and waves: a calm page for a quiet afternoon.` },
+    { who: 'Ages 9 to 12', style: 'medium', prompt: `a coral reef with branching coral, sea anemones, an angelfish, a seahorse and a starfish, clean bold outlines`, why: `A busy reef with many separate animals.` },
+    { who: 'Teens and adults', style: 'medium', prompt: `a cross-section of the ocean from the waves down to the deep sea floor, with a different animal at each depth, clean bold outlines`, why: `A page in layers, from sunlit water to the deep (see below).` }
+  ],
+  sections: [
+    { h2: 'One ocean, five basins', blocks: [
+      { p: `There is really one global ocean. It covers 71 percent of Earth and is divided into five named basins: the Arctic, Atlantic, Indian, Pacific and Southern (NOAA). Write the five names on the board and let each child choose the ocean their page shows.` }
+    ] },
+    { h2: 'The biggest animal that has ever lived', blocks: [
+      { p: `Blue whales are the largest animals ever to live on our planet. In the Antarctic they can reach about 110 feet long and weigh more than 330,000 pounds, and they feed almost entirely on krill, tiny shrimp-like animals (NOAA Fisheries). Measure 110 feet across a playground or a gym, then color the whale page.` }
+    ] },
+    { h2: 'Most of the deep ocean is unseen', blocks: [
+      { p: `More than 90 percent of the ocean is deep ocean, below 200 meters (656 feet), and explorers have seen less than 0.001 percent of the deep seafloor. As of April 2026, 28.7 percent of the global seafloor had been mapped with modern high-resolution sonar (NOAA Ocean Exploration).` },
+      { p: `That leaves room for imagination: ask children to invent a deep-sea animal nobody has seen yet and draw it on the back of their page.` }
+    ] }
+  ],
+  faq: [
+    { q: 'Which ocean coloring pages suit toddlers?', a: `One sea animal on Simple: a turtle, a fish, a crab or a starfish. Reefs with many animals suit children of 6 and up.` },
+    { q: 'How much of Earth does the ocean cover?', a: `About 71 percent (NOAA).` },
+    { q: 'What is the biggest animal in the ocean?', a: `The blue whale, the largest animal ever to live on Earth (NOAA Fisheries).` },
+    { q: 'How much of the ocean has been explored?', a: `Very little of the deep ocean: explorers have seen less than 0.001 percent of the deep seafloor (NOAA Ocean Exploration).` },
+    { q: 'Can I sell ocean coloring pages I make here?', a: `With Pro, yes: it includes commercial use. Leave film characters out of anything you sell. Our [Etsy guide](/sell-coloring-books-on-etsy) covers fees, file limits and Etsy's rule that AI-made items must say so.` }
+  ],
+  sources: [
+    { text: 'NOAA: Ocean and coasts', href: 'https://www.noaa.gov/education/resource-collections/ocean-coasts' },
+    { text: 'NOAA Fisheries: Blue whale', href: 'https://www.fisheries.noaa.gov/species/blue-whale' },
+    { text: 'NOAA Ocean Exploration: How much of the ocean has been explored?', href: 'https://oceanexplorer.noaa.gov/ocean-fact/explored/' }
+  ],
+  cta: `A turtle, an octopus, a whale and a reef for four tables take two days on the free plan. Pro makes them in one sitting, with no watermark and a commercial license, for $9 once.`,
+  related: [
+    { href: '/mermaid-coloring-pages', label: 'Mermaid coloring pages', note: 'on the rocks and under the sea' },
+    { href: '/space-coloring-pages', label: 'Space coloring pages', note: 'rockets, planets and astronauts' },
+    { href: '/animal-coloring-pages', label: 'Animal coloring pages', note: 'black markings, life cycles, pet portraits' },
     { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
   ]
 }
