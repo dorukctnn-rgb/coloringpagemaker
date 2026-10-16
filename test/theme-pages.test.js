@@ -1,7 +1,7 @@
 // Theme pages: the "Free printable ... coloring pages" gallery on every theme page and the seasonal guides
-// (fall, Thanksgiving, turkey, winter, nativity, New Year, gingerbread, snowman, Diwali, Hanukkah). server.js runs
-// as a child process with no KV and no OpenAI key, which is enough to render pages, serve the example files and
-// build a free PDF.
+// (fall, Thanksgiving, turkey, winter, nativity, New Year, gingerbread, snowman, Diwali, Hanukkah) and evergreen guides
+// (dragon, cat, car, dog, mermaid, horse, fairy, butterfly, space, ocean). server.js runs as a child process with
+// no KV and no OpenAI key, which is enough to render pages, serve the example files and build a free PDF.
 const { test, before, after } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('fs');
@@ -13,6 +13,11 @@ const THEME_GUIDES = require('../theme-guides.js');
 const SEASONAL = ['fall-coloring-pages', 'thanksgiving-coloring-pages', 'turkey-coloring-pages', 'winter-coloring-pages',
   'nativity-coloring-pages', 'new-year-coloring-pages', 'gingerbread-coloring-pages', 'snowman-coloring-pages',
   'diwali-coloring-pages', 'hanukkah-coloring-pages'];
+const EVERGREEN = ['dragon-coloring-pages', 'cat-coloring-pages', 'car-coloring-pages', 'dog-coloring-pages',
+  'mermaid-coloring-pages', 'horse-coloring-pages', 'fairy-coloring-pages', 'butterfly-coloring-pages',
+  'space-coloring-pages', 'ocean-coloring-pages'];
+// Names of trademarked characters that must not appear in any guide or example on the new pages.
+const TRADEMARKS = /disney|bluey|hello kitty|crayola|charlie brown|frosty|olaf|grinch|shrek|gingy|rudolph|peppa|ariel|lightning mcqueen|mcqueen|toothless|spyro|tinker ?bell|garfield|snoopy/i;
 // Pages that show two examples: none of their other candidates passed review within the generation cap.
 const TWO_EXAMPLES = ['princess-coloring-pages', 'snowman-coloring-pages'];
 let app;
@@ -110,9 +115,9 @@ test('an example PNG goes through the existing PDF route', async () => {
   assert.ok(h.pdfText(buf).includes('FREE PREVIEW'), 'a free visitor gets the usual free PDF');
 });
 
-test('the seasonal pages render with their own content, JSON-LD and sitemap entries', () => {
+test('the seasonal and evergreen pages render with their own content, JSON-LD and sitemap entries', () => {
   const xml = pages.get('/sitemap.xml').replace(/\s+/g, '');
-  for (const slug of SEASONAL) {
+  for (const slug of [...SEASONAL, ...EVERGREEN]) {
     const g = THEME_GUIDES[slug];
     assert.ok(g, slug + ' has a guide');
     const html = pages.get('/' + slug);
@@ -123,12 +128,13 @@ test('the seasonal pages render with their own content, JSON-LD and sitemap entr
     for (const t of ['WebPage', 'WebApplication', 'BreadcrumbList', 'FAQPage']) assert.ok(types.includes(t), slug + ' JSON-LD ' + t);
     assert.equal(ld['@graph'].find(n => n['@type'] === 'FAQPage').mainEntity.length, g.faq.length);
     assert.ok(g.sources.length >= 1 && g.sources.every(s => /^https:\/\//.test(s.href)), slug + ' sources');
-    assert.ok(!/disney|bluey|hello kitty|crayola|charlie brown|frosty|olaf|grinch|shrek|gingy|rudolph|peppa/i.test(JSON.stringify(g)), slug + ': no trademarked characters');
+    assert.ok(!TRADEMARKS.test(JSON.stringify(g)), slug + ': no trademarked characters');
+    assert.ok(!TRADEMARKS.test(JSON.stringify(THEME_EXAMPLES[slug])), slug + ': no trademarked characters in the examples');
   }
 });
 
-test('no seasonal page is orphaned', () => {
-  for (const slug of SEASONAL) {
+test('no seasonal or evergreen page is orphaned', () => {
+  for (const slug of [...SEASONAL, ...EVERGREEN]) {
     const linkers = sitemapPaths.filter(p => p !== '/' + slug && pages.get(p).includes(`href="/${slug}"`));
     assert.ok(linkers.length >= 3, `${slug} is linked from ${linkers.length} pages: ${linkers.join(' ')}`);
     assert.ok(linkers.includes('/blog'), slug + ' is in the theme guides hub');
@@ -139,7 +145,8 @@ test('existing link lists keep their items and order; the seasonal pages are onl
   const t = s => s + '-coloring-pages';
   const home = [...pages.get('/').matchAll(/<li><a href="\/([a-z-]+-coloring-pages)"><strong>/g)].map(m => m[1]);
   assert.deepEqual(home, ['unicorn', 'dinosaur', 'mandala', 'halloween', 'christmas', 'animal', 'princess', 'flower', 'adult', 'fall', 'thanksgiving', 'winter',
-    'nativity', 'new-year', 'gingerbread', 'snowman', 'diwali', 'hanukkah'].map(t));
+    'nativity', 'new-year', 'gingerbread', 'snowman', 'diwali', 'hanukkah',
+    'dragon', 'cat', 'car', 'dog', 'mermaid', 'horse', 'fairy', 'butterfly', 'space', 'ocean'].map(t));
   // The rotation the niche pages had before: the next six of the original ten themes, wrapping around.
   const ORIGINAL = ['unicorn', 'dinosaur', 'mandala', 'halloween', 'christmas', 'animal', 'flower', 'princess', 'easter', 'adult'].map(t);
   for (const slug of ['mandala', 'flower', 'easter'].map(t)) {
@@ -147,13 +154,14 @@ test('existing link lists keep their items and order; the seasonal pages are onl
     const sec = html.slice(html.indexOf('<h2>Browse more themes</h2>'));
     const links = [...sec.slice(0, sec.indexOf('</section>')).matchAll(/href="\/([a-z-]+)"/g)].map(m => m[1]);
     const i = ORIGINAL.indexOf(slug);
-    assert.deepEqual(links, [...[...ORIGINAL.slice(i + 1), ...ORIGINAL.slice(0, i)].slice(0, 6), ...SEASONAL], slug);
+    assert.deepEqual(links, [...[...ORIGINAL.slice(i + 1), ...ORIGINAL.slice(0, i)].slice(0, 6), ...SEASONAL, ...EVERGREEN], slug);
   }
   // Related lists on existing guides: the original links first, in their order, then the seasonal ones.
   const related = {
     halloween: ['christmas', 'animal', 'adult', 'coloring-pages-for-classroom-teachers', 'fall'],
     christmas: ['halloween', 'animal', 'adult', 'coloring-pages-for-classroom-teachers', 'winter', 'nativity'],
-    winter: ['christmas', 'animal', 'adult', 'coloring-pages-for-classroom-teachers', 'snowman']
+    winter: ['christmas', 'animal', 'adult', 'coloring-pages-for-classroom-teachers', 'snowman'],
+    animal: ['dinosaur', 'halloween', 'unicorn', 'coloring-pages-for-classroom-teachers', 'cat', 'dog', 'horse', 'butterfly']
   };
   for (const [slug, expected] of Object.entries(related)) {
     assert.deepEqual(THEME_GUIDES[t(slug)].related.map(r => r.href),
@@ -178,6 +186,28 @@ test('the second seasonal batch: examples, dates and sources', () => {
   };
   for (const [slug, date] of Object.entries(dates)) {
     assert.ok(pages.get('/' + slug).includes(date), slug + ': ' + date);
+  }
+});
+
+test('the evergreen batch: three examples each, facts checked, sources and the generator untouched', () => {
+  for (const slug of EVERGREEN) {
+    assert.equal(THEME_EXAMPLES[slug].items.length, 3, slug + ' examples');
+    assert.equal(THEME_GUIDES[slug].checked, '16 October 2026', slug + ' facts checked');
+    assert.equal(THEME_GUIDES[slug].updated, '2026-10-16', slug + ' sitemap date');
+    assert.ok(THEME_GUIDES[slug].sources.length >= 1, slug + ' has a source');
+    // The generator on the page is the same one every theme page has.
+    const html = pages.get('/' + slug);
+    assert.equal(html.split('id="generateBtn"').length - 1, 1, slug + ' has one generator');
+    assert.ok(html.indexOf('id="generateBtn"') < html.indexOf('<section class="examples"'), slug + ': examples below the generator');
+  }
+  // The sources named in the brief for each kind of page.
+  const hosts = {
+    'space-coloring-pages': /nasa\.gov/, 'ocean-coloring-pages': /noaa\.gov/, 'butterfly-coloring-pages': /nwf\.org/,
+    'dragon-coloring-pages': /britannica\.com/, 'mermaid-coloring-pages': /britannica\.com/, 'fairy-coloring-pages': /britannica\.com/,
+    'cat-coloring-pages': /cfa\.org/, 'dog-coloring-pages': /akc\.org/, 'horse-coloring-pages': /colostate\.edu|amha\.org/
+  };
+  for (const [slug, host] of Object.entries(hosts)) {
+    assert.ok(THEME_GUIDES[slug].sources.some(s => host.test(s.href)), slug + ' cites ' + host);
   }
 });
 

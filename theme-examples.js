@@ -1,8 +1,8 @@
 // Example coloring pages on each theme page, under "Free printable ... coloring pages" (views/partials/examples.ejs).
 // Every page was made with this site's own generator: 13 were first made for the Pinterest boards, 45 on
-// 15 October 2026. Files: public/examples/<slug>/<name>.png (1024 px greyscale, the download and the source for
-// the PDF) and <name>-400.webp and <name>-800.webp for display. Keep a name once published: the files are cached
-// for 30 days.
+// 15 October 2026 and 30 on 16 October 2026. Files: public/examples/<slug>/<name>.png (1024 px greyscale, the
+// download and the source for the PDF) and <name>-400.webp and <name>-800.webp for display. Keep a name once
+// published: the files are cached for 30 days.
 
 module.exports = {
   'unicorn-coloring-pages': {
@@ -219,6 +219,116 @@ module.exports = {
         alt: 'Simple Hanukkah coloring page of four potato latkes on a plate with a small bowl of applesauce, thick outlines.' },
       { name: 'hanukkah-sufganiyot', level: 'Simple', title: 'Sufganiyot',
         alt: 'Simple Hanukkah coloring page of four sufganiyot, round jelly doughnuts dusted with sugar, on a plate.' }
+    ]
+  },
+  'dragon-coloring-pages': {
+    heading: 'Free printable dragon coloring pages',
+    items: [
+      { name: 'dragon-baby-egg', level: 'Simple', title: 'Baby dragon hatching',
+        alt: 'Simple dragon coloring page of a smiling baby dragon with small horns and little wings hatching from a cracked egg.' },
+      { name: 'dragon-flying', level: 'Simple', title: 'Dragon flying over the clouds',
+        alt: 'Simple dragon coloring page of a friendly dragon flying with its wings spread wide above two clouds, thick outlines.' },
+      { name: 'dragon-castle', level: 'Medium', title: 'Dragon on a castle tower',
+        alt: 'Dragon coloring page of a dragon with bat-like wings, horns and spikes along its back, perched on top of a stone castle tower.' }
+    ]
+  },
+  'cat-coloring-pages': {
+    heading: 'Free printable cat coloring pages',
+    items: [
+      { name: 'cat-yarn', level: 'Simple', title: 'Cat with a ball of yarn',
+        alt: 'Simple cat coloring page of a smiling cat sitting next to a ball of yarn, thick outlines for young children.' },
+      { name: 'cat-window', level: 'Medium', title: 'Cat asleep on the windowsill',
+        alt: 'Cat coloring page of a cat curled up asleep on a windowsill between potted plants, with curtains on both sides.' },
+      { name: 'cat-kittens-basket', level: 'Medium', title: 'Kittens in a basket',
+        alt: 'Cat coloring page of three kittens playing in a wicker basket with a blanket hanging over the side.' }
+    ]
+  },
+  'car-coloring-pages': {
+    heading: 'Free printable car coloring pages',
+    items: [
+      { name: 'car-classic', level: 'Simple', title: 'Classic car',
+        alt: 'Simple car coloring page of a classic car seen from the side, with round headlights and big wheels, thick outlines.' },
+      { name: 'car-race', level: 'Medium', title: 'Race car and checkered flag',
+        alt: 'Car coloring page of a race car speeding along a track past a checkered flag, with hills and clouds behind.' },
+      { name: 'car-camper-van', level: 'Medium', title: 'Camper van by a lake',
+        alt: 'Car coloring page of a camper van parked by a lake, with pine trees and mountains in the background.' }
+    ]
+  },
+  'dog-coloring-pages': {
+    heading: 'Free printable dog coloring pages',
+    items: [
+      { name: 'dog-puppy-bone', level: 'Simple', title: 'Puppy with a bone',
+        alt: 'Simple dog coloring page of a happy puppy with floppy ears sitting next to a big bone, thick outlines.' },
+      { name: 'dog-bed', level: 'Medium', title: 'Dog asleep in its bed',
+        alt: 'Dog coloring page of a dog asleep in a round dog bed, with a chew bone beside the bed.' },
+      { name: 'dog-bath', level: 'Medium', title: 'Dog in a bubble bath',
+        alt: 'Dog coloring page of a smiling dog in a clawfoot bathtub full of bubbles, with a rubber duck and a towel.' }
+    ]
+  },
+  'mermaid-coloring-pages': {
+    heading: 'Free printable mermaid coloring pages',
+    items: [
+      { name: 'mermaid-rock', level: 'Simple', title: 'Mermaid with a seashell',
+        alt: 'Simple mermaid coloring page of a smiling mermaid with long wavy hair sitting on a rock and holding up a seashell.' },
+      { name: 'mermaid-seagull', level: 'Medium', title: 'Mermaid on a rock by the waves',
+        alt: 'Mermaid coloring page of a mermaid in a short-sleeved top sitting on a rock among the waves, with a seagull flying past.' },
+      { name: 'mermaid-reef', level: 'Medium', title: 'Mermaid on the reef',
+        alt: 'Mermaid coloring page of a mermaid with a long braid swimming among coral and seaweed, with fish and bubbles around her.' }
+    ]
+  },
+  'horse-coloring-pages': {
+    heading: 'Free printable horse coloring pages',
+    items: [
+      { name: 'horse-pony', level: 'Simple', title: 'Pony in a meadow',
+        alt: 'Simple horse coloring page of a pony with a long mane and tail standing in a meadow with flowers.' },
+      { name: 'horse-galloping', level: 'Medium', title: 'Galloping horse',
+        alt: 'Horse coloring page of a horse galloping across a grassy field with its mane and tail flowing behind it.' },
+      { name: 'horse-saddle', level: 'Medium', title: 'Saddled horse at the stable',
+        alt: 'Horse coloring page of a horse wearing a saddle and bridle, standing in front of a stable with a wooden door.' }
+    ]
+  },
+  'fairy-coloring-pages': {
+    heading: 'Free printable fairy coloring pages',
+    items: [
+      { name: 'fairy-mushroom', level: 'Simple', title: 'Fairy on a mushroom',
+        alt: 'Simple fairy coloring page of a little fairy with butterfly wings and a flower in her hair sitting on a spotted mushroom.' },
+      { name: 'fairy-house', level: 'Medium', title: 'Fairy house in a tree stump',
+        alt: 'Fairy coloring page of a fairy house built into a tree stump, with a round door, a window, mushrooms and flowers.' },
+      { name: 'fairy-flowers', level: 'Medium', title: 'Fairy among the flowers',
+        alt: 'Fairy coloring page of a fairy with long hair and petal-shaped wings flying among tall flowers and butterflies.' }
+    ]
+  },
+  'butterfly-coloring-pages': {
+    heading: 'Free printable butterfly coloring pages',
+    items: [
+      { name: 'butterfly-wings', level: 'Simple', title: 'Spotted butterfly',
+        alt: 'Simple butterfly coloring page of a butterfly with big matching wings decorated with circles, thick outlines.' },
+      { name: 'butterfly-caterpillar', level: 'Simple', title: 'Caterpillar, chrysalis and butterfly',
+        alt: 'Simple butterfly coloring page of a smiling caterpillar on a leaf, a chrysalis hanging from a twig and a butterfly.' },
+      { name: 'butterfly-flower', level: 'Medium', title: 'Butterfly on a flower',
+        alt: 'Butterfly coloring page of a butterfly with veined, spotted wings resting on a large daisy-like flower.' }
+    ]
+  },
+  'space-coloring-pages': {
+    heading: 'Free printable space coloring pages',
+    items: [
+      { name: 'space-rocket', level: 'Simple', title: 'Rocket, Moon and ringed planet',
+        alt: 'Simple space coloring page of a rocket flying past the Moon and a ringed planet, with stars around it.' },
+      { name: 'space-solar-system', level: 'Simple', title: 'The Sun and eight planets',
+        alt: 'Simple space coloring page of the Sun with a smiling face and eight planets in a curving line, two of them with rings.' },
+      { name: 'space-astronaut', level: 'Medium', title: 'Astronaut near the Moon',
+        alt: 'Space coloring page of an astronaut floating near the cratered Moon with Earth in the distance and stars all around.' }
+    ]
+  },
+  'ocean-coloring-pages': {
+    heading: 'Free printable ocean coloring pages',
+    items: [
+      { name: 'ocean-sea-turtle', level: 'Simple', title: 'Sea turtle',
+        alt: 'Simple ocean coloring page of a smiling sea turtle swimming with bubbles, its shell divided into big plates.' },
+      { name: 'ocean-whale-dolphins', level: 'Medium', title: 'Whale and dolphins',
+        alt: 'Ocean coloring page of a whale and two dolphins swimming below the waves.' },
+      { name: 'ocean-octopus', level: 'Medium', title: 'Octopus and treasure chest',
+        alt: 'Ocean coloring page of a smiling octopus waving its arms next to an open treasure chest, with seaweed, shells and bubbles.' }
     ]
   }
 };
