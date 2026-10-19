@@ -95,6 +95,30 @@ test('the gallery renders below the generator with alt text, sized lazy images a
   }
 });
 
+test('every example has a Save to Pinterest link to its own page and PNG, with no Pinterest script', async () => {
+  for (const p of themePaths()) {
+    const slug = p.slice(1);
+    const g = gallery(pages.get(p));
+    const items = THEME_EXAMPLES[slug].items;
+    const links = [...g.html.matchAll(/<a class="btn-small btn-small-outline" href="([^"]+)" target="_blank" rel="noopener" data-pin-save>Save to Pinterest<\/a>/g)];
+    assert.equal(links.length, items.length, p + ': one Save to Pinterest link per example');
+    for (const [i, [, raw]] of links.entries()) {
+      // The browser reads the attribute with its HTML entities decoded (EJS escapes & and ').
+      const u = new URL(raw.replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, '&'));
+      assert.equal(u.origin + u.pathname, 'https://www.pinterest.com/pin/create/button/');
+      assert.equal(u.searchParams.get('url'), 'https://www.coloringpagemaker.app/' + slug + '?utm_source=pinterest&utm_medium=save&utm_campaign=examples');
+      const media = u.searchParams.get('media');
+      assert.equal(media, 'https://www.coloringpagemaker.app/examples/' + slug + '/' + items[i].name + '.png');
+      const r = await fetch(app.base + new URL(media).pathname);
+      assert.equal(r.status, 200, media);
+      await r.arrayBuffer();
+      assert.ok(u.searchParams.get('description').startsWith(items[i].title + '. '), p + ': description starts with the example title');
+    }
+    assert.doesNotMatch(pages.get(p), /pinit\.js|assets\.pinterest\.com/, p + ': no Pinterest script');
+  }
+  for (const p of sitemapPaths.filter(p => !themePaths().includes(p))) assert.doesNotMatch(pages.get(p), /data-pin-save/, p);
+});
+
 test('no gallery outside the theme pages', () => {
   for (const p of sitemapPaths.filter(p => !themePaths().includes(p))) {
     assert.equal(gallery(pages.get(p)), null, p);
