@@ -3,7 +3,11 @@
   <h2 id="examples-title"><%= examples.heading %></h2>
   <p class="examples-intro">Example pages made with ColoringPageMaker's generator. Print them free for personal use, as a PNG or a letter-size PDF, or describe your own page in the generator above.</p>
   <ul class="examples-grid">
-    <% examples.items.forEach(function (x) { var base = '/examples/' + examples.slug + '/' + x.name; %>
+    <% examples.items.forEach(function (x) { var base = '/examples/' + examples.slug + '/' + x.name;
+       // "Save to Pinterest" is a plain link to Pinterest's documented save URL: no Pinterest script on the page.
+       var pinHref = 'https://www.pinterest.com/pin/create/button/?url=' + encodeURIComponent('https://www.coloringpagemaker.app/' + examples.slug + '?utm_source=pinterest&utm_medium=save&utm_campaign=examples')
+         + '&media=' + encodeURIComponent('https://www.coloringpagemaker.app' + base + '.png')
+         + '&description=' + encodeURIComponent(x.title + '. ' + examples.heading + ' from ColoringPageMaker.'); %>
     <li class="image-card">
       <figure>
         <img src="<%= base %>-400.webp" srcset="<%= base %>-400.webp 400w, <%= base %>-800.webp 800w" sizes="(max-width: 640px) calc(100vw - 40px), 276px" width="400" height="400" alt="<%= x.alt %>" loading="lazy" decoding="async">
@@ -12,6 +16,7 @@
       <div class="actions">
         <a class="btn-small" href="<%= base %>.png" download="<%= x.name %>-coloring-page.png">Download PNG</a>
         <button type="button" class="btn-small btn-small-outline" data-example-pdf="<%= base %>.png" data-name="<%= x.name %>-coloring-page">Letter PDF</button>
+        <a class="btn-small btn-small-outline" href="<%= pinHref %>" target="_blank" rel="noopener" data-pin-save>Save to Pinterest</a>
       </div>
     </li>
     <% }); %>
