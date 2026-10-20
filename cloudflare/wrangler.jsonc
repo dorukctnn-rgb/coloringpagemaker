@@ -1,0 +1,36 @@
+// PREVIEW Worker (workers.dev only, no custom domain): https://coloringpagemaker-preview.railer-iot.workers.dev
+// Build first: node cloudflare/build.mjs   Deploy: (in cloudflare/) wrangler deploy
+// Production uses wrangler.production.jsonc and is deployed only at the switch (see the hand-off note).
+{
+  "name": "coloringpagemaker-preview",
+  "main": "index.js",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "preview_urls": false,
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "none",
+    // The Worker answers these itself, as the old Express server did: 301 for a trailing slash, 404 for x.html.
+    "run_worker_first": ["/*/", "/*.html", "/*.HTML", "/404", "/index"]
+  },
+  "ai": { "binding": "AI" },
+  "images": { "binding": "IMAGES" },
+  "durable_objects": { "bindings": [{ "name": "LEDGER", "class_name": "Ledger" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Ledger"] }],
+  "observability": { "enabled": true },
+  "vars": {
+    "FREE_ENGINE": "flux",
+    "HD_ENABLED": "1",
+    "HD_COST_USD": "0.06",
+    "HD_MONTHLY_CAP_USD": "9",
+    "HD_DAILY_CAP_USD": "1.5",
+    "HD_MONTHLY_ALLOWANCE": "50",
+    "HD_TERMS_FROM": "2026-10-21",
+    "PRO_DAILY_LIMIT": "150",
+    "FREE_GLOBAL_DAILY_LIMIT": "120",
+    "AI_DAILY_LIMIT": "160"
+  }
+}
