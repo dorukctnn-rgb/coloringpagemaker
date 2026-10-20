@@ -1,13 +1,14 @@
-// PRODUCTION Worker for www.coloringpagemaker.app. Deploy ONLY at the switch, after the zone is on Cloudflare:
+// PRODUCTION Worker "coloringpagemaker". Deploy ONLY at the switch (steps: takip/devir/coloringpagemaker.md):
 //   node cloudflare/build.mjs && (cd cloudflare && wrangler deploy -c wrangler.production.jsonc)
-// Secrets (wrangler secret put -c wrangler.production.jsonc): OPENAI_API_KEY, IP_SALT. Steps: hand-off note.
+// It first answers on https://coloringpagemaker.railer-iot.workers.dev for the URL check; www.coloringpagemaker.app
+// is attached as a Custom Domain in the dashboard at the cut (then set workers_dev to false and deploy again).
+// Secrets (wrangler secret put <NAME> -c wrangler.production.jsonc): OPENAI_API_KEY, IP_SALT.
 {
   "name": "coloringpagemaker",
   "main": "index.js",
   "compatibility_date": "2026-09-01",
   "compatibility_flags": ["nodejs_compat"],
-  "workers_dev": false,
-  "routes": [{ "pattern": "www.coloringpagemaker.app", "custom_domain": true }],
+  "workers_dev": true,
   "preview_urls": false,
   "assets": {
     "directory": "./dist",
