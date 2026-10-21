@@ -30,9 +30,9 @@
     "HD_MONTHLY_CAP_USD": "9",
     "HD_DAILY_CAP_USD": "1.5",
     "HD_MONTHLY_ALLOWANCE": "50",
-    // Far future on purpose: the new Gumroad text (monthly HD allowance) is not approved yet, so every buyer keeps
-    // the current terms (150 pages a day, HD while the shared budget lasts). Set the real day when the text goes live.
-    "HD_TERMS_FROM": "2099-12-31",
+    // The day the Gumroad text with the monthly HD allowance went live. Sales before it keep their terms
+    // (150 pages a day, HD while the shared budget lasts); the Gumroad text names the same day.
+    "HD_TERMS_FROM": "2026-10-21",
     "PRO_DAILY_LIMIT": "150",
     "FREE_GLOBAL_DAILY_LIMIT": "120",
     "AI_DAILY_LIMIT": "160",
