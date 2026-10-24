@@ -1141,3 +1141,16 @@ test('the feed keeps an item for 10 days, so a feed connected late does not star
   w.clock.t = at(2026, 11, 12, 12);
   assert.equal(tag(await (await call(w.env, '/pins/feed.xml')).text(), 'item').length, 0);
 });
+
+test('every one of the 30 seed pages has its landing page from the first day, their pins and files being public anyway', async () => {
+  const w = makeWorld({ now: at(2026, 10, 24, 14, 0) });
+  for (const s of SEEDS) {
+    const r = await call(w.env, `/printables/${s.slug}`);
+    assert.equal(r.status, 200, s.slug);
+    const html = await r.text();
+    assert.ok(html.includes(`<h1>${s.headline}</h1>`), s.slug);
+  }
+  // the hub, the sitemap and the feed still list only what has been released
+  assert.ok(!(await (await call(w.env, '/printables')).text()).includes(SEEDS[0].slug));
+  assert.ok(!(await (await call(w.env, '/sitemap-printables.xml')).text()).includes(SEEDS[0].slug));
+});

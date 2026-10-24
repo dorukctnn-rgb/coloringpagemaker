@@ -117,7 +117,6 @@ export class PinService {
   landing(slug) {
     const now = this.now();
     let v = seedBySlug(slug);
-    if (v && v.release > now + 7 * 24 * 3600 * 1000) v = null;
     if (!v) { const p = this.core.getPage(slug); if (p && !p.hidden && p.release <= now) v = autoView(p); }
     if (!v) return null;
     return renderLanding(v, neighbors(this.allViews(now, v.group), v.slug, 6));
