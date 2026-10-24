@@ -6,6 +6,9 @@ import { Buffer } from 'node:buffer';
 import { runTick, pinsConfig, pinsStatus } from './tick.js';
 import { releasedViews, feedItems, buildFeed, buildSitemap, seedBySlug, autoView, FEED_PATH } from './feed.js';
 import { renderLanding, renderHub } from './page.js';
+import { decodeGrayPng, judge, whiten, artSquare } from './art.js';
+import { composePin, CARD } from './pin.js';
+import { encodePngGray, resizeGray, xmpChunk } from './raster.js';
 import { GROUPS } from './topics.js';
 import { FLUX_MODEL } from '../flux.js';
 
@@ -32,6 +35,19 @@ export function makeDeps(env, cfg) {
   };
 }
 
+// The pages next to a page in the group's list (newest first), up to n of them, so every page is linked from other
+// pages and a crawler can walk the whole list. A page at the end of the list takes its neighbors from the other side.
+export function neighbors(list, slug, n = 6) {
+  const i = list.findIndex(x => x.slug === slug);
+  if (i < 0) return list.slice(0, n);
+  const out = [];
+  for (let d = 1; out.length < n && (i - d >= 0 || i + d < list.length); d++) {
+    if (i - d >= 0) out.push(list[i - d]);
+    if (out.length < n && i + d < list.length) out.push(list[i + d]);
+  }
+  return out;
+}
+
 export class PinService {
   // depsFactory: the tests hand in stubs for the model and the image conversion.
   constructor(core, env, depsFactory = makeDeps, now = () => Date.now()) { this.core = core; this.env = env; this.depsFactory = depsFactory; this.now = now; }
@@ -43,6 +59,21 @@ export class PinService {
   async tick({ source = 'cron', scheduledTime = null } = {}) {
     const cfg = this.cfg();
     return runTick({ core: this.core, cfg, deps: this.depsFactory(this.env, cfg), source, scheduledTime });
+  }
+  // Every slug of a page made by the job that is not hidden (the Worker keeps the list to refuse made-up addresses).
+  slugs() { return this.core.listPages({ upTo: this.now() + 7 * 24 * 3600 * 1000, limit: 5000 }).map(p => p.slug); }
+  // The heavy part of a tick (judge the page, draw the pin, write the three PNG files) on a page that is already there,
+  // with no model call and nothing stored. The admin address runs it to show that the object can do the work inside its
+  // CPU allowance. Returns the sizes of what it made.
+  selfTest(png) {
+    const img = decodeGrayPng(png);
+    const verdict = judge(img.L, img.w, img.h, 'medium');
+    const page = whiten(verdict.L);
+    const meta = { title: 'Self test coloring page', description: 'Self test.' };
+    const pin = composePin({ headline: 'Self test coloring page', sub: 'Clear lines and room to color, ages 6 to 12', art: artSquare(page, img.w, img.h, CARD.size), skin: 'orange', meta });
+    const pagePng = encodePngGray(page, img.w, img.h, { depth: 8, level: 9, extra: [xmpChunk(meta)] });
+    const thumb = encodePngGray(resizeGray(page, img.w, img.h, 400, 400), 400, 400, { depth: 4, level: 9, extra: [xmpChunk(meta)] });
+    return { ok: true, judged: verdict.ok, reasons: verdict.reasons, pinBytes: pin.png.length, pageBytes: pagePng.length, thumbBytes: thumb.length };
   }
   // A failure the Worker saw while calling the object (the object itself may have been cut off).
   noteError(stage, msg) { this.core.logError(stage, msg, null); return true; }
@@ -72,8 +103,8 @@ export class PinService {
     if (v && v.release > now + 7 * 24 * 3600 * 1000) v = null;
     if (!v) { const p = this.core.getPage(slug); if (p && !p.hidden && p.release <= now) v = autoView(p); }
     if (!v) return null;
-    const related = this.allViews(now).filter(x => x.group === v.group);
-    return renderLanding(v, related);
+    const same = this.allViews(now).filter(x => x.group === v.group);
+    return renderLanding(v, neighbors(same, v.slug, 6));
   }
   // { bytes: Uint8Array, kind } for a stored image of a page made by the job, or null.
   image(slug, kind) {

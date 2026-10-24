@@ -6,11 +6,30 @@
 //   /printables/<slug>             the landing page of one coloring page (where a pin's click lands)
 //   /printables/img/<slug>.png     the printable page, and <slug>-400.png its thumbnail (the 30 Halloween seeds are static files)
 //   /sitemap-printables.xml        the sitemap of the hub and the pages
-//   /pins/admin/...                status, pause, resume, seeds, hide, run (Authorization: Bearer <AUTOPIN_ADMIN_KEY>)
+//   /pins/admin/...                status, pause, resume, seeds, hide, run, selftest (Authorization: Bearer <AUTOPIN_ADMIN_KEY>)
 //
 // The Worker only forwards: every page, image and feed is made inside the Durable Object (store.js), because a Worker
 // on the Free plan has 10 ms of CPU per request.
+import { SEEDS } from './seeds.js';
+
 const SLUG = /^[a-z0-9][a-z0-9-]{2,119}$/;
+// The slugs of the pages that exist, kept in the Worker for a few minutes. A request for an address that is not one of
+// them is answered with the site's 404 without waking the Durable Object, so a flood of made-up addresses cannot use up
+// the account's daily Durable Object requests. An unknown address refreshes the list at most once every 30 seconds.
+const SEED_SLUGS = new Set(SEEDS.map(s => s.slug));
+const known = { set: null, at: 0, tried: 0 };
+async function isKnown(stub, slug, now = Date.now()) {
+  if (SEED_SLUGS.has(slug)) return true;
+  if (known.set && known.set.has(slug) && now - known.at < 5 * 60 * 1000) return true;
+  if (!known.set || now - known.at >= 5 * 60 * 1000 || now - known.tried >= 30 * 1000) {
+    known.tried = now;
+    try { known.set = new Set(await stub.slugs()); known.at = now; } catch (e) { return !known.set; }
+  }
+  return known.set.has(slug);
+}
+export const resetKnownSlugs = () => { known.set = null; known.at = 0; known.tried = 0; };
+// For the tests: pretend that ms milliseconds have passed since the list was fetched.
+export const ageKnownSlugs = ms => { known.at -= ms; known.tried -= ms; };
 const stubOf = env => (env && env.PINS ? env.PINS.get(env.PINS.idFromName('main')) : null);
 const hdr = (type, cache) => ({ 'Content-Type': type, 'Cache-Control': cache });
 const json = (obj, status = 200) => new Response(JSON.stringify(obj, null, 1), { status, headers: hdr('application/json; charset=utf-8', 'no-store') });
@@ -54,6 +73,12 @@ async function adminRoute(request, env, url) {
   if (name === 'seeds') return json(await stub.admin('seeds', { on: on(url.searchParams.get('on')) }));
   if (name === 'hide') return json(await stub.admin('hide', { slug: url.searchParams.get('slug') || '', on: on(url.searchParams.get('on') === null ? '1' : url.searchParams.get('on')) }));
   if (name === 'run') return json(await stub.tick({ source: 'manual' }));
+  if (name === 'selftest') {
+    // The pin renderer and the page judge on a page that is already on the site, inside the object, nothing stored.
+    const sample = await env.ASSETS.fetch(new Request(new URL('/printables/img/' + SEEDS[0].slug + '.png', url)));
+    if (!sample.ok) return json({ error: 'the sample page is missing', status: sample.status }, 500);
+    return json(await stub.selfTest(new Uint8Array(await sample.arrayBuffer())));
+  }
   return json({ error: 'unknown command' }, 404);
 }
 
@@ -78,6 +103,7 @@ export async function pinsRoute(request, env, ctx, url) {
 
   let m = /^\/pins\/auto\/([a-z0-9-]+)\.png$/.exec(path);
   if (m && SLUG.test(m[1])) {
+    if (!(await isKnown(stub, m[1]))) return null;
     const res = await cached(request, ctx, async () => {
       const img = await stub.image(m[1], 'pin');
       return img ? imageResponse(img.bytes) : new Response(null, { status: 404 });
@@ -86,6 +112,7 @@ export async function pinsRoute(request, env, ctx, url) {
   }
   m = /^\/printables\/img\/([a-z0-9-]+?)(-400)?\.png$/.exec(path);
   if (m && SLUG.test(m[1])) {
+    if (!(await isKnown(stub, m[1]))) return null;
     const res = await cached(request, ctx, async () => {
       const img = await stub.image(m[1], m[2] ? 'thumb' : 'page');
       return img ? imageResponse(img.bytes) : new Response(null, { status: 404 });
@@ -94,6 +121,7 @@ export async function pinsRoute(request, env, ctx, url) {
   }
   m = /^\/printables\/([a-z0-9-]+)$/.exec(path);
   if (m && SLUG.test(m[1])) {
+    if (!(await isKnown(stub, m[1]))) return null;
     const res = await cached(request, ctx, async () => {
       const body = await stub.landing(m[1]);
       return body ? html(body, 600) : new Response(null, { status: 404 });

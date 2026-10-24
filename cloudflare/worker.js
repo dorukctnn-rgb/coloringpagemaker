@@ -390,6 +390,8 @@ export default {
   },
   // The cron trigger of the daily Pinterest job (wrangler.production.jsonc, triggers.crons): see autopin/tick.js.
   async scheduled(controller, env, ctx) {
-    ctx.waitUntil(runScheduled(controller, env));
+    const run = runScheduled(controller, env);
+    ctx.waitUntil(run);
+    return run;
   }
 };

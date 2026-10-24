@@ -11,7 +11,7 @@
 import { decodeGrayPng, judge, whiten, artSquare } from './art.js';
 import { composePin, skinFor, CARD } from './pin.js';
 import { encodePngGray, resizeGray, xmpChunk } from './raster.js';
-import { pickSubject, describe } from './topics.js';
+import { pickSubject, describe, hash } from './topics.js';
 import { SEEDS } from './seeds.js';
 import { fluxPrompt } from '../flux.js';
 import { isoDay } from './core.js';
@@ -31,6 +31,12 @@ export function pinsConfig(env) {
     maxFluxPerDay: num(env.AUTOPIN_MAX_FLUX_PER_DAY, 12),
     maxAttempts: num(env.AUTOPIN_MAX_ATTEMPTS, 3),
     slotHours: num(env.AUTOPIN_SLOT_HOURS, 3),
+    // The day's pages are drawn in the first EARLY_SLOTS slots (00:07 to 09:07 UTC): the free daily allowance of Workers AI
+    // resets at 00:00 UTC and is shared by everything else in the account, so the early hours are the safe ones. The later
+    // slots only catch up on a slot that failed.
+    earlySlots: num(env.AUTOPIN_EARLY_SLOTS, 4),
+    // A page is released into the feed at one of these UTC hours (US morning to evening), so Pinterest gets one a few hours apart.
+    releaseHours: String(env.AUTOPIN_RELEASE_HOURS || '13,16,19,22').split(',').map(x => Number(x.trim())).filter(x => Number.isInteger(x) && x >= 0 && x < 24),
     imagesMonthlyCap: num(env.AUTOPIN_IMAGES_MONTHLY_CAP, 600),
     storageCapBytes: num(env.AUTOPIN_STORAGE_CAP_MB, 1500) * 1024 * 1024,
     aiDaily: num(env.AI_DAILY_LIMIT, 160),
@@ -47,6 +53,17 @@ export function slotOf(ms, slotHours) {
   const start = Math.floor(ms / size) * size;
   const dayStart = Math.floor(ms / (24 * HOUR)) * 24 * HOUR;
   return { key: new Date(start).toISOString().slice(0, 13), index: Math.round((start - dayStart) / size), perDay: Math.round(24 / slotHours) };
+}
+
+// When a page made at time `now` is released into the feed: the n-th page of the day goes out at the n-th release hour
+// of that UTC day (plus a few minutes, different for every page, so the times do not look machine made), or at once when
+// that moment has passed. A page made by hand (source "manual") is released at once.
+export function releaseAt({ now, n, slug, hours, source = 'cron' }) {
+  if (source !== 'cron' || !hours.length) return now;
+  const dayStart = Math.floor(now / (24 * HOUR)) * 24 * HOUR;
+  const round = Math.floor(n / hours.length);
+  const jitter = (hash('cpm-release|' + slug) % 40 + round * 20) * 60 * 1000;
+  return Math.max(now, dayStart + hours[n % hours.length] * HOUR + jitter);
 }
 
 const VARIATIONS = ['', ' Centered, one clear subject.', ' Simple clean composition, nothing cut off at the edges.'];
@@ -73,7 +90,8 @@ export async function runTick({ core, cfg, deps, source = 'cron', scheduledTime 
     const made = core.count('pages:' + day);
     if (made >= cfg.dailyPages) return finish('skipped', 'daily_cap');
     if (slot.index !== null) {
-      const due = Math.ceil(cfg.dailyPages * (slot.index + 1) / slot.perDay);
+      const early = Math.max(1, Math.min(cfg.earlySlots, slot.perDay));
+      const due = Math.ceil(cfg.dailyPages * Math.min(slot.index + 1, early) / early);
       if (made >= due) return finish('skipped', 'not_due');
     }
     if (core.storageBytes().bytes >= cfg.storageCapBytes) return finish('skipped', 'storage_cap');
@@ -150,12 +168,12 @@ export async function runTick({ core, cfg, deps, source = 'cron', scheduledTime 
       const stored = core.insertPage({
         slug: subject.slug, theme: subject.theme, grp: text.group, level: subject.level, headline: text.headline, title: text.pinTitle,
         description: text.pinDescription, alt: text.alt, intro: text.intro, metaDescription: text.metaDescription, prompt: subject.draw,
-        site: subject.site, skin, created: now, release: now, slot: slot.key, attempts: attempt,
+        site: subject.site, skin, created: now, release: releaseAt({ now, n: made, slug: subject.slug, hours: cfg.releaseHours, source }), slot: slot.key, attempts: attempt,
         metrics: { ink: +m.ink.toFixed(4), thick: +m.thick.toFixed(4), gray: +m.gray.toFixed(4), patch: m.patch, headline: pin.layout.headlineSize }
       }, { pin: pin.png, page: pagePng, thumb });
       if (!stored) { core.logError('store', 'slug already exists: ' + subject.slug, slot.key); return finish('failed', 'duplicate', { slug: subject.slug }); }
       core.add('pages:' + day, 1);
-      return finish('done', 'ok', { slug: subject.slug, theme: subject.theme, level: subject.level, attempts: attempt, rejected, pinBytes: pin.png.length });
+      return finish('done', 'ok', { slug: subject.slug, theme: subject.theme, level: subject.level, attempts: attempt, rejected, pinBytes: pin.png.length, release: new Date(releaseAt({ now, n: made, slug: subject.slug, hours: cfg.releaseHours, source })).toISOString() });
     }
     return finish('failed', lastErr || 'no_page', { slug: subject.slug, rejected });
   } catch (e) {
@@ -178,7 +196,7 @@ export function pinsStatus({ core, cfg, now }) {
   return {
     now: new Date(now).toISOString(),
     flags: { enabled: cfg.enabled, paused: core.getMeta('paused') === '1', seedsInFeed: cfg.seeds && core.getMeta('seeds_off') !== '1', feedFrozenAt: core.getMeta('frozen_at'), aiExhaustedDay: core.getMeta('ai_exhausted') },
-    limits: { dailyPages: cfg.dailyPages, maxFluxPerDay: cfg.maxFluxPerDay, slotHours: cfg.slotHours, siteReserve: cfg.siteReserve, aiDaily: cfg.aiDaily, imagesMonthlyCap: cfg.imagesMonthlyCap },
+    limits: { dailyPages: cfg.dailyPages, maxFluxPerDay: cfg.maxFluxPerDay, slotHours: cfg.slotHours, earlySlots: cfg.earlySlots, releaseHours: cfg.releaseHours, siteReserve: cfg.siteReserve, aiDaily: cfg.aiDaily, imagesMonthlyCap: cfg.imagesMonthlyCap },
     today: {
       pagesMade: core.count('pages:' + day), modelCalls: flux, rejected: core.count('rejected:' + day),
       neuronsEstimate: flux * FLUX_NEURONS, freeNeuronsPerDay: FREE_NEURONS_PER_DAY,

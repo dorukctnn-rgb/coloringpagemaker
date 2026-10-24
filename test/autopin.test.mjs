@@ -11,7 +11,8 @@ import { createRequire } from 'node:module';
 import { DatabaseSync } from 'node:sqlite';
 import worker from '../cloudflare/worker.js';
 import { PinCore, RUN_STALE_MS, MAX_RUNS_PER_SLOT } from '../cloudflare/autopin/core.js';
-import { PinService } from '../cloudflare/autopin/service.js';
+import { PinService, neighbors } from '../cloudflare/autopin/service.js';
+import { resetKnownSlugs, ageKnownSlugs } from '../cloudflare/autopin/routes.js';
 import { runTick, pinsConfig, slotOf, FLUX_NEURONS } from '../cloudflare/autopin/tick.js';
 import { SEEDS } from '../cloudflare/autopin/seeds.js';
 import * as topics from '../cloudflare/autopin/topics.js';
@@ -97,6 +98,7 @@ function makeStubs(clock, opts = {}) {
 
 // A Pinterest-job world: core, service, the Worker's environment (PINS binding stub, asset stub), a clock and call counters.
 function makeWorld({ now = at(2026, 10, 24, 15, 0), vars = {}, stubs = {}, key = 'test-admin-key' } = {}) {
+  resetKnownSlugs();
   const clock = { t: now };
   const core = makeCore(clock);
   const st = makeStubs(clock, stubs);
@@ -410,12 +412,17 @@ test('a slot is handled once: the same trigger twice, or two at the same moment,
   assert.equal(w.core.storageBytes().pages, 1);
 });
 
-test('even pace through the day, then the daily cap: 4 pages at slots 0, 2, 4 and 6, nothing more', async () => {
+test('the day\'s pages are drawn early (the first 4 slots, 00:07 to 09:07 UTC, when the free allowance is fresh), then the daily cap holds', async () => {
   const w = tickWorld({ now: at(2026, 10, 27, 0, 7) });
   const out = [];
-  for (let i = 0; i < 8; i++) { w.clock.t = at(2026, 10, 27, i * 3, 7); out.push((await w.run(w.clock.t)).status + ':' + (await Promise.resolve(w.core.count('pages:2026-10-27')))); }
-  assert.deepEqual(out, ['done:1', 'skipped:1', 'done:2', 'skipped:2', 'done:3', 'skipped:3', 'done:4', 'skipped:4']);
+  for (let i = 0; i < 8; i++) { w.clock.t = at(2026, 10, 27, i * 3, 7); const r = await w.run(w.clock.t); out.push(r.status + ':' + (r.reason === 'ok' ? 'ok' : r.reason) + ':' + w.core.count('pages:2026-10-27')); }
+  assert.deepEqual(out, ['done:ok:1', 'done:ok:2', 'done:ok:3', 'done:ok:4', 'skipped:daily_cap:4', 'skipped:daily_cap:4', 'skipped:daily_cap:4', 'skipped:daily_cap:4']);
   assert.equal(w.st.calls.flux.length, 4);
+  // a tick draws one page at most, so 2 early slots still give one page a slot while pages are due
+  const two = tickWorld({ now: at(2026, 10, 27, 0, 7), vars: { AUTOPIN_EARLY_SLOTS: '2' } });
+  const seq = [];
+  for (let i = 0; i < 3; i++) { two.clock.t = at(2026, 10, 27, i * 3, 7); await two.run(two.clock.t); seq.push(two.core.count('pages:2026-10-27')); }
+  assert.deepEqual(seq, [1, 2, 3]);
   // a manual run on the same day is still held by the daily cap
   const m = await w.run(null, 'manual');
   assert.equal(m.reason, 'daily_cap');
@@ -785,9 +792,10 @@ test('admin: no key means no admin address, a wrong key is refused, the right ke
 test('the cron entry: scheduled() runs one tick through the Durable Object stub, and a failing object is written down, not thrown', async () => {
   const w = makeWorld({ now: at(2026, 10, 24, 15, 7) });
   const ctx = ctxStub();
-  await worker.scheduled({ scheduledTime: w.clock.t, cron: '7 */3 * * *' }, w.env, ctx);
+  // the handler returns the promise of the run and also hands it to waitUntil
+  const r = await worker.scheduled({ scheduledTime: w.clock.t, cron: '7 */3 * * *' }, w.env, ctx);
   assert.equal(ctx.waits.length, 1);
-  const r = await ctx.waits[0];
+  assert.equal(await ctx.waits[0], r);
   assert.equal(r.status, 'done');
   assert.equal(w.core.storageBytes().pages, 1);
   // the same trigger again does nothing
@@ -850,4 +858,140 @@ test('robots.txt names the sitemap of the printable pages, and nothing about the
   const server = fs.readFileSync(path.join(root, 'server.js'), 'utf8');
   assert.match(server, /Sitemap: https:\/\/www\.coloringpagemaker\.app\/sitemap-printables\.xml/);
   assert.match(fs.readFileSync(path.join(root, 'views', 'partials', 'footer.ejs'), 'utf8'), /<a href="\/printables">Free printables<\/a>/);
+});
+
+// =====================================================================================================
+// internal links, flood protection
+// =====================================================================================================
+test('neighbors: every page links to the pages next to it in the list, so a crawler can walk the whole list', () => {
+  const list = Array.from({ length: 20 }, (_, i) => ({ slug: 'p' + i }));
+  assert.deepEqual(neighbors(list, 'p10', 6).map(x => x.slug), ['p9', 'p11', 'p8', 'p12', 'p7', 'p13']);
+  assert.deepEqual(neighbors(list, 'p0', 6).map(x => x.slug), ['p1', 'p2', 'p3', 'p4', 'p5', 'p6']);
+  assert.deepEqual(neighbors(list, 'p19', 4).map(x => x.slug), ['p18', 'p17', 'p16', 'p15']);
+  assert.equal(neighbors(list, 'p10', 6).some(x => x.slug === 'p10'), false);
+  assert.deepEqual(neighbors(list, 'unknown', 3).map(x => x.slug), ['p0', 'p1', 'p2']);
+  assert.deepEqual(neighbors([{ slug: 'only' }], 'only', 6), []);
+  // every page is reachable from the newest one by following neighbor links
+  const seen = new Set(['p0']); let frontier = ['p0'];
+  while (frontier.length) { const next = []; for (const s of frontier) for (const n of neighbors(list, s, 2)) if (!seen.has(n.slug)) { seen.add(n.slug); next.push(n.slug); } frontier = next; }
+  assert.equal(seen.size, 20);
+});
+
+test('hub: more than 36 pages in a group keep a plain link list of the older ones, so no page is orphaned', () => {
+  const now = at(2026, 12, 1);
+  const base = seedViews()[0];
+  const views = Array.from({ length: 60 }, (_, i) => ({ ...base, slug: `halloween-test-${i}-coloring-page`, headline: `Test ${i} coloring page`, release: now - i * HOUR }));
+  const html = renderHub(views, now);
+  assert.equal((html.match(/class="image-card"/g) || []).length, 36);
+  assert.match(html, /Older pages/);
+  for (const v of views) assert.ok(html.includes(`href="/printables/${v.slug}"`), v.slug);
+});
+
+test('landing page: the call to action names the site page it links to, and the evergreen pages link to their own theme', () => {
+  const s = topics.allSubjects().find(x => x.slug === 'unicorn-with-rainbow-mane-coloring-page');
+  assert.ok(s, 'the unicorn subject exists');
+  const t = topics.describe(s);
+  const view = { source: 'auto', slug: s.slug, theme: s.theme, group: t.group, level: s.level, headline: t.headline, sub: t.sub, title: t.pinTitle, description: t.pinDescription, alt: t.alt, intro: t.intro, prompt: s.draw, metaDescription: t.metaDescription, site: s.site, release: at(2026, 11, 3), created: at(2026, 11, 3), pinImage: `/pins/auto/${s.slug}.png`, pinBytes: 1000, pageImage: `/printables/img/${s.slug}.png`, thumbImage: `/printables/img/${s.slug}-400.png` };
+  const html = renderLanding(view, []);
+  assert.match(html, /href="\/unicorn-coloring-pages#generator" class="btn">Make your own unicorn page</);
+  assert.match(html, /<p class="eyebrow">Animals and more<\/p>/);
+  assert.ok(!html.includes('More Animals'), 'no related section without related pages');
+  assert.deepEqual(lint(visibleText(html)), []);
+});
+
+test('a flood of made-up addresses does not wake the Durable Object: unknown slugs are answered by the Worker', async () => {
+  const w = makeWorld({ now: at(2026, 10, 24, 15, 7) });
+  await cron(w, w.clock.t);
+  const page = w.core.listPages({ upTo: w.clock.t })[0];
+  const counts = { landing: 0, image: 0, slugs: 0, hub: 0 };
+  const real = w.env.PINS.get();
+  w.env.PINS.get = () => new Proxy(real, { get: (t, k) => { if (k in counts) return (...a) => { counts[k]++; return t[k](...a); }; return t[k]; } });
+  for (let i = 0; i < 60; i++) {
+    assert.equal((await call(w.env, `/printables/made-up-${i}-coloring-page`)).status, 404);
+    assert.equal((await call(w.env, `/printables/img/made-up-${i}.png`)).status, 404);
+    assert.equal((await call(w.env, `/pins/auto/made-up-${i}.png`)).status, 404);
+  }
+  assert.equal(counts.landing + counts.image, 0, 'no page or image was looked up');
+  assert.ok(counts.slugs <= 1, 'the list of slugs was fetched ' + counts.slugs + ' times');
+  // a real page still works, and a page made after the list was fetched is found after a refresh
+  assert.equal((await call(w.env, `/printables/${page.slug}`)).status, 200);
+  assert.equal(counts.landing, 1);
+  w.clock.t += 3 * HOUR;
+  const second = await cron(w, w.clock.t);
+  assert.equal(second.status, 'done');
+  assert.equal((await call(w.env, `/printables/${second.slug}`)).status, 404, 'the list is refreshed at most every 30 seconds');
+  ageKnownSlugs(31 * 1000);
+  assert.equal((await call(w.env, `/printables/${second.slug}`)).status, 200, 'a new page is found once the list is refreshed');
+});
+
+// =====================================================================================================
+// staggered release, self test
+// =====================================================================================================
+import { releaseAt } from '../cloudflare/autopin/tick.js';
+
+test('release times: the day\'s pages go out at the US-friendly hours, a few minutes off the hour, never in the past', () => {
+  const hours = [13, 16, 19, 22];
+  const made = at(2026, 10, 26, 0, 7);
+  const rel = n => releaseAt({ now: made, n, slug: 'page-' + n + '-coloring-page', hours });
+  for (let n = 0; n < 4; n++) {
+    const d = new Date(rel(n));
+    assert.equal(d.getUTCHours(), hours[n], 'hour of page ' + n);
+    assert.ok(d.getUTCMinutes() < 40, 'minutes ' + d.getUTCMinutes());
+    assert.equal(d.toISOString().slice(0, 10), '2026-10-26');
+  }
+  // a fifth page wraps to the first hour, twenty minutes later than a first page would be
+  const fifth = new Date(rel(4));
+  assert.equal(fifth.getUTCHours() * 60 + fifth.getUTCMinutes() >= 13 * 60 + 20, true);
+  // made after its hour: released at once. Made by hand: released at once.
+  const late = at(2026, 10, 26, 17, 7);
+  assert.equal(releaseAt({ now: late, n: 0, slug: 'a-coloring-page', hours }), late);
+  assert.equal(releaseAt({ now: made, n: 0, slug: 'a-coloring-page', hours, source: 'manual' }), made);
+  assert.equal(releaseAt({ now: made, n: 0, slug: 'a-coloring-page', hours: [] }), made);
+  // the same page always gets the same minutes
+  assert.equal(releaseAt({ now: made, n: 1, slug: 'same-coloring-page', hours }), releaseAt({ now: made, n: 1, slug: 'same-coloring-page', hours }));
+  assert.deepEqual(cfgOf({ AUTOPIN_RELEASE_HOURS: '9, 12 ,x,30,18' }).releaseHours, [9, 12, 18]);
+  assert.deepEqual(cfgOf().releaseHours, [13, 16, 19, 22]);
+});
+
+test('a page drawn at 00:07 UTC stays out of the feed, the hub, the sitemap and its own address until its release hour', async () => {
+  const w = makeWorld({ now: at(2026, 11, 3, 0, 7) });
+  const r = await cron(w, w.clock.t);
+  assert.equal(r.status, 'done');
+  const page = w.core.getPage(r.slug);
+  assert.ok(page.release > w.clock.t + 10 * HOUR && new Date(page.release).getUTCHours() === 13, new Date(page.release).toISOString());
+  assert.equal(r.release, new Date(page.release).toISOString());
+  // (the 30 Halloween seeds are still inside the 21-day window of the feed on 3 November: look for this page only)
+  const items = async () => (await (await call(w.env, '/pins/feed.xml')).text()).split(`cpm-pin-${r.slug}`).length - 1;
+  assert.equal(await items(), 0);
+  assert.equal((await call(w.env, `/printables/${r.slug}`)).status, 404);
+  assert.equal((await call(w.env, `/pins/auto/${r.slug}.png`)).status, 404);
+  assert.equal((await (await call(w.env, '/sitemap-printables.xml')).text()).includes(r.slug), false);
+  assert.equal((await (await call(w.env, '/printables')).text()).includes(r.slug), false);
+  // at the release moment everything opens
+  w.clock.t = page.release;
+  resetKnownSlugs();
+  assert.equal(await items(), 1);
+  assert.equal((await call(w.env, `/printables/${r.slug}`)).status, 200);
+  assert.equal((await call(w.env, `/pins/auto/${r.slug}.png`)).status, 200);
+  assert.ok((await (await call(w.env, '/sitemap-printables.xml')).text()).includes(r.slug));
+  assert.ok((await (await call(w.env, '/printables')).text()).includes(r.slug));
+  // four pages made on one day go out at four different hours
+  const day = makeWorld({ now: at(2026, 11, 3, 0, 7) });
+  const hoursOut = [];
+  for (let i = 0; i < 4; i++) { day.clock.t = at(2026, 11, 3, i * 3, 7); const x = await cron(day, day.clock.t); hoursOut.push(new Date(day.core.getPage(x.slug).release).getUTCHours()); }
+  assert.deepEqual(hoursOut, [13, 16, 19, 22]);
+});
+
+test('selftest: the heavy part of a tick on a page that is already there, nothing stored, nothing drawn by the model', async () => {
+  const w = makeWorld();
+  w.env.ASSETS = { async fetch(req) { return new URL(req.url).pathname === `/printables/img/${SEEDS[0].slug}.png` ? new Response(GOOD.png) : new Response('nf', { status: 404 }); } };
+  const r = await (await admin(w.env, '/pins/admin/selftest')).json();
+  assert.equal(r.ok, true);
+  assert.equal(r.judged, true);
+  assert.ok(r.pinBytes > 50000 && r.pageBytes > 1000 && r.thumbBytes > 500, JSON.stringify(r));
+  assert.equal(w.core.storageBytes().pages, 0);
+  assert.equal(w.calls.flux.length, 0);
+  assert.equal((await admin(w.env, '/pins/admin/selftest', 'GET')).status, 405);
+  w.env.ASSETS = { async fetch() { return new Response('nf', { status: 404 }); } };
+  assert.equal((await admin(w.env, '/pins/admin/selftest')).status, 500);
 });

@@ -41,6 +41,10 @@ const STYLE = `<style>
 .print-sheet{display:none}
 .hub-group .examples-grid figure{margin:0}
 .hub-card{display:block;text-decoration:none;color:inherit}
+/* the list of older pages: plain links, in columns */
+.older-title{font-family:var(--body);font-size:12px;color:var(--muted);margin:26px 0 10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em}
+.older-list{list-style:none;columns:2;column-gap:28px;font-size:15px}
+.older-list li{padding:3px 0;break-inside:avoid}
 .hub-card:hover strong{text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--accent)}
 @media (max-width:640px){.examples-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media print{
@@ -146,6 +150,7 @@ export function renderLanding(v, related = []) {
   const theme = THEMES[v.theme] || THEMES.evergreen;
   const group = GROUPS[v.group];
   const siteHref = '/' + (v.site || '') + (v.site ? '#generator' : '');
+  const siteName = v.site ? v.site.replace(/-coloring-pages$/, '').replace(/-/g, ' ') : '';
   const rel = related.filter(r => r.slug !== v.slug).slice(0, 6);
   const ld = {
     '@context': 'https://schema.org',
@@ -222,7 +227,7 @@ ${rel.map(card).join('\n')}
   <div class="pricing-cta">
     <h2>Draw a page of your own</h2>
     <p>Type what you want to color, pick the detail level and get a printable page in under a minute. Two pages a day are free, with no account.</p>
-    <a href="${esc(siteHref)}" class="btn">${v.site ? 'Open the ' + esc(theme.label || 'page') + ' generator' : 'Open the generator'}</a>
+    <a href="${esc(siteHref)}" class="btn">${v.site ? 'Make your own ' + esc(siteName) + ' page' : 'Open the generator'}</a>
   </div>
 </div>
 
@@ -239,12 +244,17 @@ export function renderHub(views, now) {
   const order = [];
   for (const v of views) if (!order.includes(v.group)) order.push(v.group);
   const sections = order.map(g => {
-    const items = views.filter(v => v.group === g).slice(0, 36);
+    const all = views.filter(v => v.group === g);
+    const items = all.slice(0, 36), older = all.slice(36, 400);
     return `<section class="examples hub-group" aria-labelledby="g-${g}">
   <h2 id="g-${g}">${esc(GROUPS[g].label)}</h2>
   <ul class="examples-grid">
 ${items.map(card).join('\n')}
-  </ul>
+  </ul>${older.length ? `
+  <h3 class="older-title">Older pages</h3>
+  <ul class="older-list">
+${older.map(v => `    <li><a href="/printables/${esc(v.slug)}">${esc(v.headline)}</a></li>`).join('\n')}
+  </ul>` : ''}
 </section>`;
   }).join('\n\n');
   const ld = {
