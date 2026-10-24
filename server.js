@@ -823,7 +823,8 @@ Disallow: /download-pdf
 Disallow: /gumroad-webhook
 Disallow: /verify-pro
 
-Sitemap: https://www.coloringpagemaker.app/sitemap.xml`);
+Sitemap: https://www.coloringpagemaker.app/sitemap.xml
+Sitemap: https://www.coloringpagemaker.app/sitemap-printables.xml`);
 });
 
 // === 404 ===

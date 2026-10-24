@@ -54,6 +54,8 @@ const HEADERS = `# Response headers for the static files (Cloudflare Workers sta
   Cache-Control: public, max-age=31536000, immutable
 /examples/*
   Cache-Control: public, max-age=2592000
+/printables/img/*
+  Cache-Control: public, max-age=2592000
 /sitemap.xml
   Content-Type: text/xml; charset=utf-8
 `;

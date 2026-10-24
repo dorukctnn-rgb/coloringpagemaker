@@ -15,9 +15,10 @@
 import { Buffer } from 'node:buffer';
 import lineart from '../lineart.js';
 import { decodePdfImage, buildPdf, PDF_MAX_PAGES } from './pdf.js';
+import { FLUX_MODEL, fluxPrompt } from './flux.js';
+import { pinsRoute, runScheduled } from './autopin/routes.js';
 
 const FREE_DAILY_LIMIT = 2;
-const FLUX_MODEL = '@cf/black-forest-labs/flux-1-schnell';
 const GUMROAD_PRODUCT_ID = 'ZnIImoT1CFy75R8mnbEQDw=='; // dorukctn.gumroad.com/l/uynqt
 const PRO_TOKEN_RE = /^[a-f0-9]{64}$/;
 
@@ -138,12 +139,8 @@ async function proFromToken(token, cfg, ledger) {
 export const isLegacySale = (pro, cfg) => !!pro.legacy || !pro.sale_created || String(pro.sale_created).slice(0, 10) < cfg.hdTermsFrom;
 
 // --- drawing ---
-const FLUX_STYLE = {
-  simple: 'Simple shapes with thick bold outlines and very few details, for young children ages 3 to 6',
-  medium: 'Medium detail with clear bold outlines, for kids ages 6 to 12',
-  detailed: 'Adult coloring page with many elements and repeating patterns, bold clean outlines, no tiny details'
-};
-export const fluxPrompt = (p, level) => `Black and white coloring book page, line art of ${p}. ${FLUX_STYLE[level]}. Pure white background, black outlines only, uncolored and unshaded, flat white areas ready to color. Clean printable line drawing.`;
+// The prompt and the model live in flux.js: the daily Pinterest job draws with the same words.
+export { fluxPrompt };
 
 async function standardPage(env, cfg, userPrompt, level) {
   let out;
@@ -354,7 +351,7 @@ async function notFound(request, env) {
 }
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const path = url.pathname;
     const lower = path.toLowerCase();
@@ -368,11 +365,17 @@ export default {
         if (lower !== path && FIXED_PAGES.has(lower)) return env.ASSETS.fetch(new Request(new URL(lower + url.search, url), request));
         // Pages live at their clean path only: the stored file names (x.html, index, 404) answer 404 as before.
         if (path === '/404' || path === '/index' || lower.endsWith('.html')) return notFound(request, env);
+        // The Pinterest feed, the printable pages and their images are made by the pin job (autopin/routes.js).
+        if (path.startsWith('/pins/') || path.startsWith('/printables') || path === '/sitemap-printables.xml') {
+          const pins = await pinsRoute(request, env, ctx, url);
+          if (pins) return pins;
+        }
         const res = await env.ASSETS.fetch(request);
         if (res.status === 404) return notFound(request, env);
         return res;
       }
       if (request.method === 'POST') {
+        if (path.startsWith('/pins/admin/')) { const pins = await pinsRoute(request, env, ctx, url); if (pins) return pins; }
         if (lower === '/generate') return await generate(request, env);
         if (lower === '/download-pdf') return await downloadPdf(request, env);
         if (lower === '/gumroad-webhook') return await gumroadWebhook(request, env);
@@ -384,5 +387,9 @@ export default {
       console.error('Unhandled:', err && (err.stack || err.message));
       return json({ error: 'Something went wrong. Please try again.' }, 500);
     }
+  },
+  // The cron trigger of the daily Pinterest job (wrangler.production.jsonc, triggers.crons): see autopin/tick.js.
+  async scheduled(controller, env, ctx) {
+    ctx.waitUntil(runScheduled(controller, env));
   }
 };

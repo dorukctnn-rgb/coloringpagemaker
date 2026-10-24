@@ -18,8 +18,8 @@
   },
   "ai": { "binding": "AI" },
   "images": { "binding": "IMAGES" },
-  "durable_objects": { "bindings": [{ "name": "LEDGER", "class_name": "Ledger" }] },
-  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Ledger"] }],
+  "durable_objects": { "bindings": [{ "name": "LEDGER", "class_name": "Ledger" }, { "name": "PINS", "class_name": "PinStore" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Ledger"] }, { "tag": "v2", "new_sqlite_classes": ["PinStore"] }],
   "observability": { "enabled": true },
   "vars": {
     "FREE_ENGINE": "flux",
@@ -31,6 +31,8 @@
     "HD_TERMS_FROM": "2026-10-21",
     "PRO_DAILY_LIMIT": "150",
     "FREE_GLOBAL_DAILY_LIMIT": "120",
-    "AI_DAILY_LIMIT": "160"
+    "AI_DAILY_LIMIT": "160",
+    // The preview has no cron trigger and never runs the Pinterest job.
+    "AUTOPIN_ENABLED": "0"
   }
 }

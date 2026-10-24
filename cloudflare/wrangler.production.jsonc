@@ -2,7 +2,7 @@
 //   node cloudflare/build.mjs && (cd cloudflare && wrangler deploy -c wrangler.production.jsonc)
 // It first answers on https://coloringpagemaker.railer-iot.workers.dev for the URL check; www.coloringpagemaker.app
 // is attached as a Custom Domain in the dashboard at the cut (then set workers_dev to false and deploy again).
-// Secrets (wrangler secret put <NAME> -c wrangler.production.jsonc): OPENAI_API_KEY, IP_SALT.
+// Secrets (wrangler secret put <NAME> -c wrangler.production.jsonc): OPENAI_API_KEY, IP_SALT, AUTOPIN_ADMIN_KEY (admin address of the Pinterest job).
 {
   "name": "coloringpagemaker",
   "main": "index.js",
@@ -20,8 +20,11 @@
   },
   "ai": { "binding": "AI" },
   "images": { "binding": "IMAGES" },
-  "durable_objects": { "bindings": [{ "name": "LEDGER", "class_name": "Ledger" }] },
-  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Ledger"] }],
+  // LEDGER: the site's counters. PINS: the daily Pinterest job (autopin/store.js): pages, images, run log, flags.
+  "durable_objects": { "bindings": [{ "name": "LEDGER", "class_name": "Ledger" }, { "name": "PINS", "class_name": "PinStore" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Ledger"] }, { "tag": "v2", "new_sqlite_classes": ["PinStore"] }],
+  // Every 3 hours at minute 7 (UTC): one tick of the Pinterest job, which draws at most AUTOPIN_DAILY_PAGES pages a day.
+  "triggers": { "crons": ["7 */3 * * *"] },
   "observability": { "enabled": true },
   "vars": {
     "FREE_ENGINE": "flux",
@@ -37,6 +40,17 @@
     "FREE_GLOBAL_DAILY_LIMIT": "120",
     "AI_DAILY_LIMIT": "160",
     // The old Vercel server, asked once for Pro tokens made before the move. Remove when Vercel is gone.
-    "LEGACY_VERIFY_URL": "https://coloringpagemaker.vercel.app"
+    "LEGACY_VERIFY_URL": "https://coloringpagemaker.vercel.app",
+    // The daily Pinterest job (autopin/tick.js). Kill switch: AUTOPIN_ENABLED "0" and deploy, or POST /pins/admin/pause.
+    "AUTOPIN_ENABLED": "1",
+    // The 30 Halloween seeds in the feed. Set "0" if the same 30 pins were uploaded from the CSV (they would be pinned twice).
+    "AUTOPIN_SEEDS": "1",
+    "AUTOPIN_DAILY_PAGES": "4",
+    "AUTOPIN_MAX_FLUX_PER_DAY": "12",
+    "AUTOPIN_MAX_ATTEMPTS": "3",
+    "AUTOPIN_SLOT_HOURS": "3",
+    "AUTOPIN_SITE_RESERVE": "60",
+    "AUTOPIN_IMAGES_MONTHLY_CAP": "600",
+    "AUTOPIN_STORAGE_CAP_MB": "1500"
   }
 }
