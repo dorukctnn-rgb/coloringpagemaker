@@ -145,10 +145,22 @@ export class PinCore {
     return r ? this.rowToPage(r) : null;
   }
   // Pages that have been released (release <= upTo) and are not hidden, newest first.
-  listPages({ upTo, limit = 100, since = 0 } = {}) {
+  listPages({ upTo, limit = 100, since = 0, group = null } = {}) {
     const to = upTo == null ? this.now() : upTo;
-    return this.exec('SELECT * FROM pages WHERE hidden = 0 AND release <= ? AND release >= ? ORDER BY release DESC, slug LIMIT ?', to, since, limit)
-      .map(r => this.rowToPage(r));
+    const rows = group
+      ? this.exec('SELECT * FROM pages WHERE hidden = 0 AND grp = ? AND release <= ? AND release >= ? ORDER BY release DESC, slug LIMIT ?', group, to, since, limit)
+      : this.exec('SELECT * FROM pages WHERE hidden = 0 AND release <= ? AND release >= ? ORDER BY release DESC, slug LIMIT ?', to, since, limit);
+    return rows.map(r => this.rowToPage(r));
+  }
+  // Only the address and the release time of every page up to upTo (the sitemap and the list of known addresses).
+  listLight({ upTo, limit = 20000 } = {}) {
+    const to = upTo == null ? this.now() : upTo;
+    return this.exec('SELECT slug, release FROM pages WHERE hidden = 0 AND release <= ? ORDER BY release DESC, slug LIMIT ?', to, limit)
+      .map(r => ({ slug: r.slug, release: Number(r.release) }));
+  }
+  // The newest pages by creation time, released or not, hidden or not (for the admin's review).
+  recentPages(n = 12) {
+    return this.exec('SELECT * FROM pages ORDER BY created DESC, slug LIMIT ?', n).map(r => this.rowToPage(r));
   }
   setHidden(slug, on) {
     this.exec('UPDATE pages SET hidden = ? WHERE slug = ?', on ? 1 : 0, slug);

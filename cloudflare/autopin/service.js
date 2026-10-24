@@ -4,7 +4,7 @@
 // a Durable Object call 30 seconds.
 import { Buffer } from 'node:buffer';
 import { runTick, pinsConfig, pinsStatus } from './tick.js';
-import { releasedViews, feedItems, buildFeed, buildSitemap, seedBySlug, autoView, FEED_PATH } from './feed.js';
+import { releasedViews, feedItems, buildFeed, buildSitemap, seedBySlug, seedViews, autoView, FEED_PATH } from './feed.js';
 import { renderLanding, renderHub } from './page.js';
 import { decodeGrayPng, judge, whiten, artSquare } from './art.js';
 import { composePin, CARD } from './pin.js';
@@ -61,19 +61,28 @@ export class PinService {
     return runTick({ core: this.core, cfg, deps: this.depsFactory(this.env, cfg), source, scheduledTime });
   }
   // Every slug of a page made by the job that is not hidden (the Worker keeps the list to refuse made-up addresses).
-  slugs() { return this.core.listPages({ upTo: this.now() + 7 * 24 * 3600 * 1000, limit: 5000 }).map(p => p.slug); }
+  slugs() { return this.core.listLight({ upTo: this.now() + 7 * 24 * 3600 * 1000, limit: 20000 }).map(p => p.slug); }
   // The heavy part of a tick (judge the page, draw the pin, write the three PNG files) on a page that is already there,
   // with no model call and nothing stored. The admin address runs it to show that the object can do the work inside its
   // CPU allowance. Returns the sizes of what it made.
-  selfTest(png) {
-    const img = decodeGrayPng(png);
+  async selfTest(png) {
+    // The Images binding does the same gray conversion as for a model's picture (a PNG goes in instead of the JPEG).
+    const cfg = this.cfg();
+    const gray = await this.depsFactory(this.env, cfg).toGray(png);
+    const img = decodeGrayPng(gray);
     const verdict = judge(img.L, img.w, img.h, 'medium');
     const page = whiten(verdict.L);
     const meta = { title: 'Self test coloring page', description: 'Self test.' };
     const pin = composePin({ headline: 'Self test coloring page', sub: 'Clear lines and room to color, ages 6 to 12', art: artSquare(page, img.w, img.h, CARD.size), skin: 'orange', meta });
     const pagePng = encodePngGray(page, img.w, img.h, { depth: 8, level: 9, extra: [xmpChunk(meta)] });
-    const thumb = encodePngGray(resizeGray(page, img.w, img.h, 400, 400), 400, 400, { depth: 4, level: 9, extra: [xmpChunk(meta)] });
-    return { ok: true, judged: verdict.ok, reasons: verdict.reasons, pinBytes: pin.png.length, pageBytes: pagePng.length, thumbBytes: thumb.length };
+    const thumb = encodePngGray(resizeGray(page, img.w, img.h, 400, 400), 400, 400, { depth: 8, level: 9, extra: [xmpChunk(meta)] });
+    return { ok: true, imagesBinding: gray.length, judged: verdict.ok, reasons: verdict.reasons, pinBytes: pin.png.length, pageBytes: pagePng.length, thumbBytes: thumb.length };
+  }
+  // An image of a page for the admin (also before its release): { bytes } or null.
+  adminImage(slug, kind) {
+    if (!['pin', 'page', 'thumb'].includes(kind) || !this.core.hasPage(slug)) return null;
+    const bytes = this.core.getBlob(slug, kind);
+    return bytes ? { bytes, kind } : null;
   }
   // A failure the Worker saw while calling the object (the object itself may have been cut off).
   noteError(stage, msg) { this.core.logError(stage, msg, null); return true; }
@@ -91,10 +100,18 @@ export class PinService {
     this.core.logFetch(FEED_PATH + (group ? '?group=' + group : ''), ua, items.length);
     return buildFeed({ items, now, group });
   }
-  allViews(now = this.now()) {
-    return releasedViews({ now, autoPages: this.core.listPages({ upTo: now, limit: 500 }), seedsOn: true });
+  // The released pages (seeds and pages of the job), newest first; one group when given.
+  allViews(now = this.now(), group = null) {
+    const views = releasedViews({ now, autoPages: this.core.listPages({ upTo: now, limit: 500, group }), seedsOn: true });
+    return group ? views.filter(v => v.group === group) : views;
   }
-  sitemapXml() { const now = this.now(); return buildSitemap({ views: this.allViews(now), now }); }
+  // Every released page, from the light list (no text columns), so the sitemap never drops an old page.
+  sitemapXml() {
+    const now = this.now();
+    const views = [...this.core.listLight({ upTo: now }), ...seedViews().filter(v => v.release <= now).map(v => ({ slug: v.slug, release: v.release }))]
+      .sort((a, b) => b.release - a.release || (a.slug < b.slug ? -1 : 1));
+    return buildSitemap({ views, now });
+  }
   hub() { const now = this.now(); return renderHub(this.allViews(now), now); }
   // The landing page of one coloring page, or null.
   landing(slug) {
@@ -103,8 +120,7 @@ export class PinService {
     if (v && v.release > now + 7 * 24 * 3600 * 1000) v = null;
     if (!v) { const p = this.core.getPage(slug); if (p && !p.hidden && p.release <= now) v = autoView(p); }
     if (!v) return null;
-    const same = this.allViews(now).filter(x => x.group === v.group);
-    return renderLanding(v, neighbors(same, v.slug, 6));
+    return renderLanding(v, neighbors(this.allViews(now, v.group), v.slug, 6));
   }
   // { bytes: Uint8Array, kind } for a stored image of a page made by the job, or null.
   image(slug, kind) {

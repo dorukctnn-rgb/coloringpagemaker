@@ -995,3 +995,82 @@ test('selftest: the heavy part of a tick on a page that is already there, nothin
   w.env.ASSETS = { async fetch() { return new Response('nf', { status: 404 }); } };
   assert.equal((await admin(w.env, '/pins/admin/selftest')).status, 500);
 });
+
+// =====================================================================================================
+// review tooling
+// =====================================================================================================
+import http from 'node:http';
+import os from 'node:os';
+import { execFile } from 'node:child_process';
+
+test('admin: status lists the newest pages (released or not), their images are served to the admin only, selftest also runs the Images conversion', async () => {
+  const w = makeWorld({ now: at(2026, 11, 3, 0, 7) });
+  const r = await cron(w, w.clock.t);
+  const st = await (await admin(w.env, '/pins/admin/status', 'GET')).json();
+  assert.equal(st.recentPages.length, 1);
+  assert.equal(st.recentPages[0].slug, r.slug);
+  assert.equal(st.recentPages[0].released, false);
+  assert.match(st.recentPages[0].release, /^2026-11-03T13:/);
+  // an image of a page that is not released yet: 404 for everybody, 200 for the admin
+  assert.equal((await call(w.env, `/pins/auto/${r.slug}.png`)).status, 404);
+  assert.equal((await admin(w.env, `/pins/admin/image/${r.slug}/pin`, 'GET', null)).status, 401);
+  const pin = await admin(w.env, `/pins/admin/image/${r.slug}/pin`, 'GET');
+  assert.equal(pin.status, 200);
+  assert.equal(pin.headers.get('content-type'), 'image/png');
+  assert.deepEqual(pngSize(Buffer.from(await pin.arrayBuffer())), { w: 1000, h: 1500 });
+  assert.deepEqual(pngSize(Buffer.from(await (await admin(w.env, `/pins/admin/image/${r.slug}/thumb`, 'GET')).arrayBuffer())), { w: 400, h: 400 });
+  assert.equal((await admin(w.env, '/pins/admin/image/nope-coloring-page/pin', 'GET')).status, 404);
+  assert.equal((await admin(w.env, '/pins/admin/image/x/nothing', 'GET')).status, 404);
+  assert.equal((await admin(w.env, `/pins/admin/image/${r.slug}/pin`, 'POST')).status, 405);
+  // hidden pages stay in the review list, marked
+  await admin(w.env, `/pins/admin/hide?slug=${r.slug}`);
+  assert.equal((await (await admin(w.env, '/pins/admin/status', 'GET')).json()).recentPages[0].hidden, true);
+  // the thumbnails are 8-bit gray, which the site's decoder reads
+  const thumb = Buffer.from(await (await admin(w.env, `/pins/admin/image/${r.slug}/thumb`, 'GET')).arrayBuffer());
+  assert.equal(decodeGrayPng(thumb).w, 400);
+});
+
+test('the review command downloads the newest pages and writes a contact sheet', async () => {
+  const sample = fs.readFileSync(path.join(root, 'public', 'printables', 'img', SEEDS[1].slug + '-400.png'));
+  const pages = [0, 1, 2].map(i => ({ slug: `fall-test-${i}-coloring-page`, headline: 'Test', theme: 'fall', level: 'simple', created: '2026-11-03T00:07:00.000Z', release: '2026-11-03T13:20:00.000Z', released: false, hidden: i === 2 }));
+  const seen = [];
+  const srv = http.createServer((req, res) => {
+    seen.push(req.method + ' ' + req.url + ' ' + req.headers.authorization);
+    if (req.url === '/pins/admin/status') { res.setHeader('Content-Type', 'application/json'); return res.end(JSON.stringify({ recentPages: pages })); }
+    if (/^\/pins\/admin\/image\/fall-test-\d-coloring-page\/thumb$/.test(req.url)) { res.setHeader('Content-Type', 'image/png'); return res.end(sample); }
+    res.statusCode = 404; res.end('nf');
+  });
+  await new Promise(r => srv.listen(0, '127.0.0.1', r));
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'cpm-review-'));
+  try {
+    const out = await new Promise((resolve, reject) => execFile(process.execPath, [path.join(root, 'cloudflare', 'autopin', 'tools', 'admin.mjs'), 'review', '5'], {
+      cwd: tmp, env: { ...process.env, AUTOPIN_BASE: 'http://127.0.0.1:' + srv.address().port, AUTOPIN_ADMIN_KEY: 'k-review' }
+    }, (err, stdout, stderr) => (err ? reject(new Error(stderr + stdout)) : resolve(stdout))));
+    assert.match(out, /WAITING/);
+    assert.match(out, /HIDDEN/);
+    assert.match(out, /fall-test-1-coloring-page/);
+    assert.ok(fs.existsSync(path.join(tmp, 'autopin-review', 'review-sheet.png')));
+    assert.ok(fs.existsSync(path.join(tmp, 'autopin-review', 'fall-test-0-coloring-page-400.png')));
+    const size = pngSize(fs.readFileSync(path.join(tmp, 'autopin-review', 'review-sheet.png')));
+    assert.deepEqual(size, { w: 4 * 240 + 5 * 8, h: 1 * 240 + 2 * 8 });
+    assert.ok(seen.every(s => s.endsWith('Bearer k-review')), 'every request carries the key');
+    assert.ok(!out.includes('k-review'), 'the key is never printed');
+  } finally { srv.close(); fs.rmSync(tmp, { recursive: true, force: true }); }
+});
+
+test('a long run: the sitemap keeps every page, the hub the newest 500, the known-address list every page, and one landing page stays cheap', async () => {
+  const w = makeWorld({ now: at(2027, 6, 1) });
+  const mk = (i) => ({ slug: `evergreen-bulk-${i}-coloring-page`, theme: 'evergreen', grp: 'evergreen', level: 'simple', headline: `Bulk ${i} coloring page`, title: 'T', description: 'D', alt: 'A', intro: 'I', metaDescription: 'M', prompt: 'P', site: null, skin: 'sky', created: at(2026, 11, 1) + i * HOUR, release: at(2026, 11, 1) + i * HOUR, slot: 's' + i, attempts: 1, metrics: null });
+  const blobs = { pin: new Uint8Array(10), page: new Uint8Array(10), thumb: new Uint8Array(10) };
+  for (let i = 0; i < 700; i++) w.core.insertPage(mk(i), blobs);
+  const sitemap = await (await call(w.env, '/sitemap-printables.xml')).text();
+  assert.equal(tag(sitemap, 'loc').length, 700 + 30 + 1, 'hub + 700 pages + 30 seeds');
+  const hub = await (await call(w.env, '/printables')).text();
+  const listed = (hub.match(/href="\/printables\/[a-z0-9-]+"/g) || []).length;
+  assert.ok(listed >= 400 && listed <= 600, 'the hub lists the newest pages and the older links: ' + listed);
+  assert.equal((await w.svc.slugs()).length, 700);
+  assert.equal((await call(w.env, '/printables/evergreen-bulk-0-coloring-page')).status, 200, 'the oldest page still has its page');
+  const page = await (await call(w.env, '/printables/evergreen-bulk-350-coloring-page')).text();
+  assert.equal((page.match(/class="image-card"/g) || []).length, 6, 'six neighbors');
+  assert.ok(page.includes('evergreen-bulk-349-coloring-page') && page.includes('evergreen-bulk-351-coloring-page'));
+});

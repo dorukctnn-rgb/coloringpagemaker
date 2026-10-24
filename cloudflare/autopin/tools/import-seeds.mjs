@@ -33,7 +33,7 @@ for (const p of pins.slice().sort((a, b) => a.order - b.order)) {
   const meta = { title: p.on_image.headline, description: p.alt_text };
   fs.writeFileSync(path.join(imgDir, p.slug + '.png'), encodePngGray(L, 1024, 1024, { depth: 8, level: 9, extra: [xmpChunk(meta)] }));
   const thumb = resizeGray(L, 1024, 1024, 400, 400);
-  fs.writeFileSync(path.join(imgDir, p.slug + '-400.png'), encodePngGray(thumb, 400, 400, { depth: 4, level: 9, extra: [xmpChunk(meta)] }));
+  fs.writeFileSync(path.join(imgDir, p.slug + '-400.png'), encodePngGray(thumb, 400, 400, { depth: 8, level: 9, extra: [xmpChunk(meta)] }));
   const pinFile = path.join(repo, 'public', 'pins', 'halloween-2026', p.slug + '.png');
   const pinBytes = fs.statSync(pinFile).size;
   seeds.push({

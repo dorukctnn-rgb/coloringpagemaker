@@ -163,7 +163,7 @@ export async function runTick({ core, cfg, deps, source = 'cron', scheduledTime 
       const art = artSquare(page, img.w, img.h, CARD.size);
       const pin = composePin({ headline: text.headline, sub: text.sub, art, skin, meta });
       const pagePng = encodePngGray(page, img.w, img.h, { depth: 8, level: 9, extra: [xmpChunk(meta)] });
-      const thumb = encodePngGray(resizeGray(page, img.w, img.h, 400, 400), 400, 400, { depth: 4, level: 9, extra: [xmpChunk(meta)] });
+      const thumb = encodePngGray(resizeGray(page, img.w, img.h, 400, 400), 400, 400, { depth: 8, level: 9, extra: [xmpChunk(meta)] });
       const m = verdict.metrics;
       const stored = core.insertPage({
         slug: subject.slug, theme: subject.theme, grp: text.group, level: subject.level, headline: text.headline, title: text.pinTitle,
@@ -205,6 +205,7 @@ export function pinsStatus({ core, cfg, now }) {
     month: { imageConversions: core.count('images:' + month) },
     storage: { pages: store.pages, megabytes: +(store.bytes / 1048576).toFixed(2), freeCapGb: 5 },
     next: next ? { slug: next.subject.slug, theme: next.subject.theme, level: next.subject.level, phase: next.phase } : null,
+    recentPages: core.recentPages(12).map(p => ({ slug: p.slug, headline: p.headline, theme: p.theme, level: p.level, created: new Date(p.created).toISOString(), release: new Date(p.release).toISOString(), released: p.release <= now, hidden: p.hidden })),
     runs: core.recentRuns(10),
     errors: core.recentErrors(10),
     feedFetches: core.recentFetches(8)

@@ -26,6 +26,7 @@ export class PinStore extends DurableObject {
   status() { return this.svc.status(); }
   slugs() { return this.svc.slugs(); }
   selfTest(png) { return this.svc.selfTest(png); }
+  adminImage(slug, kind) { return this.svc.adminImage(slug, kind); }
   noteError(stage, msg) { return this.svc.noteError(stage, msg); }
   feedXml(a) { return this.svc.feedXml(a); }
   sitemapXml() { return this.svc.sitemapXml(); }

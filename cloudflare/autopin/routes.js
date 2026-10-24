@@ -67,7 +67,15 @@ async function adminRoute(request, env, url) {
   const name = url.pathname.slice('/pins/admin/'.length);
   const on = v => !['0', 'false', 'off', 'no'].includes(String(v || '').toLowerCase());
   if (name === 'status') return request.method === 'GET' ? json(await stub.status()) : json({ error: 'use GET' }, 405);
-  if (request.method !== 'POST') return json({ error: 'use POST' }, 405);
+  // An image of any page, also one that is not released yet: the review of what the job drew before Pinterest sees it.
+  const im = /^image\/([a-z0-9-]+)\/(pin|page|thumb)$/.exec(name);
+  if (im) {
+    if (request.method !== 'GET') return json({ error: 'use GET' }, 405);
+    const img = await stub.adminImage(im[1], im[2]);
+    return img ? new Response(img.bytes, { status: 200, headers: hdr('image/png', 'no-store') }) : json({ error: 'not found' }, 404);
+  }
+  const COMMANDS = ['pause', 'resume', 'seeds', 'hide', 'run', 'selftest'];
+  if (request.method !== 'POST') return json(COMMANDS.includes(name) ? { error: 'use POST' } : { error: 'unknown address' }, COMMANDS.includes(name) ? 405 : 404);
   if (name === 'pause') return json(await stub.admin('pause'));
   if (name === 'resume') return json(await stub.admin('resume'));
   if (name === 'seeds') return json(await stub.admin('seeds', { on: on(url.searchParams.get('on')) }));
