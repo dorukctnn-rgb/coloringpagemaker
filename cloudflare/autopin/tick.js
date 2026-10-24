@@ -42,7 +42,7 @@ export function pinsConfig(env) {
     aiDaily: num(env.AI_DAILY_LIMIT, 160),
     siteReserve: num(env.AUTOPIN_SITE_RESERVE, 60),
     fluxSteps: num(env.FLUX_STEPS, 4),
-    feedDays: num(env.AUTOPIN_FEED_DAYS, 21),
+    feedDays: num(env.AUTOPIN_FEED_DAYS, 10),
     feedMax: num(env.AUTOPIN_FEED_MAX, 60)
   };
 }

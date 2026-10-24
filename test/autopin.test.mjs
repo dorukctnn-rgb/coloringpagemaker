@@ -1128,3 +1128,16 @@ test('the PNG reader: gray at every depth, RGB, palette, alpha and 16 bit give t
   const palette4 = handPng(1024, 1, 8, 3, [Array.from({ length: 1024 }, () => 1)], { plte: pal });
   assert.equal(decodeGrayPng(palette4).w, 1024);
 });
+
+test('the feed keeps an item for 10 days, so a feed connected late does not start with weeks of pins', async () => {
+  assert.equal(cfgOf().feedDays, 10);
+  const w = makeWorld({ now: at(2026, 11, 3, 12) });
+  const items = tag(await (await call(w.env, '/pins/feed.xml')).text(), 'item');
+  // 3 November: the seeds of 25 to 31 October are 3 to 9 days old, all inside the window
+  assert.equal(items.length, 30);
+  w.clock.t = at(2026, 11, 6, 12);
+  const later = tag(await (await call(w.env, '/pins/feed.xml')).text(), 'item');
+  assert.ok(later.length < 30 && later.length > 0, 'the oldest seeds have left the feed: ' + later.length);
+  w.clock.t = at(2026, 11, 12, 12);
+  assert.equal(tag(await (await call(w.env, '/pins/feed.xml')).text(), 'item').length, 0);
+});

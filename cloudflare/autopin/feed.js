@@ -57,6 +57,8 @@ export const pageUrl = slug => `${SITE}/printables/${slug}`;
 export const itemLink = slug => `${pageUrl(slug)}?utm_source=pinterest&utm_medium=rss&utm_campaign=autopin&utm_content=${slug}`;
 const rfc822 = ms => new Date(ms).toUTCString();
 
+// days: how long an item stays in the feed (10 in production, tick.js). A feed connected late would otherwise start with a
+// burst of everything from the last weeks, which Pinterest would turn into pins within 24 hours.
 export function feedItems({ views, now, days = 21, max = 60, group = null }) {
   return views
     .filter(v => v.release <= now && v.release >= now - days * 24 * 3600 * 1000 && (!group || v.group === group))
