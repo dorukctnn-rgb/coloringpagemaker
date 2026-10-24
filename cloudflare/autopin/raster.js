@@ -441,3 +441,77 @@ export function pngSize(buf) {
   if (!buf || buf.length < 24 || buf.readUInt32BE(0) !== 0x89504e47) return null;
   return { w: buf.readUInt32BE(16), h: buf.readUInt32BE(20) };
 }
+
+// --- PNG reading ---
+// The header of a PNG as { w, h, depth, ct, interlace }, or null. (ct: 0 gray, 2 RGB, 3 palette, 4 gray + alpha, 6 RGBA)
+export function pngInfo(buf) {
+  if (!buf || buf.length < 29 || buf.readUInt32BE(0) !== 0x89504e47) return null;
+  return { w: buf.readUInt32BE(16), h: buf.readUInt32BE(20), depth: buf[24], ct: buf[25], interlace: buf[28] };
+}
+
+// Any non-interlaced PNG to luminance (0 black .. 255 white), as { w, h, L }: gray at 1, 2, 4, 8 or 16 bits, RGB, palette
+// (1 to 8 bits), gray + alpha and RGBA (transparent counts as white paper). The model's pictures come through the Images
+// binding as PNG, and what color type and depth that service writes is not something to bet the whole job on.
+export function decodePngLuma(input) {
+  const buf = Buffer.isBuffer(input) ? input : Buffer.from(input);
+  const info = pngInfo(buf);
+  if (!info) throw new Error('not a PNG');
+  const { w, h, depth, ct, interlace } = info;
+  const channels = { 0: 1, 2: 3, 3: 1, 4: 2, 6: 4 }[ct];
+  if (!channels || ![1, 2, 4, 8, 16].includes(depth) || interlace !== 0 || !w || !h || w > 8192 || h > 8192) {
+    throw new Error(`unsupported PNG (color type ${ct}, ${depth} bit, interlace ${interlace}, ${w} x ${h})`);
+  }
+  const idat = []; let plte = null;
+  for (let off = 8; off + 12 <= buf.length;) {
+    const len = buf.readUInt32BE(off), type = buf.toString('latin1', off + 4, off + 8), d = off + 8;
+    if (d + len > buf.length) throw new Error('truncated PNG');
+    if (type === 'IDAT') idat.push(buf.subarray(d, d + len));
+    else if (type === 'PLTE') plte = buf.subarray(d, d + len);
+    else if (type === 'IEND') break;
+    off = d + len + 4;
+  }
+  if (!idat.length) throw new Error('PNG without image data');
+  if (ct === 3 && (!plte || plte.length < 3)) throw new Error('palette PNG without a palette');
+  const bits = depth * channels, rowBytes = Math.ceil(w * bits / 8), bpp = Math.max(1, bits >> 3);
+  const raw = zlib.inflateSync(Buffer.concat(idat), { maxOutputLength: (rowBytes + 1) * h + 1 });
+  if (raw.length < (rowBytes + 1) * h) throw new Error('PNG image data is short');
+  const L = new Uint8Array(w * h);
+  let prev = new Uint8Array(rowBytes), cur = new Uint8Array(rowBytes);
+  const maxv = (1 << Math.min(depth, 8)) - 1;
+  for (let y = 0; y < h; y++) {
+    const base = y * (rowBytes + 1), f = raw[base], s0 = base + 1;
+    for (let i = 0; i < rowBytes; i++) {
+      const x = raw[s0 + i], a = i >= bpp ? cur[i - bpp] : 0, b = prev[i], c = i >= bpp ? prev[i - bpp] : 0;
+      let v;
+      if (f === 0) v = x; else if (f === 1) v = x + a; else if (f === 2) v = x + b; else if (f === 3) v = x + ((a + b) >> 1);
+      else if (f === 4) { const p = a + b - c, pa = Math.abs(p - a), pb = Math.abs(p - b), pc = Math.abs(p - c); v = x + (pa <= pb && pa <= pc ? a : pb <= pc ? b : c); }
+      else throw new Error('bad PNG filter ' + f);
+      cur[i] = v & 255;
+    }
+    const row = y * w;
+    for (let x = 0; x < w; x++) {
+      let l;
+      if (ct === 0 || ct === 3) {
+        let s;
+        if (depth === 8) s = cur[x];
+        else if (depth === 16) s = cur[x * 2];
+        else { const bit = x * depth, shift = 8 - depth - (bit & 7); s = (cur[bit >> 3] >> shift) & maxv; }
+        if (ct === 3) { const o = s * 3; l = o + 2 < plte.length ? (77 * plte[o] + 150 * plte[o + 1] + 29 * plte[o + 2]) >> 8 : 0; }
+        else l = depth >= 8 ? s : Math.round(s * 255 / maxv);
+      } else if (ct === 2) {
+        const o = x * 3 * (depth >> 3), st = depth >> 3;
+        l = (77 * cur[o] + 150 * cur[o + st] + 29 * cur[o + 2 * st]) >> 8;
+      } else if (ct === 4) {
+        const st = depth >> 3, o = x * 2 * st, g = cur[o], al = cur[o + st];
+        l = 255 - (((255 - g) * al) / 255 | 0);
+      } else {
+        const st = depth >> 3, o = x * 4 * st, al = cur[o + 3 * st];
+        l = (77 * cur[o] + 150 * cur[o + st] + 29 * cur[o + 2 * st]) >> 8;
+        l = 255 - (((255 - l) * al) / 255 | 0);
+      }
+      L[row + x] = l;
+    }
+    const t = prev; prev = cur; cur = t;
+  }
+  return { w, h, L };
+}

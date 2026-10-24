@@ -1075,3 +1075,56 @@ test('a long run: the sitemap keeps every page, the hub the newest 500, the know
   assert.equal((page.match(/class="image-card"/g) || []).length, 6, 'six neighbors');
   assert.ok(page.includes('evergreen-bulk-349-coloring-page') && page.includes('evergreen-bulk-351-coloring-page'));
 });
+
+// =====================================================================================================
+// reading any PNG the Images binding might return
+// =====================================================================================================
+import { decodePngLuma, pngInfo, encodePngRgb } from '../cloudflare/autopin/raster.js';
+
+// A PNG built by hand: rows are arrays of raw bytes (no filter byte), filter 0 on every row.
+function handPng(w, h, depth, ct, rows, { plte = null, interlace = 0 } = {}) {
+  const crcT = (() => { const t = new Int32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; t[n] = c; } return t; })();
+  const crc = b => { let c = -1; for (const x of b) c = crcT[(c ^ x) & 255] ^ (c >>> 8); return (c ^ -1) >>> 0; };
+  const chunk = (type, data) => { const len = Buffer.alloc(4); len.writeUInt32BE(data.length); const td = Buffer.concat([Buffer.from(type, 'latin1'), data]); const c = Buffer.alloc(4); c.writeUInt32BE(crc(td)); return Buffer.concat([len, td, c]); };
+  const ihdr = Buffer.alloc(13); ihdr.writeUInt32BE(w, 0); ihdr.writeUInt32BE(h, 4); ihdr[8] = depth; ihdr[9] = ct; ihdr[12] = interlace;
+  const raw = Buffer.concat(rows.map(r => Buffer.from([0, ...r])));
+  return Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), chunk('IHDR', ihdr), ...(plte ? [chunk('PLTE', Buffer.from(plte))] : []), chunk('IDAT', zlib.deflateSync(raw)), chunk('IEND', Buffer.alloc(0))]);
+}
+
+test('the PNG reader: gray at every depth, RGB, palette, alpha and 16 bit give the right luminance; what it cannot read says why', () => {
+  // gray: the encoder of the job round-trips through it
+  const G = Uint8Array.from({ length: 8 * 6 }, (_, i) => (i * 5) % 256);
+  assert.deepEqual([...decodePngLuma(encodePngGray(G, 8, 6, { depth: 8 })).L], [...G]);
+  assert.deepEqual([...decodePngLuma(encodePngGray(G, 8, 6, { depth: 4 })).L], [...G].map(v => Math.round(v / 17) * 17));
+  // the site's own decoder and this one agree on 8-bit gray
+  assert.deepEqual([...decodePngLuma(GOOD.png).L], [...decodeGrayPng(GOOD.png).L]);
+  // 1 and 2 bit gray, 16 bit gray
+  assert.deepEqual([...decodePngLuma(handPng(8, 1, 1, 0, [[0b10100101]])).L], [255, 0, 255, 0, 0, 255, 0, 255]);
+  assert.deepEqual([...decodePngLuma(handPng(4, 1, 2, 0, [[0b00011011]])).L], [0, 85, 170, 255]);
+  assert.deepEqual([...decodePngLuma(handPng(2, 1, 16, 0, [[0x80, 0x00, 0xff, 0xff]])).L], [128, 255]);
+  // RGB: luma weights; RGBA and gray + alpha: transparent is white paper
+  const rgb = Uint8ClampedArray.from([255, 0, 0, 0, 255, 0, 0, 0, 255, 255, 255, 255]);
+  assert.deepEqual([...decodePngLuma(encodePngRgb(rgb, 4, 1)).L], [(77 * 255) >> 8, (150 * 255) >> 8, (29 * 255) >> 8, 255].map(v => v));
+  assert.deepEqual([...decodePngLuma(handPng(2, 1, 8, 6, [[0, 0, 0, 255, 0, 0, 0, 0]])).L], [0, 255]);
+  assert.deepEqual([...decodePngLuma(handPng(2, 1, 8, 4, [[0, 255, 0, 0]])).L], [0, 255]);
+  // palette at 4 and 8 bits
+  const pal = [0, 0, 0, 255, 255, 255, 255, 0, 0];
+  assert.deepEqual([...decodePngLuma(handPng(4, 1, 4, 3, [[0x01, 0x20]], { plte: pal })).L], [0, 255, (77 * 255) >> 8, 0]);
+  assert.deepEqual([...decodePngLuma(handPng(3, 1, 8, 3, [[2, 1, 0]], { plte: pal })).L], [(77 * 255) >> 8, 255, 0]);
+  // one of the site's example pages (4 bit palette), which the site's 8-bit decoder cannot read
+  const ex = fs.readFileSync(path.join(root, 'public', 'examples', 'halloween-coloring-pages', 'halloween-cottage-jack-o-lantern.png'));
+  assert.deepEqual(pngInfo(ex), { w: 1024, h: 1024, depth: 4, ct: 3, interlace: 0 });
+  const img = decodeGrayPng(ex);
+  let dark = 0, white = 0;
+  for (const v of img.L) { if (v < 60) dark++; else if (v > 240) white++; }
+  assert.ok(dark > 10000 && white > 400000, `dark ${dark} white ${white}`);
+  // refusals say what the PNG was
+  assert.throws(() => decodePngLuma(handPng(2, 2, 8, 0, [[0, 0], [0, 0]], { interlace: 1 })), /unsupported PNG \(color type 0, 8 bit, interlace 1/);
+  assert.throws(() => decodePngLuma(Buffer.from('nope, not a png at all, definitely not')), /not a PNG/);
+  assert.throws(() => decodeGrayPng(handPng(2, 2, 8, 0, [[0, 0], [0, 0]], { interlace: 1 })), /not a readable PNG: unsupported PNG .*\(color type 0, 8 bit\)/);
+  assert.throws(() => decodePngLuma(handPng(2, 2, 8, 3, [[0, 0], [0, 0]])), /without a palette/);
+  assert.throws(() => decodePngLuma(GOOD.png.subarray(0, 200)), /./);
+  // a page that comes back as a palette PNG still goes through the judge
+  const palette4 = handPng(1024, 1, 8, 3, [Array.from({ length: 1024 }, () => 1)], { plte: pal });
+  assert.equal(decodeGrayPng(palette4).w, 1024);
+});

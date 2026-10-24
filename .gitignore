@@ -10,3 +10,4 @@ cloudflare/dist/
 cloudflare/dist-manifest.json
 cloudflare/.wrangler/
 .wrangler/
+autopin-review/

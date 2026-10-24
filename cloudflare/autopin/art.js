@@ -6,7 +6,7 @@
 // whiten()    turns the faint off-white haze of the paper into pure white, so the page prints clean.
 // artSquare() crops a square around the drawing (12 percent air) and scales it to the card size of the pin.
 import lineart from '../../lineart.js';
-import { resizeGray } from './raster.js';
+import { resizeGray, decodePngLuma, pngInfo } from './raster.js';
 
 const { decodeLuma, measure, clean, GATE } = lineart;
 
@@ -38,10 +38,19 @@ export function dilate(mask, w, h, r) {
   return out;
 }
 
+// The picture of a PNG as luminance. The site's own decoder (8-bit only) is tried first; any other kind of PNG goes
+// through the general reader in raster.js, and a failure says what kind of PNG it was.
 export function decodeGrayPng(png) {
-  const img = decodeLuma(Buffer.isBuffer(png) ? png : Buffer.from(png));
-  if (!img) throw new Error('page image is not a readable PNG');
-  return img;
+  const buf = Buffer.isBuffer(png) ? png : Buffer.from(png);
+  try {
+    const img = decodeLuma(buf);
+    if (img) return img;
+  } catch (e) { /* fall through to the general reader */ }
+  try { return decodePngLuma(buf); }
+  catch (e) {
+    const i = pngInfo(buf);
+    throw new Error(`page image is not a readable PNG: ${e.message}${i ? ` (color type ${i.ct}, ${i.depth} bit)` : ''}`);
+  }
 }
 
 // Bounding box of the drawing: columns and rows with at least 3 dark pixels.
