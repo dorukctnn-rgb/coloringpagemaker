@@ -6,3 +6,8 @@ pro-emails.json
 *.log
 .vercel
 .env*
+cloudflare/dist/
+cloudflare/dist-manifest.json
+cloudflare/.wrangler/
+.wrangler/
+autopin-review/
