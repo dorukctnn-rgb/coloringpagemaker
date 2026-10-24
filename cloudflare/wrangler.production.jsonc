@@ -1,7 +1,10 @@
-// PRODUCTION Worker "coloringpagemaker". Deploy ONLY at the switch (steps: takip/devir/coloringpagemaker.md):
-//   node cloudflare/build.mjs && (cd cloudflare && wrangler deploy -c wrangler.production.jsonc)
-// It first answers on https://coloringpagemaker.railer-iot.workers.dev for the URL check; www.coloringpagemaker.app
-// is attached as a Custom Domain in the dashboard at the cut (then set workers_dev to false and deploy again).
+// PRODUCTION Worker "coloringpagemaker" (www.coloringpagemaker.app is its Custom Domain). Deploy from the branch
+// cloudflare/shield-and-move, committed, never from main (the 30 Halloween pins under /pins/halloween-2026/ and the
+// printable pages under /printables/img/ are static files of this branch, and every deploy replaces all static files):
+//   node cloudflare/build.mjs && (cd cloudflare && npx wrangler deploy -c wrangler.production.jsonc)
+// Then: node cloudflare/check-site.mjs (0 problems) and node cloudflare/smoke.mjs https://www.coloringpagemaker.app.
+// The daily Pinterest job (cloudflare/autopin/, notes in takip/devir/coloring-autopin-NOTLAR.md) runs from the cron
+// trigger below; node cloudflare/autopin/tools/admin.mjs status shows it.
 // Secrets (wrangler secret put <NAME> -c wrangler.production.jsonc): OPENAI_API_KEY, IP_SALT, AUTOPIN_ADMIN_KEY (admin address of the Pinterest job).
 {
   "name": "coloringpagemaker",
