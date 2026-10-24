@@ -76,7 +76,18 @@ export class PinService {
     const pin = composePin({ headline: 'Self test coloring page', sub: 'Clear lines and room to color, ages 6 to 12', art: artSquare(page, img.w, img.h, CARD.size), skin: 'orange', meta });
     const pagePng = encodePngGray(page, img.w, img.h, { depth: 8, level: 9, extra: [xmpChunk(meta)] });
     const thumb = encodePngGray(resizeGray(page, img.w, img.h, 400, 400), 400, 400, { depth: 8, level: 9, extra: [xmpChunk(meta)] });
-    return { ok: true, imagesBinding: gray.length, judged: verdict.ok, reasons: verdict.reasons, pinBytes: pin.png.length, pageBytes: pagePng.length, thumbBytes: thumb.length };
+    // The files go into the database and come back, inside a transaction that is rolled back: nothing is kept.
+    let stored = false;
+    try {
+      this.core.txn(() => {
+        this.core.exec('INSERT INTO blobs (slug, kind, bytes) VALUES (?, ?, ?)', 'selftest-probe', 'pin', pin.png);
+        this.core.exec('INSERT INTO blobs (slug, kind, bytes) VALUES (?, ?, ?)', 'selftest-probe', 'thumb', thumb);
+        const back = this.core.getBlob('selftest-probe', 'pin');
+        stored = !!back && back.length === pin.png.length && back.every((x, i) => x === pin.png[i]) && this.core.getBlob('selftest-probe', 'thumb').length === thumb.length;
+        throw new Error('selftest rollback');
+      });
+    } catch (e) { if (e.message !== 'selftest rollback') throw e; }
+    return { ok: true, imagesBinding: gray.length, judged: verdict.ok, reasons: verdict.reasons, pinBytes: pin.png.length, pageBytes: pagePng.length, thumbBytes: thumb.length, storedAndRead: stored, leftBehind: this.core.getBlob('selftest-probe', 'pin') !== null };
   }
   // An image of a page for the admin (also before its release): { bytes } or null.
   adminImage(slug, kind) {

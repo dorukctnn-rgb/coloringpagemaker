@@ -990,6 +990,9 @@ test('selftest: the heavy part of a tick on a page that is already there, nothin
   assert.equal(r.ok, true);
   assert.equal(r.judged, true);
   assert.ok(r.pinBytes > 50000 && r.pageBytes > 1000 && r.thumbBytes > 500, JSON.stringify(r));
+  assert.equal(r.storedAndRead, true, 'the files go into the database and come back');
+  assert.equal(r.leftBehind, false, 'and nothing stays');
+  assert.equal(w.core.getBlob('selftest-probe', 'pin'), null);
   assert.equal(w.core.storageBytes().pages, 0);
   assert.equal(w.calls.flux.length, 0);
   assert.equal((await admin(w.env, '/pins/admin/selftest', 'GET')).status, 405);
