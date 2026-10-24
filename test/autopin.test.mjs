@@ -652,6 +652,7 @@ test('landing page: canonical, absolute image links, valid JSON-LD, working acti
   assert.match(html, /data-example-pdf="\/printables\/img\/halloween-smiling-pumpkin-coloring-page\.png"/);
   assert.match(html, /pinterest\.com\/pin\/create\/button\/\?url=.*media=https%3A%2F%2Fwww\.coloringpagemaker\.app%2Fpins%2Fhalloween-2026%2F/);
   assert.match(html, /<div class="print-sheet"><img src="\/printables\/img\//);
+  assert.ok(html.indexOf('<div class="print-sheet">') > html.indexOf('</main>'), 'the print sheet is a child of body, after main');
   assert.match(html, /href="\/halloween-coloring-pages#generator"/);
   const ld = JSON.parse(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/.exec(html)[1]);
   assert.equal(ld['@graph'].length, 3);

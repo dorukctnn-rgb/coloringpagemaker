@@ -93,7 +93,7 @@ const PDF_SCRIPT = `<script>
 })();
 </script>`;
 
-function shell({ title, description, canonical, ogImage, ogAlt, ld, body, extraHead = '' }) {
+function shell({ title, description, canonical, ogImage, ogAlt, ld, body, afterMain = '', extraHead = '' }) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -125,6 +125,7 @@ ${body}
 </main>
 
 ${SHELL.footer}
+${afterMain}
 
 ${PDF_SCRIPT}
 </body>
@@ -229,12 +230,12 @@ ${rel.map(card).join('\n')}
     <p>Type what you want to color, pick the detail level and get a printable page in under a minute. Two pages a day are free, with no account.</p>
     <a href="${esc(siteHref)}" class="btn">${v.site ? 'Make your own ' + esc(siteName) + ' page' : 'Open the generator'}</a>
   </div>
-</div>
-
-<div class="print-sheet"><img src="${esc(v.pageImage)}" width="1024" height="1024" alt=""></div>`;
+</div>`;
+  // The sheet that prints is a child of <body> itself: the print rules hide every other child of <body>.
+  const afterMain = `<div class="print-sheet"><img src="${esc(v.pageImage)}" width="1024" height="1024" alt=""></div>`;
   return shell({
     title: `${v.headline}, Free Printable`,
-    description: v.metaDescription, canonical: url, ogImage: SITE + v.pageImage, ogAlt: v.alt, ld, body
+    description: v.metaDescription, canonical: url, ogImage: SITE + v.pageImage, ogAlt: v.alt, ld, body, afterMain
   });
 }
 
