@@ -285,9 +285,15 @@ async function generatePage(){
       body: JSON.stringify({ prompt, style: selectedStyle, token: proToken })
     });
     const data = await res.json();
+    document.getElementById('usageBar').classList.remove('is-alert');
 
     if(!res.ok){
-      if(data.limitReached){
+      if(data.limitReached && data.reason === 'ai_exhausted'){
+        // The shared drawing allowance of the day is gone: say so on the page, where the usage line is (no alert, no Pro window over it).
+        const bar = document.getElementById('usageBar');
+        bar.innerHTML = esc(data.error) + ' <a href="#pro" data-open-pro>See Pro (up to 150 a day)</a>';
+        bar.classList.add('is-alert');
+      } else if(data.limitReached){
         loading.classList.remove('active');
         openProModal();
       } else {

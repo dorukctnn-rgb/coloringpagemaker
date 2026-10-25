@@ -10,6 +10,7 @@ import { decodeGrayPng, judge, whiten, artSquare } from './art.js';
 import { composePin, CARD } from './pin.js';
 import { encodePngGray, resizeGray, xmpChunk } from './raster.js';
 import { GROUPS } from './topics.js';
+import { isoDay } from './core.js';
 import { FLUX_MODEL } from '../flux.js';
 
 // The bindings of the Worker as the tick wants them (tick.js has no idea what a Worker is).
@@ -29,6 +30,8 @@ export function makeDeps(env, cfg) {
     },
     ledger: {
       async aiToday(day) { return Number((await ledger().spend({ month: day.slice(0, 7), day })).aiToday || 0); },
+      // All of the Ledger's spend counters for the status page: images today, free pages today, OpenAI spend.
+      counters: day => ledger().spend({ month: day.slice(0, 7), day }),
       takeAi: day => ledger().takeAi({ day, aiDaily: cfg.aiDaily }),
       giveBackAi: day => ledger().giveBackAi({ day })
     }
@@ -97,7 +100,16 @@ export class PinService {
   }
   // A failure the Worker saw while calling the object (the object itself may have been cut off).
   noteError(stage, msg) { this.core.logError(stage, msg, null); return true; }
-  status() { return pinsStatus({ core: this.core, cfg: this.cfg(), now: this.now() }); }
+  // The job's own counters and, from the Ledger, the site's (a Ledger that cannot be reached is reported, not fatal).
+  async status() {
+    const cfg = this.cfg(), now = this.now();
+    let ledger = null;
+    try {
+      const l = this.depsFactory(this.env, cfg).ledger;
+      if (l && l.counters) ledger = await l.counters(isoDay(now));
+    } catch (e) { ledger = { error: String(e && e.message || e).slice(0, 160) }; }
+    return pinsStatus({ core: this.core, cfg, now, ledger });
+  }
 
   // --- what the site serves ---
   feedXml({ group = null, ua = '' } = {}) {

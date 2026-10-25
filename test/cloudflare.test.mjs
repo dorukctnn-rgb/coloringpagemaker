@@ -6,6 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { DatabaseSync } from 'node:sqlite';
+import vm from 'node:vm';
 import worker, { isLegacySale, config } from '../cloudflare/worker.js';
 import { LedgerCore } from '../cloudflare/ledger-core.js';
 import { buildPdf, decodePdfImage } from '../cloudflare/pdf.js';
@@ -53,7 +54,8 @@ function makeEnv(vars = {}) {
   return {
     LEDGER: { idFromName: () => 'main', get: () => L.stub },
     ASSETS: assets,
-    AI: { async run(model, input) { calls.ai.push({ model, input }); if (aiFails) throw new Error('AI down'); return { image: JPEG.toString('base64') }; } },
+    // aiFails: true (a generic failure), a text (the error message), or an object (properties of the error, like { code: 4006 }).
+    AI: { async run(model, input) { calls.ai.push({ model, input }); if (aiFails) throw typeof aiFails === 'object' ? Object.assign(new Error('AiError'), aiFails) : new Error(typeof aiFails === 'string' ? aiFails : 'AI down'); return { image: JPEG.toString('base64') }; } },
     IMAGES: {
       input() { return { transform() { return { async output() { calls.images++; if (imagesFail) throw new Error('9422'); return { response: () => new Response(PNG) }; } }; } }; }
     },
@@ -179,6 +181,138 @@ async function ipKey(ip) {
   const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`|${ip}`));
   return Buffer.from(d).toString('hex').slice(0, 32);
 }
+
+// --- Workers AI error 4006: the account's free neurons of the UTC day are gone ---
+const NO_NEURONS = "AiError: 4006: you have used up your daily free allocation of 10,000 neurons, please upgrade to Cloudflare's Workers Paid plan if you would like to continue usage.";
+const POOL_MESSAGE = "Today's free drawings are used up. They reset at midnight UTC (03:00 Turkey time).";
+
+test('Workers AI 4006: a free visitor gets 429 with limitReached and the reset message, nothing is counted, and tomorrow-style retry works', async () => {
+  aiFails = NO_NEURONS;
+  const r = await gen({ prompt: 'a castle' });
+  assert.equal(r.status, 429);
+  assert.equal(r.limitReached, true);
+  assert.equal(r.reason, 'ai_exhausted');
+  assert.equal(r.error, POOL_MESSAGE);
+  assert.doesNotMatch(r.error, /try again in a minute/i);
+  assert.equal(calls.ai.length, 1);
+  assert.equal(calls.openai, 0);
+  // the free page of this visitor and the day's image count are given back
+  assert.equal(L.core.count(`free:ip:${DAY}:` + (await ipKey('1.1.1.1'))), 0);
+  assert.equal(L.core.count(`free:all:${DAY}`), 0);
+  assert.equal(L.core.count(`ai:${DAY}`), 0);
+  // once the allowance is back the same visitor still has both free pages
+  aiFails = false;
+  const ok = await gen({ prompt: 'a castle' });
+  assert.equal(ok.status, 200);
+  assert.equal(ok.remaining, 1);
+});
+
+test('Workers AI 4006 is recognised by its code as well as its text; other Workers AI errors keep the "busy" answer', async () => {
+  aiFails = { code: 4006 };
+  const byCode = await gen({ prompt: 'a castle' }, '2.2.2.2');
+  assert.deepEqual([byCode.status, byCode.limitReached, byCode.reason], [429, true, 'ai_exhausted']);
+  aiFails = 'AiError: 3040: capacity temporarily exceeded, please try again';
+  const busy = await gen({ prompt: 'a castle' }, '3.3.3.3');
+  assert.equal(busy.status, 503);
+  assert.equal(busy.error, 'The drawing service is busy. Please try again in a minute.');
+  assert.equal(busy.limitReached, undefined);
+  assert.equal(busy.reason, undefined);
+});
+
+test('Workers AI 4006: a Pro standard page is answered the same way and the Pro page and image counts are given back', async () => {
+  env = makeEnv({ HD_ENABLED: '0' });
+  const token = await proToken();
+  aiFails = NO_NEURONS;
+  const r = await gen({ prompt: 'a dragon', token });
+  assert.equal(r.status, 429);
+  assert.equal(r.limitReached, true);
+  assert.equal(r.reason, 'ai_exhausted');
+  assert.equal(r.error, POOL_MESSAGE);
+  assert.equal(L.core.count(`pro:${DAY}:sale-new`), 0);
+  assert.equal(L.core.count(`ai:${DAY}`), 0);
+  assert.equal(calls.openai, 0);
+  // HD pages come from OpenAI, which 4006 does not touch
+  env = makeEnv();
+  const hd = await gen({ prompt: 'a dragon', token });
+  assert.equal(hd.status, 200);
+  assert.equal(hd.quality, 'hd');
+});
+
+test('the daily image budget defaults to 52 images and 30 free pages (172.8 neurons each, 90 percent of the free 10,000)', async () => {
+  const cfg = config({});
+  assert.equal(cfg.aiDaily, 52);
+  assert.equal(cfg.freeGlobal, 30);
+  assert.ok(cfg.aiDaily * 172.8 <= 0.9 * 10000);
+  // the 31st free page of the day is refused with the shared-pool message of the global cap
+  for (let i = 0; i < 30; i++) assert.equal((await gen({ prompt: 'page ' + i }, '10.2.0.' + i)).status, 200);
+  const over = await gen({ prompt: 'one more' }, '10.2.1.1');
+  assert.equal(over.status, 429);
+  assert.equal(over.limitReached, true);
+  assert.equal(calls.ai.length, 30);
+});
+
+test('the ledger spend counters carry the free pages of the day for the admin status', async () => {
+  await gen({ prompt: 'one' }, '4.4.4.4');
+  await gen({ prompt: 'two' }, '5.5.5.5');
+  const sp = L.core.spend({ month: MONTH, day: DAY });
+  assert.equal(sp.freeToday, 2);
+  assert.equal(sp.aiToday, 2);
+});
+
+// The page code that shows the answer (views/index.ejs, views/niche.ejs): run the real generatePage() with a stub page.
+function runGeneratePage(file, response) {
+  const src = fs.readFileSync(path.join(root, 'views', file), 'utf8');
+  const m = /async function generatePage\(\)\{[\s\S]*?\r?\n\}\r?\n/.exec(src);
+  assert.ok(m, file + ' has generatePage()');
+  assert.ok(!m[0].includes('<%'), 'generatePage() has no template tags');
+  const els = {};
+  const el = id => els[id] || (els[id] = { id, value: 'a unicorn', textContent: '', innerHTML: '', hidden: true, disabled: false, classes: new Set(),
+    classList: { add: c => els[id].classes.add(c), remove: c => els[id].classes.delete(c), toggle() {}, contains: c => els[id].classes.has(c) } });
+  const log = { alerts: [], modal: 0 };
+  const ctx = {
+    document: { getElementById: el }, alert: m2 => log.alerts.push(m2), openProModal: () => { log.modal++; },
+    fetch: async () => ({ ok: response.status < 400, status: response.status, json: async () => response.body }),
+    esc: t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'),
+    selectedStyle: 'medium', proToken: '', generatedImages: [], renderGallery() {}, persistImages() {}, updateCharCount() {}
+  };
+  vm.createContext(ctx);
+  vm.runInContext(m[0], ctx);
+  return ctx.generatePage().then(() => ({ els, log, bar: el('usageBar'), btn: el('generateBtn') }));
+}
+
+test('the home page shows the 4006 message in the usage line, with no alert and no Pro window over it', async () => {
+  const r = await runGeneratePage('index.ejs', { status: 429, body: { error: POOL_MESSAGE, limitReached: true, reason: 'ai_exhausted' } });
+  assert.deepEqual(r.log.alerts, []);
+  assert.equal(r.log.modal, 0);
+  assert.ok(r.bar.innerHTML.startsWith(POOL_MESSAGE), r.bar.innerHTML);
+  assert.match(r.bar.innerHTML, /data-open-pro/);
+  assert.ok(r.bar.classes.has('is-alert'));
+  assert.equal(r.btn.disabled, false);
+  assert.equal(r.btn.textContent, 'Generate coloring page');
+  // the other limits keep their Pro window, and a real failure still says so
+  const cap = await runGeneratePage('index.ejs', { status: 429, body: { error: 'Daily limit reached (2 free pages per day). Upgrade to Pro for up to 150 a day.', limitReached: true } });
+  assert.equal(cap.log.modal, 1);
+  assert.deepEqual(cap.log.alerts, []);
+  const busy = await runGeneratePage('index.ejs', { status: 503, body: { error: 'The drawing service is busy. Please try again in a minute.' } });
+  assert.deepEqual(busy.log.alerts, ['The drawing service is busy. Please try again in a minute.']);
+  // a good answer clears the alert look of an earlier message
+  const ok = await runGeneratePage('index.ejs', { status: 200, body: { success: true, imageUrl: 'data:image/png;base64,AA', remaining: 1 } });
+  assert.ok(!ok.bar.classes.has('is-alert'));
+  assert.match(ok.bar.innerHTML, /1<\/strong> free pages left today/);
+});
+
+test('the other tool pages show a daily limit in the usage line, not in an alert', async () => {
+  const lim = await runGeneratePage('niche.ejs', { status: 429, body: { error: POOL_MESSAGE, limitReached: true, reason: 'ai_exhausted' } });
+  assert.deepEqual(lim.log.alerts, []);
+  assert.equal(lim.bar.textContent, POOL_MESSAGE);
+  assert.equal(lim.bar.hidden, false);
+  assert.ok(lim.bar.classes.has('is-alert'));
+  const busy = await runGeneratePage('niche.ejs', { status: 503, body: { error: 'The drawing service is busy. Please try again in a minute.' } });
+  assert.deepEqual(busy.log.alerts, ['The drawing service is busy. Please try again in a minute.']);
+  // the theme pages already put every answer, with a Pro link on a limit, into their usage line
+  const theme = fs.readFileSync(path.join(root, 'views', 'theme.ejs'), 'utf8');
+  assert.match(theme, /say\(data\.error \|\| '[^']*', !!data\.limitReached, true\)/);
+});
 
 test('bad prompts are refused before anything is counted', async () => {
   assert.equal((await gen({ prompt: 'ab' })).status, 400);

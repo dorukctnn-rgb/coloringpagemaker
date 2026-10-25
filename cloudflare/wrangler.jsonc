@@ -1,6 +1,9 @@
 // PREVIEW Worker (workers.dev only, no custom domain): https://coloringpagemaker-preview.railer-iot.workers.dev
 // Build first: node cloudflare/build.mjs   Deploy: (in cloudflare/) wrangler deploy
-// Production uses wrangler.production.jsonc and is deployed only at the switch (see the hand-off note).
+// Production uses wrangler.production.jsonc (see the note at its top and the hand-off note).
+// The move to Cloudflare is finished, so this Worker has NO Workers AI binding: the account's 10,000 free neurons a day are
+// shared by everything that can reach the model, and a second door to it (with its own counters) only risks the allowance.
+// Drawing here answers "busy"; everything else (pages, PDFs, Pro checks) still works. Do not add "ai" back.
 {
   "name": "coloringpagemaker-preview",
   "main": "index.js",
@@ -16,7 +19,6 @@
     // The Worker answers these itself, as the old Express server did: 301 for a trailing slash, 404 for x.html.
     "run_worker_first": ["/*/", "/*.html", "/*.HTML", "/404", "/index"]
   },
-  "ai": { "binding": "AI" },
   "images": { "binding": "IMAGES" },
   "durable_objects": { "bindings": [{ "name": "LEDGER", "class_name": "Ledger" }, { "name": "PINS", "class_name": "PinStore" }] },
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Ledger"] }, { "tag": "v2", "new_sqlite_classes": ["PinStore"] }],
@@ -30,8 +32,8 @@
     "HD_MONTHLY_ALLOWANCE": "50",
     "HD_TERMS_FROM": "2026-10-21",
     "PRO_DAILY_LIMIT": "150",
-    "FREE_GLOBAL_DAILY_LIMIT": "120",
-    "AI_DAILY_LIMIT": "160",
+    "FREE_GLOBAL_DAILY_LIMIT": "30",
+    "AI_DAILY_LIMIT": "52",
     // The preview has no cron trigger and never runs the Pinterest job.
     "AUTOPIN_ENABLED": "0"
   }

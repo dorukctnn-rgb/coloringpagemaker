@@ -1,7 +1,7 @@
 // Command line for the admin address of the Pinterest job (autopin/routes.js). The key is read from the environment
 // (AUTOPIN_ADMIN_KEY) or from the file .env.autopin in the repository root (not committed); it is never printed.
 //
-//   node cloudflare/autopin/tools/admin.mjs status        flags, today's counters against the free allowances, last runs and errors
+//   node cloudflare/autopin/tools/admin.mjs status        flags, today's counters against the free allowances, the site's Ledger counters (images, free pages, OpenAI spend), last runs and errors
 //   node cloudflare/autopin/tools/admin.mjs pause         KILL SWITCH: no more pages are drawn and the feed stops showing new items
 //   node cloudflare/autopin/tools/admin.mjs resume        undo pause
 //   node cloudflare/autopin/tools/admin.mjs seeds-off     the 30 Halloween seeds leave the feed (use when they were uploaded from the CSV)

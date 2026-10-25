@@ -115,7 +115,7 @@ export class LedgerCore {
     });
   }
   spend({ month, day }) {
-    return { monthMicros: this.count(`hd:usd:m:${month}`), dayMicros: this.count(`hd:usd:d:${day}`), aiToday: this.count(`ai:${day}`) };
+    return { monthMicros: this.count(`hd:usd:m:${month}`), dayMicros: this.count(`hd:usd:d:${day}`), aiToday: this.count(`ai:${day}`), freeToday: this.count(`free:all:${day}`) };
   }
 
   // --- Pro tokens ---

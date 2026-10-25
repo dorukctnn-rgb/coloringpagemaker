@@ -4,7 +4,7 @@
 // Free-tier guards, all checked before anything is drawn:
 //   - the kill switches (AUTOPIN_ENABLED, the "paused" flag set through the admin address),
 //   - a cap of pages a day (AUTOPIN_DAILY_PAGES) and an even pace through the day's cron slots,
-//   - a cap of model calls a day (AUTOPIN_MAX_FLUX_PER_DAY, 58 of the 10,000 free daily neurons each),
+//   - a cap of model calls a day (AUTOPIN_MAX_FLUX_PER_DAY, 172.8 of the 10,000 free daily neurons each),
 //   - the site's own daily image budget (the Ledger's ai counter, AI_DAILY_LIMIT), with a reserve left for visitors,
 //   - a cap of Images-binding conversions a month and a cap on stored bytes.
 // A cron slot is handled once (core.beginRun), so a repeated or overlapping trigger draws nothing twice.
@@ -13,13 +13,18 @@ import { composePin, skinFor, CARD } from './pin.js';
 import { encodePngGray, resizeGray, xmpChunk } from './raster.js';
 import { pickSubject, describe, hash } from './topics.js';
 import { SEEDS } from './seeds.js';
-import { fluxPrompt } from '../flux.js';
+import { fluxPrompt, noFreeNeurons } from '../flux.js';
 import { isoDay } from './core.js';
 
-// 1024 x 1024 at 4 steps: 4 tiles x 4.8 + 4 steps x 9.6 neurons (Workers AI pricing for FLUX.1 schnell).
-export const FLUX_NEURONS = 58;
+// 1024 x 1024 at 4 steps: 4 tiles x (4.8 + 4 steps x 9.6) = 172.8 neurons (Workers AI pricing for FLUX.1 schnell: 4.8 a
+// 512 x 512 tile and 9.6 a step for each tile; measured on the account on 25 October 2026). An earlier estimate of 58 was
+// a third of the real cost. Rounded up to a whole number.
+export const FLUX_NEURONS = 173;
 export const FREE_NEURONS_PER_DAY = 10000;
 const HOUR = 3600 * 1000;
+// Error 4006 (the account's free neurons of the day are gone) stops the job for this long, not for the rest of the UTC day:
+// the message was seen at 06:07 UTC on a day that had used only 9 percent of the allowance, and a later call went through.
+export const AI_EXHAUSTED_LOCK_MS = 2 * HOUR;
 
 const num = (v, d) => (v === undefined || v === null || v === '' || !Number.isFinite(Number(v)) ? d : Number(v));
 const off = v => ['0', 'false', 'off', 'no'].includes(String(v).trim().toLowerCase());
@@ -39,8 +44,9 @@ export function pinsConfig(env) {
     releaseHours: String(env.AUTOPIN_RELEASE_HOURS || '13,16,19,22').split(',').map(x => Number(x.trim())).filter(x => Number.isInteger(x) && x >= 0 && x < 24),
     imagesMonthlyCap: num(env.AUTOPIN_IMAGES_MONTHLY_CAP, 600),
     storageCapBytes: num(env.AUTOPIN_STORAGE_CAP_MB, 1500) * 1024 * 1024,
-    aiDaily: num(env.AI_DAILY_LIMIT, 160),
-    siteReserve: num(env.AUTOPIN_SITE_RESERVE, 60),
+    aiDaily: num(env.AI_DAILY_LIMIT, 52),
+    freeGlobal: num(env.FREE_GLOBAL_DAILY_LIMIT, 30),
+    siteReserve: num(env.AUTOPIN_SITE_RESERVE, 30),
     fluxSteps: num(env.FLUX_STEPS, 4),
     feedDays: num(env.AUTOPIN_FEED_DAYS, 10),
     feedMax: num(env.AUTOPIN_FEED_MAX, 60)
@@ -67,7 +73,6 @@ export function releaseAt({ now, n, slug, hours, source = 'cron' }) {
 }
 
 const VARIATIONS = ['', ' Centered, one clear subject.', ' Simple clean composition, nothing cut off at the edges.'];
-const NO_FREE_NEURONS = /4006|daily free allocation|used up/i;
 
 // deps: { now(), flux(prompt) -> Promise<Uint8Array> (JPEG), toGray(jpeg) -> Promise<Uint8Array> (gray PNG),
 //         ledger: { aiToday(day), takeAi(day), giveBackAi(day) } }
@@ -80,7 +85,12 @@ export async function runTick({ core, cfg, deps, source = 'cron', scheduledTime 
 
   if (!cfg.enabled) return result('skipped', 'disabled');
   if (core.getMeta('paused') === '1') return result('skipped', 'paused');
-  if (core.getMeta('ai_exhausted') === day) return result('skipped', 'ai_exhausted');
+  // The lock is the time (ms) until which a 4006 stops the job. An older value (a UTC day, from before the lock was timed) is dropped.
+  const lock = core.getMeta('ai_exhausted');
+  if (lock !== null) {
+    if (Number(lock) > now) return result('skipped', 'ai_exhausted', { until: new Date(Number(lock)).toISOString() });
+    core.delMeta('ai_exhausted');
+  }
 
   const begin = core.beginRun(slot.key, source);
   if (!begin.ok) return result('skipped', begin.reason);
@@ -128,7 +138,7 @@ export async function runTick({ core, cfg, deps, source = 'cron', scheduledTime 
         const msg = String(e && e.message || e);
         core.logError('flux', msg, slot.key);
         lastErr = 'flux: ' + msg.slice(0, 120);
-        if (NO_FREE_NEURONS.test(msg)) { core.setMeta('ai_exhausted', day); break; }
+        if (noFreeNeurons(e)) { core.setMeta('ai_exhausted', String(deps.now() + AI_EXHAUSTED_LOCK_MS)); break; }
         continue;
       }
       let png;
@@ -184,9 +194,30 @@ export async function runTick({ core, cfg, deps, source = 'cron', scheduledTime 
   }
 }
 
-// What the admin address reports (no secrets): flags, today's counters against the free allowances, the last runs
-// and errors, and what the job would draw next.
-export function pinsStatus({ core, cfg, now }) {
+// The time (ISO) until which a 4006 keeps the job from drawing, or null.
+function exhaustedUntil(core, now) {
+  const v = Number(core.getMeta('ai_exhausted'));
+  return v > now ? new Date(v).toISOString() : null;
+}
+
+// The site's own counters from the Ledger (deps.ledger.counters), next to the job's: every image the account's free neurons
+// paid for today (visitors' pages, Pro standard pages and this job) is one count of `aiToday`, so aiToday x 172.8 is the
+// neuron use the way this site sees it. The real figure is Cloudflare's own (takip/devir/workers-ai-kota-olcum.mjs).
+function ledgerView(c, cfg) {
+  if (!c) return null;
+  if (c.error) return { error: c.error };
+  const ai = Number(c.aiToday || 0);
+  return {
+    aiToday: ai, aiDaily: cfg.aiDaily, autopinDrawsWhileBelow: cfg.aiDaily - cfg.siteReserve,
+    freeToday: Number(c.freeToday || 0), freeGlobalLimit: cfg.freeGlobal,
+    neuronsEstimate: Math.round(ai * FLUX_NEURONS), freeShareUsedPct: +((ai * FLUX_NEURONS) / FREE_NEURONS_PER_DAY * 100).toFixed(1),
+    openaiDayUsd: +(Number(c.dayMicros || 0) / 1e6).toFixed(2), openaiMonthUsd: +(Number(c.monthMicros || 0) / 1e6).toFixed(2)
+  };
+}
+
+// What the admin address reports (no secrets): flags, today's counters against the free allowances, the Ledger's
+// counters, the last runs and errors, and what the job would draw next. `ledger`: the Ledger's counters, if known.
+export function pinsStatus({ core, cfg, now, ledger = null }) {
   const day = isoDay(now), month = day.slice(0, 7);
   const used = core.usedSlugs();
   for (const s of SEEDS) used.add(s.slug);
@@ -195,13 +226,14 @@ export function pinsStatus({ core, cfg, now }) {
   const store = core.storageBytes();
   return {
     now: new Date(now).toISOString(),
-    flags: { enabled: cfg.enabled, paused: core.getMeta('paused') === '1', seedsInFeed: cfg.seeds && core.getMeta('seeds_off') !== '1', feedFrozenAt: core.getMeta('frozen_at'), aiExhaustedDay: core.getMeta('ai_exhausted') },
-    limits: { dailyPages: cfg.dailyPages, maxFluxPerDay: cfg.maxFluxPerDay, slotHours: cfg.slotHours, earlySlots: cfg.earlySlots, releaseHours: cfg.releaseHours, siteReserve: cfg.siteReserve, aiDaily: cfg.aiDaily, imagesMonthlyCap: cfg.imagesMonthlyCap },
+    flags: { enabled: cfg.enabled, paused: core.getMeta('paused') === '1', seedsInFeed: cfg.seeds && core.getMeta('seeds_off') !== '1', feedFrozenAt: core.getMeta('frozen_at'), aiExhaustedUntil: exhaustedUntil(core, now) },
+    limits: { dailyPages: cfg.dailyPages, maxFluxPerDay: cfg.maxFluxPerDay, slotHours: cfg.slotHours, earlySlots: cfg.earlySlots, releaseHours: cfg.releaseHours, siteReserve: cfg.siteReserve, aiDaily: cfg.aiDaily, freeGlobal: cfg.freeGlobal, imagesMonthlyCap: cfg.imagesMonthlyCap },
     today: {
       pagesMade: core.count('pages:' + day), modelCalls: flux, rejected: core.count('rejected:' + day),
       neuronsEstimate: flux * FLUX_NEURONS, freeNeuronsPerDay: FREE_NEURONS_PER_DAY,
       freeShareUsedPct: +((flux * FLUX_NEURONS) / FREE_NEURONS_PER_DAY * 100).toFixed(1)
     },
+    ledger: ledgerView(ledger, cfg),
     month: { imageConversions: core.count('images:' + month) },
     storage: { pages: store.pages, megabytes: +(store.bytes / 1048576).toFixed(2), freeCapGb: 5 },
     next: next ? { slug: next.subject.slug, theme: next.subject.theme, level: next.subject.level, phase: next.phase } : null,

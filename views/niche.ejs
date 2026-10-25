@@ -278,9 +278,18 @@ async function generatePage(){
       body: JSON.stringify({ prompt, style: 'medium', token: proToken })
     });
     const data = await res.json();
+    document.getElementById('usageBar').classList.remove('is-alert');
 
     if(!res.ok){
-      alert(data.error || 'Failed');
+      if(data.limitReached){
+        // A daily limit is said on the page, in the usage line under the button, not in an alert.
+        const bar = document.getElementById('usageBar');
+        bar.textContent = data.error;
+        bar.classList.add('is-alert');
+        bar.hidden = false;
+      } else {
+        alert(data.error || 'Failed');
+      }
       btn.disabled = false; btn.textContent = 'Generate coloring page';
       loading.classList.remove('active');
       return;

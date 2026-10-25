@@ -15,7 +15,7 @@
 import { Buffer } from 'node:buffer';
 import lineart from '../lineart.js';
 import { decodePdfImage, buildPdf, PDF_MAX_PAGES } from './pdf.js';
-import { FLUX_MODEL, fluxPrompt } from './flux.js';
+import { FLUX_MODEL, fluxPrompt, noFreeNeurons, DAILY_POOL_MESSAGE } from './flux.js';
 import { pinsRoute, runScheduled } from './autopin/routes.js';
 
 const FREE_DAILY_LIMIT = 2;
@@ -43,8 +43,8 @@ const numberVar = (v, d) => (v === undefined || v === null || v === '' || !Numbe
 export function config(env) {
   return {
     freeEngine: String(env.FREE_ENGINE || 'flux'),
-    freeGlobal: numberVar(env.FREE_GLOBAL_DAILY_LIMIT, 120),
-    aiDaily: numberVar(env.AI_DAILY_LIMIT, 160),
+    freeGlobal: numberVar(env.FREE_GLOBAL_DAILY_LIMIT, 30),
+    aiDaily: numberVar(env.AI_DAILY_LIMIT, 52),
     fluxSteps: numberVar(env.FLUX_STEPS, 4),
     proDaily: numberVar(env.PRO_DAILY_LIMIT, 150),
     hdEnabled: String(env.HD_ENABLED || '1') === '1',
@@ -142,11 +142,19 @@ export const isLegacySale = (pro, cfg) => !!pro.legacy || !pro.sale_created || S
 // The prompt and the model live in flux.js: the daily Pinterest job draws with the same words.
 export { fluxPrompt };
 
+// The answer when Workers AI has no free neurons left for the day: 429 like the site's own daily caps, with `reason` so
+// the page can show the message where the usage line is, and not open the Pro window over it.
+const POOL_EMPTY = { status: 429, error: DAILY_POOL_MESSAGE, limitReached: true, reason: 'ai_exhausted' };
+const failure = page => (page.reason ? { error: page.error, limitReached: page.limitReached, reason: page.reason } : { error: page.error });
+
 async function standardPage(env, cfg, userPrompt, level) {
   let out;
   try { out = await env.AI.run(FLUX_MODEL, { prompt: fluxPrompt(userPrompt, level), steps: cfg.fluxSteps }); }
   catch (e) {
     console.error('[flux] failed:', e && e.message);
+    // Error 4006: the account's free neurons of the UTC day are gone. Nothing helps until 00:00 UTC, so the visitor is
+    // told that plainly (a limit, like the site's own daily caps) and not to try again in a minute.
+    if (noFreeNeurons(e)) return { ok: false, ...POOL_EMPTY };
     return { ok: false, status: 503, error: 'The drawing service is busy. Please try again in a minute.' };
   }
   const b64 = out && out.image;
@@ -247,7 +255,7 @@ async function generate(request, env) {
       return json({ error: "Today's pages are all drawn. They reset at midnight UTC." }, 429);
     }
     const page = await standardPage(env, cfg, userPrompt, level);
-    if (!page.ok) { await ledger.giveBackAi({ day }); await ledger.giveBackPro({ saleKey, day }); return json({ error: page.error }, page.status); }
+    if (!page.ok) { await ledger.giveBackAi({ day }); await ledger.giveBackPro({ saleKey, day }); return json(failure(page), page.status); }
     return json({ success: true, imageUrl: page.imageUrl, remaining: -1, isPro: true, quality: 'standard' });
   }
 
@@ -261,7 +269,7 @@ async function generate(request, env) {
     return json({ error: 'Daily limit reached (2 free pages per day). Upgrade to Pro for up to 150 a day.', limitReached: true }, 429);
   }
   const page = await standardPage(env, cfg, userPrompt, level);
-  if (!page.ok) { await ledger.giveBackFree({ ipKey, day }); return json({ error: page.error }, page.status); }
+  if (!page.ok) { await ledger.giveBackFree({ ipKey, day }); return json(failure(page), page.status); }
   return json({ success: true, imageUrl: page.imageUrl, remaining: usage.remaining, isPro: false });
 }
 

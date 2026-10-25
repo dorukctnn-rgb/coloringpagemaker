@@ -11,9 +11,10 @@ import { createRequire } from 'node:module';
 import { DatabaseSync } from 'node:sqlite';
 import worker from '../cloudflare/worker.js';
 import { PinCore, RUN_STALE_MS, MAX_RUNS_PER_SLOT } from '../cloudflare/autopin/core.js';
-import { PinService, neighbors } from '../cloudflare/autopin/service.js';
+import { PinService, neighbors, makeDeps } from '../cloudflare/autopin/service.js';
+import { LedgerCore } from '../cloudflare/ledger-core.js';
 import { resetKnownSlugs, ageKnownSlugs } from '../cloudflare/autopin/routes.js';
-import { runTick, pinsConfig, slotOf, FLUX_NEURONS } from '../cloudflare/autopin/tick.js';
+import { runTick, pinsConfig, slotOf, FLUX_NEURONS, AI_EXHAUSTED_LOCK_MS } from '../cloudflare/autopin/tick.js';
 import { SEEDS } from '../cloudflare/autopin/seeds.js';
 import * as topics from '../cloudflare/autopin/topics.js';
 import { decodeGrayPng, judge, whiten, artSquare, LIMITS } from '../cloudflare/autopin/art.js';
@@ -23,7 +24,7 @@ import { buildFeed, buildSitemap, feedItems, releasedViews, seedViews, itemLink,
 import { renderLanding, renderHub } from '../cloudflare/autopin/page.js';
 import { shellSource } from '../cloudflare/autopin/tools/make-shell.mjs';
 import { SHELL } from '../cloudflare/autopin/shell.js';
-import { fluxPrompt } from '../cloudflare/flux.js';
+import { fluxPrompt, noFreeNeurons } from '../cloudflare/flux.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const HOUR = 3600 * 1000, DAY = 24 * HOUR;
@@ -89,6 +90,7 @@ function makeStubs(clock, opts = {}) {
     async toGray() { const png = pages[Math.min(calls.gray, pages.length - 1)]; calls.gray++; return new Uint8Array(png); },
     ledger: {
       async aiToday() { return aiUsed; },
+      async counters() { if (opts.countersError) throw new Error(opts.countersError); return { aiToday: aiUsed, freeToday: opts.freeToday || 0, dayMicros: opts.dayMicros || 0, monthMicros: opts.monthMicros || 0 }; },
       async takeAi() { calls.takeAi++; if (opts.denyAi) return { allowed: false }; aiUsed++; return { allowed: true }; },
       async giveBackAi() { calls.giveBack++; aiUsed--; }
     }
@@ -475,7 +477,7 @@ test('free-tier guards: the model-call cap, the site reserve, the site budget, t
   assert.equal(bad.st.calls.flux.length, 4);
   assert.equal(bad.core.storageBytes().pages, 0, 'a rejected page is never stored');
   // the site's own daily image budget keeps a reserve for visitors
-  const busy = tickWorld({ stubs: { aiToday: 100 } });
+  const busy = tickWorld({ stubs: { aiToday: 160 - 30 } }); // cfgOf: AI_DAILY_LIMIT 160, the default reserve is 30
   assert.equal((await busy.run(busy.clock.t)).reason, 'site_reserve');
   assert.equal(busy.st.calls.flux.length, 0);
   // the site budget is refused at the moment of taking
@@ -494,28 +496,85 @@ test('free-tier guards: the model-call cap, the site reserve, the site budget, t
   assert.equal((await full.run(full.clock.t)).reason, 'storage_cap');
 });
 
-test('when Workers AI says the free allowance is used up, the job stops for the day and tries again the next day', async () => {
+test('when Workers AI says the free allowance is used up (4006), the job stops for 2 hours, not for the rest of the UTC day', async () => {
   const w = tickWorld({ stubs: { fluxError: 'AiError: 4006: you have used up your daily free allocation of 10,000 neurons' } });
+  const t0 = w.clock.t; // 15:07 UTC
   const r = await w.run(w.clock.t);
   assert.equal(r.status, 'failed');
   assert.equal(w.st.calls.flux.length, 1, 'no second try after the allowance message');
-  assert.equal(w.core.getMeta('ai_exhausted'), '2026-10-24');
-  w.clock.t = at(2026, 10, 24, 18, 7);
-  assert.equal((await w.run(w.clock.t)).reason, 'ai_exhausted');
+  assert.equal(w.core.getMeta('ai_exhausted'), String(t0 + AI_EXHAUSTED_LOCK_MS), 'the lock is a time, two hours from the refusal');
+  assert.equal(AI_EXHAUSTED_LOCK_MS, 2 * HOUR);
+  // Inside the two hours nothing is drawn and the model is not called (a manual run is held as well).
+  w.clock.t = t0 + 119 * 60 * 1000;
+  const held = await w.run(w.clock.t, 'manual');
+  assert.equal(held.reason, 'ai_exhausted');
+  assert.equal(held.until, new Date(t0 + 2 * HOUR).toISOString());
   assert.equal(w.st.calls.flux.length, 1);
-  w.clock.t = at(2026, 10, 25, 0, 7);
-  w.st.calls.flux.length = 0;
-  const calls = w.st.calls;
+  // Two hours and a minute later the job tries again, the same UTC day: this is what the old day-long lock prevented.
+  w.clock.t = t0 + 121 * 60 * 1000;
+  assert.equal(new Date(w.clock.t).toISOString().slice(0, 10), '2026-10-24');
   assert.equal((await w.run(w.clock.t)).status, 'failed', 'the stub still fails, but the job did try again');
-  assert.equal(calls.flux.length, 1);
+  assert.equal(w.st.calls.flux.length, 2, 'the model was called again on the same UTC day');
+  assert.equal(w.core.getMeta('ai_exhausted'), String(w.clock.t + AI_EXHAUSTED_LOCK_MS), 'a new refusal sets a new two-hour lock');
 });
 
-test('the neuron estimate matches the Workers AI price list: 58 neurons a 1024 x 1024 page of 4 steps, 4 pages is under 3 percent of the free day', () => {
-  assert.equal(FLUX_NEURONS, Math.ceil(4 * 4.8 + 4 * 9.6));
-  assert.ok(4 * FLUX_NEURONS / 10000 < 0.03);
+test('after a 4006 the next cron slot, three hours later, is free to draw (the lock is shorter than a slot)', async () => {
+  let fail = true;
+  const w = tickWorld({ now: at(2026, 10, 25, 6, 7), stubs: { fluxError: () => (fail ? 'AiError: 4006: you have used up your daily free allocation of 10,000 neurons' : '') } });
+  assert.equal((await w.run(w.clock.t)).status, 'failed');
+  fail = false;
+  w.clock.t = at(2026, 10, 25, 9, 7);
+  const r = await w.run(w.clock.t);
+  assert.equal(r.status, 'done', JSON.stringify(r));
+  assert.equal(w.core.count('pages:2026-10-25'), 1);
+});
+
+test('a lock from before the timed lock (a UTC day as text) does not hold the job, and is dropped', async () => {
+  const w = tickWorld();
+  w.core.setMeta('ai_exhausted', '2026-10-24');
+  const r = await w.run(w.clock.t);
+  assert.equal(r.status, 'done', JSON.stringify(r));
+  assert.equal(w.core.getMeta('ai_exhausted'), null);
+});
+
+test('4006 is recognised as an error code and by its text, and other errors do not lock the job', async () => {
+  assert.equal(noFreeNeurons({ code: 4006 }), true);
+  assert.equal(noFreeNeurons(new Error('AiError: 4006: you have used up your daily free allocation of 10,000 neurons')), true);
+  assert.equal(noFreeNeurons('4006: daily free allocation'), true);
+  assert.equal(noFreeNeurons(new Error('3040: capacity temporarily exceeded')), false);
+  assert.equal(noFreeNeurons(null), false);
+  const w = tickWorld({ stubs: { fluxError: 'AiError: 3040: capacity temporarily exceeded, please try again' } });
+  assert.equal((await w.run(w.clock.t)).status, 'failed');
+  assert.equal(w.core.getMeta('ai_exhausted'), null, 'a busy model is no reason to stop for two hours');
+});
+
+test('the neuron estimate matches the Workers AI price list: 172.8 neurons a 1024 x 1024 page of 4 steps (not 58); the job\'s cap of 12 calls is a fifth of the free day', () => {
+  const real = 4 * (4.8 + 4 * 9.6); // 4 tiles of 512 x 512, each 4.8 neurons for the tile and 9.6 for each of 4 steps
+  assert.ok(Math.abs(real - 172.8) < 1e-9);
+  assert.equal(FLUX_NEURONS, Math.ceil(real));
+  assert.equal(FLUX_NEURONS, 173);
+  assert.ok(4 * FLUX_NEURONS / 10000 < 0.07, '4 pages a day are under 7 percent of the free day');
   const cfg = cfgOf();
-  assert.ok(cfg.maxFluxPerDay * FLUX_NEURONS <= 0.1 * 10000, 'even the cap is under 10 percent of the free allowance');
+  assert.ok(cfg.maxFluxPerDay * FLUX_NEURONS <= 0.25 * 10000, 'even the cap is under a quarter of the free allowance');
   assert.equal(cfg.dailyPages, 4);
+});
+
+test('the defaults of the daily image budget keep the site under the free allowance even when no variable is set', () => {
+  const cfg = pinsConfig({});
+  assert.equal(cfg.aiDaily, 52);
+  assert.equal(cfg.siteReserve, 30);
+  assert.equal(cfg.freeGlobal, 30);
+  assert.ok(cfg.aiDaily * 172.8 <= 0.9 * 10000);
+});
+
+test('the job draws only while the day\'s image count is below AI_DAILY_LIMIT - AUTOPIN_SITE_RESERVE (52 - 30 = 22)', async () => {
+  const vars = { AI_DAILY_LIMIT: '52', AUTOPIN_SITE_RESERVE: '30' };
+  const below = tickWorld({ vars, stubs: { aiToday: 21 } });
+  assert.equal((await below.run(below.clock.t)).status, 'done');
+  const at22 = tickWorld({ vars, stubs: { aiToday: 22 } });
+  const held = await at22.run(at22.clock.t);
+  assert.equal(held.reason, 'site_reserve');
+  assert.equal(at22.st.calls.flux.length, 0);
 });
 
 test('the prompt is the site\'s own: fluxPrompt with the subject and the detail level', () => {
@@ -847,10 +906,22 @@ test('wrangler.production.jsonc: one cron trigger, the PinStore class with its m
   assert.ok(prod.ai && prod.images, 'bindings for the model and the Images conversion');
   assert.equal(prod.vars.AUTOPIN_ENABLED, '1');
   assert.ok(Number(prod.vars.AUTOPIN_DAILY_PAGES) <= 6);
-  assert.ok(Number(prod.vars.AUTOPIN_MAX_FLUX_PER_DAY) * FLUX_NEURONS <= 1000, 'under 10 percent of 10,000 free neurons');
+  assert.ok(Number(prod.vars.AUTOPIN_MAX_FLUX_PER_DAY) * FLUX_NEURONS <= 2500, 'the job alone is under a quarter of the 10,000 free neurons');
+  // The daily image budget is measured in the real price of a page (172.8 neurons), not in the old estimate of 57.6.
+  assert.equal(prod.vars.AI_DAILY_LIMIT, '52');
+  assert.equal(prod.vars.FREE_GLOBAL_DAILY_LIMIT, '30');
+  assert.equal(prod.vars.AUTOPIN_SITE_RESERVE, '30');
+  assert.ok(Number(prod.vars.AI_DAILY_LIMIT) * 172.8 <= 0.9 * 10000, 'the whole site stays under 90 percent of the free neurons');
+  assert.ok(Number(prod.vars.FREE_GLOBAL_DAILY_LIMIT) + Number(prod.vars.AUTOPIN_MAX_FLUX_PER_DAY) + 10 <= Number(prod.vars.AI_DAILY_LIMIT), 'free pages + the job + 10 Pro standard pages fit the budget');
+  assert.ok(Number(prod.vars.AUTOPIN_SITE_RESERVE) < Number(prod.vars.AI_DAILY_LIMIT));
   assert.equal(prod.workers_dev, false);
   assert.equal(prev.vars.AUTOPIN_ENABLED, '0');
   assert.equal(prev.triggers, undefined);
+  // The move is finished: the preview Worker is no second door to Workers AI (its counters are its own).
+  assert.equal(prev.ai, undefined, 'no Workers AI binding on the preview Worker');
+  assert.equal(prod.ai.binding, 'AI');
+  assert.ok(Number(prev.vars.AI_DAILY_LIMIT) * 172.8 <= 0.9 * 10000);
+  assert.ok(Number(prev.vars.FREE_GLOBAL_DAILY_LIMIT) <= Number(prev.vars.AI_DAILY_LIMIT));
   const idx = fs.readFileSync(path.join(root, 'cloudflare', 'index.js'), 'utf8');
   assert.match(idx, /export \{ PinStore \} from '\.\/autopin\/store\.js'/);
 });
@@ -1006,6 +1077,57 @@ test('selftest: the heavy part of a tick on a page that is already there, nothin
 import http from 'node:http';
 import os from 'node:os';
 import { execFile } from 'node:child_process';
+
+test('admin: status shows the Ledger counters next to the job\'s own, in the real neuron price', async () => {
+  const w = makeWorld({ now: at(2026, 10, 25, 9, 0), vars: { AI_DAILY_LIMIT: '52', AUTOPIN_SITE_RESERVE: '30', FREE_GLOBAL_DAILY_LIMIT: '30' }, stubs: { aiToday: 6, freeToday: 2, dayMicros: 120000, monthMicros: 480000 } });
+  const st = await (await admin(w.env, '/pins/admin/status', 'GET')).json();
+  assert.deepEqual(st.ledger, {
+    aiToday: 6, aiDaily: 52, autopinDrawsWhileBelow: 22, freeToday: 2, freeGlobalLimit: 30,
+    neuronsEstimate: 6 * 173, freeShareUsedPct: 10.4, openaiDayUsd: 0.12, openaiMonthUsd: 0.48
+  });
+  assert.equal(st.limits.freeGlobal, 30);
+  assert.equal(st.today.neuronsEstimate, 0, 'the job itself has drawn nothing today');
+  // The job's own estimate uses the same price.
+  await w.svc.tick({ source: 'manual' });
+  const after = await (await admin(w.env, '/pins/admin/status', 'GET')).json();
+  assert.equal(after.today.modelCalls, 1);
+  assert.equal(after.today.neuronsEstimate, FLUX_NEURONS);
+  assert.equal(after.ledger.aiToday, 7);
+  assert.equal(after.flags.aiExhaustedUntil, null);
+  // A Ledger that cannot be reached is reported in the status, which still answers.
+  const down = makeWorld({ stubs: { countersError: 'Ledger unreachable' } });
+  const ds = await (await admin(down.env, '/pins/admin/status', 'GET')).json();
+  assert.deepEqual(ds.ledger, { error: 'Ledger unreachable' });
+  assert.equal(ds.flags.paused, false);
+  // After a 4006 the status says until when the job is held.
+  const locked = makeWorld({ now: at(2026, 10, 25, 6, 7), stubs: { fluxError: 'AiError: 4006: you have used up your daily free allocation of 10,000 neurons' } });
+  await locked.svc.tick({ source: 'manual' });
+  const ls = await (await admin(locked.env, '/pins/admin/status', 'GET')).json();
+  assert.equal(ls.flags.aiExhaustedUntil, '2026-10-25T08:07:00.000Z');
+  locked.clock.t = at(2026, 10, 25, 8, 8);
+  assert.equal((await (await admin(locked.env, '/pins/admin/status', 'GET')).json()).flags.aiExhaustedUntil, null, 'an expired lock is not shown');
+  // resume lifts the lock at once
+  locked.clock.t = at(2026, 10, 25, 6, 30);
+  await admin(locked.env, '/pins/admin/resume');
+  assert.equal(locked.core.getMeta('ai_exhausted'), null);
+});
+
+test('the real deps read the Ledger\'s spend counters (images today, free pages today, OpenAI spend) for the status', async () => {
+  const db = new DatabaseSync(':memory:');
+  const exec = (q, ...p) => { const st = db.prepare(q); return /^\s*SELECT/i.test(q) ? st.all(...p) : (st.run(...p), []); };
+  const ledger = new LedgerCore(exec, fn => fn());
+  const day = new Date().toISOString().slice(0, 10);
+  ledger.takeFree({ ipKey: 'a', day, perIp: 2, globalFree: 30, aiDaily: 52 });
+  ledger.takeFree({ ipKey: 'b', day, perIp: 2, globalFree: 30, aiDaily: 52 });
+  ledger.takeAi({ day, aiDaily: 52 });
+  const stub = new Proxy(ledger, { get: (t, k) => (typeof t[k] === 'function' ? (...a) => Promise.resolve(t[k](...a)) : t[k]) });
+  const deps = makeDeps({ LEDGER: { idFromName: () => 'main', get: () => stub } }, pinsConfig({}));
+  const c = await deps.ledger.counters(day);
+  assert.equal(c.aiToday, 3);
+  assert.equal(c.freeToday, 2);
+  assert.equal(c.dayMicros, 0);
+  assert.equal(c.monthMicros, 0);
+});
 
 test('admin: status lists the newest pages (released or not), their images are served to the admin only, selftest also runs the Images conversion', async () => {
   const w = makeWorld({ now: at(2026, 11, 3, 0, 7) });
