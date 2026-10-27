@@ -84,13 +84,13 @@ const THEME_GUIDES = {
 },
 
 'christmas-coloring-pages': {
-  updated: '2026-10-15',
+  updated: '2026-10-27',
   checked: '9 October 2026',
-  title: 'Christmas Coloring Pages Generator, With a 24-Day Advent Plan',
-  description: 'Generate Christmas coloring pages for toddlers to adults, follow a 24-day Advent coloring plan that fits the free tier, and print pages as cards or ornaments.',
+  title: 'Christmas Coloring Pages: Free Printable PDFs, With an Advent Plan',
+  description: 'Free printable Christmas coloring pages for toddlers to adults, a 24-day Advent plan that fits the free tier, and ways to print pages as cards or ornaments.',
   eyebrow: 'Christmas coloring page generator',
-  h1: 'Christmas coloring pages and an Advent calendar plan',
-  lead: `Type a Christmas scene and print it: Santa on a rooftop, a nativity, a snowman in your child's own scarf. Below are prompts by age, an Advent calendar with one page for each day from 1 to 24 December, and ways to print pages as cards and ornaments.`,
+  h1: 'Christmas coloring pages for kids, with a 24-day Advent plan',
+  lead: `Print free Christmas coloring pages for kids and adults, or type a Christmas scene and have it drawn: Santa on a rooftop, a nativity, a snowman in your child's own scarf. Below are prompts by age, an Advent calendar with one page for each day from 1 to 24 December, and ways to print pages as cards and ornaments.`,
   name: 'Christmas coloring page',
   topic: 'Christmas coloring pages',
   recipesHeading: 'Christmas prompts by age',
@@ -106,6 +106,18 @@ const THEME_GUIDES = {
     { who: 'Teens and adults', style: 'detailed', prompt: 'an ornate Christmas wreath of holly, pine cones, berries and ribbon with patterned ornaments', why: 'Dense natural detail for a long evening of coloring.' }
   ],
   sections: [
+    { h2: 'Christmas pages by subject', blocks: [
+      { p: `The generator above draws any Christmas scene. These guides each add three finished pages to download and facts for that subject:` },
+      { ul: [
+        `**[Santa coloring pages](/santa-coloring-pages)**: a smiling face for toddlers, Santa with milk and cookies, Santa with his sack in the snow.`,
+        `**[Reindeer coloring pages](/reindeer-coloring-pages)**: harness bells, a striped scarf and a stag in a snowy forest.`,
+        `**[Christmas tree coloring pages](/christmas-tree-coloring-pages)**: a tree with presents, a garland, and a bare tree to decorate.`,
+        `**[Christmas ornament coloring pages](/christmas-ornament-coloring-pages)**: a blank ball to design, a snowflake bauble and three patterned ornaments.`,
+        `**[Snowflake coloring pages](/snowflake-coloring-pages)**: four simple snowflakes up to one with fern-like arms.`,
+        `**[Christmas coloring pages for adults](/christmas-coloring-pages-for-adults)**: a holly wreath, a village street and an ornament mandala.`,
+        `**[Gingerbread](/gingerbread-coloring-pages), [snowman](/snowman-coloring-pages) and [nativity](/nativity-coloring-pages) pages** have guides of their own.`
+      ] }
+    ] },
     { h2: 'A 24-day Advent coloring calendar', blocks: [
       { p: `One page a day from 1 to 24 December. Making 24 pages takes 12 days on the free plan (2 a day), so start by 19 November; with Pro you can make all of them in one sitting. Every prompt works on Simple for younger children and Medium for older ones.` },
       { groups: [
@@ -129,11 +141,12 @@ const THEME_GUIDES = {
     ] }
   ],
   faq: [
+    { q: 'Are these Christmas coloring pages free to print?', a: `The example pages on this page download as PNG files for personal use, with no account and no watermark. The generator makes 2 free pages a day; its free PDF carries a watermark, and [Pro](https://dorukctn.gumroad.com/l/uynqt) removes it for $9 once.` },
     { q: 'Which Christmas coloring pages suit toddlers?', a: `One large object on Simple: a tree, a stocking, a snowman, a present with a bow. Leave busy scenes until ages 5 or 6.` },
     { q: 'When should I start an Advent coloring calendar?', a: `On the free plan, by 19 November: 24 pages at 2 a day takes 12 days. With Pro you can make all 24 in one sitting.` },
     { q: 'Can I make a nativity scene?', a: `Yes. Name every figure you want (Mary, Joseph, the baby in the manger, shepherds, animals, the star) so the generator includes them all.` },
     { q: 'How do I turn a coloring page into a Christmas card?', a: `Print it at 2 pages per sheet, cut the sheet in half and glue one half to a letter sheet folded in half. Cardstock makes a sturdier card.` },
-    { q: 'Are there Christmas coloring pages for adults?', a: `Choose Detailed and ask for pattern-heavy subjects: a wreath, a snowy village street, a patterned bauble, a knitted sweater pattern. [Adult coloring pages](/adult-coloring-pages) has more on detail levels.` }
+    { q: 'Are there Christmas coloring pages for adults?', a: `Choose Detailed and ask for pattern-heavy subjects: a wreath, a snowy village street, a patterned bauble, a knitted sweater pattern. [Christmas coloring pages for adults](/christmas-coloring-pages-for-adults) has three detailed examples, and [adult coloring pages](/adult-coloring-pages) has more on detail levels.` }
   ],
   sources: [
     { text: 'St Nicholas Center: Who is St Nicholas? (feast day 6 December)', href: 'https://www.stnicholascenter.org/who-is-st-nicholas' }
@@ -145,7 +158,13 @@ const THEME_GUIDES = {
     { href: '/adult-coloring-pages', label: 'Adult coloring pages', note: 'intricate wreaths and villages' },
     { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'building a year of themed pages' },
     { href: '/winter-coloring-pages', label: 'Winter coloring pages', note: 'snowmen, snow days and polar animals' },
-    { href: '/nativity-coloring-pages', label: 'Nativity coloring pages', note: 'the manger, the shepherds and the star' }
+    { href: '/nativity-coloring-pages', label: 'Nativity coloring pages', note: 'the manger, the shepherds and the star' },
+    { href: '/santa-coloring-pages', label: 'Santa coloring pages', note: 'a smiling face to a sack in the snow' },
+    { href: '/reindeer-coloring-pages', label: 'Reindeer coloring pages', note: 'which reindeer still have antlers in December' },
+    { href: '/christmas-tree-coloring-pages', label: 'Christmas tree coloring pages', note: 'a tree to decorate' },
+    { href: '/christmas-ornament-coloring-pages', label: 'Christmas ornament coloring pages', note: 'blank baubles to design and cut out' },
+    { href: '/snowflake-coloring-pages', label: 'Snowflake coloring pages', note: 'the snow crystal types and a paper snowflake' },
+    { href: '/christmas-coloring-pages-for-adults', label: 'Christmas coloring pages for adults', note: 'wreaths, a village street and a mandala' }
   ]
 },
 
@@ -497,13 +516,13 @@ const THEME_GUIDES = {
 },
 
 'fall-coloring-pages': {
-  updated: '2026-10-15',
+  updated: '2026-10-27',
   checked: '15 October 2026',
-  title: 'Fall Coloring Pages: Free Printables and a Generator',
-  description: 'Free printable fall coloring pages and a generator for more: autumn leaves and acorns for toddlers, scarecrows and pumpkin patches for kids, harvest scenes for adults.',
+  title: 'Fall Coloring Pages: Free Printable PDFs for Kids and Adults',
+  description: 'Free printable fall coloring pages for kids and adults: leaves and acorns for toddlers, scarecrows and pumpkin patches for kids, harvest scenes for adults.',
   eyebrow: 'Fall coloring page generator',
   h1: 'Fall and autumn coloring pages',
-  lead: `Describe an autumn scene and print it: one big maple leaf for a toddler, a scarecrow in a pumpkin patch for a first grader, a harvest crate of apples for an adult. Below are prompts by age, a leaf walk that ends in coloring pages, and why leaves turn yellow and red.`,
+  lead: `Print free fall coloring pages for kids and adults, or describe an autumn scene and print it: one big maple leaf for a toddler, a scarecrow in a pumpkin patch for a first grader, a harvest crate of apples for an adult. Below are prompts by age, a leaf walk that ends in coloring pages, and why leaves turn yellow and red.`,
   name: 'fall coloring page',
   topic: 'fall coloring pages',
   recipesHeading: 'Fall prompts by age',
@@ -546,6 +565,7 @@ const THEME_GUIDES = {
     ] }
   ],
   faq: [
+    { q: 'Are these fall coloring pages free to print?', a: `The example pages on this page download as PNG files for personal use, with no account and no watermark. The generator makes 2 free pages a day; its free PDF carries a watermark, and [Pro](https://dorukctn.gumroad.com/l/uynqt) removes it for $9 once.` },
     { q: 'Which fall coloring pages suit toddlers?', a: `One large object on Simple: a maple leaf, an acorn, a pumpkin or an apple. Leave scarecrows and pumpkin patches until ages 5 or 6, when children can stay inside smaller shapes.` },
     { q: 'Is there a difference between fall and autumn coloring pages?', a: `No. “Fall” is the usual word in the United States and “autumn” in Britain. Both work in a prompt, and the pages come out the same.` },
     { q: 'Can I make fall coloring pages for adults?', a: `Yes. Ask for a scene with many separate shapes, such as a harvest crate of apples and gourds, a porch with pumpkins, or a mandala made of oak and maple leaves. See [adult coloring pages](/adult-coloring-pages) for paper and detail tips.` },
@@ -566,13 +586,13 @@ const THEME_GUIDES = {
 },
 
 'thanksgiving-coloring-pages': {
-  updated: '2026-10-15',
-  checked: '15 October 2026',
-  title: 'Thanksgiving Coloring Pages: Free Printables and a Generator',
-  description: 'Free printable Thanksgiving coloring pages and a generator for more: pumpkin pie for toddlers, a cornucopia for kids, a full dinner table for adults, and a thankful tree for class.',
+  updated: '2026-10-27',
+  checked: '27 October 2026',
+  title: 'Thanksgiving Coloring Pages: Free Printable for Kids and Adults',
+  description: 'Free printable Thanksgiving coloring pages for kids and adults: pumpkin pie for toddlers, a cornucopia for kids, a dinner table for adults, and a thankful tree.',
   eyebrow: 'Thanksgiving coloring page generator',
-  h1: `Thanksgiving coloring pages for the kids' table and the classroom`,
-  lead: `Describe a Thanksgiving page and print it: a pumpkin pie for a toddler, a cornucopia for a first grader, a whole dinner table for an adult. Thanksgiving falls on Thursday 26 November 2026. Below are prompts by age, a plan for the kids' table, a thankful tree and what happened at the 1621 harvest.`,
+  h1: 'Thanksgiving coloring pages for kids and adults',
+  lead: `Print free Thanksgiving coloring pages for kids and adults, or describe a Thanksgiving page and print it: a pumpkin pie for a toddler, a cornucopia for a first grader, a whole dinner table for an adult. Thanksgiving falls on Thursday 26 November 2026. Below are prompts by age, a plan for the kids' table, a thankful tree, what happened at the 1621 harvest and what the Pilgrims wore.`,
   name: 'Thanksgiving coloring page',
   topic: 'Thanksgiving coloring pages',
   recipesHeading: 'Thanksgiving prompts by age',
@@ -585,6 +605,7 @@ const THEME_GUIDES = {
     { who: 'Ages 6 to 9', style: 'medium', prompt: `a cornucopia overflowing with pumpkins, apples, corn, pears and grapes`, why: `The horn of plenty is full of separate fruits, so a child can color it one piece at a time.` },
     { who: 'Ages 6 to 9', style: 'medium', prompt: `a harvest wagon full of pumpkins, corn and hay bales on a farm road, clean bold outlines`, why: `A farm scene with no people, which keeps the page about the harvest.` },
     { who: 'Class activity', style: 'simple', prompt: `a bare tree with a thick trunk and ten empty leaf shapes on its branches, big simple shapes, no background`, why: `A thankful tree: each child writes one thing they are thankful for in a leaf (see below).` },
+    { who: 'History lesson', style: 'medium', prompt: `a Pilgrim family in plain wool coats, linen caps and wide-brimmed felt hats standing beside a pumpkin patch, clean bold outlines`, why: `Everyday clothes from the colony, which a child can color in many colors (see below).` },
     { who: 'Teens and adults', style: 'medium', prompt: `a Thanksgiving table with a roast turkey on a platter, a pumpkin pie and a bowl of corn, clean bold outlines, no people`, why: `A full table gives adults dishes, textures and table linen to fill.` }
   ],
   sections: [
@@ -603,11 +624,18 @@ const THEME_GUIDES = {
       { p: `In the fall of 1621, after their first harvest, the English colonists at Plymouth held a harvest celebration. Massasoit, a leader of the Wampanoag, came with about 90 of his men, and they joined the English for three days of feasting and entertainment. It took place sometime between 21 September and 9 November 1621, and only in the 19th century did it become known as the “First Thanksgiving” (Plimoth Patuxet Museums).` },
       { p: `For a history lesson, a page of the harvest itself, with corn, squash and beans, teaches more than a page of costumes.` }
     ] },
+    { h2: 'What the Pilgrims wore', blocks: [
+      { p: `A Pilgrim page does not have to be black and white. Plimoth Patuxet Museums notes that in the 1620s people's best clothes were often black, and that portraits were painted of people in their best clothes. Black dye was costly, though, so everyday clothes were made in many colors.` },
+      { p: `Everyone wore something on the head: men and boys wore wool caps or felt hats, and women wore linen caps under felt hats. The felt hats had wide brims to shade the face from the sun and keep it dry (Plimoth Patuxet Museums). The Pilgrim prompt above asks for exactly those clothes.` }
+    ] },
     { h2: 'Why it is always a Thursday in November', blocks: [
       { p: `President Lincoln's 1863 proclamation made Thanksgiving a yearly holiday on the last Thursday of November. In 1941 Congress fixed it on the fourth Thursday instead, because some Novembers have five Thursdays (National Archives). In 2026 that is Thursday 26 November, a federal holiday in the United States (OPM).` }
     ] }
   ],
   faq: [
+    { q: 'What did the Pilgrims wear?', a: `Wool caps or felt hats for men and boys, linen caps under felt hats for women, and everyday clothes in many colors, because black dye was costly (Plimoth Patuxet Museums). Use the Pilgrim prompt above to draw them.` },
+    { q: 'Are there Thanksgiving coloring pages for adults?', a: `Choose Medium or Detailed and ask for a full dinner table, a cornucopia with detailed fruit and vines, or a page of overlapping autumn leaves. For more detail levels see [adult coloring pages](/adult-coloring-pages).` },
+    { q: 'Are these Thanksgiving coloring pages free to print?', a: `The example pages on this page download as PNG files for personal use, with no account and no watermark. The generator makes 2 free pages a day; its free PDF carries a watermark, and [Pro](https://dorukctn.gumroad.com/l/uynqt) removes it for $9 once.` },
     { q: 'When is Thanksgiving in 2026?', a: `In the United States, on Thursday 26 November 2026. It is always the fourth Thursday of November (National Archives, OPM).` },
     { q: 'Which Thanksgiving coloring pages suit toddlers?', a: `One large object on Simple: a pumpkin pie, a single pumpkin, an apple or a [cartoon turkey](/turkey-coloring-pages). Leave full tables and cornucopias for children of 6 and up.` },
     { q: 'Can I make Thanksgiving pages for church or Sunday school?', a: `Yes. Describe the scene, for example a harvest of wheat sheaves, grapes and bread, and write the verse in by hand. The generator draws pictures and cannot be relied on to spell words.` },
@@ -617,7 +645,8 @@ const THEME_GUIDES = {
   sources: [
     { text: 'OPM: Federal holidays (2026 schedule)', href: 'https://www.opm.gov/policy-data-oversight/pay-leave/federal-holidays/' },
     { text: 'National Archives: Congress establishes Thanksgiving', href: 'https://www.archives.gov/legislative/features/thanksgiving' },
-    { text: 'Plimoth Patuxet Museums: Thanksgiving history', href: 'https://plimoth.org/for-students/homework-help/thanksgiving-history' }
+    { text: 'Plimoth Patuxet Museums: Thanksgiving history', href: 'https://plimoth.org/for-students/homework-help/thanksgiving-history' },
+    { text: 'Plimoth Patuxet Museums: What to wear', href: 'https://plimoth.org/for-students/homework-help/what-to-wear' }
   ],
   cta: `A different page for each of eight children takes four days on the free plan. Pro makes up to 150 pages a day with no watermark and a commercial license, for $9 once.`,
   related: [
@@ -629,13 +658,13 @@ const THEME_GUIDES = {
 },
 
 'turkey-coloring-pages': {
-  updated: '2026-10-15',
+  updated: '2026-10-27',
   checked: '15 October 2026',
-  title: 'Turkey Coloring Pages: Cute, Realistic or Without Feathers',
-  description: 'Free printable turkey coloring pages: a cartoon turkey for toddlers, a turkey without feathers for the feather craft, a strutting wild turkey for older kids. Make your own in seconds.',
+  title: 'Turkey Coloring Pages: Free Printable PDFs for Kids and Adults',
+  description: 'Free printable turkey coloring pages for kids and adults: a cartoon turkey for toddlers, a turkey without feathers for the craft, a wild turkey for older kids.',
   eyebrow: 'Turkey coloring page generator',
   h1: 'Turkey coloring pages, with or without feathers',
-  lead: `Make a turkey page for any age: a round cartoon turkey for preschool, a turkey body without tail feathers for the add-your-own-feathers craft, or a wild turkey strutting with its tail fanned. Below are prompts, the feather craft step by step and a few true facts about wild turkeys.`,
+  lead: `Print free turkey coloring pages for kids and adults, or make one for any age: a round cartoon turkey for preschool, a turkey body without tail feathers for the add-your-own-feathers craft, or a wild turkey strutting with its tail fanned. Below are prompts, the feather craft step by step and a few true facts about wild turkeys.`,
   name: 'turkey coloring page',
   topic: 'turkey coloring pages',
   recipesHeading: 'Turkey prompts by age',
@@ -678,6 +707,7 @@ const THEME_GUIDES = {
     ] }
   ],
   faq: [
+    { q: 'Are these turkey coloring pages free to print?', a: `The example pages on this page download as PNG files for personal use, with no account and no watermark. The generator makes 2 free pages a day; its free PDF carries a watermark, and [Pro](https://dorukctn.gumroad.com/l/uynqt) removes it for $9 once.` },
     { q: 'Where can I get a turkey coloring page without feathers?', a: `Download the example on this page, or use the feather craft prompt above. It draws the round body, head, wattle, wings and feet, and leaves the tail empty for paper or handprint feathers.` },
     { q: 'Which turkey pages suit toddlers?', a: `A cartoon turkey on Simple with a few big tail feathers. Leave realistic turkeys for older children: the feathers are too small to color at this age.` },
     { q: `What is the red part on a turkey's head?`, a: `The red flaps of skin on the throat and neck are wattles. The head itself is bare skin, red and blue on an adult male (Missouri Department of Conservation).` },
@@ -697,13 +727,13 @@ const THEME_GUIDES = {
 },
 
 'winter-coloring-pages': {
-  updated: '2026-10-15',
+  updated: '2026-10-27',
   checked: '15 October 2026',
-  title: 'Winter Coloring Pages: Snowmen, Snow Days and Polar Animals',
-  description: 'Free printable winter coloring pages and a generator for more: snowmen for toddlers, sledding hills and polar bear cubs for kids, snowflake patterns for adults. No signup.',
+  title: 'Winter Coloring Pages: Free Printable PDFs for Kids and Adults',
+  description: 'Free printable winter coloring pages for kids and adults: snowmen for toddlers, sledding hills and polar bear cubs for kids, snowflake patterns for adults.',
   eyebrow: 'Winter coloring page generator',
-  h1: 'Winter coloring pages for snow days',
-  lead: `Describe a winter scene and print it: a snowman for a toddler, a polar bear cub sliding down a hill for a first grader, a six-sided snowflake pattern for an adult. Below are prompts by age, a snow-day plan, why snowflakes have six sides and why polar bears never meet penguins.`,
+  h1: 'Winter coloring pages for kids and adults',
+  lead: `Print free winter coloring pages for kids and adults, or describe a winter scene and print it: a snowman for a toddler, a polar bear cub sliding down a hill for a first grader, a six-sided snowflake pattern for an adult. Below are prompts by age, a snow-day plan, why snowflakes have six sides and why polar bears never meet penguins.`,
   name: 'winter coloring page',
   topic: 'winter coloring pages',
   recipesHeading: 'Winter prompts by age',
@@ -739,6 +769,7 @@ const THEME_GUIDES = {
     ] }
   ],
   faq: [
+    { q: 'Are these winter coloring pages free to print?', a: `The example pages on this page download as PNG files for personal use, with no account and no watermark. The generator makes 2 free pages a day; its free PDF carries a watermark, and [Pro](https://dorukctn.gumroad.com/l/uynqt) removes it for $9 once.` },
     { q: 'Which winter coloring pages suit toddlers?', a: `One large object on Simple: a snowman, a mitten, a hat or a mug of cocoa. Leave forests and busy snow scenes until children can stay inside smaller shapes, around age 5.` },
     { q: 'How do I keep a snowy night page from printing black?', a: `Describe the night as outlines: “moon and stars drawn as outlines”, “snowflakes drawn as outlines”. Words such as dark night or silhouette push the page toward large black areas.` },
     { q: 'Can I make winter pages without Christmas?', a: `Yes. Snowmen, mittens, sledding, cabins and polar animals have nothing to do with the holiday, which makes them easy to use in mixed classrooms and in January and February.` },
@@ -757,7 +788,9 @@ const THEME_GUIDES = {
     { href: '/animal-coloring-pages', label: 'Animal coloring pages', note: 'polar bears, penguins and pets' },
     { href: '/adult-coloring-pages', label: 'Adult coloring pages', note: 'detailed and bold-and-easy pages' },
     { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' },
-    { href: '/snowman-coloring-pages', label: 'Snowman coloring pages', note: 'snow families, forest friends and snow science' }
+    { href: '/snowman-coloring-pages', label: 'Snowman coloring pages', note: 'snow families, forest friends and snow science' },
+    { href: '/snowflake-coloring-pages', label: 'Snowflake coloring pages', note: 'the snow crystal types and a paper snowflake' },
+    { href: '/reindeer-coloring-pages', label: 'Reindeer coloring pages', note: 'which reindeer still have antlers in December' }
   ]
 },
 
@@ -832,13 +865,13 @@ const THEME_GUIDES = {
 },
 
 'new-year-coloring-pages': {
-  updated: '2026-10-15',
+  updated: '2026-10-27',
   checked: '15 October 2026',
-  title: 'New Year Coloring Pages: Free Printables and a Generator',
-  description: 'Free printable New Year coloring pages and a generator for more: party hats for toddlers, fireworks and a countdown clock for kids, and a goals page for January.',
+  title: 'New Year Coloring Pages: Free Printable PDFs for Kids and Adults',
+  description: 'Free printable New Year coloring pages for kids and adults: party hats for toddlers, fireworks and a countdown clock for kids, and a goals page for January.',
   eyebrow: 'New Year coloring page generator',
-  h1: `New Year coloring pages for New Year's Eve and January`,
-  lead: `Describe a New Year page and print it: a party hat and balloons for a toddler, fireworks over a row of houses for a first grader, a countdown clock for an older child. New Year's Day falls on Friday 1 January 2027. Below are prompts by age, how to add the year without spelling mistakes, a plan for the evening and why a ball drops in Times Square.`,
+  h1: `New Year coloring pages for kids, New Year's Eve and January`,
+  lead: `Print free New Year coloring pages for kids and adults, or describe a New Year page and print it: a party hat and balloons for a toddler, fireworks over a row of houses for a first grader, a countdown clock for an older child. New Year's Day falls on Friday 1 January 2027. Below are prompts by age, how to add the year without spelling mistakes, a plan for the evening and why a ball drops in Times Square.`,
   name: 'New Year coloring page',
   topic: 'New Year coloring pages',
   recipesHeading: 'New Year prompts by age',
@@ -877,6 +910,7 @@ const THEME_GUIDES = {
     ] }
   ],
   faq: [
+    { q: 'Are these New Year coloring pages free to print?', a: `The example pages on this page download as PNG files for personal use, with no account and no watermark. The generator makes 2 free pages a day; its free PDF carries a watermark, and [Pro](https://dorukctn.gumroad.com/l/uynqt) removes it for $9 once.` },
     { q: `When is New Year's Day 2027?`, a: `On Friday 1 January 2027, a federal holiday in the United States (OPM). New Year's Eve is Thursday 31 December 2026.` },
     { q: 'Can the generator write “2027” or “Happy New Year” on a page?', a: `Not reliably. It draws pictures and can turn letters and numbers into shapes that are neither. Ask for an empty banner and write the words by hand.` },
     { q: 'Which New Year pages suit toddlers?', a: `One or two big objects on Simple: a party hat, balloons or a noisemaker. Fireworks suit children of 5 and up, who can stay inside thinner shapes.` },
@@ -897,13 +931,13 @@ const THEME_GUIDES = {
 },
 
 'gingerbread-coloring-pages': {
-  updated: '2026-10-15',
+  updated: '2026-10-27',
   checked: '15 October 2026',
-  title: 'Gingerbread Coloring Pages: Gingerbread Men, Houses and Cookies',
-  description: 'Free printable gingerbread coloring pages: a gingerbread man for toddlers, a candy house and a cookie tray for kids, a plain house to decorate, and the 1875 Gingerbread Boy.',
+  title: 'Gingerbread Coloring Pages: Free Printable PDFs, Men and Houses',
+  description: 'Free printable gingerbread coloring pages: a gingerbread man for toddlers, a candy house and a cookie tray for kids, a plain house to decorate.',
   eyebrow: 'Gingerbread coloring page generator',
   h1: 'Gingerbread coloring pages, from cookies to candy houses',
-  lead: `Describe a gingerbread page and print it: a gingerbread man with icing buttons for a toddler, a tray of cookie shapes for a first grader, a plain house that children decorate themselves. Below are prompts by age, a fractions lesson from the Gingerbread Boy of 1875, and what the house in Hansel and Gretel was made of.`,
+  lead: `Print free gingerbread coloring pages for kids, or describe a gingerbread page and print it: a gingerbread man with icing buttons for a toddler, a tray of cookie shapes for a first grader, a plain house that children decorate themselves. Below are prompts by age, a fractions lesson from the Gingerbread Boy of 1875, and what the house in Hansel and Gretel was made of.`,
   name: 'gingerbread coloring page',
   topic: 'gingerbread coloring pages',
   recipesHeading: 'Gingerbread prompts by age',
@@ -945,6 +979,7 @@ const THEME_GUIDES = {
     ] }
   ],
   faq: [
+    { q: 'Are these gingerbread coloring pages free to print?', a: `The example pages on this page download as PNG files for personal use, with no account and no watermark. The generator makes 2 free pages a day; its free PDF carries a watermark, and [Pro](https://dorukctn.gumroad.com/l/uynqt) removes it for $9 once.` },
     { q: 'Which gingerbread pages suit toddlers?', a: `A single gingerbread man or one cookie on Simple: a big shape with a few icing details. Houses covered in candies suit children of 5 and up.` },
     { q: 'Can I get a plain gingerbread house to decorate?', a: `Yes. Ask for “a gingerbread house outline with an empty roof and plain walls, no decorations” and let children draw or glue on their own icing and candies.` },
     { q: 'Where does the Gingerbread Man story come from?', a: `A version called “The Gingerbread Boy” was printed in St. Nicholas Magazine in May 1875. Its author said a servant girl from Maine had told it to the author's children (University of Pittsburgh folktexts).` },
@@ -960,18 +995,20 @@ const THEME_GUIDES = {
     { href: '/christmas-coloring-pages', label: 'Christmas coloring pages', note: 'with a 24-day Advent plan' },
     { href: '/snowman-coloring-pages', label: 'Snowman coloring pages', note: 'snow families, forest friends and snow science' },
     { href: '/nativity-coloring-pages', label: 'Nativity coloring pages', note: 'the manger, the shepherds and the star' },
-    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' },
+    { href: '/christmas-tree-coloring-pages', label: 'Christmas tree coloring pages', note: 'a tree to decorate' },
+    { href: '/christmas-ornament-coloring-pages', label: 'Christmas ornament coloring pages', note: 'blank baubles to design and cut out' }
   ]
 },
 
 'snowman-coloring-pages': {
-  updated: '2026-10-15',
+  updated: '2026-10-27',
   checked: '15 October 2026',
-  title: 'Snowman Coloring Pages: Free Printables and a Generator',
-  description: 'Free printable snowman coloring pages and a generator for more: a snowman family for toddlers, a blank snowman to dress, forest friends for kids, and the best snowman snow.',
+  title: 'Snowman Coloring Pages: Free Printable PDFs for Kids and Adults',
+  description: 'Free printable snowman coloring pages for kids and adults: a snowman family for toddlers, a blank snowman to dress, forest friends and the best snowman snow.',
   eyebrow: 'Snowman coloring page generator',
   h1: 'Snowman coloring pages, from three circles to a snowy forest',
-  lead: `Describe a snowman and print it: a big and a little snowman holding hands for a toddler, a blank snowman to dress for a preschool class, a snowman with a fox and a rabbit in a pine forest for a first grader. Below are prompts by age, a build-a-snowman activity, which snow makes the best snowman and how tall the tallest one stood.`,
+  lead: `Print free snowman coloring pages for kids and adults, or describe a snowman and print it: a big and a little snowman holding hands for a toddler, a blank snowman to dress for a preschool class, a snowman with a fox and a rabbit in a pine forest for a first grader. Below are prompts by age, a build-a-snowman activity, which snow makes the best snowman and how tall the tallest one stood.`,
   name: 'snowman coloring page',
   topic: 'snowman coloring pages',
   recipesHeading: 'Snowman prompts by age',
@@ -1004,6 +1041,7 @@ const THEME_GUIDES = {
     ] }
   ],
   faq: [
+    { q: 'Are these snowman coloring pages free to print?', a: `The example pages on this page download as PNG files for personal use, with no account and no watermark. The generator makes 2 free pages a day; its free PDF carries a watermark, and [Pro](https://dorukctn.gumroad.com/l/uynqt) removes it for $9 once.` },
     { q: 'Which snowman pages suit toddlers?', a: `One snowman, or a big and a little one, on Simple. Big round shapes are easy to stay inside; save forests and busy snow scenes for children of 5 and up.` },
     { q: 'Can I get a blank snowman for children to dress?', a: `Yes. Ask for “a snowman made of three plain circles with no face, no hat and no scarf”. If a face or a hat appears anyway, generate the page again.` },
     { q: 'What snow is best for building a snowman?', a: `Moist to wet snow, which falls at around 32°F. Dry powder does not stick together, and slush cannot hold a shape (Smithsonian Magazine).` },
@@ -1019,7 +1057,9 @@ const THEME_GUIDES = {
     { href: '/winter-coloring-pages', label: 'Winter coloring pages', note: 'snow days, snowflakes and polar animals' },
     { href: '/christmas-coloring-pages', label: 'Christmas coloring pages', note: 'with a 24-day Advent plan' },
     { href: '/new-year-coloring-pages', label: 'New Year coloring pages', note: 'party hats, fireworks and a countdown clock' },
-    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' },
+    { href: '/snowflake-coloring-pages', label: 'Snowflake coloring pages', note: 'the snow crystal types and a paper snowflake' },
+    { href: '/santa-coloring-pages', label: 'Santa coloring pages', note: 'a smiling face to a sack in the snow' }
   ]
 },
 
@@ -1088,13 +1128,13 @@ const THEME_GUIDES = {
 },
 
 'hanukkah-coloring-pages': {
-  updated: '2026-10-15',
+  updated: '2026-10-27',
   checked: '15 October 2026',
-  title: 'Hanukkah Coloring Pages: Menorahs, Dreidels and Latkes',
+  title: 'Hanukkah Coloring Pages: Free Printable PDFs for Kids and Adults',
   description: 'Free printable Hanukkah coloring pages for 4 to 12 December 2026: a nine-branch menorah, latkes, sufganiyot, a blank dreidel and a candle-counting page.',
   eyebrow: 'Hanukkah coloring page generator',
   h1: 'Hanukkah coloring pages: menorahs, dreidels and latkes',
-  lead: `Describe a Hanukkah page and print it: a menorah with all nine candles for a toddler, latkes or sufganiyot for a first grader, a dreidel with blank sides for an older child to letter. Hanukkah 2026 begins at sundown on Friday 4 December and ends at nightfall on Saturday 12 December. Below are prompts by age, how to check the menorah before you print, a candle-counting page for the eight nights and the dreidel letters.`,
+  lead: `Print free Hanukkah coloring pages for kids, or describe a Hanukkah page and print it: a menorah with all nine candles for a toddler, latkes or sufganiyot for a first grader, a dreidel with blank sides for an older child to letter. Hanukkah 2026 begins at sundown on Friday 4 December and ends at nightfall on Saturday 12 December. Below are prompts by age, how to check the menorah before you print, a candle-counting page for the eight nights and the dreidel letters.`,
   name: 'Hanukkah coloring page',
   topic: 'Hanukkah coloring pages',
   recipesHeading: 'Hanukkah prompts by age',
@@ -1131,6 +1171,7 @@ const THEME_GUIDES = {
     ] }
   ],
   faq: [
+    { q: 'Are these Hanukkah coloring pages free to print?', a: `The example pages on this page download as PNG files for personal use, with no account and no watermark. The generator makes 2 free pages a day; its free PDF carries a watermark, and [Pro](https://dorukctn.gumroad.com/l/uynqt) removes it for $9 once.` },
     { q: 'When is Hanukkah in 2026?', a: `It begins at sundown on Friday 4 December 2026 and ends at nightfall on Saturday 12 December 2026: eight nights, starting on the 25th of Kislev (Hebcal).` },
     { q: 'How many candles does a Hanukkah menorah have?', a: `Nine: eight for the nights and the shamash, the helper candle, which is often set higher or to the side. A seven-branched menorah is the lamp of the ancient Temple, a different object (My Jewish Learning).` },
     { q: 'Why does the dreidel page have blank sides?', a: `The generator cannot be relied on to draw Hebrew letters. Blank sides let children write nun, gimel, hey and shin themselves, copied from a real dreidel.` },
@@ -1711,6 +1752,381 @@ const THEME_GUIDES = {
     { href: '/space-coloring-pages', label: 'Space coloring pages', note: 'rockets, planets and astronauts' },
     { href: '/animal-coloring-pages', label: 'Animal coloring pages', note: 'black markings, life cycles, pet portraits' },
     { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
+  ]
+},
+
+// Christmas and winter guides added on 27 October 2026. Each title, heading and first sentence follows what people type
+// into Google (suggest scan of 27 October 2026, notes in takip/devir/coloringpagemaker-sezon-NOTLAR.md).
+
+'santa-coloring-pages': {
+  updated: '2026-10-27',
+  checked: '27 October 2026',
+  title: 'Santa Coloring Pages: Free Printable PDFs for Kids and Adults',
+  description: 'Free printable Santa coloring pages: a smiling face for toddlers, Santa with milk and cookies, Santa with his sack. Download a PNG or make your own.',
+  eyebrow: 'Santa coloring page generator',
+  h1: 'Santa coloring pages for kids and adults',
+  lead: `Print free Santa coloring pages as a PNG or PDF, or describe your own Santa and have it drawn in under a minute. Three finished pages are below, from a smiling face for a toddler to Santa with his sack in the snow, and the prompts by age work for a Santa nobody has drawn yet.`,
+  name: 'Santa coloring page',
+  topic: 'Santa coloring pages',
+  recipesHeading: 'Santa prompts by age',
+  toolHeading: 'Describe your Santa page',
+  defaultStyle: 'simple',
+  presetPrompt: `a smiling Santa face with rosy cheeks, a round nose, a fluffy beard and a hat with a pom-pom, big simple shapes, no background`,
+  chips: ['Santa waving from a chimney', 'Santa reading his list with a pencil', 'Santa on a rooftop with a sack of presents', 'Santa hat with a pom-pom and holly leaves'],
+  recipes: [
+    { who: 'Ages 2 to 5', style: 'simple', prompt: `a smiling Santa face with rosy cheeks, a round nose, a fluffy beard and a hat with a pom-pom, big simple shapes, no background`, why: `One big face, no body and no scene. The beard is a large shape that is easy to stay inside.` },
+    { who: 'Ages 3 to 6', style: 'simple', prompt: `Santa standing next to a small Christmas tree and holding one wrapped present, big simple shapes, no background`, why: `Two objects and one person, all with thick outlines.` },
+    { who: 'Ages 6 to 9', style: 'medium', prompt: `Santa standing by a fireplace holding a glass of milk and a plate of cookies, stockings above the fire, clean bold outlines`, why: `The glass and the cookies are small separate things to color, and the fire gives the page a warm corner.` },
+    { who: 'Ages 9 to 12', style: 'medium', prompt: `Santa loading presents into a sleigh in front of a snowy barn, moon and stars drawn as outlines`, why: `A scene with a job in it. Outlined stars keep the sky white.` },
+    { who: 'Teens and adults', style: 'detailed', prompt: `Santa Claus in a coat patterned with holly leaves and snowflakes, with an ornate scrollwork border around him`, why: `Pattern on the coat and a border turn a simple figure into a long page.` }
+  ],
+  sections: [
+    { h2: 'Pick the page for the child', blocks: [
+      { p: `Santa is easier to color than most people expect, because his shapes are big and round: the hat, the face, the beard, the belly. The part that decides how long a page lasts is the background.` },
+      { table: { head: ['Page', 'What it asks of a child', 'Ages'], rows: [
+        ['Santa face', 'Four or five big areas, no background', '2 to 5'],
+        ['Santa and one object', 'A person, a tree or a present, thick lines', '3 to 6'],
+        ['Santa with milk and cookies', 'Small separate details and a fire', '6 to 9'],
+        ['Santa with a sack in the snow', 'Furry trim, a tree, snow hills', '6 to 12']
+      ] } },
+      { p: `The examples above are the face, the milk-and-cookies page and the sack in the snow. Download the one that matches the child, or use a prompt from the table to make a new one.` }
+    ] },
+    { h2: 'A letter to Santa on a coloring page', blocks: [
+      { p: `Print the Santa face, have the child color it, then use the white space around it for a letter. The generator draws pictures and cannot be relied on to spell words, so write the words by hand. A page with the child's own writing on it also keeps well in a card or a box of Christmas keepsakes.` }
+    ] },
+    { h2: 'Where Santa comes from', blocks: [
+      { p: `The story of Santa Claus begins with Saint Nicholas, a bishop of Myra whose feast day is 6 December (St Nicholas Center). His gift-giving stories are tied to the custom of children hanging up stockings for presents (St Nicholas Center).` },
+      { p: `One Santa tradition in the United States started with a typo. In 1955 a Sears ad listed a phone number for children to call Santa, with a typo. The number reached the Continental Air Defense Command in Colorado, where Colonel Harry Shoup and his staff played along and told the children where Santa was. In 1958 Shoup organized a Santa-tracking program, and NORAD has kept the tradition going every year since (Smithsonian Magazine).` }
+    ] }
+  ],
+  faq: [
+    { q: 'Are these Santa coloring pages free to print?', a: `The three example pages download as PNG files for personal use, with no account and no watermark. The generator makes 2 free pages a day; its free PDF carries a watermark, and [Pro](https://dorukctn.gumroad.com/l/uynqt) removes it for $9 once.` },
+    { q: 'Which Santa page suits a toddler?', a: `The smiling Santa face on Simple: one big shape for the hat, one for the face and one for the beard, with no background to color around.` },
+    { q: 'Is there a Santa coloring page for adults?', a: `Choose Detailed and ask for pattern: a coat with holly or snowflakes, a scrollwork border. The [Christmas coloring pages for adults](/christmas-coloring-pages-for-adults) page has more detailed examples.` },
+    { q: 'Who was Saint Nicholas?', a: `A bishop of Myra, remembered on 6 December, whose gift-giving stories are where the Santa Claus story starts (St Nicholas Center).` },
+    { q: 'Can I sell Santa coloring pages I make here?', a: `With Pro, yes: it includes commercial use. Leave film, TV and brand characters out of anything you sell. Our [Etsy guide](/sell-coloring-books-on-etsy) covers fees, file limits and Etsy's rule that AI-made items must say so.` }
+  ],
+  sources: [
+    { text: 'St Nicholas Center: Who is St Nicholas?', href: 'https://www.stnicholascenter.org/who-is-st-nicholas' },
+    { text: 'Smithsonian Magazine: How NORAD got into the business of tracking Santa', href: 'https://www.smithsonianmag.com/smart-news/how-the-north-american-aerospace-defense-command-got-into-the-business-of-tracking-santa-180948196/' }
+  ],
+  cta: `A Santa page for each of eight children takes four days on the free plan. Pro makes them in one sitting, with no watermark and a commercial license, for $9 once.`,
+  related: [
+    { href: '/christmas-coloring-pages', label: 'Christmas coloring pages', note: 'with a 24-day Advent plan' },
+    { href: '/reindeer-coloring-pages', label: 'Reindeer coloring pages', note: 'which reindeer still have antlers in December' },
+    { href: '/christmas-tree-coloring-pages', label: 'Christmas tree coloring pages', note: 'a tree to decorate' },
+    { href: '/christmas-coloring-pages-for-adults', label: 'Christmas coloring pages for adults', note: 'wreaths, a village street and a mandala' },
+    { href: '/snowman-coloring-pages', label: 'Snowman coloring pages', note: 'a blank snowman to dress' },
+    { href: '/gingerbread-coloring-pages', label: 'Gingerbread coloring pages', note: 'cookies and candy houses' }
+  ]
+},
+
+'reindeer-coloring-pages': {
+  updated: '2026-10-27',
+  checked: '27 October 2026',
+  title: 'Reindeer Coloring Pages: Free Printable PDFs for Kids and Adults',
+  description: 'Free printable reindeer coloring pages: harness bells, a striped scarf, a stag in a snowy forest, and which reindeer keep their antlers in December.',
+  eyebrow: 'Reindeer coloring page generator',
+  h1: 'Reindeer coloring pages for kids and adults',
+  lead: `Print free reindeer coloring pages as a PNG or PDF, or describe your own reindeer and have it drawn in under a minute. The three pages below run from a reindeer with harness bells for a toddler to a big stag in a snowy pine forest, and the section on antlers tells you what a December reindeer really looks like.`,
+  name: 'reindeer coloring page',
+  topic: 'reindeer coloring pages',
+  recipesHeading: 'Reindeer prompts by age',
+  toolHeading: 'Describe your reindeer page',
+  defaultStyle: 'simple',
+  presetPrompt: `a cute reindeer standing, with big branching antlers, a round nose and a bell on its collar, big simple shapes, no background`,
+  chips: ['two reindeer pulling a sleigh over rooftops', 'baby reindeer with small antlers in the snow', 'reindeer wearing a knitted hat and mittens', 'reindeer head with antlers wrapped in a garland'],
+  recipes: [
+    { who: 'Ages 2 to 5', style: 'simple', prompt: `a cute reindeer standing, with big branching antlers, a round nose and a bell on its collar, big simple shapes, no background`, why: `One animal in a plain stance. The antlers are the only complicated part, and they stay large.` },
+    { who: 'Ages 3 to 6', style: 'simple', prompt: `a reindeer face with big antlers and a striped scarf, big simple shapes, no background`, why: `A face and a scarf: the scarf stripes give a young child something to choose colors for.` },
+    { who: 'Ages 6 to 9', style: 'medium', prompt: `a mother reindeer and her calf walking through snow between pine trees, clean bold outlines`, why: `Two animals of different sizes, and a calf's antlers are small, so there are fewer branches to draw.` },
+    { who: 'Ages 9 to 12', style: 'medium', prompt: `two reindeer pulling a sleigh full of presents over snowy rooftops, moon and stars drawn as outlines`, why: `The classic scene. Outlined stars keep the sky white.` },
+    { who: 'Teens and adults', style: 'detailed', prompt: `a reindeer with antlers made of swirling patterns, snowflakes and stars filling the space around it`, why: `Pattern in the antlers is the point of the page, and the snowflakes give a long, repeating background.` }
+  ],
+  sections: [
+    { h2: 'Which reindeer have antlers in December', blocks: [
+      { p: `Cows keep their antlers longer than the biggest bulls do, which matters for a Christmas picture. According to the Alaska Department of Fish and Game, the largest bulls shed their antlers in late October. Small bulls and cows that are not pregnant shed theirs in April, and pregnant cows usually keep theirs until their calves are born in late May.` },
+      { p: `So a reindeer wearing antlers in December is, in real life, most likely a cow or a small bull. Alaska's own page on Santa's reindeer says it is not known when or if Santa's reindeer shed theirs. For a coloring page the antlers stay on.` }
+    ] },
+    { h2: 'Reindeer or caribou', blocks: [
+      { p: `Reindeer and caribou are the same species, Rangifer tarandus. The names follow geography and domestication: in Europe and Asia the animal is a reindeer, and in North America it is a caribou, with “reindeer” kept in Alaska and Canada for the semi-domesticated form (University of Alaska Fairbanks; Alaska Department of Fish and Game).` },
+      { p: `For a class, print the reindeer in the snowy forest and ask children to write which of the two names they would use in their own country.` }
+    ] },
+    { h2: 'Antlers are the hard part', blocks: [
+      { p: `Branching antlers are where line art goes wrong, with branches that merge into a blob. Three words help the prompt: “big”, “branching” and “with a few points each”. If the antlers come back as a tangle, generate the page again, or ask for “a reindeer head, front view”, where the antlers are symmetrical.` }
+    ] }
+  ],
+  faq: [
+    { q: 'Are these reindeer coloring pages free to print?', a: `The three example pages download as PNG files for personal use, with no account and no watermark. The generator makes 2 free pages a day; its free PDF carries a watermark, and [Pro](https://dorukctn.gumroad.com/l/uynqt) removes it for $9 once.` },
+    { q: 'Which reindeer page suits a toddler?', a: `A single reindeer on Simple, standing, with a bell or a scarf for color. Keep antlers big and leave forests and sleighs until 5 or 6.` },
+    { q: 'Do reindeer have antlers in winter?', a: `Many do. The largest bulls shed theirs in late October, but small bulls and cows that are not pregnant keep them until April, and pregnant cows keep theirs until calving in late May (Alaska Department of Fish and Game).` },
+    { q: 'Are reindeer and caribou the same animal?', a: `Yes, one species, Rangifer tarandus. Europe and Asia say reindeer and North America says caribou (University of Alaska Fairbanks).` },
+    { q: 'Can I sell reindeer coloring pages I make here?', a: `With Pro, yes: it includes commercial use. Leave film, TV and song characters out of anything you sell. Our [Etsy guide](/sell-coloring-books-on-etsy) covers fees, file limits and Etsy's rule that AI-made items must say so.` }
+  ],
+  sources: [
+    { text: 'Alaska Department of Fish and Game: Santa\'s reindeer species profile', href: 'https://www.adfg.alaska.gov/index.cfm?adfg=santasreindeer.main' },
+    { text: 'University of Alaska Fairbanks: Reindeer', href: 'https://www.uaf.edu/lars/animals/reindeer.php' }
+  ],
+  cta: `A reindeer page for each of eight children takes four days on the free plan. Pro makes them in one sitting, with no watermark and a commercial license, for $9 once.`,
+  related: [
+    { href: '/santa-coloring-pages', label: 'Santa coloring pages', note: 'a smiling face to a sack in the snow' },
+    { href: '/christmas-coloring-pages', label: 'Christmas coloring pages', note: 'with a 24-day Advent plan' },
+    { href: '/winter-coloring-pages', label: 'Winter coloring pages', note: 'snow days, snowflakes and polar animals' },
+    { href: '/animal-coloring-pages', label: 'Animal coloring pages', note: 'life cycles and pet portraits' },
+    { href: '/christmas-coloring-pages-for-adults', label: 'Christmas coloring pages for adults', note: 'wreaths, a village street and a mandala' }
+  ]
+},
+
+'christmas-tree-coloring-pages': {
+  updated: '2026-10-27',
+  checked: '27 October 2026',
+  title: 'Christmas Tree Coloring Pages: Free Printable PDFs for Kids',
+  description: 'Free printable Christmas tree coloring pages: a tree with three presents for toddlers, a tree with a garland, a tree by the window. Download or make your own.',
+  eyebrow: 'Christmas tree coloring page generator',
+  h1: 'Christmas tree coloring pages for kids and adults',
+  lead: `Print free Christmas tree coloring pages as a PNG or PDF, or describe your own tree and have it drawn in under a minute. The three pages below go from a tree with three presents for a toddler to a decorated tree by a window, and one prompt makes a bare tree for children to decorate themselves.`,
+  name: 'Christmas tree coloring page',
+  topic: 'Christmas tree coloring pages',
+  recipesHeading: 'Christmas tree prompts by age',
+  toolHeading: 'Describe your Christmas tree page',
+  defaultStyle: 'simple',
+  presetPrompt: `one big Christmas tree with round ornaments and a star on top, three wrapped presents at its base, big simple shapes, no background`,
+  chips: ['Christmas tree with a train circling the base', 'tree with a cat sitting under it', 'tiny table-top tree in a pot', 'tree seen through a snowy window'],
+  recipes: [
+    { who: 'Ages 2 to 5', style: 'simple', prompt: `one big Christmas tree with round ornaments and a star on top, three wrapped presents at its base, big simple shapes, no background`, why: `One tree, a few big circles and three boxes: the easiest Christmas page there is.` },
+    { who: 'Ages 3 to 6', style: 'simple', prompt: `a Christmas tree with no ornaments, only a star on top and a thick trunk, big simple shapes, no background`, why: `A bare tree. Children draw the ornaments and lights themselves, then color them (see below).` },
+    { who: 'Ages 6 to 9', style: 'medium', prompt: `a Christmas tree with round ornaments, a swirling garland and a star, standing on a round tree stand`, why: `The garland is one long shape that winds through the whole page.` },
+    { who: 'Ages 9 to 12', style: 'medium', prompt: `a living room with a decorated Christmas tree, a fireplace with stockings and presents on the floor, clean bold outlines`, why: `Many separate objects, so the page can last more than one sitting.` },
+    { who: 'Teens and adults', style: 'detailed', prompt: `a tall Christmas tree filled with zentangle patterns, with a different pattern in each ornament and a patterned star`, why: `Every ornament is a separate pattern to fill, and the tree shape holds the page together.` }
+  ],
+  sections: [
+    { h2: 'Draw the ornaments yourself', blocks: [
+      { p: `The bare tree prompt above gives every child the same green shape. What goes on it is up to the child:` },
+      { ul: [
+        `**Ornaments.** Circles, stars, bells, candy canes. Draw them in pencil first, then color.`,
+        `**Lights.** A string of small circles zigzagging down from the star. Count them: a page with 20 lights is also a counting exercise.`,
+        `**Presents.** Rectangles with a ribbon and a bow under the tree, each one a different size.`
+      ] },
+      { p: `For a class, print one bare tree for each child and hang the finished trees in a row. No two will look alike.` }
+    ] },
+    { h2: 'The first Rockefeller Center tree', blocks: [
+      { p: `The famous tree in New York began small. In December 1931, construction workers at Rockefeller Center pooled their money for a 20-foot balsam fir, decorated it with handmade garlands from their families and raised it on Christmas Eve. Two years later, in 1933, the tree became an annual tradition (Rockefeller Center).` },
+      { p: `Measure 20 feet along a wall or a hallway with a tape measure. Then ask children how many of them would have to stand on each other's shoulders to reach the top of that first tree.` }
+    ] },
+    { h2: 'Print the tree as a card or a tag', blocks: [
+      { p: `Print at 4 pages per sheet in your printer settings for four small trees on one letter page. Cut them apart, color them and glue each to a folded piece of card for a Christmas card, or punch a hole at the top for a gift tag.` }
+    ] }
+  ],
+  faq: [
+    { q: 'Are these Christmas tree coloring pages free to print?', a: `The three example pages download as PNG files for personal use, with no account and no watermark. The generator makes 2 free pages a day; its free PDF carries a watermark, and [Pro](https://dorukctn.gumroad.com/l/uynqt) removes it for $9 once.` },
+    { q: 'Which Christmas tree page suits a toddler?', a: `One tree with a few big ornaments and presents on Simple. Leave rooms, fireplaces and garlands until 6 or older.` },
+    { q: 'Can I get a bare tree for children to decorate?', a: `Yes. Ask for “a Christmas tree with no ornaments, only a star on top and a thick trunk”. If ornaments appear anyway, generate the page again.` },
+    { q: 'Are there Christmas tree coloring pages for adults?', a: `Choose Detailed and ask for pattern: a tree filled with zentangle designs, or a tree inside a wreath. [Christmas coloring pages for adults](/christmas-coloring-pages-for-adults) has detailed examples.` },
+    { q: 'How tall was the first Rockefeller Center Christmas tree?', a: `About 20 feet: a balsam fir that construction workers bought together and raised on Christmas Eve in 1931 (Rockefeller Center).` }
+  ],
+  sources: [
+    { text: 'Rockefeller Center: Christmas tree', href: 'https://www.rockefellercenter.com/holidays/rockefeller-center-christmas-tree/' }
+  ],
+  cta: `A different tree for each of eight children takes four days on the free plan. Pro makes them in one sitting, with no watermark and a commercial license, for $9 once.`,
+  related: [
+    { href: '/christmas-coloring-pages', label: 'Christmas coloring pages', note: 'with a 24-day Advent plan' },
+    { href: '/christmas-ornament-coloring-pages', label: 'Christmas ornament coloring pages', note: 'blank baubles to design and cut out' },
+    { href: '/santa-coloring-pages', label: 'Santa coloring pages', note: 'a smiling face to a sack in the snow' },
+    { href: '/gingerbread-coloring-pages', label: 'Gingerbread coloring pages', note: 'cookies and candy houses' },
+    { href: '/christmas-coloring-pages-for-adults', label: 'Christmas coloring pages for adults', note: 'wreaths, a village street and a mandala' }
+  ]
+},
+
+'christmas-ornament-coloring-pages': {
+  updated: '2026-10-27',
+  checked: '27 October 2026',
+  title: 'Christmas Ornament Coloring Pages: Free Printable PDFs for Kids',
+  description: 'Free printable Christmas ornament coloring pages: a blank ball to design, a snowflake bauble and three patterned ornaments. Color, cut out and hang them.',
+  eyebrow: 'Christmas ornament coloring page generator',
+  h1: 'Christmas ornament coloring pages for kids and adults',
+  lead: `Print free Christmas ornament coloring pages as a PNG or PDF, then color, cut out and hang them on the tree. One page is a blank ball for children to design, one has a snowflake in the middle, and one has three patterned ornaments for older colorists.`,
+  name: 'Christmas ornament coloring page',
+  topic: 'Christmas ornament coloring pages',
+  recipesHeading: 'Christmas ornament prompts by age',
+  toolHeading: 'Describe your Christmas ornament page',
+  defaultStyle: 'simple',
+  presetPrompt: `one big round Christmas ornament with a bow at the top and nothing drawn on the ball, big simple shapes, no background`,
+  chips: ['star ornament with a ribbon loop', 'bell ornament with a bow', 'ornament shaped like a gingerbread man', 'five ornaments hanging from one garland'],
+  recipes: [
+    { who: 'Ages 2 to 5', style: 'simple', prompt: `one big round Christmas ornament with a bow at the top and nothing drawn on the ball, big simple shapes, no background`, why: `An empty ball. The child draws the pattern and colors it, so no two ornaments match.` },
+    { who: 'Ages 3 to 6', style: 'simple', prompt: `three round ornaments hanging from a branch, each with a different stripe or dot pattern, big simple shapes`, why: `Three balls with simple patterns, each one a separate area to color.` },
+    { who: 'Ages 6 to 9', style: 'medium', prompt: `a round Christmas ornament with a big snowflake in the center ringed by small dots, hanging from a bow`, why: `One clear design with a ring of dots, which gives careful colorers something to do.` },
+    { who: 'Ages 9 to 12', style: 'medium', prompt: `five ornaments hanging from a garland: a ball, a star, a bell, a candy cane and a gingerbread man`, why: `Five different shapes, so the page can become a set of tree decorations.` },
+    { who: 'Teens and adults', style: 'detailed', prompt: `three round Christmas ornaments with ornate flower and swirl patterns hanging from a pine branch`, why: `Dense pattern inside round shapes, the same kind of page as a mandala.` }
+  ],
+  sections: [
+    { h2: 'From coloring page to tree ornament', blocks: [
+      { p: `Every page downloads as a letter-size PDF, and your printer's “pages per sheet” setting shrinks it without any editing:` },
+      { ul: [
+        `**Print on cardstock.** Plain paper goes limp on a tree. Cardstock keeps its shape.`,
+        `**Four to a sheet.** At 4 pages per sheet each picture comes out just under 4 inches across, a good size for a tree.`,
+        `**Cut around the outline, punch a hole and tie on ribbon.** Color the back too, or glue two pages back to back so the ornament has no blank side.`
+      ] },
+      { p: `Print the blank ornament for a whole class. Each child's ball is different, and the finished set looks like a real tree of glass baubles.` }
+    ] },
+    { h2: 'Where glass ornaments come from', blocks: [
+      { p: `Mold-blown glass ornaments were first made in Lauscha, a small glassmaking town in Germany. F. W. Woolworth's stores began selling Lauscha ornaments in the United States in 1880 (Wikipedia, “Christmas ornament”). Sources differ on the exact years.` }
+    ] },
+    { h2: 'Coloring a mandala-style ornament', blocks: [
+      { p: `The patterned ornaments are round, so they color like mandalas. In a 2005 experiment, 84 students who had been made briefly anxious colored a mandala, a plaid pattern or a blank sheet for 20 minutes. Anxiety fell about the same after the mandala and the plaid, and more than after the blank sheet (Curry and Kasser, Art Therapy). One small study is not a treatment, which our [article on adult coloring and anxiety](/adult-coloring-mental-health-benefits) explains.` }
+    ] }
+  ],
+  faq: [
+    { q: 'Are these Christmas ornament coloring pages free to print?', a: `The three example pages download as PNG files for personal use, with no account and no watermark. The generator makes 2 free pages a day; its free PDF carries a watermark, and [Pro](https://dorukctn.gumroad.com/l/uynqt) removes it for $9 once.` },
+    { q: 'How do I turn a coloring page into an ornament?', a: `Print it on cardstock at 4 pages per sheet, color it, cut around the outline, punch a hole at the top and tie on a ribbon.` },
+    { q: 'Can I get a blank ornament for children to design?', a: `Yes. Ask for “one big round Christmas ornament with a bow at the top and nothing drawn on the ball”. If a pattern appears anyway, generate the page again.` },
+    { q: 'Are there Christmas ornament coloring pages for adults?', a: `Choose Detailed and ask for pattern inside round shapes: flowers, swirls, snowflakes. [Christmas coloring pages for adults](/christmas-coloring-pages-for-adults) has an ornament mandala.` },
+    { q: 'Can I sell ornament coloring pages I make here?', a: `With Pro, yes: it includes commercial use. Our [Etsy guide](/sell-coloring-books-on-etsy) covers fees, file limits and Etsy's rule that AI-made items must say so.` }
+  ],
+  sources: [
+    { text: 'Wikipedia: Christmas ornament', href: 'https://en.wikipedia.org/wiki/Christmas_ornament' },
+    { text: 'Curry and Kasser (2005), Can coloring mandalas reduce anxiety? Art Therapy 22(2)', href: 'https://doi.org/10.1080/07421656.2005.10129441' }
+  ],
+  cta: `A blank ornament for every child in a class is one page and a photocopier. Pro makes a different set for each table in one sitting, with no watermark and a commercial license, for $9 once.`,
+  related: [
+    { href: '/christmas-tree-coloring-pages', label: 'Christmas tree coloring pages', note: 'a tree to decorate' },
+    { href: '/christmas-coloring-pages', label: 'Christmas coloring pages', note: 'with a 24-day Advent plan, cards and ornaments' },
+    { href: '/snowflake-coloring-pages', label: 'Snowflake coloring pages', note: 'the snow crystal types and a paper snowflake' },
+    { href: '/mandala-coloring-pages', label: 'Mandala coloring pages', note: 'symmetrical designs for a quiet evening' },
+    { href: '/christmas-coloring-pages-for-adults', label: 'Christmas coloring pages for adults', note: 'wreaths, a village street and a mandala' }
+  ]
+},
+
+'snowflake-coloring-pages': {
+  updated: '2026-10-27',
+  checked: '27 October 2026',
+  title: 'Snowflake Coloring Pages: Free Printable PDFs for Kids and Adults',
+  description: 'Free printable snowflake coloring pages: four simple snowflakes, a window of snowflakes and one fern-armed snowflake, with the real snow crystal types.',
+  eyebrow: 'Snowflake coloring page generator',
+  h1: 'Snowflake coloring pages for kids and adults',
+  lead: `Print free snowflake coloring pages as a PNG or PDF, or describe your own and have it drawn in under a minute. The three pages below go from four simple snowflakes for a toddler to one large snowflake with fern-like arms, and the guide shows which real snow crystal each one looks like.`,
+  name: 'snowflake coloring page',
+  topic: 'snowflake coloring pages',
+  recipesHeading: 'Snowflake prompts by age',
+  toolHeading: 'Describe your snowflake page',
+  defaultStyle: 'simple',
+  presetPrompt: `four snowflakes of different sizes with six short arms each, spaced apart with small dots between them, big simple shapes, no background`,
+  chips: ['one big snowflake with a star in the center', 'snowflakes falling over a snowy village', 'a snowflake made of six small leaves', 'a hexagonal snow crystal with a hole pattern'],
+  recipes: [
+    { who: 'Ages 2 to 5', style: 'simple', prompt: `four snowflakes of different sizes with six short arms each, spaced apart with small dots between them, big simple shapes, no background`, why: `Four separate shapes with plain arms. Each is small enough to finish in one go.` },
+    { who: 'Ages 3 to 6', style: 'simple', prompt: `one big snowflake with six thick arms and a star in the center, big simple shapes, no background`, why: `One snowflake filling the page, with thick arms that are easy to stay inside.` },
+    { who: 'Ages 6 to 9', style: 'medium', prompt: `a window with curtains at both sides and snowflakes of different sizes on the glass, clean bold outlines`, why: `A frame to color first, then snowflakes of different sizes.` },
+    { who: 'Ages 9 to 12', style: 'medium', prompt: `a large flat hexagonal snow crystal with a ring pattern and six arms, clean bold outlines`, why: `A plate-type crystal, which pairs with the crystal types below.` },
+    { who: 'Teens and adults', style: 'detailed', prompt: `one large snowflake with six long branching arms and many small side branches like a fern`, why: `A branching snowflake gives long lines to color along, with symmetry to keep the eye moving.` }
+  ],
+  sections: [
+    { h2: 'Not every snowflake is a six-pointed star', blocks: [
+      { p: `A snow crystal grows from a hexagonal ice prism, but not every one ends up looking like a star. SnowCrystals.com, run by the Caltech physicist Kenneth Libbrecht, names several basic forms. Each of them makes a different coloring page:` },
+      { table: { head: ['Crystal', 'What it looks like', 'Ask for'], rows: [
+        ['Stellar dendrite', 'A star with branches and side branches, the most recognizable snow crystal', '“six long branching arms with small side branches like a fern”'],
+        ['Stellar plate', 'A flat star with broad, plate-like arms', '“a flat six-sided snowflake with a pattern in each arm”'],
+        ['Column', 'A hexagonal prism, small and easy to miss', '“a six-sided column with flat ends”'],
+        ['Needle', 'A column grown long and thin', '“thin ice needles in a cluster”'],
+        ['Capped column', 'A column with a plate on each end', '“a six-sided column with a flat disc at each end”']
+      ] } },
+      { p: `SnowCrystals.com also notes that not all snowflakes look like six-pointed stars, though many do, and that fernlike stellar dendrites are not perfectly symmetrical. For why so many have six, see [winter coloring pages](/winter-coloring-pages).` }
+    ] },
+    { h2: 'The man who photographed snowflakes first', blocks: [
+      { p: `Guinness World Records lists Wilson Bentley as the first person to photograph a single snow crystal. He took the picture on 15 January 1885 on his family's farm near Jericho, Vermont (Guinness World Records). Print the fern-armed snowflake and ask children to compare its branches with a photograph of a stellar dendrite online.` }
+    ] },
+    { h2: 'Fold a six-point paper snowflake', blocks: [
+      { p: `A snowflake on paper has six arms because you fold the paper into six layers:` },
+      { ul: [
+        `Start with a round sheet of paper: trace a plate and cut it out.`,
+        `Fold it in half, then fold the half into thirds, like a fan.`,
+        `Cut small shapes out of the edges, then unfold it.`
+      ] },
+      { p: `Color the printed snowflake pages first, then cut out the snowflakes along the outline and hang them in a window.` }
+    ] }
+  ],
+  faq: [
+    { q: 'Are these snowflake coloring pages free to print?', a: `The three example pages download as PNG files for personal use, with no account and no watermark. The generator makes 2 free pages a day; its free PDF carries a watermark, and [Pro](https://dorukctn.gumroad.com/l/uynqt) removes it for $9 once.` },
+    { q: 'Do all snowflakes have six points?', a: `No. Many do, but snow crystals also grow as columns, needles, triangles and twelve-branched forms, and the fernlike ones are not perfectly symmetrical (SnowCrystals.com).` },
+    { q: 'Which snowflake page suits a toddler?', a: `Four or five snowflakes with short, thick arms on Simple, like the first example. Leave fern-like detail for 9 and older.` },
+    { q: 'Who took the first photograph of a snowflake?', a: `Wilson Bentley, on 15 January 1885, near Jericho, Vermont (Guinness World Records).` },
+    { q: 'Are there snowflake coloring pages for adults?', a: `Choose Detailed and ask for branching arms with many small side branches, or a snowflake mandala with a pattern in every arm.` }
+  ],
+  sources: [
+    { text: 'SnowCrystals.com: Snowflake and snow crystal guide (Kenneth Libbrecht, Caltech)', href: 'https://www.snowcrystals.com/guide/guide.html' },
+    { text: 'Guinness World Records: First photograph of a snowflake', href: 'https://www.guinnessworldrecords.com/world-records/606626-first-photograph-of-a-snowflake' }
+  ],
+  cta: `A different snowflake page for each of eight children takes four days on the free plan. Pro makes them in one sitting, with no watermark and a commercial license, for $9 once.`,
+  related: [
+    { href: '/winter-coloring-pages', label: 'Winter coloring pages', note: 'snow days, snowflakes and polar animals' },
+    { href: '/snowman-coloring-pages', label: 'Snowman coloring pages', note: 'a blank snowman to dress' },
+    { href: '/christmas-ornament-coloring-pages', label: 'Christmas ornament coloring pages', note: 'blank baubles to design and cut out' },
+    { href: '/mandala-coloring-pages', label: 'Mandala coloring pages', note: 'symmetrical designs for a quiet evening' },
+    { href: '/christmas-coloring-pages', label: 'Christmas coloring pages', note: 'with a 24-day Advent plan' }
+  ]
+},
+
+'christmas-coloring-pages-for-adults': {
+  updated: '2026-10-27',
+  checked: '27 October 2026',
+  title: 'Christmas Coloring Pages for Adults: Free Printable PDFs',
+  description: 'Free printable Christmas coloring pages for adults: a holly wreath, a snowy village street and an ornament mandala, plus prompts to make more.',
+  eyebrow: 'Adult Christmas coloring page generator',
+  h1: 'Christmas coloring pages for adults',
+  lead: `Print free Christmas coloring pages for adults as a PNG or PDF, or describe your own and have a detailed page drawn in under a minute. The three pages below are a holly wreath, a snowy village street and a mandala made of ornaments, each with enough pattern for an evening.`,
+  name: 'adult Christmas coloring page',
+  topic: 'Christmas coloring pages for adults',
+  recipesHeading: 'Adult Christmas prompts',
+  toolHeading: 'Describe your Christmas page',
+  defaultStyle: 'detailed',
+  presetPrompt: `a round Christmas wreath filled with holly leaves, berries, pine cones and a ribbon bow, with patterned ornaments`,
+  chips: ['a knitted Christmas sweater pattern with reindeer and snowflakes', 'a snowy cabin with a wreath on the door', 'a poinsettia with patterned petals', 'a row of nutcrackers with patterned uniforms'],
+  recipes: [
+    { who: 'Pattern lovers', style: 'detailed', prompt: `a round Christmas wreath filled with holly leaves, berries, pine cones and a ribbon bow, with patterned ornaments`, why: `Dense natural detail in a round frame. Every leaf and berry is a separate area.` },
+    { who: 'Scene lovers', style: 'detailed', prompt: `a snowy Christmas village street with small houses, a church, lamp posts, wreaths on the doors and a decorated tree in the square`, why: `Architecture gives the dense, repeating detail adults like, with a sky left white for snowflakes.` },
+    { who: 'Mandala fans', style: 'detailed', prompt: `a round mandala made of Christmas ornaments, stars, holly leaves and candy canes`, why: `A symmetrical page where one pattern repeats around the center.` },
+    { who: 'Knitters', style: 'detailed', prompt: `a pattern of reindeer, snowflakes and pine trees in rows, like the yoke of a knitted Christmas sweater`, why: `Rows of repeating shapes that look good in two or three colors.` },
+    { who: 'Calm and easy', style: 'medium', prompt: `a single large poinsettia with big petals and a ribbon bow, clean bold outlines`, why: `Bold outlines and large areas, for an easy evening or for eyes that tire quickly.` }
+  ],
+  sections: [
+    { h2: 'Choose a pattern, not just a scene', blocks: [
+      { p: `Detailed pages are not all the same. The three examples above show three kinds, and the words in your prompt choose between them:` },
+      { table: { head: ['Kind', 'Words to use', 'Example above'], rows: [
+        ['Natural detail', 'holly, berries, pine cones, ribbon', 'Holly wreath'],
+        ['Architecture', 'village, church, lamp posts, wreaths on doors', 'Snowy village street'],
+        ['Repeating pattern', 'mandala, ornaments, stars, symmetrical', 'Ornament mandala']
+      ] } },
+      { p: `Leave out “dark night” and “silhouette”, which pull the page toward solid black. Write “snow and stars drawn as outlines” and the sky stays white.` }
+    ] },
+    { h2: 'Print and paper', blocks: [
+      { p: `Pages download as 1024-pixel images, about 136 dots per inch on a letter sheet. That is fine for pencils and pens at home. Plain printer paper wrinkles under wet markers, so use heavier paper for markers, or put a spare sheet behind the page.` },
+      { ul: [
+        `**Pencils.** Print on plain paper and work from light to dark.`,
+        `**Gel pens and fine markers.** Heavier paper stops ink showing through to the back.`,
+        `**Whole sets.** Print the wreath, the village and the mandala together and color one a night through December.`
+      ] }
+    ] },
+    { h2: 'What the research on adult coloring shows', blocks: [
+      { p: `Adult coloring is often sold as stress relief. In a 2005 experiment, 84 students who had been made briefly anxious colored a mandala, a plaid pattern or a blank sheet for 20 minutes. Anxiety fell about the same after the mandala and the plaid, and more than after the blank sheet (Curry and Kasser, Art Therapy). The research is small, and our [article on adult coloring and anxiety](/adult-coloring-mental-health-benefits) covers what it cannot show.` }
+    ] }
+  ],
+  faq: [
+    { q: 'Are these Christmas coloring pages for adults free to print?', a: `The three example pages download as PNG files for personal use, with no account and no watermark. The generator makes 2 free pages a day; its free PDF carries a watermark, and [Pro](https://dorukctn.gumroad.com/l/uynqt) removes it for $9 once.` },
+    { q: 'What detail level do adult Christmas pages need?', a: `Choose Detailed for dense pattern, or Medium for bold outlines and big areas. [Adult coloring pages](/adult-coloring-pages) explains both levels.` },
+    { q: 'Can I make a Christmas mandala?', a: `Yes. Ask for “a round mandala made of Christmas ornaments, stars, holly leaves and candy canes”. The third example above was made that way.` },
+    { q: 'How do I stop a page printing with big black areas?', a: `Avoid “dark”, “night” and “silhouette” in the prompt, and write “drawn as outlines” for skies and shadows. If a page still comes back filled, generate it again.` },
+    { q: 'Can I sell Christmas coloring pages I make here?', a: `With Pro, yes: it includes commercial use. Leave film, TV and brand characters out of anything you sell. Our [Etsy guide](/sell-coloring-books-on-etsy) covers fees, file limits and Etsy's rule that AI-made items must say so.` }
+  ],
+  sources: [
+    { text: 'Curry and Kasser (2005), Can coloring mandalas reduce anxiety? Art Therapy 22(2)', href: 'https://doi.org/10.1080/07421656.2005.10129441' }
+  ],
+  cta: `A page a night through December means 24 different pages. The free plan makes 2 a day, so start early, or make them all in one sitting with Pro, with no watermark and a commercial license, for $9 once.`,
+  related: [
+    { href: '/christmas-coloring-pages', label: 'Christmas coloring pages', note: 'with a 24-day Advent plan' },
+    { href: '/adult-coloring-pages', label: 'Adult coloring pages', note: 'intricate or bold and easy' },
+    { href: '/mandala-coloring-pages', label: 'Mandala coloring pages', note: 'symmetrical designs for a quiet evening' },
+    { href: '/christmas-ornament-coloring-pages', label: 'Christmas ornament coloring pages', note: 'blank baubles to design and cut out' },
+    { href: '/winter-coloring-pages', label: 'Winter coloring pages', note: 'snow days, snowflakes and polar animals' },
+    { href: '/adult-coloring-mental-health-benefits', label: 'Adult coloring and anxiety', note: 'what four studies found' }
   ]
 }
 

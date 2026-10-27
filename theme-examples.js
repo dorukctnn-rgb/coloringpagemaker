@@ -330,5 +330,77 @@ module.exports = {
       { name: 'ocean-octopus', level: 'Medium', title: 'Octopus and treasure chest',
         alt: 'Ocean coloring page of a smiling octopus waving its arms next to an open treasure chest, with seaweed, shells and bubbles.' }
     ]
+  },
+  // Christmas and winter pages added on 27 October 2026. The santa, reindeer, tree, ornament and snowflake pages are
+  // pages an earlier session of the same day had drawn and left in the working tree; each was looked at one by one.
+  // The three adult Christmas pages were drawn on 27 October 2026 with the site's free drawing model (FLUX schnell,
+  // the prompt of cloudflare/flux.js, detailed level) and passed the page judge of the daily job (autopin/art.js).
+  'santa-coloring-pages': {
+    heading: 'Free printable Santa coloring pages',
+    items: [
+      { name: 'santa-smiling-face', level: 'Simple', title: 'Smiling Santa face',
+        alt: 'Simple coloring page of a smiling Santa face with rosy cheeks, a round nose, a long curved beard and a hat with a pom-pom, in thick black outlines.' },
+      { name: 'santa-milk-cookies', level: 'Medium', title: 'Santa with milk and cookies',
+        alt: 'Coloring page of Santa standing by a fireplace holding a glass of milk and a plate of cookies, with a wreath, a bow and wrapped presents behind him.' },
+      { name: 'santa-sack-snow', level: 'Medium', title: 'Santa with his sack in the snow',
+        alt: 'Coloring page of Santa walking through the snow with a big sack of presents over his shoulder, beside a tall pine tree.' }
+    ]
+  },
+  'reindeer-coloring-pages': {
+    heading: 'Free printable reindeer coloring pages',
+    items: [
+      { name: 'reindeer-harness-bells', level: 'Simple', title: 'Reindeer with harness bells',
+        alt: 'Simple coloring page of a smiling reindeer with branching antlers, standing on four legs in a collar and a harness hung with round bells.' },
+      { name: 'reindeer-striped-scarf', level: 'Simple', title: 'Reindeer in a striped scarf',
+        alt: 'Simple coloring page of a smiling reindeer face with big antlers, a round nose and a fringed striped scarf.' },
+      { name: 'reindeer-snowy-forest', level: 'Medium', title: 'Reindeer in a snowy forest',
+        alt: 'Coloring page of a large reindeer with tall branching antlers standing among pine trees, with a small bird near one antler and a tiny animal in the snow.' }
+    ]
+  },
+  'christmas-tree-coloring-pages': {
+    heading: 'Free printable Christmas tree coloring pages',
+    items: [
+      { name: 'christmas-tree-presents', level: 'Simple', title: 'Tree with three presents',
+        alt: 'Simple coloring page of a Christmas tree with round ornaments and a star on top, and three wrapped presents with bows at its base.' },
+      { name: 'christmas-tree-lights', level: 'Medium', title: 'Tree with ornaments and a garland',
+        alt: 'Coloring page of a Christmas tree with round ornaments, a swirling garland and a star on top, standing on a round tree stand.' },
+      { name: 'christmas-tree-window', level: 'Detailed', title: 'Tree by the window and fireplace',
+        alt: 'Detailed coloring page of a decorated Christmas tree beside a window with falling snow, stockings hanging from a fireplace mantel and presents on the floor.' }
+    ]
+  },
+  'christmas-ornament-coloring-pages': {
+    heading: 'Free printable Christmas ornament coloring pages',
+    // The files are in the folder this page had before it had a page: public/examples/ornament-coloring-pages/.
+    files: 'ornament-coloring-pages',
+    items: [
+      { name: 'ornament-blank-ball', level: 'Simple', title: 'Blank ornament to design',
+        alt: 'Simple coloring page of one round Christmas ornament with a bow and a hanging cap, the ball left empty so a child can draw its own pattern.' },
+      { name: 'ornament-snowflake-ball', level: 'Medium', title: 'Ornament with a snowflake',
+        alt: 'Coloring page of a round Christmas ornament hanging from a bow, with a large snowflake in the center ringed by small dots.' },
+      { name: 'ornament-three-patterned', level: 'Detailed', title: 'Three patterned ornaments on a branch',
+        alt: 'Detailed coloring page of three Christmas ornaments hanging from a pine branch, each ball filled with flowers, swirls and dots.' }
+    ]
+  },
+  'snowflake-coloring-pages': {
+    heading: 'Free printable snowflake coloring pages',
+    items: [
+      { name: 'snowflake-four-simple', level: 'Simple', title: 'Four simple snowflakes',
+        alt: 'Simple coloring page of four six-armed snowflakes of different sizes with short branches, spaced apart with small dots between them.' },
+      { name: 'snowflake-window-curtains', level: 'Medium', title: 'Snowflakes on a window',
+        alt: 'Coloring page of a window with curtains on both sides and four snowflakes of different sizes on the glass.' },
+      { name: 'snowflake-fern-arms', level: 'Detailed', title: 'One large snowflake with fern-like arms',
+        alt: 'Detailed coloring page of one large snowflake with six long arms, each with many small side branches like a fern.' }
+    ]
+  },
+  'christmas-coloring-pages-for-adults': {
+    heading: 'Free printable adult Christmas coloring pages',
+    items: [
+      { name: 'christmas-adults-holly-wreath', level: 'Detailed', title: 'Holly wreath with ornaments',
+        alt: 'Detailed Christmas coloring page for adults of a round wreath of holly leaves, berries and pine cones with patterned ornaments and a large ribbon bow at the bottom.' },
+      { name: 'christmas-adults-village-street', level: 'Detailed', title: 'Snowy village street',
+        alt: 'Detailed Christmas coloring page for adults of a snowy village street with a church tower, houses, lamp posts, wreaths on the doors and two decorated trees under falling snow.' },
+      { name: 'christmas-adults-ornament-mandala', level: 'Detailed', title: 'Ornament mandala',
+        alt: 'Detailed Christmas coloring page for adults of a round symmetrical mandala made of ornaments, a central snowflake, stars, holly leaves and ribbon bows.' }
+    ]
   }
 };

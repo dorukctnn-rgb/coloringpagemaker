@@ -14,7 +14,8 @@
   ],
   "git": {
     "deploymentEnabled": {
-      "cloudflare/shield-and-move": false
+      "cloudflare/shield-and-move": false,
+      "seasonal-pages": false
     }
   }
 }
