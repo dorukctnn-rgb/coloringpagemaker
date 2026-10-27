@@ -55,6 +55,12 @@ export function releasedViews({ now, autoPages, seedsOn = true, frozenAt = null 
 // --- the Pinterest feed ---
 export const pageUrl = slug => `${SITE}/printables/${slug}`;
 export const itemLink = slug => `${pageUrl(slug)}?utm_source=pinterest&utm_medium=rss&utm_campaign=autopin&utm_content=${slug}`;
+// The holiday pins (Thanksgiving, Christmas, Hanukkah, New Year, winter) link to the season page that matches the drawing
+// (/santa-coloring-pages, /thanksgiving-coloring-pages, ...), tagged for the holiday2026 campaign; utm_content is the pin's slug,
+// so each pin can be told apart in the site's traffic. Everything else keeps the link to its own printable page (itemLink).
+export const HOLIDAY_CAMPAIGN = 'holiday2026';
+export const holidayLink = (site, slug) => `${SITE}/${site}?utm_source=pinterest&utm_medium=social&utm_campaign=${HOLIDAY_CAMPAIGN}&utm_content=${slug}`;
+export const linkOf = v => (THEMES[v.theme] && THEMES[v.theme].holiday && v.site ? holidayLink(v.site, v.slug) : itemLink(v.slug));
 const rfc822 = ms => new Date(ms).toUTCString();
 
 // days: how long an item stays in the feed (10 in production, tick.js). A feed connected late would otherwise start with a
@@ -72,7 +78,7 @@ export function buildFeed({ items, now, group = null }) {
   const body = items.map(v => [
     '    <item>',
     `      <title>${xmlText(v.title)}</title>`,
-    `      <link>${xmlText(itemLink(v.slug))}</link>`,
+    `      <link>${xmlText(linkOf(v))}</link>`,
     `      <description>${xmlText(v.description)}</description>`,
     `      <guid isPermaLink="false">cpm-pin-${xmlText(v.slug)}</guid>`,
     `      <pubDate>${rfc822(v.release)}</pubDate>`,

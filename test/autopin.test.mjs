@@ -20,7 +20,7 @@ import * as topics from '../cloudflare/autopin/topics.js';
 import { decodeGrayPng, judge, whiten, artSquare, LIMITS } from '../cloudflare/autopin/art.js';
 import { composePin, SKINS, skinFor, skinContrast, fitHeadline, PIN_W, PIN_H, CARD } from '../cloudflare/autopin/pin.js';
 import { encodePngGray, xmpChunk, readXmp, pngSize, textWidth } from '../cloudflare/autopin/raster.js';
-import { buildFeed, buildSitemap, feedItems, releasedViews, seedViews, itemLink, printAlt } from '../cloudflare/autopin/feed.js';
+import { buildFeed, buildSitemap, feedItems, releasedViews, seedViews, itemLink, holidayLink, linkOf, autoView, HOLIDAY_CAMPAIGN, printAlt } from '../cloudflare/autopin/feed.js';
 import { renderLanding, renderHub } from '../cloudflare/autopin/page.js';
 import { shellSource } from '../cloudflare/autopin/tools/make-shell.mjs';
 import { SHELL } from '../cloudflare/autopin/shell.js';
@@ -120,25 +120,64 @@ const cron = (w, t) => w.svc.tick({ source: 'cron', scheduledTime: t });
 // =====================================================================================================
 // calendar and banks
 // =====================================================================================================
-test('the calendar: Halloween to 31 October, fall and Thanksgiving, Christmas and winter, evergreen in between', () => {
+test('the calendar: Halloween to 31 October, Thanksgiving and fall with the first Christmas pins, Christmas with Hanukkah, New Year, winter, evergreen in between', () => {
   const phase = d => topics.phaseFor(new Date(d)).id;
+  const mix = d => topics.phaseFor(new Date(d)).mix;
   assert.equal(phase(at(2026, 10, 24)), 'halloween');
   assert.equal(phase(at(2026, 10, 31, 23, 59)), 'halloween');
   assert.equal(phase(at(2026, 9, 15)), 'halloween');
   assert.equal(phase(at(2026, 9, 14)), 'evergreen');
-  assert.equal(phase(at(2026, 11, 1)), 'fall');
-  assert.deepEqual(Object.keys(topics.phaseFor(new Date(at(2026, 11, 2))).mix).sort(), ['fall', 'thanksgiving']);
+  assert.equal(phase(at(2026, 11, 1)), 'fall-thanksgiving');
+  assert.deepEqual(mix(at(2026, 11, 2)), { thanksgiving: 2, fall: 1, christmas: 1 });
+  assert.equal(phase(at(2026, 11, 14, 23, 59)), 'fall-thanksgiving');
   // US Thanksgiving 2026 is 26 November, 2027 is 25 November, 2028 is 23 November.
   assert.equal(topics.thanksgiving(2026).toISOString().slice(0, 10), '2026-11-26');
   assert.equal(topics.thanksgiving(2027).toISOString().slice(0, 10), '2027-11-25');
   assert.equal(topics.thanksgiving(2028).toISOString().slice(0, 10), '2028-11-23');
-  assert.equal(phase(at(2026, 11, 26, 20)), 'fall');
-  assert.equal(phase(at(2026, 11, 27)), 'christmas');
-  assert.deepEqual(Object.keys(topics.phaseFor(new Date(at(2026, 12, 5))).mix).sort(), ['christmas', 'evergreen', 'winter']);
-  assert.equal(phase(at(2026, 12, 25)), 'christmas');
-  assert.equal(phase(at(2026, 12, 26)), 'winter');
+  assert.equal(phase(at(2026, 11, 15)), 'thanksgiving-christmas');
+  assert.deepEqual(mix(at(2026, 11, 20)), { thanksgiving: 1, christmas: 3 });
+  assert.equal(phase(at(2026, 11, 26, 20)), 'thanksgiving-christmas', 'Thanksgiving Day itself still counts');
+  // Hanukkah 2026: first evening 4 December, last day 12 December; its pins start a week ahead (27 November).
+  assert.equal(phase(at(2026, 11, 27)), 'christmas-hanukkah');
+  assert.deepEqual(mix(at(2026, 12, 5)), { christmas: 3, hanukkah: 1 });
+  assert.equal(phase(at(2026, 12, 12, 23, 59)), 'christmas-hanukkah');
+  assert.equal(phase(at(2026, 12, 13)), 'christmas-late');
+  assert.deepEqual(mix(at(2026, 12, 20)), { 'christmas>kids': 2, 'christmas>adults': 1, winter: 1 });
+  assert.equal(phase(at(2026, 12, 25, 23, 59)), 'christmas-late');
+  assert.equal(phase(at(2026, 12, 26)), 'newyear');
+  assert.deepEqual(mix(at(2027, 1, 2)), { newyear: 2, winter: 2 });
+  assert.equal(phase(at(2027, 1, 5, 23, 59)), 'newyear');
+  assert.equal(phase(at(2027, 1, 6)), 'winter');
   assert.equal(phase(at(2027, 1, 31)), 'winter');
   for (const d of [at(2027, 2, 1), at(2027, 4, 12), at(2027, 7, 4), at(2027, 9, 1)]) assert.equal(phase(d), 'evergreen', new Date(d).toISOString());
+  // a window knows when it started, which is where the job's count of its pages begins
+  assert.equal(topics.phaseFor(new Date(at(2026, 12, 5))).since, at(2026, 11, 27));
+  assert.equal(topics.phaseFor(new Date(at(2027, 1, 2))).since, at(2026, 12, 26));
+  // every mix names themes and kinds that have a bank, with positive weights
+  for (const d of [at(2026, 10, 1), at(2026, 11, 3), at(2026, 11, 20), at(2026, 12, 1), at(2026, 12, 18), at(2026, 12, 30), at(2027, 1, 20), at(2027, 5, 1)]) {
+    for (const [key, w] of Object.entries(mix(d))) { assert.ok(w > 0); assert.ok(topics.pool(key).length > 20, key); }
+  }
+});
+
+test('Hanukkah dates: the table matches the Hebrew calendar of this runtime, and the window follows the year', () => {
+  const f = new Intl.DateTimeFormat('en-u-ca-hebrew-nu-latn', { day: 'numeric', month: 'long', timeZone: 'UTC' });
+  for (let y = 2026; y <= 2036; y++) {
+    let first = null;
+    for (let t = Date.UTC(y, 10, 15); t < Date.UTC(y, 11, 31) && first === null; t += DAY) {
+      const p = Object.fromEntries(f.formatToParts(new Date(t)).map(x => [x.type, x.value]));
+      if (/Kislev/i.test(p.month) && p.day === '25') first = t - DAY;
+    }
+    assert.equal(topics.hanukkahStart(y), first, String(y));
+  }
+  assert.equal(new Date(topics.hanukkahStart(2026)).toISOString().slice(0, 10), '2026-12-04');
+  // a year later than the table is worked out, not skipped
+  assert.equal(new Date(topics.hanukkahStart(2040)).toISOString().slice(0, 10), '2040-11-29');
+  // 2029: the first evening is 1 December, so the Hanukkah window opens on 24 November (a day after Thanksgiving, 22 November)
+  assert.equal(topics.phaseFor(new Date(at(2029, 11, 24))).id, 'christmas-hanukkah');
+  assert.equal(topics.phaseFor(new Date(at(2029, 12, 10))).id, 'christmas');
+  // 2027: Hanukkah begins on 24 December, so its window (17 to 25 December) takes the place of the adult mix of 13 December
+  assert.equal(topics.phaseFor(new Date(at(2027, 12, 17))).id, 'christmas-hanukkah');
+  assert.equal(topics.phaseFor(new Date(at(2027, 12, 16))).id, 'christmas-late');
 });
 
 test('subject banks: unique slugs, no seed collisions, names that fit a pin, no trademarks, every site link is a real page', () => {
@@ -162,10 +201,51 @@ test('subject banks: unique slugs, no seed collisions, names that fit a pin, no 
     if (s.site) assert.ok(site.has(s.site), `${s.slug} links to ${s.site}`);
     else assert.equal(s.theme, 'evergreen', s.slug + ' has no site page');
   }
-  // every theme has enough subjects to run for weeks at 4 a day
-  const per = {};
-  for (const s of all) per[s.theme] = (per[s.theme] || 0) + 1;
-  for (const [theme, n] of Object.entries(per)) assert.ok(n >= 70, `${theme} has ${n}`);
+  // every theme has enough subjects to run for weeks at 4 a day; the two short seasons need a first pass as long as their window
+  // (Hanukkah: 1 a day for 16 days, New Year: 2 a day for 11 days) so no drawing has to be repeated in another detail level
+  const per = {}, first = {};
+  for (const s of all) { per[s.theme] = (per[s.theme] || 0) + 1; if (s.pass === 1) first[s.theme] = (first[s.theme] || 0) + 1; }
+  for (const [theme, n] of Object.entries(per)) assert.ok(n >= (['hanukkah', 'newyear'].includes(theme) ? 30 : 70), `${theme} has ${n}`);
+  assert.ok(first.hanukkah >= 16, 'Hanukkah first pass ' + first.hanukkah);
+  assert.ok(first.newyear >= 22, 'New Year first pass ' + first.newyear);
+  assert.ok(first.thanksgiving >= 40, 'Thanksgiving first pass ' + first.thanksgiving);
+});
+
+test('holiday banks: child safe and printable, a real season page for every subject, the six new pages and the adult page are used', () => {
+  const unsafe = new RegExp('\\b(blood|gore|gory|gun|guns|rifle|weapons?|knife|knives|dead|death|kill|killed|scary|horror|beer|wine|champagne|alcohol|cocktail|cigarettes?|naked|sparklers?)\\b', 'i');
+  const site = siteThemePages();
+  const holiday = topics.allSubjects().filter(s => topics.THEMES[s.theme].holiday);
+  assert.ok(holiday.length > 600);
+  const sites = new Set();
+  for (const s of holiday) {
+    assert.ok(!unsafe.test(s.name + ' ' + s.draw), 'child safety: ' + s.slug);
+    // no readable text, dates or brand marks for the image model to garble: no years, digits or quoted words in a drawing request
+    assert.ok(!/\d{3,4}|["“]/.test(s.draw), 'digits or quotes in ' + s.slug);
+    assert.ok(s.site && site.has(s.site), `${s.slug} needs a real season page, has ${s.site}`);
+    sites.add(s.site);
+  }
+  for (const page of ['santa-coloring-pages', 'reindeer-coloring-pages', 'christmas-tree-coloring-pages', 'christmas-ornament-coloring-pages', 'snowflake-coloring-pages', 'christmas-coloring-pages-for-adults', 'thanksgiving-coloring-pages', 'turkey-coloring-pages', 'hanukkah-coloring-pages', 'new-year-coloring-pages', 'christmas-coloring-pages', 'winter-coloring-pages', 'fall-coloring-pages']) assert.ok(sites.has(page), 'no subject links to ' + page);
+  // the season pages exist as real pages of the site, and the new ones are in the repository's page list
+  for (const page of sites) assert.ok(site.has(page), page);
+  // detailed Christmas drawings go to the adult page, easy and medium ones to the page of their subject
+  for (const s of topics.allSubjects().filter(x => x.theme === 'christmas')) {
+    if (s.level === 'detailed') assert.equal(s.site, 'christmas-coloring-pages-for-adults', s.slug);
+    else assert.notEqual(s.site, 'christmas-coloring-pages-for-adults', s.slug);
+  }
+  assert.equal(topics.allSubjects().find(s => s.slug === 'christmas-santa-claus-face-coloring-page').site, 'santa-coloring-pages');
+  assert.equal(topics.allSubjects().find(s => s.slug === 'christmas-reindeer-coloring-page').site, 'reindeer-coloring-pages');
+  assert.equal(topics.allSubjects().find(s => s.slug === 'christmas-tree-and-presents-coloring-page').site, 'christmas-tree-coloring-pages');
+  assert.equal(topics.allSubjects().find(s => s.slug === 'christmas-ornaments-coloring-page').site, 'christmas-ornament-coloring-pages');
+  assert.equal(topics.allSubjects().find(s => s.slug === 'winter-snowflakes-coloring-page').site, 'snowflake-coloring-pages');
+  assert.equal(topics.allSubjects().find(s => s.slug === 'hanukkah-menorah-coloring-page').site, 'hanukkah-coloring-pages');
+  assert.equal(topics.allSubjects().find(s => s.slug === 'new-year-fireworks-coloring-page').site, 'new-year-coloring-pages');
+  // the Pilgrim hat follows the museum's account (a wide-brimmed felt hat), not the buckle legend
+  assert.ok(!/buckle/i.test(topics.allSubjects().filter(s => s.theme === 'thanksgiving').map(s => s.draw).join(' ')));
+  // the first drawings of a holiday theme go round the pages instead of running through one page: the first Christmas pins
+  // are not all Santa, and the strongest queries (Santa, tree) come before the older pages
+  const firstChristmas = topics.bank().christmas.slice(0, 9).map(s => s.site);
+  assert.deepEqual(firstChristmas.slice(0, 5), ['santa-coloring-pages', 'christmas-tree-coloring-pages', 'reindeer-coloring-pages', 'christmas-ornament-coloring-pages', 'snowflake-coloring-pages']);
+  assert.ok(new Set(firstChristmas).size >= 8, firstChristmas.join(' '));
 });
 // Theme pages that exist on the site: theme-guides.js plus the three short pages of server.js.
 function siteThemePages() {
@@ -204,7 +284,8 @@ test('picking: avoids what is made, keeps a mixed season mixed, falls back to ev
     assert.ok(p && !used.has(p.subject.slug));
     used.add(p.subject.slug); counts[p.subject.theme] = (counts[p.subject.theme] || 0) + 1; seen.push(p.subject.theme);
   }
-  assert.ok(Math.abs(counts.fall - counts.thanksgiving) <= 1, JSON.stringify(counts));
+  // 3 November: Thanksgiving 2, fall 1, Christmas 1 of every 4 pages, so 12 pages are 6, 3 and 3
+  assert.deepEqual(counts, { thanksgiving: 6, fall: 3, christmas: 3 });
   assert.deepEqual(topics.pickSubject({ date: day, used: new Set(), counts: {} }), topics.pickSubject({ date: day, used: new Set(), counts: {} }));
   // all Halloween subjects made on a Halloween day: evergreen takes over
   const halloween = new Set(topics.allSubjects().filter(s => s.theme === 'halloween').map(s => s.slug));
@@ -212,6 +293,71 @@ test('picking: avoids what is made, keeps a mixed season mixed, falls back to ev
   assert.equal(fall.fallback, true);
   assert.equal(fall.subject.theme, 'evergreen');
   assert.equal(topics.pickSubject({ date: day, used: new Set(topics.allSubjects().map(s => s.slug)), counts: {} }), null);
+});
+
+// A season worked through the way the job works it: 4 pages a day at the first four slots (00:07, 03:07, 06:07 and 09:07 UTC), each
+// subject picked from the day's mix with the counts of the pages made since the window began (PinCore.themeCounts(since)).
+function runSeason(from, to) {
+  const used = new Set(SEEDS.map(s => s.slug)), made = [];
+  for (let day = from; day < to; day += DAY) {
+    for (let k = 0; k < 4; k++) {
+      const now = day + (7 + k * 180) * 60000, since = topics.phaseFor(new Date(now)).since, counts = {};
+      for (const m of made) if (m.t >= since) for (const key of [m.theme, m.theme + '>' + (m.level === 'detailed' ? 'adults' : 'kids')]) counts[key] = (counts[key] || 0) + 1;
+      const p = topics.pickSubject({ date: new Date(now), used, counts });
+      assert.ok(p, 'a subject for ' + new Date(now).toISOString());
+      used.add(p.subject.slug);
+      made.push({ ...p.subject, t: now, fallback: !!p.fallback, phase: p.phase });
+    }
+  }
+  return made;
+}
+const tally = (list, key = 'theme') => { const o = {}; for (const m of list) o[m[key]] = (o[m[key]] || 0) + 1; return o; };
+
+test('the season by date: Thanksgiving to 26 November, Hanukkah 27 November to 12 December, Christmas to 25 December, New Year and winter after; 4 a day', () => {
+  const made = runSeason(at(2026, 11, 1), at(2027, 2, 1));
+  assert.equal(made.length, 92 * 4, 'four pages every day from 1 November to 31 January');
+  for (let day = at(2026, 11, 1); day < at(2027, 2, 1); day += DAY) assert.equal(made.filter(m => m.t >= day && m.t < day + DAY).length, 4);
+  assert.equal(new Set(made.map(m => m.slug)).size, made.length, 'no subject is drawn twice');
+  assert.equal(made.filter(m => m.fallback).length, 0, 'the season never runs out of subjects');
+  const win = (a, b) => made.filter(m => m.t >= a && m.t < b);
+  // 1 to 14 November: of every 4 pages 2 Thanksgiving, 1 fall, 1 Christmas (Christmas searches begin in early November)
+  assert.deepEqual(tally(win(at(2026, 11, 1), at(2026, 11, 15))), { thanksgiving: 28, fall: 14, christmas: 14 });
+  // 15 to 26 November (Thanksgiving Day included): 1 Thanksgiving, 3 Christmas
+  assert.deepEqual(tally(win(at(2026, 11, 15), at(2026, 11, 27))), { thanksgiving: 12, christmas: 36 });
+  // 27 November to 12 December: 3 Christmas and 1 Hanukkah (the first evening is 4 December, the pins start a week ahead)
+  assert.deepEqual(tally(win(at(2026, 11, 27), at(2026, 12, 13))), { christmas: 48, hanukkah: 16 });
+  // 13 to 25 December: 3 Christmas (a third of them detailed drawings for the adult page) and 1 winter
+  const late = win(at(2026, 12, 13), at(2026, 12, 26));
+  assert.deepEqual(tally(late), { christmas: 39, winter: 13 });
+  assert.equal(late.filter(m => m.theme === 'christmas' && m.level === 'detailed').length, 13);
+  // 26 December to 5 January: 2 New Year, 2 winter
+  assert.deepEqual(tally(win(at(2026, 12, 26), at(2027, 1, 6))), { newyear: 22, winter: 22 });
+  // 6 to 31 January: winter with evergreen drawings, nothing seasonal that is over
+  const jan = win(at(2027, 1, 6), at(2027, 2, 1));
+  assert.deepEqual(Object.keys(tally(jan)).sort(), ['evergreen', 'winter']);
+  assert.ok(tally(jan).winter >= 60, 'winter keeps its two thirds: ' + tally(jan).winter);
+  // each theme stays inside its dates
+  const span = theme => { const ts = made.filter(m => m.theme === theme).map(m => m.t); return [Math.min(...ts), Math.max(...ts)]; };
+  assert.ok(span('thanksgiving')[1] < at(2026, 11, 27), 'no Thanksgiving pin after Thanksgiving Day');
+  assert.ok(span('fall')[1] < at(2026, 11, 15));
+  assert.ok(span('hanukkah')[0] >= at(2026, 11, 27) && span('hanukkah')[1] < at(2026, 12, 13), 'Hanukkah pins are out before the first evening and stop after the last day');
+  assert.ok(span('christmas')[0] < at(2026, 11, 2) && span('christmas')[1] < at(2026, 12, 26), 'Christmas from the first week of November to 25 December');
+  assert.ok(span('newyear')[0] >= at(2026, 12, 26) && span('newyear')[1] < at(2027, 1, 6));
+  // the same dates give the same picks (a run is a function of the date and what is made)
+  assert.deepEqual(runSeason(at(2026, 11, 1), at(2026, 11, 8)).map(m => m.slug), made.slice(0, 28).map(m => m.slug));
+});
+
+test('the season is weighted to the strongest queries: Santa, tree and reindeer come first and most often, every season page gets pins', () => {
+  const made = runSeason(at(2026, 11, 1), at(2027, 1, 6));
+  const christmas = made.filter(m => m.theme === 'christmas');
+  // the first Christmas pins go round the pages in the order of the keyword scan
+  assert.deepEqual(christmas.slice(0, 5).map(m => m.site), ['santa-coloring-pages', 'christmas-tree-coloring-pages', 'reindeer-coloring-pages', 'christmas-ornament-coloring-pages', 'snowflake-coloring-pages']);
+  const bySite = tally(made.filter(m => topics.THEMES[m.theme].holiday), 'site');
+  for (const page of ['christmas-tree-coloring-pages', 'reindeer-coloring-pages', 'christmas-ornament-coloring-pages', 'snowflake-coloring-pages']) assert.ok(bySite['santa-coloring-pages'] >= bySite[page], 'Santa is the strongest of the new pages: ' + JSON.stringify(bySite));
+  for (const page of ['santa-coloring-pages', 'christmas-tree-coloring-pages', 'reindeer-coloring-pages', 'christmas-ornament-coloring-pages', 'snowflake-coloring-pages', 'christmas-coloring-pages-for-adults', 'thanksgiving-coloring-pages', 'turkey-coloring-pages', 'hanukkah-coloring-pages', 'new-year-coloring-pages', 'christmas-coloring-pages', 'winter-coloring-pages', 'fall-coloring-pages']) assert.ok(bySite[page] >= 5, `${page} gets pins: ${bySite[page]}`);
+  // Hanukkah and New Year pins all go to their own page (their banks have one page each)
+  assert.deepEqual(Object.keys(tally(made.filter(m => m.theme === 'hanukkah'), 'site')), ['hanukkah-coloring-pages']);
+  assert.deepEqual(Object.keys(tally(made.filter(m => m.theme === 'newyear'), 'site')), ['new-year-coloring-pages']);
 });
 
 test('pin colors: every text color has a contrast of at least 4.5 against its background, every theme has real skins', () => {
@@ -334,7 +480,12 @@ test('database: pages and their images round-trip, duplicates are refused, hidde
   assert.deepEqual(core.listPages({ upTo: clock.t }).map(p => p.slug), ['c-coloring-page']);
   assert.equal(core.setHidden('missing', true), false);
   assert.deepEqual(core.storageBytes(), { bytes: 18, pages: 3 });
-  assert.deepEqual(core.themeCounts(), { halloween: 3 });
+  // per theme and per "theme>kids" / "theme>adults" (the keys of a season mix); `since` counts only the window the job is in
+  assert.deepEqual(core.themeCounts(), { halloween: 3, 'halloween>kids': 3 });
+  assert.deepEqual(core.themeCounts(clock.t + 1), {}, 'nothing made after the window start');
+  core.insertPage({ ...mk('d-coloring-page', clock.t - 3000), level: 'detailed', created: clock.t - 5 * DAY }, blobs);
+  assert.deepEqual(core.themeCounts(), { halloween: 4, 'halloween>kids': 3, 'halloween>adults': 1 });
+  assert.deepEqual(core.themeCounts(clock.t - DAY), { halloween: 3, 'halloween>kids': 3 }, 'the older page is outside the window');
   assert.equal(core.getPage('b-coloring-page').release, clock.t + HOUR);
 });
 
@@ -629,6 +780,129 @@ test('the Pinterest feed is RSS 2.0 with one image tag per item, links on the cl
   assert.equal(itemLink('abc-coloring-page'), 'https://www.coloringpagemaker.app/printables/abc-coloring-page?utm_source=pinterest&utm_medium=rss&utm_campaign=autopin&utm_content=abc-coloring-page');
 });
 
+test('pin links: a holiday pin goes to its season page tagged utm_source=pinterest, utm_medium=social, utm_campaign=holiday2026, utm_content=<pin slug>; other pins keep their printable page', () => {
+  const site = siteThemePages();
+  const all = topics.allSubjects();
+  const holiday = all.filter(s => topics.THEMES[s.theme].holiday);
+  const re = /^https:\/\/www\.coloringpagemaker\.app\/([a-z0-9-]+)\?utm_source=pinterest&utm_medium=social&utm_campaign=holiday2026&utm_content=([a-z0-9-]+-coloring-page)$/;
+  const contents = new Set();
+  for (const s of holiday) {
+    const link = linkOf({ theme: s.theme, site: s.site, slug: s.slug });
+    const m = re.exec(link);
+    assert.ok(m, 'format of ' + link);
+    assert.equal(m[1], s.site, 'the page the drawing is about');
+    assert.ok(site.has(m[1]), m[1] + ' is a page of the site');
+    assert.equal(m[2], s.slug, 'utm_content is the pin slug');
+    assert.deepEqual([...new URL(link).searchParams.keys()], ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'], 'four tags, in this order');
+    contents.add(m[2]);
+  }
+  assert.equal(contents.size, holiday.length, 'every pin has a link of its own');
+  assert.equal(HOLIDAY_CAMPAIGN, 'holiday2026');
+  assert.equal(holidayLink('santa-coloring-pages', 'x-coloring-page'), 'https://www.coloringpagemaker.app/santa-coloring-pages?utm_source=pinterest&utm_medium=social&utm_campaign=holiday2026&utm_content=x-coloring-page');
+  // the mapping of drawings to pages
+  const link = slug => { const s = all.find(x => x.slug === slug); assert.ok(s, slug); return linkOf(s).split('?')[0].replace('https://www.coloringpagemaker.app/', ''); };
+  assert.equal(link('christmas-santa-claus-face-coloring-page'), 'santa-coloring-pages');
+  assert.equal(link('christmas-santa-hat-coloring-page'), 'santa-coloring-pages');
+  assert.equal(link('christmas-reindeer-coloring-page'), 'reindeer-coloring-pages');
+  assert.equal(link('winter-reindeer-forest-coloring-page'), 'reindeer-coloring-pages');
+  assert.equal(link('christmas-tree-and-presents-coloring-page'), 'christmas-tree-coloring-pages');
+  assert.equal(link('christmas-ornaments-coloring-page'), 'christmas-ornament-coloring-pages');
+  assert.equal(link('winter-snowflakes-coloring-page'), 'snowflake-coloring-pages');
+  assert.equal(link('christmas-village-coloring-page'), 'christmas-coloring-pages-for-adults', 'a detailed Christmas drawing goes to the adult page');
+  assert.equal(link('christmas-stocking-coloring-page'), 'christmas-coloring-pages', 'no page of its own: the Christmas hub');
+  assert.equal(link('thanksgiving-turkey-coloring-page'), 'turkey-coloring-pages');
+  assert.equal(link('thanksgiving-cornucopia-coloring-page'), 'thanksgiving-coloring-pages');
+  assert.equal(link('fall-maple-leaf-coloring-page'), 'fall-coloring-pages');
+  assert.equal(link('hanukkah-menorah-coloring-page'), 'hanukkah-coloring-pages');
+  assert.equal(link('new-year-fireworks-coloring-page'), 'new-year-coloring-pages');
+  assert.equal(link('winter-snowman-coloring-page'), 'snowman-coloring-pages');
+  assert.equal(link('winter-penguin-coloring-page'), 'winter-coloring-pages');
+  assert.equal(link('christmas-gingerbread-man-coloring-page'), 'gingerbread-coloring-pages');
+  // everything that is not a holiday keeps the link of its own printable page (Halloween, evergreen, a pin without a page)
+  for (const s of all.filter(x => !topics.THEMES[x.theme].holiday).slice(0, 80)) assert.equal(linkOf({ theme: s.theme, site: s.site, slug: s.slug }), itemLink(s.slug), s.slug);
+  for (const v of seedViews()) assert.equal(linkOf(v), itemLink(v.slug), v.slug);
+  assert.equal(linkOf({ theme: 'christmas', site: null, slug: 'a-coloring-page' }), itemLink('a-coloring-page'));
+  assert.match(itemLink('a-coloring-page'), /utm_campaign=autopin/);
+});
+
+test('the feed carries the holiday link of each holiday pin, escaped for XML, next to the old link of a Halloween pin', () => {
+  const now = at(2026, 12, 5, 12, 0);
+  const pick = slug => topics.allSubjects().find(s => s.slug === slug);
+  const row = (s, i) => {
+    const t = topics.describe(s);
+    return autoView({ slug: s.slug, theme: s.theme, group: t.group, level: s.level, headline: t.headline, title: t.pinTitle, description: t.pinDescription, alt: t.alt, intro: t.intro, prompt: s.draw, metaDescription: t.metaDescription, site: s.site, release: now - (i + 1) * HOUR, created: now - (i + 1) * HOUR, pinBytes: 1000 });
+  };
+  const subjects = ['christmas-santa-claus-face-coloring-page', 'hanukkah-menorah-coloring-page', 'new-year-fireworks-coloring-page', 'christmas-village-coloring-page', 'halloween-ghost-balloons-coloring-page'].map(pick);
+  const xml = buildFeed({ items: feedItems({ views: subjects.map(row), now }), now });
+  checkXml(xml);
+  const links = tag(xml, 'link').slice(1);
+  assert.equal(links.length, 5);
+  const ent = '?utm_source=pinterest&amp;utm_medium=social&amp;utm_campaign=holiday2026&amp;utm_content=';
+  assert.ok(links.includes('https://www.coloringpagemaker.app/santa-coloring-pages' + ent + 'christmas-santa-claus-face-coloring-page'));
+  assert.ok(links.includes('https://www.coloringpagemaker.app/hanukkah-coloring-pages' + ent + 'hanukkah-menorah-coloring-page'));
+  assert.ok(links.includes('https://www.coloringpagemaker.app/new-year-coloring-pages' + ent + 'new-year-fireworks-coloring-page'));
+  assert.ok(links.includes('https://www.coloringpagemaker.app/christmas-coloring-pages-for-adults' + ent + 'christmas-village-coloring-page'));
+  assert.ok(links.includes('https://www.coloringpagemaker.app/printables/halloween-ghost-balloons-coloring-page?utm_source=pinterest&amp;utm_medium=rss&amp;utm_campaign=autopin&amp;utm_content=halloween-ghost-balloons-coloring-page'));
+  for (const l of links) assert.ok(l.startsWith('https://www.coloringpagemaker.app/'), 'on the claimed domain: ' + l);
+  assert.ok(!/&(?!amp;)/.test(links.join('')), 'every & is escaped');
+});
+
+test('holiday pin copy uses the measured query wording of the page it links to, naturally', () => {
+  // the strongest modifier in Google's suggestions for each page's query (takip/devir/coloringpagemaker-sezon-NOTLAR.md, scan of 27 October 2026)
+  assert.deepEqual(topics.QUERY_MODIFIER, {
+    'santa-coloring-pages': 'printable', 'christmas-coloring-pages': 'printable', 'reindeer-coloring-pages': 'printable',
+    'christmas-tree-coloring-pages': 'printable', 'christmas-ornament-coloring-pages': 'free printable', 'snowflake-coloring-pages': 'printable',
+    'christmas-coloring-pages-for-adults': 'printable', 'thanksgiving-coloring-pages': 'free', 'turkey-coloring-pages': 'printable PDF',
+    'fall-coloring-pages': 'printable', 'winter-coloring-pages': 'printable', 'hanukkah-coloring-pages': 'free',
+    'new-year-coloring-pages': 'printable PDF', 'gingerbread-coloring-pages': 'printable', 'snowman-coloring-pages': 'printable'
+  });
+  assert.equal(topics.queryLabel('santa-coloring-pages'), 'Santa coloring pages');
+  assert.equal(topics.queryLabel('christmas-coloring-pages-for-adults'), 'Christmas coloring pages for adults');
+  assert.equal(topics.queryLabel('new-year-coloring-pages'), 'New Year coloring pages');
+  assert.equal(topics.queryLabel('christmas-tree-coloring-pages'), 'Christmas tree coloring pages');
+  const holiday = topics.allSubjects().filter(s => topics.THEMES[s.theme].holiday);
+  for (const s of holiday) {
+    const mod = topics.QUERY_MODIFIER[s.site];
+    assert.ok(mod, 'a measured modifier for ' + s.site);
+    const t = topics.describe(s);
+    assert.ok(t.pinTitle.toLowerCase().includes(mod.toLowerCase() + ' '), `${s.slug}: "${t.pinTitle}" says "${mod}"`);
+    assert.ok(/coloring page/.test(t.pinTitle) && t.pinTitle.length <= 100, t.pinTitle);
+    const who = s.site === 'christmas-coloring-pages-for-adults' ? '' : s.level === 'detailed' ? ' for adults' : ' for kids';
+    assert.ok(t.pinDescription.includes(`More ${mod} ${topics.queryLabel(s.site)}${who} at ColoringPageMaker`), `${s.slug}: ${t.pinDescription}`);
+    assert.ok(/2 free pages a day, no signup/.test(t.pinDescription));
+    assert.deepEqual(lint(t.pinTitle + ' ' + t.pinDescription), [], s.slug);
+  }
+  // a few readable examples: the query words come first and nothing is stuffed
+  const d = slug => topics.describe(topics.allSubjects().find(s => s.slug === slug));
+  assert.ok(d('christmas-santa-claus-face-coloring-page').pinTitle.toLowerCase().includes('printable santa claus face coloring page'), d('christmas-santa-claus-face-coloring-page').pinTitle);
+  assert.ok(d('christmas-santa-claus-face-coloring-page').pinDescription.includes('More printable Santa coloring pages for kids at ColoringPageMaker'));
+  assert.ok(d('thanksgiving-cornucopia-coloring-page').pinDescription.includes('More free Thanksgiving coloring pages for kids at ColoringPageMaker'));
+  assert.ok(d('christmas-village-coloring-page').pinDescription.includes('More printable Christmas coloring pages for adults at ColoringPageMaker'));
+  assert.ok(d('new-year-fireworks-coloring-page').pinDescription.includes('More printable PDF New Year coloring pages for kids at ColoringPageMaker'));
+  // pins of other themes keep the general wording
+  assert.ok(!/More \w+ [A-Za-z ]*coloring pages/.test(d('halloween-ghost-balloons-coloring-page').pinDescription));
+});
+
+test('a holiday tick on 5 December: the page is a Christmas or Hanukkah drawing, and the feed links it to its season page with the campaign tags', async () => {
+  const w = makeWorld({ now: at(2026, 12, 5, 0, 7) });
+  const r = await cron(w, w.clock.t);
+  assert.equal(r.status, 'done');
+  const page = w.core.getPage(r.slug);
+  assert.ok(['christmas', 'hanukkah'].includes(page.theme), page.theme);
+  assert.ok(siteThemePages().has(page.site), 'a real season page: ' + page.site);
+  assert.equal(w.core.count('pages:2026-12-05'), 1);
+  w.clock.t += DAY;
+  const xml = await (await call(w.env, '/pins/feed.xml')).text();
+  const link = tag(xml.split('<item>').find(i => i.includes('cpm-pin-' + page.slug)), 'link')[0];
+  assert.equal(link, `https://www.coloringpagemaker.app/${page.site}?utm_source=pinterest&amp;utm_medium=social&amp;utm_campaign=holiday2026&amp;utm_content=${page.slug}`);
+  // the winter board's feed has it, the Halloween board's does not
+  assert.ok((await (await call(w.env, '/pins/feed.xml?group=winter')).text()).includes('cpm-pin-' + page.slug));
+  assert.ok(!(await (await call(w.env, '/pins/feed.xml?group=halloween')).text()).includes('cpm-pin-' + page.slug));
+  // the printable page of the drawing still works and says which season page it belongs to
+  const landing = await (await call(w.env, `/printables/${page.slug}`)).text();
+  assert.ok(landing.includes(`href="/${page.site}#generator"`), 'landing page links to ' + page.site);
+});
+
 test('the 30 Halloween seeds are released gradually from 25 October: nothing before, a few a day, all by 31 October, none when switched off', () => {
   assert.equal(SEEDS.length, 30);
   const times = SEEDS.map(s => Date.parse(s.release));
@@ -873,7 +1147,7 @@ test('the cron entry: scheduled() runs one tick through the Durable Object stub,
   assert.equal((await c4.waits[0]).skipped, 'no PINS binding');
 });
 
-test('a week of cron runs: Halloween pages until 31 October, then fall and Thanksgiving; caps hold every day', async () => {
+test('a week of cron runs: Halloween pages until 31 October, then the November mix (Thanksgiving, fall, the first Christmas); caps hold every day', async () => {
   const w = makeWorld({ now: at(2026, 10, 29, 0, 7) });
   const themes = [];
   for (let slot = 0; slot < 8 * 5; slot++) {
@@ -883,7 +1157,9 @@ test('a week of cron runs: Halloween pages until 31 October, then fall and Thank
   }
   assert.equal(themes.length, 20, 'four a day for five days');
   assert.ok(themes.filter(t => t.endsWith('10-29') || t.endsWith('10-30') || t.endsWith('10-31')).every(t => t.startsWith('halloween')));
-  assert.ok(themes.filter(t => t.endsWith('11-01') || t.endsWith('11-02')).every(t => /^(fall|thanksgiving)/.test(t)));
+  const november = themes.filter(t => t.endsWith('11-01') || t.endsWith('11-02')).map(t => t.split('@')[0]);
+  assert.equal(november.length, 8);
+  assert.deepEqual(Object.fromEntries(['thanksgiving', 'fall', 'christmas'].map(k => [k, november.filter(x => x === k).length])), { thanksgiving: 4, fall: 2, christmas: 2 }, 'the November mix of 2:1:1');
   for (const d of ['2026-10-29', '2026-10-30', '2026-10-31', '2026-11-01', '2026-11-02']) assert.equal(w.core.count('pages:' + d) <= 4, true, d);
   assert.equal(w.calls.flux.length, 20);
   const used = [...w.core.usedSlugs()];

@@ -1,7 +1,7 @@
 // What the daily job draws, and every word of text that goes with a page.
 //
-// The calendar picks a theme for the day (Halloween until 31 October, then fall and Thanksgiving, then Christmas and
-// winter, and evergreen subjects whenever no season is on). Each theme has a bank of subjects: a short name, the phrase
+// The calendar picks a theme for the day (Halloween until 31 October, then Thanksgiving and fall with the first Christmas
+// pins, Christmas with Hanukkah and winter, New Year, and evergreen subjects whenever no season is on). Each theme has a bank of subjects: a short name, the phrase
 // the image model draws and the detail level. Titles, descriptions, alt text and the on-pin lines are built from those
 // three, so a new subject is one line. Nothing here needs a network, a clock or a database.
 
@@ -38,33 +38,89 @@ export const GROUPS = {
 };
 
 // theme -> group, site theme page ("make your own" link) and the pin colors it can use (see pin.js SKINS).
+// holiday: the pins of this theme carry the holiday2026 campaign link (feed.js). adultsSite: the page a detailed drawing of
+// the theme links to instead of `site`. Hanukkah and New Year pins go to the winter group, so they reach the board that
+// is already connected to that feed.
 export const THEMES = {
   halloween: { group: 'halloween', label: 'Halloween', site: 'halloween-coloring-pages', skins: ['orange', 'plum', 'mist'] },
-  fall: { group: 'autumn', label: 'fall', site: 'fall-coloring-pages', skins: ['rust', 'wheat', 'forest'] },
-  thanksgiving: { group: 'autumn', label: 'Thanksgiving', site: 'thanksgiving-coloring-pages', skins: ['harvest', 'cranberry', 'cream'] },
-  christmas: { group: 'winter', label: 'Christmas', site: 'christmas-coloring-pages', skins: ['pine', 'berry', 'snow'] },
-  winter: { group: 'winter', label: 'winter', site: 'winter-coloring-pages', skins: ['ice', 'night', 'frost'] },
+  fall: { group: 'autumn', label: 'fall', site: 'fall-coloring-pages', skins: ['rust', 'wheat', 'forest'], holiday: true },
+  thanksgiving: { group: 'autumn', label: 'Thanksgiving', site: 'thanksgiving-coloring-pages', skins: ['harvest', 'cranberry', 'cream'], holiday: true },
+  christmas: { group: 'winter', label: 'Christmas', site: 'christmas-coloring-pages', adultsSite: 'christmas-coloring-pages-for-adults', skins: ['pine', 'berry', 'snow'], holiday: true },
+  hanukkah: { group: 'winter', label: 'Hanukkah', site: 'hanukkah-coloring-pages', skins: ['night', 'ice', 'frost'], holiday: true },
+  newyear: { group: 'winter', label: 'New Year', site: 'new-year-coloring-pages', skins: ['plum', 'night', 'sun', 'lilac'], holiday: true },
+  winter: { group: 'winter', label: 'winter', site: 'winter-coloring-pages', skins: ['ice', 'night', 'frost'], holiday: true },
   evergreen: { group: 'evergreen', label: '', site: null, skins: ['sky', 'meadow', 'sun', 'lilac', 'coral'] }
 };
 
 // --- calendar ---
+const DAY_MS = 86400000;
+const ymd = (y, m, d) => Date.UTC(y, m - 1, d);
 // US Thanksgiving: the fourth Thursday of November.
 export function thanksgiving(year) {
   const first = new Date(Date.UTC(year, 10, 1)).getUTCDay();
   return new Date(Date.UTC(year, 10, 1 + ((4 - first + 7) % 7) + 21));
 }
-const md = d => String(d.getUTCMonth() + 1).padStart(2, '0') + '-' + String(d.getUTCDate()).padStart(2, '0');
+// The first evening of Hanukkah (25 Kislev starts at sundown the day before), as UTC midnight of that date. The table is
+// checked against the Hebrew calendar of the runtime in the tests; a later year is worked out from it.
+const HANUKKAH_START = { 2026: '12-04', 2027: '12-24', 2028: '12-12', 2029: '12-01', 2030: '12-20', 2031: '12-09', 2032: '11-27', 2033: '12-16', 2034: '12-06', 2035: '12-25', 2036: '12-13' };
+export function hanukkahStart(year) {
+  if (HANUKKAH_START[year]) { const [m, d] = HANUKKAH_START[year].split('-').map(Number); return ymd(year, m, d); }
+  try {
+    const f = new Intl.DateTimeFormat('en-u-ca-hebrew-nu-latn', { day: 'numeric', month: 'long', timeZone: 'UTC' });
+    for (let t = ymd(year, 11, 15); t < ymd(year, 12, 31); t += DAY_MS) {
+      const p = Object.fromEntries(f.formatToParts(new Date(t)).map(x => [x.type, x.value]));
+      if (/Kislev/i.test(p.month) && p.day === '25') return t - DAY_MS;
+    }
+  } catch (e) { /* no Hebrew calendar in this runtime */ }
+  return null;
+}
 
-// The theme mix of a day: { id, mix: { theme: weight } }. A theme with weight 2 is drawn twice as often as weight 1.
+// The season windows of a year, in order: [id, from (UTC ms), to (UTC ms, exclusive), mix]. A mix is { theme: weight }; the
+// weights are shares of the day's pages (4 a day), so a weight of 3 next to a 1 is three pages in four. A key can also be
+// "theme>kids" or "theme>adults" for the easy and medium drawings or the detailed ones of a theme.
+//   1 to 14 Nov    Thanksgiving 2, fall 1, Christmas 1 (the first Christmas pins go out early: Christmas searches start in early November)
+//   15 Nov to Thanksgiving   Thanksgiving 1, Christmas 3
+//   after Thanksgiving to 25 Dec   Christmas 3 and Hanukkah 1 from 7 days before the first evening to its last day
+//                         (27 Nov to 12 Dec in 2026), otherwise Christmas 3 and winter 1; from 13 Dec a third of the Christmas pins are detailed (adults)
+//   26 Dec to 5 Jan   New Year 2, winter 2
+//   6 Jan to 31 Jan  winter 2, evergreen 1 (the rest of the year is evergreen)
+function windows(y) {
+  const tg = thanksgiving(y).getTime();
+  const out = [
+    ['halloween', ymd(y, 9, 15), ymd(y, 11, 1), { halloween: 1 }],
+    ['fall-thanksgiving', ymd(y, 11, 1), ymd(y, 11, 15), { thanksgiving: 2, fall: 1, christmas: 1 }],
+    ['thanksgiving-christmas', ymd(y, 11, 15), tg + DAY_MS, { thanksgiving: 1, christmas: 3 }]
+  ];
+  // After Thanksgiving: cut the stretch at the edges of the Hanukkah window and at 13 December, then join equal neighbors.
+  const from = tg + DAY_MS, end = ymd(y, 12, 26), late = ymd(y, 12, 13);
+  const hk = hanukkahStart(y);
+  const hkFrom = hk === null ? null : hk - 7 * DAY_MS, hkTo = hk === null ? null : hk + 9 * DAY_MS;
+  const cuts = [from, end, late, hkFrom, hkTo].filter(t => t !== null && t >= from && t <= end);
+  const pts = [...new Set(cuts)].sort((a, b) => a - b);
+  const parts = [];
+  for (let i = 0; i + 1 < pts.length; i++) {
+    const a = pts[i];
+    const inHk = hk !== null && a >= hkFrom && a < hkTo;
+    const id = inHk ? 'christmas-hanukkah' : a >= late ? 'christmas-late' : 'christmas';
+    const mix = inHk ? { christmas: 3, hanukkah: 1 } : a >= late ? { 'christmas>kids': 2, 'christmas>adults': 1, winter: 1 } : { christmas: 3, winter: 1 };
+    if (parts.length && parts[parts.length - 1][0] === id) parts[parts.length - 1][2] = pts[i + 1];
+    else parts.push([id, a, pts[i + 1], mix]);
+  }
+  out.push(...parts);
+  out.push(['newyear', end, ymd(y + 1, 1, 6), { newyear: 2, winter: 2 }]);
+  out.push(['winter', ymd(y + 1, 1, 6), ymd(y + 1, 2, 1), { winter: 2, evergreen: 1 }]);
+  return out;
+}
+
+// The season of a day: { id, mix, since }. since is when the window started (UTC ms): the job counts the pages it made since
+// then to keep the mix, so a theme that was drawn more in an earlier window does not hold back its share in this one.
 export function phaseFor(date) {
-  const d = date instanceof Date ? date : new Date(date);
-  const day = md(d);
-  const tg = md(thanksgiving(d.getUTCFullYear()));
-  if (day >= '09-15' && day <= '10-31') return { id: 'halloween', mix: { halloween: 1 } };
-  if (day >= '11-01' && day <= tg) return { id: 'fall', mix: { fall: 1, thanksgiving: 1 } };
-  if (day > tg && day <= '12-25') return { id: 'christmas', mix: { christmas: 3, winter: 2, evergreen: 0.5 } };
-  if (day >= '12-26' || day <= '01-31') return { id: 'winter', mix: { winter: 2, evergreen: 1 } };
-  return { id: 'evergreen', mix: { evergreen: 1 } };
+  const t = (date instanceof Date ? date : new Date(date)).getTime();
+  const y = new Date(t).getUTCFullYear();
+  for (const yy of [y, y - 1]) {
+    for (const [id, from, to, mix] of windows(yy)) if (t >= from && t < to) return { id, mix, since: from };
+  }
+  return { id: 'evergreen', mix: { evergreen: 1 }, since: 0 };
 }
 
 // --- the banks: [name, what to draw, levels (s, m, d), site theme page for evergreen subjects] ---
@@ -136,75 +192,194 @@ const FALL = [
   ['fall wreath', 'a round wreath of autumn leaves, acorns and small pumpkins', 'm']
 ];
 
+// Rows can name a site page as a fourth value: the page the pin links to when it is not the theme's own page.
 const THANKSGIVING = [
-  ['Thanksgiving turkey', 'a cartoon turkey with big fanned tail feathers and a friendly face', 's'],
-  ['Thanksgiving turkey feathers', 'a turkey with large tail feathers made of different leaf and feather shapes', 'm'],
-  ['Thanksgiving pilgrim hat', 'a pilgrim hat with a wide buckle', 's'],
+  ['Thanksgiving turkey', 'a cartoon turkey with big fanned tail feathers and a friendly face', 's', 'turkey-coloring-pages'],
+  ['Thanksgiving turkey feathers', 'a turkey with large tail feathers made of different leaf and feather shapes', 'm', 'turkey-coloring-pages'],
+  ['Thanksgiving pilgrim hat', 'a wide-brimmed felt hat with a plain band', 's'],
   ['Thanksgiving cornucopia', 'a cornucopia overflowing with pumpkins, apples, grapes and corn', 'm'],
   ['Thanksgiving pumpkin pie', 'a slice of pumpkin pie with a dollop of whipped cream', 's'],
   ['Thanksgiving thankful tree', 'a tree with many round leaves and a few acorns at its roots', 's'],
   ['Thanksgiving dinner table', 'a long table set with a roast turkey, pies, corn and candles', 'm'],
-  ['Thanksgiving chef turkey', 'a turkey wearing a tall chef hat and holding a wooden spoon', 's'],
+  ['Thanksgiving chef turkey', 'a turkey wearing a tall chef hat and holding a wooden spoon', 's', 'turkey-coloring-pages'],
   ['Thanksgiving dinner plate', 'a plate with turkey, corn, potatoes and a roll', 's'],
   ['Thanksgiving corn', 'two ears of corn with husks and a few kernels', 's'],
-  ['Thanksgiving handprint turkey', 'a turkey made from a hand outline with five feathers and a small face', 's'],
+  ['Thanksgiving handprint turkey', 'a turkey made from a hand outline with five feathers and a small face', 's', 'turkey-coloring-pages'],
   ['Thanksgiving heart', 'a big heart made of autumn leaves with a small acorn', 's'],
-  ['Thanksgiving turkey mandala', 'a round mandala shaped like a turkey with patterned feathers', 'd'],
+  ['Thanksgiving turkey mandala', 'a round mandala shaped like a turkey with patterned feathers', 'd', 'turkey-coloring-pages'],
   ['Thanksgiving cornucopia pattern', 'a cornucopia with detailed fruit, leaves and vines, intricate patterns', 'd'],
   ['Thanksgiving apple pie', 'a whole apple pie with a lattice crust and two apples beside it', 's'],
   ['Thanksgiving squirrel pie', 'a squirrel hugging a pumpkin pie', 's'],
   ['Thanksgiving farm', 'a small farm with a barn, a scarecrow and a field of pumpkins', 'm'],
-  ['Thanksgiving baby turkey', 'a fluffy baby turkey with a small wattle standing in a pile of leaves', 's'],
-  ['Thanksgiving turkey and pumpkin', 'a turkey sitting next to a big pumpkin with a leafy vine', 's'],
+  ['Thanksgiving baby turkey', 'a fluffy baby turkey with a small wattle standing in a pile of leaves', 's', 'turkey-coloring-pages'],
+  ['Thanksgiving turkey and pumpkin', 'a turkey sitting next to a big pumpkin with a leafy vine', 's', 'turkey-coloring-pages'],
   ['Thanksgiving harvest wagon', 'a wooden wagon full of pumpkins, squash and corn', 'm'],
   ['Thanksgiving friends', 'a turkey, a squirrel and a deer sharing a picnic blanket with pie', 'm'],
   ['Thanksgiving pumpkin', 'a big round pumpkin with a leafy vine', 's'],
   ['Thanksgiving leaves border', 'a page full of overlapping autumn leaves in many shapes', 'd'],
-  ['Thanksgiving bread basket', 'a basket of rolls and corn bread with a napkin', 's']
+  ['Thanksgiving bread basket', 'a basket of rolls and corn bread with a napkin', 's'],
+  // Added for the 2026 season
+  ['Thanksgiving turkey face', 'a big turkey face with a beak, a red wattle and a ring of feathers behind it', 's', 'turkey-coloring-pages'],
+  ['Thanksgiving reading turkey', 'a turkey in round glasses and a bow tie reading a big book', 's', 'turkey-coloring-pages'],
+  ['Thanksgiving roast platter', 'a roast turkey on a platter with a bowl of cranberries and a basket of rolls', 'm'],
+  ['Thanksgiving gratitude jar', 'a glass jar full of paper leaves with a ribbon and a few leaves beside it', 's'],
+  ['Thanksgiving cranberries', 'a bowl of cranberries with a spoon and a few leaves', 's'],
+  ['Thanksgiving Mayflower ship', 'a wooden sailing ship with three masts on the waves, with seagulls overhead', 'm'],
+  ['Thanksgiving pilgrim children', 'a pilgrim boy in a wide-brimmed felt hat and a girl in a linen cap and apron sharing a basket of corn', 'm'],
+  ['Thanksgiving pumpkin patch', 'a pumpkin patch with a scarecrow, a wagon and rows of pumpkins', 'm'],
+  ['Thanksgiving apple cider', 'a jug of apple cider next to two mugs and a few apples', 's'],
+  ['Thanksgiving acorns', 'a big acorn with a patterned cap next to a small oak leaf', 's'],
+  ['Thanksgiving feast mandala', 'a round mandala made of pumpkins, corn, leaves and turkey feathers', 'd'],
+  ['Thanksgiving village', 'a quiet farm village in autumn with a steeple, a barn, pumpkins and falling leaves', 'd'],
+  // The 40 pages of the Thanksgiving run (2 a day until 14 November, 1 a day to Thanksgiving Day) need 40 first-pass drawings
+  ['Thanksgiving turkey parade', 'three turkeys walking in a row with fanned tails and falling leaves', 's', 'turkey-coloring-pages'],
+  ['Thanksgiving turkey scarf', 'a turkey wearing a knitted scarf and mittens walking through fallen leaves', 's', 'turkey-coloring-pages'],
+  ['Thanksgiving turkey zentangle', 'a turkey with tail feathers filled with zentangle patterns and small leaves', 'd', 'turkey-coloring-pages'],
+  ['Thanksgiving place card', 'a folded place card with a small turkey, a border of leaves and an empty space for a name', 's'],
+  ['Thanksgiving door wreath', 'a front door with a wreath of autumn leaves and small pumpkins and a welcome mat', 'm'],
+  ['Thanksgiving family walk', 'a family walking through a park of autumn trees with a dog and a basket of leaves', 'm']
 ];
 
 const CHRISTMAS = [
-  ['Christmas tree and presents', 'a decorated Christmas tree with a star on top and presents underneath', 's'],
-  ['Santa Claus face', 'a smiling Santa Claus face with a big beard and a fluffy hat', 's'],
-  ['Santa and sleigh', 'Santa Claus in a sleigh full of presents pulled by two reindeer over rooftops', 'm'],
-  ['Christmas reindeer', 'a cute reindeer with big antlers and a round nose wearing a scarf', 's'],
-  ['Christmas gingerbread man', 'a gingerbread man with a big smile, icing buttons and a bow tie', 's'],
-  ['Christmas gingerbread house', 'a gingerbread house with candy canes, gumdrops and a frosted roof', 'm'],
+  ['Christmas tree and presents', 'a decorated Christmas tree with a star on top and presents underneath', 's', 'christmas-tree-coloring-pages'],
+  ['Santa Claus face', 'a smiling Santa Claus face with a big beard and a fluffy hat', 's', 'santa-coloring-pages'],
+  ['Santa and sleigh', 'Santa Claus in a sleigh full of presents pulled by two reindeer over rooftops', 'm', 'santa-coloring-pages'],
+  ['Christmas reindeer', 'a cute reindeer with big antlers and a round nose wearing a scarf', 's', 'reindeer-coloring-pages'],
+  ['Christmas gingerbread man', 'a gingerbread man with a big smile, icing buttons and a bow tie', 's', 'gingerbread-coloring-pages'],
+  ['Christmas gingerbread house', 'a gingerbread house with candy canes, gumdrops and a frosted roof', 'm', 'gingerbread-coloring-pages'],
   ['Christmas stocking', 'a big Christmas stocking with a candy cane and small toys peeking out', 's'],
   ['Christmas snow globe', 'a snow globe with a little house, a tree and falling snow', 'm'],
   ['Christmas wreath', 'a Christmas wreath with a big bow, holly leaves and berries', 's'],
-  ['Christmas ornaments', 'five round Christmas ornaments with stripes, stars and swirls hanging from a branch', 's'],
+  ['Christmas ornaments', 'five round Christmas ornaments with stripes, stars and swirls hanging from a branch', 's', 'christmas-ornament-coloring-pages'],
   ['Christmas elf', 'a cheerful Christmas elf with pointed ears and a striped hat holding a present', 's'],
-  ['Christmas cat tree', 'a cat sitting under a Christmas tree and batting at an ornament', 'm'],
+  ['Christmas cat tree', 'a cat sitting under a Christmas tree and batting at an ornament', 'm', 'christmas-tree-coloring-pages'],
   ['Christmas puppy', 'a puppy wearing a Santa hat and sitting next to a present', 's'],
   ['Christmas polar bear', 'a polar bear in a scarf and a Santa hat holding a candy cane', 's'],
   ['Christmas village', 'a snowy Christmas village with small houses, a church, lamp posts and a tree', 'd'],
-  ['Christmas ornament mandala', 'a round mandala made of ornaments, stars, holly and candy canes', 'd'],
+  ['Christmas ornament mandala', 'a round mandala made of ornaments, stars, holly and candy canes', 'd', 'christmas-ornament-coloring-pages'],
   ['Christmas bells and holly', 'two big bells tied with a bow and holly leaves with berries', 's'],
   ['Christmas star', 'a big star with a swirling tail and small stars around it', 's'],
   ['Christmas fireplace', 'a fireplace with a burning log, hanging stockings and a garland on the mantel', 'm'],
   ['Christmas presents', 'a pile of wrapped presents with ribbons, bows and tags', 's'],
   ['Christmas penguin', 'a penguin in a Santa hat holding a small present', 's'],
-  ['Christmas cookies and milk', 'a plate of Christmas cookies next to a glass of milk', 'm'],
+  ['Christmas cookies and milk', 'a plate of Christmas cookies next to a glass of milk', 'm', 'santa-coloring-pages'],
   ['Christmas workshop', 'a busy toy workshop with elves, toy trains, a rocking horse and a shelf of dolls', 'md'],
   ['Christmas lights house', 'a house covered with string lights, a wreath on the door and a snowman out front', 'm'],
   ['Christmas poinsettia', 'a poinsettia flower with large pointed leaves in a pot with a bow', 'm'],
   ['Christmas nutcracker', 'a toy nutcracker soldier with a tall hat and a sword', 'm'],
-  ['Christmas snowflake ornaments', 'four ornaments each with a different snowflake pattern', 's'],
+  ['Christmas snowflake ornaments', 'four ornaments each with a different snowflake pattern', 's', 'christmas-ornament-coloring-pages'],
   ['Christmas candy cane lane', 'a candy cane village with gumdrop trees and a lollipop fence', 'm'],
-  ['Christmas tree zentangle', 'a tall Christmas tree filled with zentangle patterns and ornaments', 'd'],
+  ['Christmas tree zentangle', 'a tall Christmas tree filled with zentangle patterns and ornaments', 'd', 'christmas-tree-coloring-pages'],
   ['Christmas wreath pattern', 'a round wreath filled with fine holly, pinecone and berry patterns', 'd'],
-  ['Christmas snowman gifts', 'a snowman holding a present with a scarf and a top hat', 's'],
+  ['Christmas snowman gifts', 'a snowman holding a present with a scarf and a top hat', 's', 'snowman-coloring-pages'],
   ['Christmas sleigh ride', 'a horse pulling a sleigh through snowy hills with children on board', 'm'],
   ['Christmas angel', 'a smiling angel with wings and a star in the sky', 's'],
   ['Christmas cabin', 'a log cabin with a snowy roof, smoke from the chimney and a lit tree outside', 'd'],
   ['Christmas teddy bear', 'a teddy bear in a Christmas sweater hugging a present', 's'],
-  ['Christmas bird', 'a cardinal bird on a branch of holly with berries and snow', 'm']
+  ['Christmas bird', 'a cardinal bird on a branch of holly with berries and snow', 'm'],
+  // Added for the 2026 season: more drawings for the new pages (Santa, reindeer, tree, ornament, snowflake, adults) and the
+  // subjects of the keyword scan (candy cane, elf, card, carolers)
+  ['Santa hat', 'a red Santa hat with a fluffy white trim and a pom-pom', 's', 'santa-coloring-pages'],
+  ['Santa in the chimney', 'Santa Claus climbing down a brick chimney with a sack of presents and snow on the roof', 'm', 'santa-coloring-pages'],
+  ['Santa reading his list', 'Santa Claus in an armchair holding a long scroll and a feather pen, a cat asleep at his feet', 'm', 'santa-coloring-pages'],
+  ['Santa and a puppy', 'Santa Claus sitting on a log with a happy puppy holding a small present', 's', 'santa-coloring-pages'],
+  ['Mrs. Claus baking', 'Mrs. Claus in an apron and round glasses baking cookies in a cozy kitchen', 'm', 'santa-coloring-pages'],
+  ['Santa on the rooftop', 'Santa Claus waving from a snowy rooftop beside a chimney with a reindeer behind him', 'm', 'santa-coloring-pages'],
+  ['Santa mandala', 'a round mandala with a Santa face in the center and holly, stars and snowflakes around it', 'd', 'santa-coloring-pages'],
+  ['Christmas tree star', 'a tall Christmas tree with a big star on top and round ornaments', 's', 'christmas-tree-coloring-pages'],
+  ['Christmas tree lights', 'a Christmas tree wrapped in string lights with a few ornaments and a bow', 'm', 'christmas-tree-coloring-pages'],
+  ['Christmas tree window', 'a decorated Christmas tree seen through a window with frost patterns on the glass and snow outside', 'm', 'christmas-tree-coloring-pages'],
+  ['Christmas tree farm', 'rows of small Christmas trees on a snowy farm with a red truck', 'm', 'christmas-tree-coloring-pages'],
+  ['Christmas tree decorating', 'a child hanging an ornament on a Christmas tree while a parent holds up a star', 'm', 'christmas-tree-coloring-pages'],
+  ['Christmas mini trees', 'three small Christmas trees of different sizes with simple ornaments', 's', 'christmas-tree-coloring-pages'],
+  ['Christmas ornament ball', 'one big round Christmas ornament with a ribbon on the cap and a swirl pattern', 's', 'christmas-ornament-coloring-pages'],
+  ['Christmas ornament star', 'a star shaped ornament hanging from a ribbon with dots and stripes', 's', 'christmas-ornament-coloring-pages'],
+  ['Christmas ornament box', 'an open box of Christmas ornaments nested in tissue paper', 'm', 'christmas-ornament-coloring-pages'],
+  ['Christmas ornament branch', 'a pine branch with hanging ornaments of different shapes: a ball, a star, a heart and a bell', 'm', 'christmas-ornament-coloring-pages'],
+  ['Christmas ornament patterns', 'a set of six large ornaments each filled with a different zentangle pattern', 'd', 'christmas-ornament-coloring-pages'],
+  ['Christmas snowflake', 'one big six pointed snowflake with simple branches and a small star in the center', 's', 'snowflake-coloring-pages'],
+  ['Christmas snowflake window', 'a window with frost patterns on the glass, big snowflakes and a candle on the sill', 'm', 'snowflake-coloring-pages'],
+  ['Christmas reindeer team', 'two reindeer with harnesses and bells pulling a small sleigh through the snow', 'm', 'reindeer-coloring-pages'],
+  ['Christmas baby reindeer', 'a baby reindeer with tiny antlers wearing a red scarf in the snow', 's', 'reindeer-coloring-pages'],
+  ['Christmas reindeer head', 'a reindeer head with big antlers hung with small ornaments and a bow', 'm', 'reindeer-coloring-pages'],
+  ['Christmas reindeer family', 'a mother reindeer and her calf walking through a snowy forest under the stars', 'm', 'reindeer-coloring-pages'],
+  ['Christmas reindeer mandala', 'a round mandala of reindeer heads, antlers, snowflakes and stars', 'd', 'reindeer-coloring-pages'],
+  ['Christmas gingerbread cookies', 'a tray of gingerbread cookies shaped like a man, a star, a heart and a tree with icing', 's', 'gingerbread-coloring-pages'],
+  ['Christmas gingerbread village', 'a village of gingerbread houses with candy fences, icing roofs and gumdrop trees', 'd', 'gingerbread-coloring-pages'],
+  ['Christmas candy canes', 'two big candy canes crossed together with a bow', 's'],
+  ['Christmas elf child', 'a child in an elf costume with a pointed hat and striped tights holding a present', 's'],
+  ['Christmas card frame', 'a Christmas card frame with a border of holly, bells and a bow and an empty middle', 'm'],
+  ['Christmas hot cocoa', 'a mug of hot cocoa with marshmallows and a candy cane stirrer', 's'],
+  ['Christmas carolers', 'four children in scarves and hats singing carols under a lamp post in the snow', 'm'],
+  ['Christmas sweater', 'a cozy Christmas sweater with a reindeer and snowflake pattern', 's'],
+  ['Christmas toy train', 'a toy train carrying presents around a small Christmas tree', 'm'],
+  ['Christmas holly', 'a sprig of holly leaves and berries tied with a bow', 's'],
+  ['Christmas front door', 'a front door with a wreath, string lights and a doormat with snow on the steps', 'm'],
+  ['Christmas mouse', 'a tiny mouse in a Santa hat holding a candy cane', 's'],
+  ['Christmas mandala', 'a large round mandala made of holly leaves, snowflakes, stars and bells', 'd'],
+  ['Christmas stained glass', 'a stained glass style window with a star, a tree and an angel in separate sections', 'd'],
+  // More detailed drawings for the adult page: from 13 December a third of the Christmas pins are for adults
+  ['Christmas winter forest', 'a snowy pine forest with a fox, an owl and a deer and ornaments on the branches, intricate patterns', 'd'],
+  ['Christmas gift boxes pattern', 'a heap of gift boxes with patterned wrapping paper, ribbons and bows', 'd'],
+  ['Christmas stocking pattern', 'a big stocking filled with fine holly, star and snowflake patterns', 'd'],
+  ['Christmas market', 'a Christmas market street with striped stalls, lanterns, a tree and snow, many small details', 'd'],
+  ['Christmas angel pattern', 'an angel with wide wings filled with swirling patterns and small stars', 'd'],
+  ['Christmas candy cane mandala', 'a round mandala made of candy canes, peppermints, ribbons and holly', 'd']
+];
+
+// Hanukkah (first evening 4 December 2026, last day 12 December). Facts kept plain: a menorah with nine branches (the tall one
+// in the middle lights the others), a dreidel with four sides (drawn blank, the image model cannot write Hebrew letters),
+// latkes and jelly doughnuts fried in oil, chocolate gelt.
+const HANUKKAH = [
+  ['Hanukkah menorah', 'a menorah with nine branches, the tall center candle higher than the other eight, each candle with a small flame', 'm'],
+  ['Hanukkah dreidel', 'a spinning top dreidel with four blank sides, a pointed bottom and a small handle', 's'],
+  ['Hanukkah latkes', 'a plate of potato latkes with a small bowl of applesauce', 's'],
+  ['Hanukkah doughnuts', 'three jelly doughnuts dusted with powdered sugar on a plate', 's'],
+  ['Hanukkah star', 'a six pointed star with a swirling border and small dots', 's'],
+  ['Hanukkah candles', 'a row of nine candles in a simple holder, each with a small flame', 's'],
+  ['Hanukkah gelt', 'a pile of round chocolate coins with a small dreidel on top', 's'],
+  ['Hanukkah window', 'a window with a menorah on the sill, snow outside and a night sky with stars', 'm'],
+  ['Hanukkah table', 'a family table set with a menorah, latkes, a dreidel and wrapped gifts', 'm'],
+  ['Hanukkah gifts', 'a stack of wrapped gifts with ribbons and a small star on top', 's'],
+  ['Hanukkah oil jar', 'a small clay jar of oil with an olive branch and a little flame', 's'],
+  ['Hanukkah cookies', 'star shaped and dreidel shaped cookies with icing on a tray', 's'],
+  ['Hanukkah teddy bear', 'a teddy bear holding a dreidel and a small gift', 's'],
+  ['Hanukkah garland', 'a garland of stars and dreidels hanging across a window', 's'],
+  ['Hanukkah snowy street', 'a cozy snowy street with lit windows and a menorah in one window, stars above', 'm'],
+  ['Hanukkah pattern', 'dreidels, stars, candles and gifts in a repeating border pattern', 'd'],
+  ['Hanukkah menorah mandala', 'a round mandala with a menorah in the center and stars and swirls around it', 'd']
+];
+
+// New Year (26 December to 5 January). No year in a name: a date would be out of date next season, and no alcohol or
+// sparklers in a child's hand.
+const NEWYEAR = [
+  ['New Year fireworks', 'colorful fireworks bursting over a city skyline at night with stars', 'm'],
+  ['New Year countdown clock', 'a big round clock with both hands pointing at twelve, surrounded by stars and confetti', 's'],
+  ['New Year party hat', 'a cone party hat with stripes, dots and a pom-pom on top', 's'],
+  ['New Year balloons', 'a bunch of party balloons with ribbons, stars and streamers', 's'],
+  ['New Year confetti', 'falling confetti, streamers and stars over a big celebration', 'm'],
+  ['New Year noisemaker', 'a party horn noisemaker with a curly streamer and confetti', 's'],
+  ['New Year goals notebook', 'an open notebook with a pencil, checkboxes and small star stickers', 'm'],
+  ['New Year penguin', 'a penguin wearing a party hat and holding a balloon', 's'],
+  ['New Year teddy bear', 'a teddy bear in a party hat with a noisemaker and a small cake', 's'],
+  ['New Year snowman', 'a snowman wearing a party hat and a scarf with fireworks behind', 's'],
+  ['New Year family', 'a family counting down together at a window with fireworks outside', 'm'],
+  ['New Year party table', 'a party table with a cake, party hats, balloons and streamers', 'm'],
+  ['New Year disco ball', 'a sparkling disco ball with stars and streamers', 's'],
+  ['New Year cat', 'a cat wearing a party hat next to a balloon', 's'],
+  ['New Year puppy', 'a puppy in a party hat chasing confetti', 's'],
+  ['New Year moon and stars', 'a crescent moon with big stars and a ribbon', 's'],
+  ['New Year snow globe', 'a snow globe with a clock inside and falling confetti', 'm'],
+  ['New Year cupcakes', 'cupcakes with swirled frosting and star toppers', 's'],
+  ['New Year owl', 'an owl in a party hat on a branch with stars', 's'],
+  ['New Year clock tower', 'a tall clock tower in a snowy city at midnight with fireworks', 'd'],
+  ['New Year fireworks mandala', 'a round mandala made of fireworks bursts and stars', 'd'],
+  ['New Year clock zentangle', 'a clock face filled with zentangle patterns and stars', 'd']
 ];
 
 const WINTER = [
-  ['winter snowman', 'a snowman with a top hat, a scarf and a carrot nose', 's'],
-  ['winter snowflakes', 'six big snowflakes, each with a different pattern', 's'],
+  ['winter snowman', 'a snowman with a top hat, a scarf and a carrot nose', 's', 'snowman-coloring-pages'],
+  ['winter snowflakes', 'six big snowflakes, each with a different pattern', 's', 'snowflake-coloring-pages'],
   ['winter penguin', 'a penguin sliding on ice with a small scarf', 's'],
   ['winter polar bear', 'a polar bear cub playing in the snow', 's'],
   ['winter arctic fox', 'an arctic fox in the snow with a fluffy tail', 'm'],
@@ -214,23 +389,34 @@ const WINTER = [
   ['winter ice skates', 'a pair of ice skates with a scarf', 's'],
   ['winter cabin', 'a snowy cabin in the woods with smoke from the chimney', 'm'],
   ['winter cardinal', 'a cardinal sitting on a snowy branch', 's'],
-  ['winter reindeer forest', 'a reindeer standing in a snowy pine forest', 'm'],
+  ['winter reindeer forest', 'a reindeer standing in a snowy pine forest', 'm', 'reindeer-coloring-pages'],
   ['winter hot cocoa', 'a mug of hot cocoa with marshmallows next to a knitted blanket', 's'],
   ['winter igloo', 'an igloo with a fishing hole and a small penguin beside it', 's'],
   ['winter pine trees', 'snow covered pine trees on a hill with a big moon', 'm'],
   ['winter ski mountain', 'a mountain with ski tracks, a lift and tiny skiers', 'm'],
-  ['winter snowflake mandala', 'a round snowflake mandala with fine crystal patterns', 'd'],
+  ['winter snowflake mandala', 'a round snowflake mandala with fine crystal patterns', 'd', 'snowflake-coloring-pages'],
   ['winter penguin family', 'a family of penguins huddled together on the ice', 's'],
   ['winter baby seal', 'a baby seal resting on an ice floe', 's'],
-  ['winter snow angel', 'a child making a snow angel next to a small snowman', 's'],
+  ['winter snow angel', 'a child making a snow angel next to a small snowman', 's', 'snowman-coloring-pages'],
   ['winter village', 'a cozy winter village with houses, lamp posts, skaters on a pond and snowy hills', 'd'],
   ['winter husky sled', 'a husky dog team pulling a sled across the snow', 'm'],
   ['winter fireplace cat', 'a cat sleeping by a fireplace on a rug with a blanket', 'm'],
   ['winter wolf', 'a wolf howling at a moon on a snowy hill with pine trees', 'm'],
-  ['winter snowman family', 'a snowman family with a big, a medium and a small snowman', 's'],
+  ['winter snowman family', 'a snowman family with a big, a medium and a small snowman', 's', 'snowman-coloring-pages'],
   ['winter birds', 'three small birds on a snowy branch with berries', 'm'],
   ['winter moose', 'a moose standing in a snowy forest', 'm'],
-  ['winter owl mandala', 'a round mandala with an owl in the center and snowflakes around it', 'd']
+  ['winter owl mandala', 'a round mandala with an owl in the center and snowflakes around it', 'd'],
+  // The winter pages run from 13 December to the end of January next to Christmas, New Year and evergreen drawings: more first-pass subjects
+  ['winter fox den', 'a fox curled up asleep in a snowy den under tree roots with falling snow', 's'],
+  ['winter snow fort', 'two children building a snow fort with a flag and a small snowman beside it', 'm', 'snowman-coloring-pages'],
+  ['winter hockey pond', 'children playing ice hockey on a frozen pond with snowy trees around it', 'm'],
+  ['winter deer in snow', 'a deer with antlers standing in a snowy meadow with falling snowflakes', 'm'],
+  ['winter hedgehog nest', 'a hedgehog sleeping in a nest of leaves under a blanket of snow', 's'],
+  ['winter snowshoes', 'a pair of snowshoes, a walking stick and a woolly hat in the snow', 's'],
+  ['winter lantern path', 'a snowy path lined with lanterns, bare trees and a small bridge over a frozen stream', 'd'],
+  ['winter bird feeder', 'a bird feeder with chickadees and a cardinal hanging from a snowy branch', 'm'],
+  ['winter pine mandala', 'a round mandala of pine branches, snowflakes and pinecones', 'd', 'snowflake-coloring-pages'],
+  ['winter skating pond', 'skaters gliding on a frozen pond with snowy pine trees and a small warming hut', 'd']
 ];
 
 // Evergreen: [name, draw, levels, site theme page]
@@ -360,7 +546,8 @@ function expand(theme, rows) {
       out.push({
         id: `${theme}:${base}`, theme, name, draw, level,
         slug: (themed ? slugify(THEMES[theme].label) + '-' : '') + base + '-coloring-page',
-        site: site || THEMES[theme].site || null,
+        // A detailed drawing of a theme that has a page for adults links to that page (Christmas).
+        site: (level === 'detailed' && THEMES[theme].adultsSite) || site || THEMES[theme].site || null,
         variant: word, pass: i < primary.length ? 1 : 2
       });
     });
@@ -368,29 +555,59 @@ function expand(theme, rows) {
   return out;
 }
 
-const RAW = { halloween: HALLOWEEN, fall: FALL, thanksgiving: THANKSGIVING, christmas: CHRISTMAS, winter: WINTER, evergreen: EVERGREEN };
+const RAW = { halloween: HALLOWEEN, fall: FALL, thanksgiving: THANKSGIVING, christmas: CHRISTMAS, hanukkah: HANUKKAH, newyear: NEWYEAR, winter: WINTER, evergreen: EVERGREEN };
+
+// Which landing page a subject belongs to decides when it is drawn within its holiday theme. The first pass goes round the
+// pages in the order below, one subject of each page per round, so the first pins of a season already cover the new pages
+// instead of one page's drawings in a row. The order puts the pages whose queries the keyword scan of 27 October 2026 showed
+// as the strongest first (short typed prefix and a high place in Google's list: Santa, Thanksgiving, Hanukkah, Christmas) and
+// the six pages that went live that day before the older ones, so they get their first links early. A theme that is not a
+// holiday (Halloween, every evergreen page) keeps the plain shuffled order.
+export const QUERY_ORDER = [
+  'santa-coloring-pages', 'christmas-tree-coloring-pages', 'reindeer-coloring-pages', 'christmas-ornament-coloring-pages', 'snowflake-coloring-pages',
+  'thanksgiving-coloring-pages', 'turkey-coloring-pages', 'hanukkah-coloring-pages', 'christmas-coloring-pages', 'gingerbread-coloring-pages',
+  'snowman-coloring-pages', 'new-year-coloring-pages', 'winter-coloring-pages', 'fall-coloring-pages', 'christmas-coloring-pages-for-adults'
+];
+const orderOf = site => { const i = QUERY_ORDER.indexOf(site); return i < 0 ? QUERY_ORDER.length : i; };
+const shuffled = (a, b) => a.pass - b.pass || hash('cpm-order|' + a.slug) - hash('cpm-order|' + b.slug);
+function ordered(theme, subjects) {
+  // First pass before second pass, each in a stable pseudo-random order (a theme does not run through its subjects in the
+  // order they were typed).
+  const list = subjects.sort(shuffled);
+  if (!THEMES[theme].holiday) return list;
+  const round = new Map(), seen = {};
+  for (const x of list) { const k = x.pass + '|' + x.site; round.set(x, seen[k] || 0); seen[k] = (seen[k] || 0) + 1; }
+  return list.sort((a, b) => a.pass - b.pass || round.get(a) - round.get(b) || orderOf(a.site) - orderOf(b.site) || shuffled(a, b));
+}
+
 let bankCache = null;
 export function bank() {
   if (bankCache) return bankCache;
   bankCache = {};
-  for (const [theme, rows] of Object.entries(RAW)) {
-    // First pass before second pass, each in a stable pseudo-random order (a theme does not run through its subjects in the order they were typed).
-    bankCache[theme] = expand(theme, rows).sort((a, b) => a.pass - b.pass || hash('cpm-order|' + a.slug) - hash('cpm-order|' + b.slug));
-  }
+  for (const [theme, rows] of Object.entries(RAW)) bankCache[theme] = ordered(theme, expand(theme, rows));
   return bankCache;
 }
 export const allSubjects = () => Object.values(bank()).flat();
+// The subjects a mix key stands for: a theme, or "theme>kids" (easy and medium drawings) or "theme>adults" (detailed ones).
+const poolCache = new Map();
+export function pool(key) {
+  const [theme, side] = String(key).split('>');
+  if (!side) return bank()[theme] || [];
+  if (!poolCache.has(key)) poolCache.set(key, (bank()[theme] || []).filter(x => (side === 'adults') === (x.level === 'detailed')));
+  return poolCache.get(key);
+}
 
-// The next subject to draw. used: Set of slugs already made; counts: { theme: pages made so far } (auto pages only).
-// Within the day's mix the theme that is furthest behind its weight goes first, so a mixed season stays mixed.
+// The next subject to draw. used: Set of slugs already made; counts: { key: pages made so far in this season window } (auto
+// pages only; keys are themes and "theme>kids" / "theme>adults", see PinCore.themeCounts(since)).
+// Within the day's mix the key that is furthest behind its weight goes first, so a mixed season stays mixed.
 export function pickSubject({ date, used, counts = {} }) {
   const phase = phaseFor(date);
   const b = bank();
   let best = null;
-  for (const [theme, w] of Object.entries(phase.mix)) {
-    const cand = b[theme].find(s => !used.has(s.slug));
+  for (const [key, w] of Object.entries(phase.mix)) {
+    const cand = pool(key).find(s => !used.has(s.slug));
     if (!cand) continue;
-    const ratio = (counts[theme] || 0) / w;
+    const ratio = (counts[key] || 0) / w;
     if (!best || ratio < best.ratio) best = { ratio, cand };
   }
   if (best) return { subject: best.cand, phase: phase.id };
@@ -417,8 +634,43 @@ const TITLE_WORDINGS = {
     n => `Free ${n} coloring page for adults with fine detail to color`
   ]
 };
+// The strongest modifier in the Google suggestions of each landing page's query (keyword scan of 27 October 2026, notes in
+// takip/devir/coloringpagemaker-sezon-NOTLAR.md), put before the noun in a holiday pin title and used in its description:
+// "printable" leads almost everywhere, "free" for Thanksgiving and Hanukkah, "free printable" for ornaments, and "printable PDF"
+// where people type the PDF (turkey, New Year). The audience words (for kids, for adults) come from the detail level.
+export const QUERY_MODIFIER = {
+  'santa-coloring-pages': 'printable', 'christmas-coloring-pages': 'printable', 'reindeer-coloring-pages': 'printable',
+  'christmas-tree-coloring-pages': 'printable', 'christmas-ornament-coloring-pages': 'free printable', 'snowflake-coloring-pages': 'printable',
+  'christmas-coloring-pages-for-adults': 'printable', 'thanksgiving-coloring-pages': 'free', 'turkey-coloring-pages': 'printable PDF',
+  'fall-coloring-pages': 'printable', 'winter-coloring-pages': 'printable', 'hanukkah-coloring-pages': 'free',
+  'new-year-coloring-pages': 'printable PDF', 'gingerbread-coloring-pages': 'printable', 'snowman-coloring-pages': 'printable'
+};
+const HOLIDAY_TITLES = {
+  simple: [
+    (n, m) => `${cap(m)} ${n} coloring page for toddlers and preschoolers`,
+    (n, m) => `Easy ${m} ${n} coloring page for kids to color`,
+    (n, m) => `${cap(m)} ${n} coloring page with big shapes for little hands`
+  ],
+  medium: [
+    (n, m) => `${cap(m)} ${n} coloring page for kids ages 6 to 12`,
+    (n, m) => `${cap(m)} ${n} coloring page for kids with clear lines to color`,
+    (n, m) => `${cap(m)} ${n} coloring page for kids, ready to print at home`
+  ],
+  detailed: [
+    (n, m) => `${cap(m)} ${n} coloring page for adults and teens, fine detail`,
+    (n, m) => `Detailed ${m} ${n} coloring page for adults to print and color`,
+    (n, m) => `${cap(m)} ${n} coloring page for adults with fine detail to color`
+  ]
+};
+// "christmas-coloring-pages-for-adults" -> "Christmas coloring pages for adults"
+const PROPER_WORDS = ['Santa', 'Christmas', 'Thanksgiving', 'Hanukkah', 'New Year'];
+export function queryLabel(site) {
+  let q = String(site).replace(/-/g, ' ');
+  for (const w of PROPER_WORDS) q = q.replace(new RegExp('\\b' + w + '\\b', 'i'), w);
+  return q;
+}
 // Words that stay capitalized in the middle of a sentence.
-const PROPER = /^(Halloween|Thanksgiving|Christmas|Santa|T\.)/;
+const PROPER = /^(Halloween|Thanksgiving|Christmas|Hanukkah|New Year|Santa|Mrs\.|T\.)/;
 export const midName = name => (PROPER.test(name) ? name : name[0].toLowerCase() + name.slice(1));
 const sentence = s => cap(s.replace(/\s+/g, ' ').trim()).replace(/[.,;:\s]+$/, '') + '.';
 // "a friendly ghost with ..." -> alt text for the page.
@@ -433,13 +685,22 @@ export function describe(subject) {
   const wordings = TITLE_WORDINGS[subject.level];
   const theme = THEMES[subject.theme];
   const headline = `${cap(subject.name)} coloring page`;
-  const pinTitle = wordings[pick % wordings.length](mid);
   const blurb = sentence(subject.draw);
-  const pinDescription = [
+  // A holiday pin is worded with the query of the landing page it links to; every other pin keeps the general wording.
+  const holiday = theme.holiday && subject.site;
+  const mod = holiday ? QUERY_MODIFIER[subject.site] || 'free printable' : '';
+  const label = holiday ? queryLabel(subject.site) : '';
+  const forWho = !holiday || / for adults$/.test(label) ? '' : subject.level === 'detailed' ? ' for adults' : ' for kids';
+  const pinTitle = holiday ? HOLIDAY_TITLES[subject.level][pick % 3](mid, mod) : wordings[pick % wordings.length](mid);
+  const pinDescription = (holiday ? [
+    blurb,
+    `${L.line}.`,
+    `Print it free at home as a PNG or a letter-size PDF. More ${mod} ${label}${forWho} at ColoringPageMaker, where you can also draw your own page: 2 free pages a day, no signup.`
+  ] : [
     blurb,
     `${L.line}.`,
     `Print it free at home as a PNG or a letter-size PDF, or draw your own page with ColoringPageMaker: 2 free pages a day, no signup.`
-  ].join(' ');
+  ]).join(' ');
   const pageTitle = `${headline}, Free Printable`;
   const intro = [
     blurb,

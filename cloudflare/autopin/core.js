@@ -113,9 +113,15 @@ export class PinCore {
   // --- pages ---
   hasPage(slug) { return this.exec('SELECT 1 AS x FROM pages WHERE slug = ?', slug).length > 0; }
   usedSlugs() { return new Set(this.exec('SELECT slug FROM pages').map(r => r.slug)); }
-  themeCounts() {
+  // Pages made since `since` (UTC ms; 0 = all), per theme and per "theme>kids" / "theme>adults" (detailed drawings): the keys of a
+  // season mix (topics.js phaseFor). The window is the season window the job is in, so an earlier window does not skew the mix.
+  themeCounts(since = 0) {
     const out = {};
-    for (const r of this.exec('SELECT theme, COUNT(*) AS n FROM pages GROUP BY theme')) out[r.theme] = Number(r.n);
+    for (const r of this.exec('SELECT theme, level, COUNT(*) AS n FROM pages WHERE created >= ? GROUP BY theme, level', since)) {
+      const n = Number(r.n), side = `${r.theme}>${r.level === 'detailed' ? 'adults' : 'kids'}`;
+      out[r.theme] = (out[r.theme] || 0) + n;
+      out[side] = (out[side] || 0) + n;
+    }
     return out;
   }
   // p: the text columns; blobs: { pin, page, thumb } as Uint8Array. Returns false when the slug already exists.

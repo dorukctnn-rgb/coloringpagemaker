@@ -12,12 +12,16 @@ const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
 export const dateText = ms => { const d = new Date(ms); return `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`; };
 const isoDate = ms => new Date(ms).toISOString().slice(0, 10);
 const LEVEL_LABEL = { simple: 'Easy', medium: 'Medium', detailed: 'Detailed' };
+// How the call to action names a site page whose address does not end in -coloring-pages.
+const SITE_NAMES = { 'christmas-coloring-pages-for-adults': 'adult Christmas' };
 
 const THEME_TIPS = {
   halloween: 'Orange, purple, black and a little green suit a Halloween page, and a white gel pen adds moonlight on dark colors.',
   fall: 'Rust red, golden yellow and brown give a page the look of fall leaves.',
   thanksgiving: 'Warm browns, deep reds and golden yellows work well for a Thanksgiving page, and the page can double as a place card or a table activity.',
   christmas: 'Red, green and gold are the classic Christmas colors, and glitter pens look good on ornaments and stars.',
+  hanukkah: 'Blue, silver and white suit a Hanukkah page, and yellow or gold makes the candle flames glow.',
+  newyear: 'Deep blue and purple make a good night sky, and a white gel pen or a gold marker adds the fireworks and stars.',
   winter: 'Cool blues and silvers suit a winter page, and white crayon on blue paper makes snow.',
   evergreen: 'Any colors work. Start with the biggest shapes and keep the small details for last.'
 };
@@ -151,7 +155,7 @@ export function renderLanding(v, related = []) {
   const theme = THEMES[v.theme] || THEMES.evergreen;
   const group = GROUPS[v.group];
   const siteHref = '/' + (v.site || '') + (v.site ? '#generator' : '');
-  const siteName = v.site ? v.site.replace(/-coloring-pages$/, '').replace(/-/g, ' ') : '';
+  const siteName = v.site ? (SITE_NAMES[v.site] || v.site.replace(/-coloring-pages$/, '').replace(/-/g, ' ')) : '';
   const rel = related.filter(r => r.slug !== v.slug).slice(0, 6);
   const ld = {
     '@context': 'https://schema.org',
