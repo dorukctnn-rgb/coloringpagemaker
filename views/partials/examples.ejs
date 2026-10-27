@@ -3,7 +3,7 @@
   <h2 id="examples-title"><%= examples.heading %></h2>
   <p class="examples-intro">Example pages made with ColoringPageMaker's generator. Print them free for personal use, as a PNG or a letter-size PDF, or describe your own page in the generator above.</p>
   <ul class="examples-grid">
-    <% examples.items.forEach(function (x) { var base = '/examples/' + examples.slug + '/' + x.name;
+    <% examples.items.forEach(function (x) { var base = '/examples/' + (examples.files || examples.slug) + '/' + x.name;
        // "Save to Pinterest" is a plain link to Pinterest's documented save URL: no Pinterest script on the page.
        var pinHref = 'https://www.pinterest.com/pin/create/button/?url=' + encodeURIComponent('https://www.coloringpagemaker.app/' + examples.slug + '?utm_source=pinterest&utm_medium=save&utm_campaign=examples')
          + '&media=' + encodeURIComponent('https://www.coloringpagemaker.app' + base + '.png')

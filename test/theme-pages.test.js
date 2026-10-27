@@ -16,6 +16,11 @@ const SEASONAL = ['fall-coloring-pages', 'thanksgiving-coloring-pages', 'turkey-
 const EVERGREEN = ['dragon-coloring-pages', 'cat-coloring-pages', 'car-coloring-pages', 'dog-coloring-pages',
   'mermaid-coloring-pages', 'horse-coloring-pages', 'fairy-coloring-pages', 'butterfly-coloring-pages',
   'space-coloring-pages', 'ocean-coloring-pages'];
+// The Christmas and winter pages of 27 October 2026.
+const CHRISTMAS = ['santa-coloring-pages', 'reindeer-coloring-pages', 'christmas-tree-coloring-pages',
+  'christmas-ornament-coloring-pages', 'snowflake-coloring-pages', 'christmas-coloring-pages-for-adults'];
+// The folder under public/examples/ that holds a page's example files: its own name unless the entry says otherwise.
+const dirOf = slug => THEME_EXAMPLES[slug].files || slug;
 // Names of trademarked characters that must not appear in any guide or example on the new pages.
 const TRADEMARKS = /disney|bluey|hello kitty|crayola|charlie brown|frosty|olaf|grinch|shrek|gingy|rudolph|peppa|ariel|lightning mcqueen|mcqueen|toothless|spyro|tinker ?bell|garfield|snoopy/i;
 // Pages that show two examples: none of their other candidates passed review within the generation cap.
@@ -45,7 +50,7 @@ function gallery(html) {
 }
 
 test('every theme in the sitemap has examples, and every example file exists', () => {
-  const themesInSitemap = sitemapPaths.filter(p => /-coloring-pages$/.test(p) && !/self-publishing/.test(p));
+  const themesInSitemap = sitemapPaths.filter(p => /-coloring-pages(-for-adults)?$/.test(p) && !/self-publishing/.test(p));
   assert.deepEqual(themesInSitemap.slice().sort(), themePaths().sort());
   const alts = new Set();
   for (const [slug, g] of Object.entries(THEME_EXAMPLES)) {
@@ -54,7 +59,7 @@ test('every theme in the sitemap has examples, and every example file exists', (
     assert.match(g.heading, /^Free printable .+ coloring pages$/);
     for (const x of g.items) {
       for (const suffix of ['.png', '-400.webp', '-800.webp']) {
-        assert.ok(fs.existsSync(path.join(__dirname, '..', 'public', 'examples', slug, x.name + suffix)), `${slug}/${x.name}${suffix}`);
+        assert.ok(fs.existsSync(path.join(__dirname, '..', 'public', 'examples', dirOf(slug), x.name + suffix)), `${slug}/${x.name}${suffix}`);
       }
       assert.ok(!alts.has(x.alt), 'alt text is unique: ' + x.name);
       alts.add(x.alt);
@@ -108,7 +113,7 @@ test('every example has a Save to Pinterest link to its own page and PNG, with n
       assert.equal(u.origin + u.pathname, 'https://www.pinterest.com/pin/create/button/');
       assert.equal(u.searchParams.get('url'), 'https://www.coloringpagemaker.app/' + slug + '?utm_source=pinterest&utm_medium=save&utm_campaign=examples');
       const media = u.searchParams.get('media');
-      assert.equal(media, 'https://www.coloringpagemaker.app/examples/' + slug + '/' + items[i].name + '.png');
+      assert.equal(media, 'https://www.coloringpagemaker.app/examples/' + dirOf(slug) + '/' + items[i].name + '.png');
       const r = await fetch(app.base + new URL(media).pathname);
       assert.equal(r.status, 200, media);
       await r.arrayBuffer();
@@ -141,7 +146,7 @@ test('an example PNG goes through the existing PDF route', async () => {
 
 test('the seasonal and evergreen pages render with their own content, JSON-LD and sitemap entries', () => {
   const xml = pages.get('/sitemap.xml').replace(/\s+/g, '');
-  for (const slug of [...SEASONAL, ...EVERGREEN]) {
+  for (const slug of [...SEASONAL, ...EVERGREEN, ...CHRISTMAS]) {
     const g = THEME_GUIDES[slug];
     assert.ok(g, slug + ' has a guide');
     const html = pages.get('/' + slug);
@@ -158,7 +163,7 @@ test('the seasonal and evergreen pages render with their own content, JSON-LD an
 });
 
 test('no seasonal or evergreen page is orphaned', () => {
-  for (const slug of [...SEASONAL, ...EVERGREEN]) {
+  for (const slug of [...SEASONAL, ...EVERGREEN, ...CHRISTMAS]) {
     const linkers = sitemapPaths.filter(p => p !== '/' + slug && pages.get(p).includes(`href="/${slug}"`));
     assert.ok(linkers.length >= 3, `${slug} is linked from ${linkers.length} pages: ${linkers.join(' ')}`);
     assert.ok(linkers.includes('/blog'), slug + ' is in the theme guides hub');
@@ -167,7 +172,9 @@ test('no seasonal or evergreen page is orphaned', () => {
 
 test('existing link lists keep their items and order; the seasonal pages are only appended', () => {
   const t = s => s + '-coloring-pages';
-  const home = [...pages.get('/').matchAll(/<li><a href="\/([a-z-]+-coloring-pages)"><strong>/g)].map(m => m[1]);
+  const homeHtml = pages.get('/');
+  const popular = homeHtml.slice(homeHtml.indexOf('<h2>Popular themes</h2>'));
+  const home = [...popular.matchAll(/<li><a href="\/([a-z-]+-coloring-pages)"><strong>/g)].map(m => m[1]);
   assert.deepEqual(home, ['unicorn', 'dinosaur', 'mandala', 'halloween', 'christmas', 'animal', 'princess', 'flower', 'adult', 'fall', 'thanksgiving', 'winter',
     'nativity', 'new-year', 'gingerbread', 'snowman', 'diwali', 'hanukkah',
     'dragon', 'cat', 'car', 'dog', 'mermaid', 'horse', 'fairy', 'butterfly', 'space', 'ocean'].map(t));
@@ -178,18 +185,20 @@ test('existing link lists keep their items and order; the seasonal pages are onl
     const sec = html.slice(html.indexOf('<h2>Browse more themes</h2>'));
     const links = [...sec.slice(0, sec.indexOf('</section>')).matchAll(/href="\/([a-z-]+)"/g)].map(m => m[1]);
     const i = ORIGINAL.indexOf(slug);
-    assert.deepEqual(links, [...[...ORIGINAL.slice(i + 1), ...ORIGINAL.slice(0, i)].slice(0, 6), ...SEASONAL, ...EVERGREEN], slug);
+    assert.deepEqual(links, [...[...ORIGINAL.slice(i + 1), ...ORIGINAL.slice(0, i)].slice(0, 6), ...SEASONAL, ...EVERGREEN, ...CHRISTMAS], slug);
   }
   // Related lists on existing guides: the original links first, in their order, then the seasonal ones.
   const related = {
     halloween: ['christmas', 'animal', 'adult', 'coloring-pages-for-classroom-teachers', 'fall'],
-    christmas: ['halloween', 'animal', 'adult', 'coloring-pages-for-classroom-teachers', 'winter', 'nativity'],
-    winter: ['christmas', 'animal', 'adult', 'coloring-pages-for-classroom-teachers', 'snowman'],
+    christmas: ['halloween', 'animal', 'adult', 'coloring-pages-for-classroom-teachers', 'winter', 'nativity',
+      'santa', 'reindeer', 'christmas-tree', 'christmas-ornament', 'snowflake', 'christmas-for-adults'],
+    winter: ['christmas', 'animal', 'adult', 'coloring-pages-for-classroom-teachers', 'snowman', 'snowflake', 'reindeer'],
     animal: ['dinosaur', 'halloween', 'unicorn', 'coloring-pages-for-classroom-teachers', 'cat', 'dog', 'horse', 'butterfly']
   };
   for (const [slug, expected] of Object.entries(related)) {
+    // The Christmas pages of 27 October 2026 end in "-coloring-pages-for-adults", never "<x>-coloring-pages" for that one.
     assert.deepEqual(THEME_GUIDES[t(slug)].related.map(r => r.href),
-      expected.map(s => '/' + (s.startsWith('coloring-pages-') ? s : t(s))), slug + ': related links');
+      expected.map(s => '/' + (s === 'christmas-for-adults' ? 'christmas-coloring-pages-for-adults' : s.startsWith('coloring-pages-') ? s : t(s))), slug + ': related links');
   }
 });
 
@@ -235,10 +244,81 @@ test('the evergreen batch: three examples each, facts checked, sources and the g
   }
 });
 
-test('pages that gained a third example carry the 2026-10-15 sitemap date', () => {
+test('pages that gained a third example carry the date their content last changed in the sitemap', () => {
   const xml = pages.get('/sitemap.xml').replace(/\s+/g, '');
-  for (const slug of ['halloween', 'christmas', 'animal', 'easter', 'adult', 'winter'].map(s => s + '-coloring-pages')) {
-    assert.ok(xml.includes(`${slug}</loc><lastmod>2026-10-15</lastmod>`), slug);
+  // Christmas and winter were reworked on 27 October 2026 (query-led titles, links to the new pages), the rest were not.
+  const lastmod = { halloween: '2026-10-15', christmas: '2026-10-27', animal: '2026-10-15', easter: '2026-10-15', adult: '2026-10-15', winter: '2026-10-27' };
+  for (const [s, date] of Object.entries(lastmod)) {
+    const slug = s + '-coloring-pages';
+    assert.ok(xml.includes(`${slug}</loc><lastmod>${date}</lastmod>`), slug);
     assert.equal(THEME_EXAMPLES[slug].items.length, 3, slug);
+  }
+});
+
+test('the Christmas and winter batch of 27 October 2026: query-led pages, real files, honest data', async () => {
+  const xml = pages.get('/sitemap.xml').replace(/\s+/g, '');
+  const QUERY = {
+    'santa-coloring-pages': 'Santa Coloring Pages', 'reindeer-coloring-pages': 'Reindeer Coloring Pages',
+    'christmas-tree-coloring-pages': 'Christmas Tree Coloring Pages', 'christmas-ornament-coloring-pages': 'Christmas Ornament Coloring Pages',
+    'snowflake-coloring-pages': 'Snowflake Coloring Pages', 'christmas-coloring-pages-for-adults': 'Christmas Coloring Pages for Adults'
+  };
+  for (const slug of CHRISTMAS) {
+    const g = THEME_GUIDES[slug];
+    const html = pages.get('/' + slug);
+    // The title, the H1 and the first sentence start from the phrase people type.
+    assert.ok(g.title.startsWith(QUERY[slug]), slug + ': title starts with the query');
+    assert.ok(g.h1.toLowerCase().startsWith(QUERY[slug].toLowerCase()), slug + ': h1 starts with the query');
+    assert.match(g.lead, /^Print free [^.]+coloring pages/, slug + ': first sentence');
+    assert.ok(g.title.length <= 66 && g.description.length <= 160, slug + ': title and description fit a result');
+    assert.equal(g.updated, '2026-10-27');
+    assert.equal(g.checked, '27 October 2026');
+    assert.ok(xml.includes(`${slug}</loc><lastmod>2026-10-27</lastmod>`), slug + ' sitemap lastmod');
+    assert.equal(THEME_EXAMPLES[slug].items.length, 3, slug + ' has three examples');
+    assert.ok(g.sources.length >= 1 && g.sources.every(s => /^https:\/\//.test(s.href)), slug + ' sources');
+    assert.ok(html.includes(`<link rel="canonical" href="https://www.coloringpagemaker.app/${slug}">`), slug + ' canonical');
+    // The generator is pre-filled with the theme.
+    assert.ok(html.includes('id="promptInput"') && html.includes(g.presetPrompt.replace(/'/g, '&#39;')), slug + ': generator pre-filled');
+    // The JSON-LD lists exactly the example images that are on the page, and the files answer.
+    const ld = JSON.parse(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/.exec(html)[1]);
+    const gal = ld['@graph'].find(n => n['@type'] === 'ImageGallery');
+    assert.ok(gal, slug + ' has an ImageGallery');
+    assert.equal(gal.associatedMedia.length, THEME_EXAMPLES[slug].items.length);
+    for (const m of gal.associatedMedia) {
+      assert.match(m.contentUrl, new RegExp('^https://www\\.coloringpagemaker\\.app/examples/' + dirOf(slug) + '/'));
+      const r = await fetch(app.base + new URL(m.contentUrl).pathname);
+      assert.equal(r.status, 200, m.contentUrl);
+      await r.arrayBuffer();
+      assert.ok(html.includes(new URL(m.contentUrl).pathname.replace(/\.png$/, '-400.webp')), slug + ': the thumbnail is on the page');
+    }
+  }
+  // The ornament page keeps the folder its files already had, and no second copy exists.
+  assert.equal(THEME_EXAMPLES['christmas-ornament-coloring-pages'].files, 'ornament-coloring-pages');
+  assert.ok(!fs.existsSync(path.join(__dirname, '..', 'public', 'examples', 'christmas-ornament-coloring-pages')));
+  // No example is shown on two pages.
+  const names = Object.values(THEME_EXAMPLES).flatMap(e => e.items.map(i => i.name));
+  assert.equal(new Set(names).size, names.length, 'every example name is used once');
+  // The home page links to every new page in its in-season section, and the guides hub lists them.
+  const home = pages.get('/');
+  const season = home.slice(home.indexOf('id="in-season"'), home.indexOf('<h2>Popular themes</h2>'));
+  for (const slug of [...CHRISTMAS, 'thanksgiving-coloring-pages', 'christmas-coloring-pages', 'hanukkah-coloring-pages', 'new-year-coloring-pages']) {
+    assert.ok(season.includes(`href="/${slug}"`), 'home in-season links to ' + slug);
+  }
+  for (const slug of CHRISTMAS) assert.ok(pages.get('/blog').includes(`href="/${slug}"`), slug + ' in the guides hub');
+  // Dates the copy states.
+  assert.ok(pages.get('/thanksgiving-coloring-pages').includes('Thursday 26 November 2026'));
+  assert.ok(pages.get('/hanukkah-coloring-pages').includes('Friday 4 December'));
+  assert.ok(pages.get('/new-year-coloring-pages').includes('Friday 1 January 2027'));
+  // The Pilgrim facts come from the museum's page.
+  assert.ok(THEME_GUIDES['thanksgiving-coloring-pages'].sources.some(s => /plimoth\.org\/for-students\/homework-help\/what-to-wear/.test(s.href)));
+  // The pages whose wording was reworked still say how free printing works, and honestly: PNG free, free PDF watermarked.
+  for (const s of ['christmas', 'thanksgiving', 'turkey', 'fall', 'winter', 'new-year', 'hanukkah', 'snowman', 'gingerbread']) {
+    const g = THEME_GUIDES[s + '-coloring-pages'];
+    assert.ok(/^Print free /.test(g.lead), s + ': lead starts from the query');
+    assert.ok(g.faq.some(f => /free to print/.test(f.q) && /watermark/.test(f.a)), s + ': free-to-print answer');
+    assert.equal(g.updated, '2026-10-27');
+  }
+  // Facts on the pages that were only retitled keep their check date.
+  for (const s of ['nativity', 'new-year', 'gingerbread', 'snowman', 'diwali', 'hanukkah']) {
+    assert.equal(THEME_GUIDES[s + '-coloring-pages'].checked, '15 October 2026', s);
   }
 });
