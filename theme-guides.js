@@ -1789,14 +1789,14 @@ const THEME_GUIDES = {
         ['Santa with milk and cookies', 'Small separate details and a fire', '6 to 9'],
         ['Santa with a sack in the snow', 'Furry trim, a tree, snow hills', '6 to 12']
       ] } },
-      { p: `The three examples above are one of each kind. Download the one that matches the child, or use a prompt from the table to make a new one.` }
+      { p: `The examples above are the face, the milk-and-cookies page and the sack in the snow. Download the one that matches the child, or use a prompt from the table to make a new one.` }
     ] },
     { h2: 'A letter to Santa on a coloring page', blocks: [
       { p: `Print the Santa face, have the child color it, then use the white space around it for a letter. The generator draws pictures and cannot be relied on to spell words, so write the words by hand. A page with the child's own writing on it also keeps well in a card or a box of Christmas keepsakes.` }
     ] },
     { h2: 'Where Santa comes from', blocks: [
       { p: `The story of Santa Claus begins with Saint Nicholas, a bishop of Myra whose feast day is 6 December (St Nicholas Center). His gift-giving stories are tied to the custom of children hanging up stockings for presents (St Nicholas Center).` },
-      { p: `The best-known Santa fact in the United States has a smaller start. In 1955 a Sears ad listed a phone number for children to call Santa, with a typo. The number reached the Continental Air Defense Command in Colorado, where Colonel Harry Shoup and his staff played along and told the children where Santa was. In 1958 Shoup organized a Santa-tracking program, and NORAD has kept the tradition going every year since (Smithsonian Magazine).` }
+      { p: `One Santa tradition in the United States started with a typo. In 1955 a Sears ad listed a phone number for children to call Santa, with a typo. The number reached the Continental Air Defense Command in Colorado, where Colonel Harry Shoup and his staff played along and told the children where Santa was. In 1958 Shoup organized a Santa-tracking program, and NORAD has kept the tradition going every year since (Smithsonian Magazine).` }
     ] }
   ],
   faq: [
@@ -1963,14 +1963,14 @@ const THEME_GUIDES = {
     { h2: 'From coloring page to tree ornament', blocks: [
       { p: `Every page downloads as a letter-size PDF, and your printer's “pages per sheet” setting shrinks it without any editing:` },
       { ul: [
-        `**Print on cardstock.** Paper curls when it hangs. Cardstock keeps its shape.`,
+        `**Print on cardstock.** Plain paper goes limp on a tree. Cardstock keeps its shape.`,
         `**Four to a sheet.** At 4 pages per sheet each picture comes out just under 4 inches across, a good size for a tree.`,
         `**Cut around the outline, punch a hole and tie on ribbon.** Color the back too, or glue two pages back to back so the ornament has no blank side.`
       ] },
       { p: `Print the blank ornament for a whole class. Each child's ball is different, and the finished set looks like a real tree of glass baubles.` }
     ] },
     { h2: 'Where glass ornaments come from', blocks: [
-      { p: `Mold-blown glass ornaments were first made in Lauscha, a small glassmaking town in Germany. F. W. Woolworth's stores began selling Lauscha ornaments in the United States in 1880 (Wikipedia, “Christmas ornament”). Accounts differ on the exact years, which is why the sources are linked below.` }
+      { p: `Mold-blown glass ornaments were first made in Lauscha, a small glassmaking town in Germany. F. W. Woolworth's stores began selling Lauscha ornaments in the United States in 1880 (Wikipedia, “Christmas ornament”). Sources differ on the exact years.` }
     ] },
     { h2: 'Coloring a mandala-style ornament', blocks: [
       { p: `The patterned ornaments are round, so they color like mandalas. In a 2005 experiment, 84 students who had been made briefly anxious colored a mandala, a plaid pattern or a blank sheet for 20 minutes. Anxiety fell about the same after the mandala and the plaid, and more than after the blank sheet (Curry and Kasser, Art Therapy). One small study is not a treatment, which our [article on adult coloring and anxiety](/adult-coloring-mental-health-benefits) explains.` }
@@ -2029,7 +2029,7 @@ const THEME_GUIDES = {
         ['Needle', 'A column grown long and thin', '“thin ice needles in a cluster”'],
         ['Capped column', 'A column with a plate on each end', '“a six-sided column with a flat disc at each end”']
       ] } },
-      { p: `The page also notes that not all snowflakes look like six-pointed stars, though many do, and that fernlike stellar dendrites are not perfectly symmetrical. For why six, see [winter coloring pages](/winter-coloring-pages).` }
+      { p: `SnowCrystals.com also notes that not all snowflakes look like six-pointed stars, though many do, and that fernlike stellar dendrites are not perfectly symmetrical. For why so many have six, see [winter coloring pages](/winter-coloring-pages).` }
     ] },
     { h2: 'The man who photographed snowflakes first', blocks: [
       { p: `Guinness World Records lists Wilson Bentley as the first person to photograph a single snow crystal. He took the picture on 15 January 1885 on his family's farm near Jericho, Vermont (Guinness World Records). Print the fern-armed snowflake and ask children to compare its branches with a photograph of a stellar dendrite online.` }
@@ -2039,7 +2039,7 @@ const THEME_GUIDES = {
       { ul: [
         `Start with a round sheet of paper: trace a plate and cut it out.`,
         `Fold it in half, then fold the half into thirds, like a fan.`,
-        `Cut shapes out of the edges and the folds, then unfold it.`
+        `Cut small shapes out of the edges, then unfold it.`
       ] },
       { p: `Color the printed snowflake pages first, then cut out the snowflakes along the outline and hang them in a window.` }
     ] }
