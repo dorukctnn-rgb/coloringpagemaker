@@ -8,7 +8,8 @@ import { fileURLToPath } from 'node:url';
 import { DatabaseSync } from 'node:sqlite';
 import vm from 'node:vm';
 import worker, { isLegacySale, config } from '../cloudflare/worker.js';
-import { LedgerCore } from '../cloudflare/ledger-core.js';
+import { LedgerCore, TOKEN_TTL_MS } from '../cloudflare/ledger-core.js';
+import { FLUX_MODEL } from '../cloudflare/flux.js';
 import { buildPdf, decodePdfImage } from '../cloudflare/pdf.js';
 import lineart from '../lineart.js';
 
@@ -549,4 +550,162 @@ test('ledger: counters expire, purge removes old rows, a failed check reserves n
   core.purge();
   assert.equal(exec('SELECT COUNT(*) AS n FROM counters WHERE k = ?', 'hd:usd:d:2026-10-20')[0].n, 0);
   assert.equal(core.count('hd:usd:m:2026-10'), 60000);
+});
+
+// --- the privacy page against the Worker ---
+// views/privacy.ejs says where visitor data goes, how long it stays and who runs the site. These tests read the production
+// config and the Worker and fail when one of them moves without the other (a new store, a new outbound address, a changed
+// retention, the previous server switched off).
+const privacyArticle = () => fs.readFileSync(path.join(root, 'views', 'privacy.ejs'), 'utf8').match(/<article[\s\S]*<\/article>/)[0];
+const privacyText = () => privacyArticle().replace(/<[^>]+>/g, ' ').replace(/&[a-z]+;/g, ' ').replace(/\s+/g, ' ');
+const prodConfig = () => JSON.parse(fs.readFileSync(path.join(root, 'cloudflare', 'wrangler.production.jsonc'), 'utf8').replace(/^\s*\/\/.*$/gm, ''));
+
+test('privacy page: names the host and the services the production Worker really uses', () => {
+  const t = privacyText();
+  const prod = prodConfig();
+  assert.match(t, /The site runs on Cloudflare/);
+  assert.doesNotMatch(t, /site runs on Vercel|connected through Vercel|Upstash Redis/);
+  // drawing: Workers AI with the free model, OpenAI only for Pro HD pages
+  assert.ok(prod.ai && prod.ai.binding === 'AI');
+  assert.match(FLUX_MODEL, /flux-1-schnell/);
+  assert.match(t, /Workers AI/);
+  assert.match(t, /FLUX\.1 \[schnell\]/);
+  assert.match(t, /Pro pages in high quality \(HD\) are drawn by OpenAI/);
+  assert.equal(prod.vars.HD_TERMS_FROM, '2026-10-21');
+  assert.match(t, /for purchases from 21 October 2026, while your monthly HD allowance lasts/);
+  assert.match(t, /Free pages, and Pro pages in standard quality, are drawn by Workers AI/);
+  assert.ok(prod.images && prod.images.binding === 'IMAGES');
+  assert.match(t, /Cloudflare Images/);
+  // storage: the two Durable Objects and nothing else; a new kind of store needs a new sentence on the page
+  assert.deepEqual(prod.durable_objects.bindings.map(b => b.name).sort(), ['LEDGER', 'PINS']);
+  for (const k of ['kv_namespaces', 'd1_databases', 'r2_buckets', 'analytics_engine_datasets', 'queues', 'hyperdrive', 'vectorize']) assert.equal(prod[k], undefined, k + ' is not mentioned on the privacy page');
+  assert.match(t, /Durable Object with SQLite storage/);
+  assert.ok(prod.observability && prod.observability.enabled === true);
+  assert.match(t, /Workers Logs/);
+  // the previous server: asked for old Pro tokens while LEGACY_VERIFY_URL is set
+  assert.match(prod.vars.LEGACY_VERIFY_URL, /vercel\.app/);
+  assert.match(t, /previous server, which still runs on Vercel/);
+  assert.match(t, /Upstash/);
+  assert.match(t, /Pinterest/);
+});
+
+test('privacy page: every address the Worker code calls is one the page names', () => {
+  // a call to fetch(...), not the handler's own `async fetch(request, ...)` and not env.ASSETS.fetch(...)
+  const calls = s => [...s.matchAll(/(?<![.\w])(?<!async )fetch\(\s*([^,)]+)/g)].map(m => m[1].trim());
+  assert.deepEqual(calls(fs.readFileSync(path.join(root, 'cloudflare', 'worker.js'), 'utf8')), [
+    "'https://api.gumroad.com/v2/licenses/verify'", "cfg.legacyUrl + '/verify-pro'", "cfg.openaiBase + '/images/generations'"
+  ]);
+  for (const f of ['ledger.js', 'ledger-core.js', 'flux.js', 'pdf.js', 'index.js']) assert.deepEqual(calls(fs.readFileSync(path.join(root, 'cloudflare', f), 'utf8')), [], f);
+  for (const f of ['service.js', 'routes.js', 'store.js', 'tick.js', 'core.js', 'feed.js']) assert.deepEqual(calls(fs.readFileSync(path.join(root, 'cloudflare', 'autopin', f), 'utf8')), [], 'autopin/' + f);
+  const t = privacyText();
+  assert.match(t, /api\.gumroad\.com/);
+  assert.match(t, /OpenAI/);
+});
+
+test('privacy page: the free counter is kept under a salted hash of the IP address, never the address', async () => {
+  env = makeEnv({ IP_SALT: 'salt-one' });
+  assert.equal((await gen({ prompt: 'a lighthouse' }, '203.0.113.77')).status, 200);
+  const keys = L.core.exec('SELECT k FROM counters').map(r => r.k);
+  assert.ok(keys.some(k => /^free:ip:\d{4}-\d{2}-\d{2}:[0-9a-f]{32}$/.test(k)), keys.join(' '));
+  assert.ok(!keys.some(k => k.includes('203.0.113.77')), 'the address is not a key');
+  const other = makeLedger();
+  L = other;
+  env = makeEnv({ IP_SALT: 'salt-two' });
+  await gen({ prompt: 'a lighthouse' }, '203.0.113.77');
+  assert.notDeepEqual(other.core.exec('SELECT k FROM counters').map(r => r.k).sort(), keys.sort(), 'another salt gives another hash');
+  assert.match(privacyText(), /one-way hash, mixed with a secret value that only we hold/);
+});
+
+test('privacy page: counters are deleted about two days after their last change, the monthly HD count after about 40, tokens after 400', () => {
+  let t = Date.parse('2026-10-20T10:00:00Z');
+  const db = new DatabaseSync(':memory:');
+  const exec = (q, ...p) => { const st = db.prepare(q); return /^\s*SELECT/i.test(q) ? st.all(...p) : (st.run(...p), []); };
+  const core = new LedgerCore(exec, fn => fn(), () => t);
+  const H = 3600 * 1000;
+  core.takeFree({ ipKey: 'k', day: '2026-10-20', perIp: 2, globalFree: 30, aiDaily: 52 });
+  core.takePro({ saleKey: 's', day: '2026-10-20', perDay: 150 });
+  core.reserveHd({ saleKey: 's', legacy: false, month: '2026-10', day: '2026-10-20', costMicros: 1, monthlyCapMicros: 10, dailyCapMicros: 10, allowance: 5 });
+  t += 47 * H;
+  assert.equal(core.count('free:ip:2026-10-20:k'), 1);
+  assert.equal(core.count('pro:2026-10-20:s'), 1);
+  t += 2 * H;
+  assert.equal(core.count('free:ip:2026-10-20:k'), 0, 'gone after 2 days');
+  assert.equal(core.count('pro:2026-10-20:s'), 0);
+  t += 37 * 24 * H;
+  assert.equal(core.count('hd:n:2026-10:s'), 1, 'still there after about 39 days');
+  t += 2 * 24 * H;
+  assert.equal(core.count('hd:n:2026-10:s'), 0, 'gone after 40 days');
+  assert.equal(TOKEN_TTL_MS, 400 * 24 * H);
+  const text = privacyText();
+  assert.match(text, /deleted automatically about two days after they were last changed/);
+  assert.match(text, /deleted about 40 days after it was last changed/);
+  assert.match(text, /about 400 days/);
+});
+
+test('privacy page: only the token goes to the previous server, only the drawing request goes to OpenAI', async () => {
+  const seen = [];
+  const inner = globalThis.fetch;
+  globalThis.fetch = async (url, init = {}) => { seen.push({ url: String(url), headers: Object.keys(init.headers || {}).map(h => h.toLowerCase()).sort(), body: init.body }); return inner(url, init); };
+  env = makeEnv({ LEGACY_VERIFY_URL: 'https://old.example' });
+  const oldToken = 'a'.repeat(64);
+  const r = await gen({ prompt: 'a barn', token: oldToken }, '203.0.113.5');
+  assert.equal(r.status, 200);
+  const legacy = seen.find(x => x.url === 'https://old.example/verify-pro');
+  assert.ok(legacy, 'the previous server is asked about an unknown token');
+  assert.deepEqual(Object.keys(JSON.parse(legacy.body)), ['token']);
+  assert.deepEqual(legacy.headers, ['content-type']);
+  assert.ok(!legacy.body.includes('203.0.113.5'));
+
+  seen.length = 0;
+  const token = await proToken({ created: '2026-09-01T00:00:00Z', sale: 'sale-priv' });
+  await gen({ prompt: 'a barn', token }, '203.0.113.6');
+  const oa = seen.find(x => x.url.endsWith('/images/generations'));
+  assert.ok(oa, 'a Pro HD page goes to OpenAI');
+  assert.deepEqual(oa.headers, ['authorization', 'content-type']);
+  assert.ok(!oa.body.includes('203.0.113.6'));
+  assert.deepEqual(Object.keys(JSON.parse(oa.body)).sort(), ['background', 'model', 'n', 'output_format', 'prompt', 'quality', 'size']);
+  // a free page never reaches OpenAI
+  seen.length = 0;
+  await gen({ prompt: 'a barn' }, '203.0.113.7');
+  assert.equal(seen.filter(x => x.url.endsWith('/images/generations')).length, 0);
+});
+
+test('privacy page: the Worker never writes a description or an image to its logs, on success or on any failure', async () => {
+  const secret = 'zq-secret-description-7431';
+  const lines = [];
+  const keep = { log: console.log, error: console.error, warn: console.warn };
+  for (const k of Object.keys(keep)) console[k] = (...a) => lines.push(a.map(x => (typeof x === 'string' ? x : JSON.stringify(x))).join(' '));
+  try {
+    await gen({ prompt: secret }, '9.9.9.1');
+    aiFails = true;
+    await gen({ prompt: secret }, '9.9.9.2');
+    aiFails = { code: 4006 };
+    await gen({ prompt: secret }, '9.9.9.3');
+    aiFails = false;
+    imagesFail = true;
+    await gen({ prompt: secret }, '9.9.9.4');
+    imagesFail = false;
+    const token = await proToken({ created: '2026-09-01T00:00:00Z', sale: 'sale-log' });
+    await gen({ prompt: secret, token });
+    openaiReply = () => new Response(JSON.stringify({ error: { message: 'server busy' } }), { status: 500 });
+    await gen({ prompt: secret, token });
+    openaiReply = () => { throw new Error('socket hang up'); };
+    await gen({ prompt: secret, token });
+    openaiReply = () => new Response(JSON.stringify({ error: { message: 'Your request was rejected by the safety system.', code: 'moderation_blocked' } }), { status: 400 });
+    await gen({ prompt: secret, token });
+    await call('/generate', { method: 'POST', body: '{not json' });
+  } finally { Object.assign(console, keep); }
+  assert.ok(lines.length > 0, 'the failures do write technical lines');
+  assert.deepEqual(lines.filter(l => l.includes(secret)), []);
+  assert.deepEqual(lines.filter(l => /base64|data:image/.test(l)), []);
+});
+
+test('privacy page: plain text, dated like the sitemap, no characters the style rules forbid', () => {
+  const article = privacyArticle();
+  assert.doesNotMatch(article, /[—–→←✓✔✅✗✨]/);
+  const m = /Last updated: (\d{1,2}) (\w+) (\d{4})/.exec(article);
+  assert.ok(m, 'a last updated line');
+  const shown = new Date(`${m[1]} ${m[2]} ${m[3]} UTC`).toISOString().slice(0, 10);
+  const serverJs = fs.readFileSync(path.join(root, 'server.js'), 'utf8');
+  assert.equal(/const PRIVACY_UPDATED = '(\d{4}-\d{2}-\d{2})'/.exec(serverJs)[1], shown, 'the sitemap date is the date on the page');
 });

@@ -630,7 +630,7 @@ test('every page carries the script in its head, and serves the plain product li
     assert.match(privacy, /until you clear this site's data/);
     assert.match(privacy, /no cookies and no analytics/);
     const sitemap = xml.replace(/\s+/g, '');
-    assert.ok(sitemap.includes('privacy</loc><lastmod>2026-10-15'), 'privacy lastmod');
+    assert.ok(sitemap.includes('privacy</loc><lastmod>2026-10-28'), 'privacy lastmod');
   } finally {
     await app.stop();
   }
