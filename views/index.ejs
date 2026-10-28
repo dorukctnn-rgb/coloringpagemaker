@@ -93,7 +93,7 @@
   <div class="loading" id="loadingArea" role="status">
     <div class="loading-spinner"></div>
     <div class="loading-text">Creating your coloring page...</div>
-    <div class="loading-sub">This usually takes 10-20 seconds</div>
+    <div class="loading-sub">This usually takes a few seconds</div>
   </div>
 
   <div class="gallery-section" id="gallerySection">
@@ -103,6 +103,8 @@
       <button type="button" class="btn-generate" onclick="downloadAllPDF()">Download all as PDF book</button>
     </div>
   </div>
+
+  <%- include('partials/pro-nudge', { home: true }) %>
 </div>
 
 <section class="section">
@@ -111,7 +113,7 @@
   <ol class="points">
     <li>
       <h3>Under a minute</h3>
-      <p>Type your idea and get a print-ready coloring page, usually in 15 to 40 seconds.</p>
+      <p>Type your idea and get a print-ready coloring page, usually within a few seconds.</p>
     </li>
     <li>
       <h3>The scene you describe</h3>
@@ -186,6 +188,7 @@
       </thead>
       <tbody>
         <tr><th scope="row">Pages per day</th><td>2</td><td class="pro">Up to 150</td></tr>
+        <tr><th scope="row">Quality</th><td>Standard</td><td class="pro">50 HD pages a month, then standard</td></tr>
         <tr><th scope="row">PDF download</th><td>One page per PDF, with a watermark</td><td class="pro">All your pages in one PDF book, no watermark</td></tr>
         <tr><th scope="row">Use</th><td>Personal</td><td class="pro">Commercial (Etsy, KDP)</td></tr>
         <tr><th scope="row">Price</th><td>$0</td><td class="pro">$9 once, no subscription</td></tr>
@@ -211,6 +214,7 @@
 
     <ul class="features">
       <li>Up to 150 pages a day (free: 2 a day)</li>
+      <li>50 HD pages a month, then standard quality</li>
       <li>No watermark on PDFs</li>
       <li>Combine all your pages into one PDF book</li>
       <li>Commercial use: sell your pages on Etsy &amp; KDP</li>
@@ -310,7 +314,16 @@ async function generatePage(){
         const bar = document.getElementById('usageBar');
         bar.innerHTML = esc(data.error) + ' <a href="#pro" data-open-pro>See Pro (up to 150 a day)</a>';
         bar.classList.add('is-alert');
+      } else if(data.limitReached && proToken){
+        // A Pro buyer at the fair-use cap is told so in the usage line. The Pro window is for people who have not bought.
+        const bar = document.getElementById('usageBar');
+        bar.textContent = data.error;
+        bar.classList.add('is-alert');
       } else if(data.limitReached){
+        // Say it on the page too, so the reason is still there when the Pro window is closed.
+        const bar = document.getElementById('usageBar');
+        bar.innerHTML = esc(data.error) + ' <a href="#pro" data-open-pro>See Pro (up to 150 a day)</a>';
+        bar.classList.add('is-alert');
         loading.classList.remove('active');
         openProModal();
       } else {
@@ -332,6 +345,7 @@ async function generatePage(){
       document.getElementById('usageBar').innerHTML = data.remaining > 0
         ? `<strong>${data.remaining}</strong> free pages left today. <a href="#pro" data-open-pro>See Pro (up to 150 a day)</a>`
         : `Daily limit reached. <a href="#pro" data-open-pro>See Pro (up to 150 a day)</a>`;
+      if(data.remaining === 0 && typeof cpmNudge !== 'undefined') cpmNudge.show('last');
     }
   } catch(e){
     alert('Connection error. Please try again.');

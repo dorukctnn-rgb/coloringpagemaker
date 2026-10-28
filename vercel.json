@@ -14,6 +14,7 @@
   ],
   "git": {
     "deploymentEnabled": {
+      "cro/pro-offer": false,
       "cloudflare/shield-and-move": false,
       "seasonal-pages": false
     }

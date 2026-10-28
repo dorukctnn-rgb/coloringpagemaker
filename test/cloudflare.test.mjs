@@ -143,6 +143,7 @@ test('free pages are drawn by Workers AI as gray PNGs and never call OpenAI', as
   const c = await gen({ prompt: 'a third page' });
   assert.equal(c.status, 429);
   assert.equal(c.limitReached, true);
+  assert.equal(c.reason, 'free_daily_cap', 'the page tells the visitor own limit from the shared pool');
   assert.equal(calls.openai, 0);
   assert.equal(calls.ai.length, 2);
 });
@@ -248,6 +249,7 @@ test('the daily image budget defaults to 52 images and 30 free pages (172.8 neur
   const over = await gen({ prompt: 'one more' }, '10.2.1.1');
   assert.equal(over.status, 429);
   assert.equal(over.limitReached, true);
+  assert.equal(over.reason, 'free_global_cap');
   assert.equal(calls.ai.length, 30);
 });
 
@@ -260,7 +262,7 @@ test('the ledger spend counters carry the free pages of the day for the admin st
 });
 
 // The page code that shows the answer (views/index.ejs, views/niche.ejs): run the real generatePage() with a stub page.
-function runGeneratePage(file, response) {
+function runGeneratePage(file, response, extra = {}) {
   const src = fs.readFileSync(path.join(root, 'views', file), 'utf8');
   const m = /async function generatePage\(\)\{[\s\S]*?\r?\n\}\r?\n/.exec(src);
   assert.ok(m, file + ' has generatePage()');
@@ -268,12 +270,14 @@ function runGeneratePage(file, response) {
   const els = {};
   const el = id => els[id] || (els[id] = { id, value: 'a unicorn', textContent: '', innerHTML: '', hidden: true, disabled: false, classes: new Set(),
     classList: { add: c => els[id].classes.add(c), remove: c => els[id].classes.delete(c), toggle() {}, contains: c => els[id].classes.has(c) } });
-  const log = { alerts: [], modal: 0 };
+  const log = { alerts: [], modal: 0, nudge: [] };
   const ctx = {
     document: { getElementById: el }, alert: m2 => log.alerts.push(m2), openProModal: () => { log.modal++; },
     fetch: async () => ({ ok: response.status < 400, status: response.status, json: async () => response.body }),
     esc: t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'),
-    selectedStyle: 'medium', proToken: '', generatedImages: [], renderGallery() {}, persistImages() {}, updateCharCount() {}
+    selectedStyle: 'medium', proToken: extra.proToken || '', generatedImages: [], renderGallery() {}, persistImages() {}, updateCharCount() {},
+    // the Pro offer card of views/partials/pro-nudge.ejs
+    cpmNudge: { show: kind => { log.nudge.push(kind); return true; } }
   };
   vm.createContext(ctx);
   vm.runInContext(m[0], ctx);
@@ -309,9 +313,48 @@ test('the other tool pages show a daily limit in the usage line, not in an alert
   assert.ok(lim.bar.classes.has('is-alert'));
   const busy = await runGeneratePage('niche.ejs', { status: 503, body: { error: 'The drawing service is busy. Please try again in a minute.' } });
   assert.deepEqual(busy.log.alerts, ['The drawing service is busy. Please try again in a minute.']);
-  // the theme pages already put every answer, with a Pro link on a limit, into their usage line
+  // the theme pages already put every answer, with a Pro link on a limit (never for a Pro buyer), into their usage line
   const theme = fs.readFileSync(path.join(root, 'views', 'theme.ejs'), 'utf8');
-  assert.match(theme, /say\(data\.error \|\| '[^']*', !!data\.limitReached, true\)/);
+  assert.match(theme, /say\(data\.error \|\| '[^']*', !!data\.limitReached && !proToken, true\)/);
+});
+
+test('the Pro offer: home page keeps its window on a free limit, shows the reason, and never pitches a Pro buyer', async () => {
+  const body = { error: 'Daily limit reached (2 free pages per day). Upgrade to Pro for up to 150 a day.', limitReached: true, reason: 'free_daily_cap' };
+  const free = await runGeneratePage('index.ejs', { status: 429, body });
+  assert.equal(free.log.modal, 1);
+  assert.deepEqual(free.log.alerts, []);
+  assert.ok(free.bar.classes.has('is-alert'), 'the reason is on the page when the window is closed');
+  assert.ok(free.bar.innerHTML.startsWith('Daily limit reached (2 free pages per day)'), free.bar.innerHTML);
+  assert.match(free.bar.innerHTML, /data-open-pro/);
+  // a Pro buyer at the fair-use cap is told so, with no Pro window and no sales link
+  const pro = await runGeneratePage('index.ejs', { status: 429, body: { error: 'Daily fair-use cap reached (150 pages). Resets at midnight UTC. Contact support if you need more.', limitReached: true, reason: 'pro_daily_cap' } }, { proToken: 'a'.repeat(64) });
+  assert.equal(pro.log.modal, 0);
+  assert.deepEqual(pro.log.alerts, []);
+  assert.match(pro.bar.textContent, /^Daily fair-use cap reached/);
+  assert.doesNotMatch(pro.bar.textContent, /Get Pro|See Pro/);
+  assert.deepEqual(pro.log.nudge, []);
+  // the last free page puts the offer under the result; a page with one left does not
+  const last = await runGeneratePage('index.ejs', { status: 200, body: { success: true, imageUrl: 'data:image/png;base64,AA', remaining: 0 } });
+  assert.deepEqual(last.log.nudge, ['last']);
+  const one = await runGeneratePage('index.ejs', { status: 200, body: { success: true, imageUrl: 'data:image/png;base64,AA', remaining: 1 } });
+  assert.deepEqual(one.log.nudge, []);
+  // a Pro answer (remaining -1) never shows it
+  const proOk = await runGeneratePage('index.ejs', { status: 200, body: { success: true, imageUrl: 'data:image/png;base64,AA', remaining: -1 } }, { proToken: 'a'.repeat(64) });
+  assert.deepEqual(proOk.log.nudge, []);
+});
+
+test('the Pro offer: the other tool pages swap their dead-end limit line for the offer, except for a shared-pool message or a Pro buyer', async () => {
+  const lim = (reason, extra) => runGeneratePage('niche.ejs', { status: 429, body: { error: 'x', limitReached: true, reason } }, extra);
+  assert.deepEqual((await lim('free_daily_cap')).log.nudge, ['limit']);
+  assert.deepEqual((await lim('free_global_cap')).log.nudge, ['pool']);
+  assert.deepEqual((await lim('ai_exhausted')).log.nudge, []);
+  assert.deepEqual((await lim('pro_daily_cap', { proToken: 'b'.repeat(64) })).log.nudge, []);
+  const last = await runGeneratePage('niche.ejs', { status: 200, body: { success: true, imageUrl: 'data:image/png;base64,AA', remaining: 0 } });
+  assert.deepEqual(last.log.nudge, ['last']);
+  // the usage line keeps saying the reason in words
+  const r = await lim('free_daily_cap');
+  assert.equal(r.bar.textContent, 'x');
+  assert.ok(r.bar.classes.has('is-alert'));
 });
 
 test('bad prompts are refused before anything is counted', async () => {
@@ -392,6 +435,7 @@ test('without an OpenAI key or with HD_ENABLED=0 Pro pages are standard; the Pro
   const capped = await gen({ prompt: 'a car', token });
   assert.equal(capped.status, 429);
   assert.match(capped.error, /Daily fair-use cap reached \(2 pages\)/);
+  assert.equal(capped.reason, 'pro_daily_cap', 'a Pro buyer at the cap is not shown the Pro offer');
   env = makeEnv({ HD_ENABLED: '0' });
   const t2 = await proToken({ sale: 'sale-x' });
   assert.equal((await gen({ prompt: 'a car', token: t2 })).quality, 'standard');

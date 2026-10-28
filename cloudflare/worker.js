@@ -236,7 +236,7 @@ async function generate(request, env) {
   if (pro) {
     const saleKey = pro.sale_id;
     const q = await ledger.takePro({ saleKey, day, perDay: cfg.proDaily });
-    if (!q.allowed) return json({ error: `Daily fair-use cap reached (${cfg.proDaily} pages). Resets at midnight UTC. Contact support if you need more.`, limitReached: true }, 429);
+    if (!q.allowed) return json({ error: `Daily fair-use cap reached (${cfg.proDaily} pages). Resets at midnight UTC. Contact support if you need more.`, limitReached: true, reason: 'pro_daily_cap' }, 429);
     if (cfg.hdEnabled && env.OPENAI_API_KEY) {
       const hold = { saleKey, month, day, costMicros: cfg.hdCostMicros };
       const res = await ledger.reserveHd({ ...hold, legacy: isLegacySale(pro, cfg), monthlyCapMicros: cfg.hdMonthCapMicros, dailyCapMicros: cfg.hdDayCapMicros, allowance: cfg.hdAllowance });
@@ -264,9 +264,9 @@ async function generate(request, env) {
   const usage = await ledger.takeFree({ ipKey, day, perIp: FREE_DAILY_LIMIT, globalFree: cfg.freeGlobal, aiDaily: cfg.aiDaily });
   if (!usage.allowed) {
     if (usage.reason === 'free_global_cap') {
-      return json({ error: 'The free pages for today are all used. They reset at midnight UTC, or Pro gives you up to ' + cfg.proDaily + ' a day.', limitReached: true }, 429);
+      return json({ error: 'The free pages for today are all used. They reset at midnight UTC, or Pro gives you up to ' + cfg.proDaily + ' a day.', limitReached: true, reason: 'free_global_cap' }, 429);
     }
-    return json({ error: 'Daily limit reached (2 free pages per day). Upgrade to Pro for up to 150 a day.', limitReached: true }, 429);
+    return json({ error: 'Daily limit reached (2 free pages per day). Upgrade to Pro for up to 150 a day.', limitReached: true, reason: 'free_daily_cap' }, 429);
   }
   const page = await standardPage(env, cfg, userPrompt, level);
   if (!page.ok) { await ledger.giveBackFree({ ipKey, day }); return json(failure(page), page.status); }

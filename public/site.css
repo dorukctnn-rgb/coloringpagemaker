@@ -336,3 +336,31 @@ article.post .data-table{font-size:15px}
   .data-table tbody th{font-size:16px;margin-bottom:2px}
   .data-table td::before{content:attr(data-label) ": ";font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
 }
+
+/* The Pro offer at the moment the free pages run out (views/partials/pro-nudge.ejs) */
+.pro-nudge{margin-top:22px;background:var(--card);border:1.5px solid var(--ink);border-radius:14px;padding:clamp(18px,3vw,28px);display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:18px 32px;box-shadow:0 5px 0 var(--accent)}
+.pro-nudge[hidden]{display:none}
+.pro-nudge h2{font-size:clamp(1.3rem,2.7vw,1.65rem);margin-bottom:8px}
+.pro-nudge-lead{color:var(--muted);margin-bottom:12px;max-width:46ch}
+.pro-nudge-price{margin-bottom:16px}
+.pro-nudge-actions{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px}
+.pro-nudge-dismiss{background:none;border:0;padding:10px 2px;color:var(--muted);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.pro-nudge-dismiss:hover{color:var(--ink)}
+.pro-nudge-list{list-style:none;align-self:start;border-top:2px solid var(--ink)}
+.pro-nudge-list li{padding:10px 0 10px 22px;border-bottom:1px solid var(--line);position:relative;line-height:1.45}
+.pro-nudge-list li::before{content:"";position:absolute;left:0;top:1.15em;width:8px;height:8px;background:var(--accent);border:1.5px solid var(--ink)}
+.pro-nudge-foot{grid-column:1/-1;font-size:14px;color:var(--muted)}
+.pro-nudge-foot a{color:var(--ink);font-weight:600;text-underline-offset:3px}
+@media (max-width:700px){.pro-nudge{grid-template-columns:1fr;gap:14px}.pro-nudge-actions .btn{width:100%}.pro-nudge-dismiss{margin:0 auto}}
+.pricing-cta-note{margin:16px 0 0;font-size:14px;opacity:.8}
+.pricing-cta-note a{font-weight:600;text-underline-offset:3px}
+/* Seasonal Pro line on the Christmas, Thanksgiving and winter pages (views/theme.ejs) */
+.season-pro{max-width:900px;margin:clamp(40px,7vw,60px) auto 0;padding:0 20px}
+.season-pro[hidden]{display:none}
+.season-pro-box{border-top:2px solid var(--ink);padding-top:22px;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px 40px;align-items:center}
+.season-pro h2{font-size:clamp(1.4rem,2.8vw,1.8rem);margin-bottom:8px}
+.season-pro p{color:var(--muted);max-width:60ch;line-height:1.55}
+.season-pro .season-pro-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px 20px;margin:0}
+.season-pro .season-pro-actions .btn{color:var(--on-accent)}
+.season-pro-link{color:var(--ink);font-weight:600;text-underline-offset:3px}
+@media (max-width:700px){.season-pro-box{grid-template-columns:1fr}.season-pro .season-pro-actions .btn{width:100%}}
