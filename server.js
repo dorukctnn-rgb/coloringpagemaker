@@ -341,6 +341,17 @@ const examplesFor = slug => (THEME_EXAMPLES[slug] ? { slug, ...THEME_EXAMPLES[sl
 const themeLabel = slug => (THEME_GUIDES[slug] ? THEME_GUIDES[slug].h1 : NICHE_PAGES[slug].h1);
 const SITE = 'https://www.coloringpagemaker.app';
 const LEVEL_NAMES = { simple: 'Simple', medium: 'Medium', detailed: 'Detailed' };
+// Image metadata that Google's image report asks for on every ImageObject. The license page is the terms:
+// "Using the pages you make" says free pages are for personal, non-commercial use (at home or in your own classroom)
+// and that Pro adds selling them. The terms also describe how Pro is bought, so they are the page to acquire a license
+// from. The copyright line is the one in the footer. Keep cloudflare/autopin/page.js in step.
+const IMAGE_META = {
+  creator: { '@type': 'Organization', name: 'ColoringPageMaker', url: SITE + '/' },
+  creditText: 'ColoringPageMaker',
+  copyrightNotice: '© 2026 ColoringPageMaker',
+  license: SITE + '/terms',
+  acquireLicensePage: SITE + '/terms'
+};
 
 function themeJsonLd(slug, g, examples) {
   const url = `${SITE}/${slug}`;
@@ -377,7 +388,7 @@ function themeJsonLd(slug, g, examples) {
         associatedMedia: examples.items.map(x => ({
           '@type': 'ImageObject', name: x.title, description: x.alt, encodingFormat: 'image/png',
           contentUrl: `${exampleDir}${x.name}.png`, thumbnailUrl: `${exampleDir}${x.name}-400.webp`,
-          creator: { '@type': 'Organization', name: 'ColoringPageMaker', url: SITE + '/' }
+          ...IMAGE_META
         }))
       }] : [])
     ]
