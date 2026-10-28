@@ -16,7 +16,8 @@ import { Buffer } from 'node:buffer';
 import lineart from '../lineart.js';
 import { decodePdfImage, buildPdf, PDF_MAX_PAGES } from './pdf.js';
 import { FLUX_MODEL, fluxPrompt, noFreeNeurons, DAILY_POOL_MESSAGE } from './flux.js';
-import { pinsRoute, runScheduled } from './autopin/routes.js';
+import { pinsRoute, runScheduled, authorized } from './autopin/routes.js';
+import { cleanNote, MAX_BODY as FUNNEL_MAX_BODY } from './funnel-core.js';
 
 const FREE_DAILY_LIMIT = 2;
 const GUMROAD_PRODUCT_ID = 'ZnIImoT1CFy75R8mnbEQDw=='; // dorukctn.gumroad.com/l/uynqt
@@ -353,6 +354,37 @@ async function proSignout(request, env) {
   return json({ ok: true });
 }
 
+// --- Pro click counter (funnel-core.js) ---
+// POST /funnel: one note from a page of this site (event, tool, page path, part of the page, kind of site), added to a daily total
+// in a second instance of the Ledger object, named "funnel". Nothing about the visitor is read or stored: not the address
+// (cf-connecting-ip), not the agent beyond the crawler check, not the time of day. GET /funnel/admin: the totals, for
+// cloudflare/funnel-read.mjs, with the same key as the Pinterest job's admin address (AUTOPIN_ADMIN_KEY).
+const funnelOf = env => env.LEDGER.get(env.LEDGER.idFromName('funnel'));
+const FUNNEL_BOT = /bot|crawl|spider|slurp|headless|lighthouse|preview|facebookexternalhit|curl|wget|python-requests|node-fetch|undici/i;
+const FUNNEL_BY = ['day', 'e', 't', 'p', 'w', 's'];
+async function funnelNote(request, env) {
+  const origin = request.headers.get('origin') || '';
+  let host = '';
+  try { host = new URL(origin).host; } catch (e) { /* no origin */ }
+  if (!host || !(host === new URL(request.url).host || /^(www\.)?coloringpagemaker\.app$/.test(host))) return new Response(null, { status: 403 });
+  if (FUNNEL_BOT.test(request.headers.get('user-agent') || '')) return new Response(null, { status: 204 });
+  if (Number(request.headers.get('content-length') || 0) > FUNNEL_MAX_BODY) return new Response(null, { status: 413 });
+  const text = await request.text();
+  if (text.length > FUNNEL_MAX_BODY) return new Response(null, { status: 413 });
+  const rec = cleanNote(text);
+  if (!rec || rec.t !== 'coloringpagemaker') return new Response(null, { status: 400 });
+  try { await funnelOf(env).noteFunnel(rec); } catch (e) { console.error('[funnel] could not count a note:', e && e.message); }
+  return new Response(null, { status: 204, headers: { 'Cache-Control': 'no-store' } });
+}
+async function funnelAdmin(request, env, url) {
+  // without the key set there is no such address
+  if (!env.AUTOPIN_ADMIN_KEY) return null;
+  if (!(await authorized(request, env))) return json({ error: 'unauthorized' }, 401);
+  const days = Math.max(1, Math.min(400, Number(url.searchParams.get('days')) || 30));
+  const by = (url.searchParams.get('by') || FUNNEL_BY.join(',')).split(',').filter(c => FUNNEL_BY.includes(c));
+  return json({ days, by, rows: await funnelOf(env).funnelRows({ days, by }) });
+}
+
 async function notFound(request, env) {
   const page = await env.ASSETS.fetch(new Request(new URL('/404', request.url)));
   return new Response(request.method === 'HEAD' ? null : page.body, { status: 404, headers: { 'Content-Type': 'text/html; charset=utf-8' } });
@@ -378,6 +410,7 @@ export default {
           const pins = await pinsRoute(request, env, ctx, url);
           if (pins) return pins;
         }
+        if (lower === '/funnel/admin') { const rows = await funnelAdmin(request, env, url); if (rows) return rows; }
         const res = await env.ASSETS.fetch(request);
         if (res.status === 404) return notFound(request, env);
         return res;
@@ -389,6 +422,7 @@ export default {
         if (lower === '/gumroad-webhook') return await gumroadWebhook(request, env);
         if (lower === '/verify-pro') return await verifyPro(request, env);
         if (lower === '/pro-signout') return await proSignout(request, env);
+        if (lower === '/funnel') return await funnelNote(request, env);
       }
       return await notFound(request, env);
     } catch (err) {

@@ -21,6 +21,7 @@
 <link rel="canonical" href="https://www.coloringpagemaker.app/<%= slug %>">
 <%- include('partials/head-assets') %>
 <%- include('partials/pro-source') %>
+<%- include('partials/funnel') %>
 <script type="application/ld+json"><%- ld %></script>
 </head>
 <body>
@@ -319,6 +320,7 @@
         if (freeLimit && window.cpmNudge) cpmNudge.show(data.reason === 'free_global_cap' ? 'pool' : 'limit');
       } else {
         images.unshift({ url: data.imageUrl, prompt: prompt, time: Date.now() });
+        if (typeof cpmFunnel !== 'undefined') cpmFunnel.track('make', proToken ? 'pro' : 'free');
         render();
         persist();
         if (typeof data.remaining === 'number' && data.remaining >= 0) {

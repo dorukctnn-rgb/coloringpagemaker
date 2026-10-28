@@ -21,6 +21,7 @@
 <link rel="canonical" href="https://www.coloringpagemaker.app/<%= slug %>">
 <%- include('partials/head-assets') %>
 <%- include('partials/pro-source') %>
+<%- include('partials/funnel') %>
 
 <script type="application/ld+json">
 {
@@ -303,6 +304,7 @@ async function generatePage(){
     }
 
     generatedImages.unshift({ url: data.imageUrl, prompt });
+    if(typeof cpmFunnel !== 'undefined') cpmFunnel.track('make', proToken ? 'pro' : 'free');
     renderGallery();
     if(data.remaining === 0 && typeof cpmNudge !== 'undefined') cpmNudge.show('last');
   } catch(e){ alert('Connection error'); }

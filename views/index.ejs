@@ -21,6 +21,7 @@
 <link rel="canonical" href="https://www.coloringpagemaker.app/">
 <%- include('partials/head-assets') %>
 <%- include('partials/pro-source') %>
+<%- include('partials/funnel') %>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"SoftwareApplication","name":"ColoringPageMaker","url":"https://www.coloringpagemaker.app/","applicationCategory":"DesignApplication","operatingSystem":"Any (web browser)","description":"AI coloring page generator: describe a scene and get printable black-and-white line art as a PDF.","offers":[{"@type":"Offer","name":"Free","price":"0","priceCurrency":"USD"},{"@type":"Offer","name":"Pro (lifetime)","price":"9","priceCurrency":"USD"}]}
 </script>
@@ -314,6 +315,7 @@ async function generatePage(){
         const bar = document.getElementById('usageBar');
         bar.innerHTML = esc(data.error) + ' <a href="#pro" data-open-pro>See Pro (up to 150 a day)</a>';
         bar.classList.add('is-alert');
+        if(typeof cpmFunnel !== 'undefined') cpmFunnel.track('gate', 'pool-line');
       } else if(data.limitReached && proToken){
         // A Pro buyer at the fair-use cap is told so in the usage line. The Pro window is for people who have not bought.
         const bar = document.getElementById('usageBar');
@@ -325,6 +327,7 @@ async function generatePage(){
         bar.innerHTML = esc(data.error) + ' <a href="#pro" data-open-pro>See Pro (up to 150 a day)</a>';
         bar.classList.add('is-alert');
         loading.classList.remove('active');
+        if(typeof cpmFunnel !== 'undefined') cpmFunnel.track('gate', 'limit-modal');
         openProModal();
       } else {
         alert(data.error || 'Generation failed');
@@ -337,6 +340,7 @@ async function generatePage(){
 
     // Render first: a storage failure must never hide an image the user paid for.
     generatedImages.unshift({ url: data.imageUrl, prompt, time: Date.now() });
+    if(typeof cpmFunnel !== 'undefined') cpmFunnel.track('make', proToken ? 'pro' : 'free');
     renderGallery();
     persistImages();
 
