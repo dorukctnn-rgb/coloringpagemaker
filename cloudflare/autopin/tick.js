@@ -11,7 +11,7 @@
 import { decodeGrayPng, judge, whiten, artSquare } from './art.js';
 import { composePin, skinFor, CARD } from './pin.js';
 import { encodePngGray, resizeGray, xmpChunk } from './raster.js';
-import { pickSubject, describe, hash } from './topics.js';
+import { pickSubject, phaseFor, describe, hash } from './topics.js';
 import { SEEDS } from './seeds.js';
 import { fluxPrompt, noFreeNeurons } from '../flux.js';
 import { isoDay } from './core.js';
@@ -110,7 +110,7 @@ export async function runTick({ core, cfg, deps, source = 'cron', scheduledTime 
 
     const used = core.usedSlugs();
     for (const s of SEEDS) used.add(s.slug);
-    const pick = pickSubject({ date: new Date(now), used, counts: core.themeCounts() });
+    const pick = pickSubject({ date: new Date(now), used, counts: core.themeCounts(phaseFor(new Date(now)).since) });
     if (!pick) { core.logError('topics', 'no subject left to draw', slot.key); return finish('failed', 'no_subject'); }
     const subject = pick.subject;
     const text = describe(subject);
@@ -221,7 +221,7 @@ export function pinsStatus({ core, cfg, now, ledger = null }) {
   const day = isoDay(now), month = day.slice(0, 7);
   const used = core.usedSlugs();
   for (const s of SEEDS) used.add(s.slug);
-  const next = pickSubject({ date: new Date(now), used, counts: core.themeCounts() });
+  const next = pickSubject({ date: new Date(now), used, counts: core.themeCounts(phaseFor(new Date(now)).since) });
   const flux = core.count('flux:' + day);
   const store = core.storageBytes();
   return {
