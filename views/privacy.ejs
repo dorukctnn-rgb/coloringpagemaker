@@ -30,7 +30,7 @@
 
 <main id="main">
 <article class="post">
-  <div class="meta">Last updated: 15 October 2026</div>
+  <div class="meta">Last updated: 28 October 2026</div>
   <h1>Privacy policy</h1>
   <p>ColoringPageMaker needs no account and uses no cookies, analytics or advertising. This page lists the data the site handles, where it goes and why.</p>
 
@@ -38,14 +38,19 @@
   <p>ColoringPageMaker (www.coloringpagemaker.app) is run by Peak Apps Studio. For any question about your data, email <a href="mailto:info@peakappsstudio.com">info@peakappsstudio.com</a>.</p>
 
   <h2>When you make a page</h2>
-  <p>When you press generate, your browser sends your description and the detail level you chose to our server. The server adds its own drawing instructions and sends the text to OpenAI's image service, which draws the page. The image comes back to your browser. We do not save your descriptions or your images.</p>
-  <p>Your descriptions go to OpenAI, so please do not include a child's name or other personal details in them. Under OpenAI's API data policy, data sent through the API is kept for up to 30 days to monitor abuse and, by default, is not used to train OpenAI's models.</p>
+  <p>When you press generate, your browser sends your description and the detail level you chose to our server. The server adds its own drawing instructions and sends the text to an image model, which draws the page. The image comes back to your browser. We do not save your descriptions or your images. Which service draws the page depends on the page:</p>
+  <ul class="post-list-items">
+    <li>Free pages, and Pro pages in standard quality, are drawn by Workers AI, a service of Cloudflare, with the FLUX.1 [schnell] model. Cloudflare's Workers AI data usage terms say that it does not retain the text or the picture after the request, with limited exceptions listed there, and that it does not use them to train models. Cloudflare Images then turns the picture gray.</li>
+    <li>Pro pages in high quality (HD) are drawn by OpenAI's image service while the site's HD budget lasts and, for purchases from 21 October 2026, while your monthly HD allowance lasts. When either is used up, the page is drawn in standard quality by Workers AI. OpenAI receives the request from our server, not your IP address or browser details.</li>
+  </ul>
+  <p>Please do not include a child's name or other personal details in your descriptions. Under OpenAI's API data policy, data sent through the API is kept for up to 30 days to monitor abuse and, by default, is not used to train OpenAI's models.</p>
 
   <h2>Daily limits and your IP address</h2>
-  <p>Free pages are limited to two a day. To count them, the server stores a counter under your IP address in our database (Upstash Redis, connected through Vercel). Each counter is deleted automatically after 24 hours. For Pro, the daily counter is stored under your Gumroad sale ID instead and is deleted after 24 hours in the same way.</p>
+  <p>Free pages are limited to two a day, and the limit resets at midnight UTC. To count them, our server turns your IP address into a one-way hash, mixed with a secret value that only we hold, and stores a counter under that hash. The address itself is not stored with the counter. The counters live in the site's own database on Cloudflare (a Durable Object with SQLite storage) and are deleted automatically about two days after they were last changed. For Pro, the daily counter is stored under your Gumroad sale ID instead, and a second counter under the same ID counts your HD pages for the month and is deleted about 40 days after it was last changed.</p>
+  <p>The same database keeps a few totals that belong to no one: the free pages of the day for all visitors together, the images drawn that day, and the OpenAI spend of the day and the month.</p>
 
   <h2>PDF downloads</h2>
-  <p>On the home page, the PDF is built in your browser, and the PDF library loads from cdnjs, a public code library run by Cloudflare. On the theme pages, your browser sends the pages you made to our server, which builds the PDF in memory, sends it back and does not keep a copy.</p>
+  <p>On the home page, the PDF is built in your browser, and the PDF library loads from cdnjs, a public code library run by Cloudflare. On the theme pages and the printable pages, your browser sends the images for the PDF to our server, which builds the PDF in memory, sends it back and does not keep a copy.</p>
 
   <h2>What is stored in your browser</h2>
   <ul class="post-list-items">
@@ -63,7 +68,13 @@
   <p>Your browser sends the Pro token with each page you generate or download, so the server can apply the Pro limits. When Gumroad notifies our server of a sale, the server checks that sale's license key in the same way and keeps a purchase record: your email address, the Gumroad sale ID and the date. If Gumroad reports a refund or chargeback to our server, the server deletes that record and stops the Pro tokens made from that sale. To do this it keeps the sale ID, marked as refunded, for about 400 days. As the seller, we also see your email address and order details in Gumroad, and we use them to answer questions and issue refunds.</p>
 
   <h2>Hosting and fonts</h2>
-  <p>The site runs on Vercel. Like any web host, Vercel processes each request, including your IP address, the page you asked for and your browser type, and keeps request logs for a limited time. If something fails, our server writes a technical error message to those logs. The fonts are served from this site, so no font service sees your visit.</p>
+  <p>The site runs on Cloudflare. Cloudflare's network serves the pages, images and fonts, and a Cloudflare Worker (our server code) handles drawing, PDFs, Pro and the other requests that need code. Like any web host, Cloudflare processes each request, including your IP address, the page you asked for and your browser type, and keeps network logs under its own policy. For the requests our code handles, Cloudflare's Workers Logs also records the request (its address, method and result, plus request details from Cloudflare such as headers and country, which can contain your IP address) and the technical error messages our code writes. These logs are kept for three days. Our code does not write your descriptions or your images to them. The fonts are served from this site, so no font service sees your visit.</p>
+
+  <h2>Pro tokens from before the move to Cloudflare</h2>
+  <p>Pro tokens made before the site moved to Cloudflare are not in the new database. When our server meets a token it does not know, it asks the site's previous server, which still runs on Vercel, whether the token is valid. The request carries only the token. It does not carry your IP address, your description or your browser details. The previous server looks the token up in its database at Upstash. If the answer is yes, the token is copied into the Cloudflare database without an email address and is not asked about again. If the answer is no, our server remembers a one-way hash of the token for one day so that it does not ask again. The previous server and its database still hold what they held before the move: Pro tokens with the purchase email address, Gumroad sale ID and date, and purchase records, for the periods listed under How long data is kept.</p>
+
+  <h2>Pinterest</h2>
+  <p>A scheduled job on our server draws printable coloring pages from topics we choose, not from anything visitors type, and publishes them in a feed that Pinterest reads. No visitor data goes into the feed. Some pages carry a Save to Pinterest link. If you press it, your browser opens Pinterest with the address of that page, and Pinterest handles the rest under its own policy. We send Pinterest nothing else. When the feed is requested, our server keeps a short log of the latest 60 requests: the time, which feed, the number of pins returned and the first 120 characters of the requester's user agent. It keeps no IP address.</p>
 
   <h2>Emails</h2>
   <p>If you email us, we receive your email address and your message. Mail sent to peakappsstudio.com addresses is forwarded by Forward Email to a Gmail inbox. We use your email only to reply to you.</p>
@@ -73,13 +84,14 @@
     <table class="data-table">
       <thead><tr><th scope="col">Company</th><th scope="col">What for</th><th scope="col">Privacy policy</th></tr></thead>
       <tbody>
-        <tr><th scope="row">OpenAI</th><td>Drawing your coloring pages from your descriptions</td><td><a href="https://openai.com/policies/privacy-policy/" rel="noopener">openai.com</a></td></tr>
-        <tr><th scope="row">Vercel</th><td>Hosting the site and its server</td><td><a href="https://vercel.com/legal/privacy-notice" rel="noopener">vercel.com</a></td></tr>
-        <tr><th scope="row">Upstash</th><td>The database for daily counters, Pro tokens and purchase records</td><td><a href="https://upstash.com/trust/privacy.pdf" rel="noopener">upstash.com</a></td></tr>
-        <tr><th scope="row">Gumroad</th><td>Checkout, payments and license checks, and the kind of site that first sent you when you click a Pro button</td><td><a href="https://gumroad.com/privacy" rel="noopener">gumroad.com</a></td></tr>
-        <tr><th scope="row">Cloudflare</th><td>Serving the PDF library on the home page (cdnjs)</td><td><a href="https://www.cloudflare.com/privacypolicy/" rel="noopener">cloudflare.com</a></td></tr>
-        <tr><th scope="row">Google</th><td>The Gmail inbox for our email</td><td><a href="https://policies.google.com/privacy" rel="noopener">policies.google.com</a></td></tr>
-        <tr><th scope="row">Forward Email</th><td>Forwarding mail sent to our address</td><td><a href="https://forwardemail.net/en/privacy" rel="noopener">forwardemail.net</a></td></tr>
+        <tr><th scope="row">Cloudflare</th><td data-label="What for">Hosting the site and its server code, the database for daily counters, Pro tokens and purchase records, logs, drawing free and standard pages from your descriptions (Workers AI) and turning them gray (Images), and serving the PDF library on the home page (cdnjs)</td><td data-label="Privacy policy"><a href="https://www.cloudflare.com/privacypolicy/" rel="noopener">cloudflare.com</a> and <a href="https://developers.cloudflare.com/workers-ai/platform/data-usage/" rel="noopener">Workers AI data usage</a></td></tr>
+        <tr><th scope="row">OpenAI</th><td data-label="What for">Drawing Pro pages in high quality (HD) from your descriptions</td><td data-label="Privacy policy"><a href="https://openai.com/policies/privacy-policy/" rel="noopener">openai.com</a></td></tr>
+        <tr><th scope="row">Gumroad</th><td data-label="What for">Checkout, payments and license checks, and the kind of site that first sent you when you click a Pro button</td><td data-label="Privacy policy"><a href="https://gumroad.com/privacy" rel="noopener">gumroad.com</a></td></tr>
+        <tr><th scope="row">Vercel</th><td data-label="What for">The site's previous server, which checks Pro tokens made before the move to Cloudflare</td><td data-label="Privacy policy"><a href="https://vercel.com/legal/privacy-notice" rel="noopener">vercel.com</a></td></tr>
+        <tr><th scope="row">Upstash</th><td data-label="What for">The previous server's database: Pro tokens and purchase records from before the move</td><td data-label="Privacy policy"><a href="https://upstash.com/trust/privacy.pdf" rel="noopener">upstash.com</a></td></tr>
+        <tr><th scope="row">Pinterest</th><td data-label="What for">Only if you press a Save to Pinterest link, which opens Pinterest with the address of that page. Pinterest also reads our public feed of printable pages</td><td data-label="Privacy policy"><a href="https://policy.pinterest.com/en/privacy-policy" rel="noopener">pinterest.com</a></td></tr>
+        <tr><th scope="row">Google</th><td data-label="What for">The Gmail inbox for our email</td><td data-label="Privacy policy"><a href="https://policies.google.com/privacy" rel="noopener">policies.google.com</a></td></tr>
+        <tr><th scope="row">Forward Email</th><td data-label="What for">Forwarding mail sent to our address</td><td data-label="Privacy policy"><a href="https://forwardemail.net/en/privacy" rel="noopener">forwardemail.net</a></td></tr>
       </tbody>
     </table>
   </div>
@@ -87,12 +99,14 @@
 
   <h2>How long data is kept</h2>
   <ul class="post-list-items">
-    <li>Descriptions and images: not kept by us. Requests to OpenAI: up to 30 days, under OpenAI's API data policy.</li>
-    <li>Daily counters under your IP address or Gumroad sale ID: 24 hours.</li>
+    <li>Descriptions and images: not kept by us. Requests to Workers AI: not retained after the request, with the limited exceptions in Cloudflare's Workers AI data usage terms. Requests to OpenAI (Pro pages in high quality only): up to 30 days, under OpenAI's API data policy.</li>
+    <li>Daily counters under the hash of your IP address or under your Gumroad sale ID: about two days after the last change. The monthly count of your HD pages under your Gumroad sale ID: about 40 days after the last change.</li>
     <li>Pro tokens in our database (token, email, Gumroad sale ID, date): about 400 days after you activate Pro, or until you sign out on that device.</li>
     <li>Purchase records (email, Gumroad sale ID, date): until a refund is reported or you ask us to delete them. Refund marks (sale ID only): about 400 days.</li>
     <li>Pages in your browser, and the word for the kind of site that sent you on this visit: until you close the tab. The word for the kind of site that first sent you: until you clear this site's data. Your Pro token in your browser: until you sign out or clear this site's data.</li>
-    <li>Hosting logs: kept by Vercel for a limited time under its own policy. Purchase records: kept by Gumroad under its own policy.</li>
+    <li>Network logs of the site: kept by Cloudflare under its own policy. Workers Logs of the requests our server code handles: three days. Requests to the Pinterest feed: only the latest 60.</li>
+    <li>Pro tokens, purchase records and refund marks on the previous server (Vercel, Upstash): the same periods as above. Its request logs: kept by Vercel for a limited time under its own policy.</li>
+    <li>Purchase records: also kept by Gumroad under its own policy.</li>
     <li>Emails to us: until we delete them. Ask us and we will delete yours, unless we need it as a record of a payment or refund.</li>
   </ul>
 

@@ -826,7 +826,7 @@ app.get('/:slug', (req, res, next) => {
 const SITEMAP_LASTMOD = '2026-10-07';
 const BLOG_INDEX_UPDATED = '2026-10-15';
 const HOME_UPDATED = '2026-10-15';
-const PRIVACY_UPDATED = '2026-10-15';
+const PRIVACY_UPDATED = '2026-10-28';
 const TERMS_UPDATED = '2026-10-11';
 app.get('/sitemap.xml', (req, res) => {
   res.set('Content-Type', 'text/xml');
