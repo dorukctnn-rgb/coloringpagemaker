@@ -322,3 +322,47 @@ test('the Christmas and winter batch of 27 October 2026: query-led pages, real f
     assert.equal(THEME_GUIDES[s + '-coloring-pages'].checked, '15 October 2026', s);
   }
 });
+
+// Every ImageObject in the JSON-LD of every page carries the image metadata Google's image report asks for (search console
+// mail of 28 October 2026: license, acquireLicensePage, creditText and copyrightNotice were missing).
+function imageObjects(html) {
+  const found = [];
+  const walk = n => {
+    if (Array.isArray(n)) return n.forEach(walk);
+    if (!n || typeof n !== 'object') return;
+    if (n['@type'] === 'ImageObject') found.push(n);
+    Object.values(n).forEach(walk);
+  };
+  for (const m of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) walk(JSON.parse(m[1]));
+  return found;
+}
+
+test('every ImageObject names its creator, license, license page, credit and copyright, and the license page says how the pages may be used', async () => {
+  let total = 0;
+  for (const [p, html] of pages) {
+    if (p === '/sitemap.xml') continue;
+    const objects = imageObjects(html);
+    if (THEME_EXAMPLES[p.slice(1)] && THEME_GUIDES[p.slice(1)]) assert.equal(objects.length, THEME_EXAMPLES[p.slice(1)].items.length, p + ': one ImageObject per example');
+    for (const img of objects) {
+      total++;
+      const where = p + ' ' + img.name;
+      assert.deepEqual(img.creator, { '@type': 'Organization', name: 'ColoringPageMaker', url: 'https://www.coloringpagemaker.app/' }, where + ': creator');
+      assert.equal(img.creditText, 'ColoringPageMaker', where + ': creditText');
+      assert.equal(img.copyrightNotice, '© 2026 ColoringPageMaker', where + ': copyrightNotice');
+      assert.equal(img.license, 'https://www.coloringpagemaker.app/terms', where + ': license');
+      assert.equal(img.acquireLicensePage, 'https://www.coloringpagemaker.app/terms', where + ': acquireLicensePage');
+      // what was there before stays
+      for (const k of ['name', 'description', 'encodingFormat', 'contentUrl']) assert.ok(typeof img[k] === 'string' && img[k], where + ': ' + k);
+    }
+  }
+  assert.ok(total >= 90, 'the theme galleries have ImageObjects (' + total + ')');
+  // The copyright line is the one in the footer, and the license page is a real page that states the usage.
+  assert.ok(pages.get('/').includes('&copy; 2026 ColoringPageMaker.'));
+  const terms = await fetch(app.base + '/terms');
+  assert.equal(terms.status, 200);
+  const text = await terms.text();
+  assert.match(text, /Using the pages you make/);
+  assert.match(text, /personal, non-commercial use/);
+  assert.match(text, /your own classroom/);
+  assert.match(text, /With Pro you may also sell the pages you make/);
+});

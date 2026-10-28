@@ -148,6 +148,16 @@ function card(v) {
     </li>`;
 }
 
+// Image metadata that Google's image report asks for on every ImageObject; the same values as server.js (theme pages).
+// The terms say free pages are for personal, non-commercial use (at home or in your own classroom) and that Pro adds selling.
+const IMAGE_META = {
+  creator: { '@type': 'Organization', name: 'ColoringPageMaker', url: SITE + '/' },
+  creditText: 'ColoringPageMaker',
+  copyrightNotice: '© 2026 ColoringPageMaker',
+  license: SITE + '/terms',
+  acquireLicensePage: SITE + '/terms'
+};
+
 // v: a view (feed.js); related: other views of the same group, newest first.
 export function renderLanding(v, related = []) {
   const url = pageUrl(v.slug);
@@ -168,7 +178,7 @@ export function renderLanding(v, related = []) {
       {
         '@type': 'ImageObject', '@id': url + '#image', url: SITE + v.pageImage, contentUrl: SITE + v.pageImage, name: v.headline,
         description: v.alt, encodingFormat: 'image/png', width: 1024, height: 1024, datePublished: isoDate(v.release),
-        creator: { '@type': 'Organization', name: 'ColoringPageMaker', url: SITE + '/' }
+        ...IMAGE_META
       },
       {
         '@type': 'BreadcrumbList', '@id': url + '#breadcrumb',

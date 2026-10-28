@@ -990,6 +990,17 @@ test('landing page: canonical, absolute image links, valid JSON-LD, working acti
   const ld = JSON.parse(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/.exec(html)[1]);
   assert.equal(ld['@graph'].length, 3);
   assert.equal(ld['@graph'][1]['@type'], 'ImageObject');
+  // the image metadata Google's image report asks for (same values as the theme pages in server.js)
+  assert.deepEqual(ld['@graph'][1].creator, { '@type': 'Organization', name: 'ColoringPageMaker', url: 'https://www.coloringpagemaker.app/' });
+  assert.equal(ld['@graph'][1].creditText, 'ColoringPageMaker');
+  assert.equal(ld['@graph'][1].copyrightNotice, '© 2026 ColoringPageMaker');
+  assert.equal(ld['@graph'][1].license, 'https://www.coloringpagemaker.app/terms');
+  assert.equal(ld['@graph'][1].acquireLicensePage, 'https://www.coloringpagemaker.app/terms');
+  assert.ok(ld['@graph'][1].name && ld['@graph'][1].description && ld['@graph'][1].contentUrl && ld['@graph'][1].encodingFormat);
+  for (const sv of seedViews()) {
+    const img = JSON.parse(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/.exec(renderLanding(sv, []))[1])['@graph'].find(n => n['@type'] === 'ImageObject');
+    for (const k of ['creator', 'creditText', 'copyrightNotice', 'license', 'acquireLicensePage']) assert.ok(img[k], sv.slug + ': ' + k);
+  }
   assert.equal(ld['@graph'][2].itemListElement.length, 3);
   assert.equal((html.match(/<h1/g) || []).length, 1);
   assert.deepEqual(lint(visibleText(html)), []);
