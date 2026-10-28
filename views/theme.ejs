@@ -88,7 +88,7 @@
   <div class="season-pro-box">
     <div>
       <h2 id="seasonProTitle">Plan the whole season in one sitting</h2>
-      <p>Free makes 2 pages a day. Pro makes up to 150, so a class set or a seasonal pack for Etsy takes one evening instead of a week or more. It is $9 once with no subscription, and it adds 50 HD pages a month, one PDF for all your pages without a watermark, and a commercial license.</p>
+      <p>Free makes 2 pages a day. Pro makes up to 150, so a class set or a seasonal pack for Etsy takes one evening instead of a week or more. It is $9 once with no subscription, and it adds up to 50 HD pages a month, one PDF for all your pages without a watermark, and a commercial license.</p>
     </div>
     <p class="season-pro-actions"><a class="btn" href="https://dorukctn.gumroad.com/l/uynqt" target="_blank" rel="noopener">Get Pro for $9</a><a class="season-pro-link" href="/#pro">Compare Free and Pro</a></p>
   </div>
@@ -173,7 +173,7 @@
   <dl class="spec">
     <div><dt>Output</dt><dd>Black line art, 1024 by 1024 pixels: about 136 DPI on a letter page, fine at home and below the 300 DPI print shops want.</dd></div>
     <div><dt>Free</dt><dd>2 pages a day, no account, personal use, watermarked PDF. A shared daily pool can run out on busy days.</dd></div>
-    <div><dt>Pro</dt><dd>$9 once: up to 150 pages a day, 50 HD pages a month, no watermark, commercial use and the one-PDF book maker.</dd></div>
+    <div><dt>Pro</dt><dd>$9 once: up to 150 pages a day and up to 50 HD pages a month, no watermark, commercial use and the one-PDF book maker.</dd></div>
   </dl>
 </section>
 
@@ -310,6 +310,8 @@
       });
       var data = {};
       try { data = await res.json(); } catch (e) {}
+      // The spinner goes first: it sits above the result, so removing it after a scroll would leave the scroll short.
+      loading.classList.remove('active');
       if (!res.ok) {
         // A Pro buyer at the fair-use cap is never pitched Pro again, and a shared-pool message has no offer card.
         var freeLimit = !!data.limitReached && !proToken && data.reason !== 'ai_exhausted';

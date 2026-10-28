@@ -13,7 +13,7 @@
   </div>
   <ul class="pro-nudge-list" aria-label="What Pro includes">
     <li>Up to 150 pages a day</li>
-    <li>50 HD pages a month, then standard quality</li>
+    <li>Up to 50 HD pages a month, then standard quality</li>
     <li>All your pages in one PDF book, no watermark</li>
     <li>Commercial use: sell your pages on Etsy and KDP</li>
   </ul>
@@ -48,7 +48,7 @@ window.cpmNudge = (function () {
     el.hidden = false;
     if (kind !== 'last') {
       var calm = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-      try { el.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'center' }); } catch (e) { el.scrollIntoView(); }
+      try { el.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' }); } catch (e) { el.scrollIntoView(); }
     }
     return true;
   }

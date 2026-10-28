@@ -38,7 +38,7 @@ test('every generator page carries the hidden Pro offer card with the price, wha
     assert.ok(card.includes(`href="${PRO_URL}"`), p + ': product link');
     assert.match(card, /\$9 once\./);
     assert.match(card, /No subscription/);
-    for (const line of ['Up to 150 pages a day', '50 HD pages a month, then standard quality', 'All your pages in one PDF book, no watermark', 'Commercial use: sell your pages on Etsy and KDP']) {
+    for (const line of ['Up to 150 pages a day', 'Up to 50 HD pages a month, then standard quality', 'All your pages in one PDF book, no watermark', 'Commercial use: sell your pages on Etsy and KDP']) {
       assert.ok(card.includes(line), p + ': ' + line);
     }
     assert.match(card, /Not now/);
@@ -56,7 +56,7 @@ test('the seasonal Pro line is on the Thanksgiving, Christmas and winter pages a
     const box = html.slice(html.indexOf('class="season-pro"'), html.indexOf('</aside>', html.indexOf('class="season-pro"')));
     assert.ok(box.includes(`href="${PRO_URL}"`), p + ': product link');
     assert.match(box, /\$9 once with no subscription/);
-    assert.match(box, /50 HD pages a month/);
+    assert.match(box, /up to 50 HD pages a month/);
     assert.match(box, /href="\/#pro">Compare Free and Pro/);
     // it comes after the free examples (value first) and before the prompts article
     assert.ok(html.indexOf('id="examples"') < html.indexOf('class="season-pro"'), p + ': after the free examples');
@@ -72,7 +72,7 @@ test('theme pages: the bottom offer, the activation link and the Pro state', () 
     const html = pages.get(p);
     assert.ok(html.includes('<div class="wrap" data-sells-pro>'), p + ': the bottom offer is marked as selling Pro');
     assert.match(html, /Already bought Pro\? <a href="\/#activate">Enter your license key<\/a>/, p);
-    assert.match(html, /<dt>Pro<\/dt><dd>\$9 once: up to 150 pages a day, 50 HD pages a month, no watermark/, p);
+    assert.match(html, /<dt>Pro<\/dt><dd>\$9 once: up to 150 pages a day and up to 50 HD pages a month, no watermark/, p);
     // the wait is a few seconds on the free engine, not "10 to 40 seconds"
     assert.match(html, /id="loadingSub">This usually takes a few seconds</, p);
     // a Pro buyer is told Pro is active and the sales boxes go away, after the server confirms the token
@@ -84,8 +84,8 @@ test('theme pages: the bottom offer, the activation link and the Pro state', () 
 
 test('home page: the plan table and the Pro window name the HD pages, and the wait is honest', () => {
   const home = pages.get('/');
-  assert.match(home, /<tr><th scope="row">Quality<\/th><td>Standard<\/td><td class="pro">50 HD pages a month, then standard<\/td><\/tr>/);
-  assert.ok(home.includes('<li>50 HD pages a month, then standard quality</li>'), 'the window lists it');
+  assert.match(home, /<tr><th scope="row">Quality<\/th><td>Standard<\/td><td class="pro">Up to 50 HD pages a month, then standard<\/td><\/tr>/);
+  assert.ok(home.includes('<li>Up to 50 HD pages a month, then standard quality</li>'), 'the window lists it');
   assert.match(home, /This usually takes a few seconds/);
   assert.doesNotMatch(home, /15 to 40 seconds|10-20 seconds/);
 });
@@ -116,13 +116,13 @@ test('the card: titles, the reset time in the visitor clock, scrolling and the N
   const b = runCard();
   b.nudge.show('limit');
   assert.equal(b.el('proNudgeTitle').textContent, 'You have used today’s free pages');
-  assert.deepEqual(JSON.parse(JSON.stringify(b.el('proNudge').scrolled)), [{ behavior: 'smooth', block: 'center' }], 'a refused click scrolls the card into view');
+  assert.deepEqual(JSON.parse(JSON.stringify(b.el('proNudge').scrolled)), [{ behavior: 'smooth', block: 'start' }], 'a refused click scrolls the card into view');
 
   const c = runCard({ calm: true });
   c.nudge.show('pool');
   assert.equal(c.el('proNudgeTitle').textContent, 'Today’s free pages are all used');
   assert.match(c.el('proNudgeLead').textContent, /^The free pages are shared by every visitor and come back at /);
-  assert.deepEqual(JSON.parse(JSON.stringify(c.el('proNudge').scrolled)), [{ behavior: 'auto', block: 'center' }], 'reduced motion: no smooth scroll');
+  assert.deepEqual(JSON.parse(JSON.stringify(c.el('proNudge').scrolled)), [{ behavior: 'auto', block: 'start' }], 'reduced motion: no smooth scroll');
 
   // Not now hides it and it stays hidden for the rest of the page view
   b.el('proNudgeDismiss').listeners.click();
@@ -156,4 +156,13 @@ test('the offer copy has none of the banned glyphs or sales tricks', () => {
   }
   const card = fs.readFileSync(path.join(root, 'views', 'partials', 'pro-nudge.ejs'), 'utf8');
   assert.doesNotMatch(card, /limited time|only \d+ left|last chance|hurry|countdown|unlock|unleash/i, 'no fake scarcity or banned words');
+});
+
+test('theme pages: the spinner is removed before the offer card scrolls into view, so the scroll is not left short', () => {
+  const html = pages.get('/christmas-coloring-pages');
+  const handler = html.slice(html.indexOf("genBtn.addEventListener('click'"));
+  const off = handler.indexOf("loading.classList.remove('active')");
+  assert.ok(off > 0, 'the spinner is removed');
+  assert.ok(off < handler.indexOf('cpmNudge.show('), 'before the card is shown');
+  assert.ok(off < handler.indexOf('scrollTo(gallerySection)'), 'and before the gallery is scrolled to');
 });

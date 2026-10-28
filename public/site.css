@@ -340,6 +340,7 @@ article.post .data-table{font-size:15px}
 /* The Pro offer at the moment the free pages run out (views/partials/pro-nudge.ejs) */
 .pro-nudge{margin-top:22px;background:var(--card);border:1.5px solid var(--ink);border-radius:14px;padding:clamp(18px,3vw,28px);display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:18px 32px;box-shadow:0 5px 0 var(--accent)}
 .pro-nudge[hidden]{display:none}
+.pro-nudge{scroll-margin-top:76px}
 .pro-nudge h2{font-size:clamp(1.3rem,2.7vw,1.65rem);margin-bottom:8px}
 .pro-nudge-lead{color:var(--muted);margin-bottom:12px;max-width:46ch}
 .pro-nudge-price{margin-bottom:16px}

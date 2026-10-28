@@ -110,6 +110,7 @@ test('free generate works twice a day per IP, then asks for Pro', async () => {
   const c = await post('/generate', { prompt: 'a cat in a hat' }, ip);
   assert.equal(c.status, 429);
   assert.equal(c.json.limitReached, true);
+  assert.equal(c.json.reason, 'free_daily_cap', 'the page tells the visitor own limit from the shared pool and from a Pro cap');
 });
 
 test('an email sent to generate does not turn Pro on', async () => {

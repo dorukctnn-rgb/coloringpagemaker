@@ -280,6 +280,8 @@ async function generatePage(){
       body: JSON.stringify({ prompt, style: 'medium', token: proToken })
     });
     const data = await res.json();
+    // The spinner goes first: it sits above the result, so removing it after a scroll would leave the scroll short.
+    loading.classList.remove('active');
     document.getElementById('usageBar').classList.remove('is-alert');
 
     if(!res.ok){

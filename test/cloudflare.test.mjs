@@ -270,14 +270,15 @@ function runGeneratePage(file, response, extra = {}) {
   const els = {};
   const el = id => els[id] || (els[id] = { id, value: 'a unicorn', textContent: '', innerHTML: '', hidden: true, disabled: false, classes: new Set(),
     classList: { add: c => els[id].classes.add(c), remove: c => els[id].classes.delete(c), toggle() {}, contains: c => els[id].classes.has(c) } });
-  const log = { alerts: [], modal: 0, nudge: [] };
+  const log = { alerts: [], modal: 0, nudge: [], spinnerWhenShown: [] };
   const ctx = {
     document: { getElementById: el }, alert: m2 => log.alerts.push(m2), openProModal: () => { log.modal++; },
     fetch: async () => ({ ok: response.status < 400, status: response.status, json: async () => response.body }),
     esc: t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'),
     selectedStyle: 'medium', proToken: extra.proToken || '', generatedImages: [], renderGallery() {}, persistImages() {}, updateCharCount() {},
     // the Pro offer card of views/partials/pro-nudge.ejs
-    cpmNudge: { show: kind => { log.nudge.push(kind); return true; } }
+    // (the spinner sits above the result: if it is still on when the card scrolls into view, removing it moves the card off the screen)
+    cpmNudge: { show: kind => { log.nudge.push(kind); log.spinnerWhenShown.push(el('loadingArea').classes.has('active')); return true; } }
   };
   vm.createContext(ctx);
   vm.runInContext(m[0], ctx);
@@ -345,7 +346,9 @@ test('the Pro offer: home page keeps its window on a free limit, shows the reaso
 
 test('the Pro offer: the other tool pages swap their dead-end limit line for the offer, except for a shared-pool message or a Pro buyer', async () => {
   const lim = (reason, extra) => runGeneratePage('niche.ejs', { status: 429, body: { error: 'x', limitReached: true, reason } }, extra);
-  assert.deepEqual((await lim('free_daily_cap')).log.nudge, ['limit']);
+  const refused = await lim('free_daily_cap');
+  assert.deepEqual(refused.log.nudge, ['limit']);
+  assert.deepEqual(refused.log.spinnerWhenShown, [false], 'the spinner is gone before the card scrolls into view');
   assert.deepEqual((await lim('free_global_cap')).log.nudge, ['pool']);
   assert.deepEqual((await lim('ai_exhausted')).log.nudge, []);
   assert.deepEqual((await lim('pro_daily_cap', { proToken: 'b'.repeat(64) })).log.nudge, []);
