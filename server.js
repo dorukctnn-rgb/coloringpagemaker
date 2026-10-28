@@ -336,6 +336,9 @@ const EVERGREEN_THEMES = ['dragon-coloring-pages', 'cat-coloring-pages', 'car-co
 const CHRISTMAS_THEMES = ['santa-coloring-pages', 'reindeer-coloring-pages', 'christmas-tree-coloring-pages',
   'christmas-ornament-coloring-pages', 'snowflake-coloring-pages', 'christmas-coloring-pages-for-adults'];
 const ALL_THEMES = [...THEME_ORDER, ...SEASONAL_THEMES, ...EVERGREEN_THEMES, ...CHRISTMAS_THEMES];
+// The pages that carry the seasonal Pro line under the free examples (views/theme.ejs): every Thanksgiving, Christmas,
+// winter and holiday page. Halloween and the evergreen guides do not.
+const PRO_SEASON_PAGES = new Set([...SEASONAL_THEMES, ...CHRISTMAS_THEMES, 'christmas-coloring-pages']);
 // The "Free printable ... coloring pages" gallery for a theme page, or null.
 const examplesFor = slug => (THEME_EXAMPLES[slug] ? { slug, ...THEME_EXAMPLES[slug] } : null);
 const themeLabel = slug => (THEME_GUIDES[slug] ? THEME_GUIDES[slug].h1 : NICHE_PAGES[slug].h1);
@@ -420,18 +423,21 @@ app.post('/generate', async (req, res) => {
       if (usage.reason === 'free_global_cap') {
         return res.status(429).json({
           error: 'The free pages for today are all used. They reset at midnight UTC, or Pro gives you up to ' + PRO_DAILY_LIMIT + ' a day.',
-          limitReached: true
+          limitReached: true,
+          reason: 'free_global_cap'
         });
       }
       if (usage.reason === 'pro_daily_cap') {
         return res.status(429).json({
           error: `Daily fair-use cap reached (${PRO_DAILY_LIMIT} pages). Resets at midnight UTC. Contact support if you need more.`,
-          limitReached: true
+          limitReached: true,
+          reason: 'pro_daily_cap'
         });
       }
       return res.status(429).json({
         error: 'Daily limit reached (2 free pages per day). Upgrade to Pro for up to 150 a day.',
-        limitReached: true
+        limitReached: true,
+        reason: 'free_daily_cap'
       });
     }
 
@@ -778,6 +784,7 @@ app.get('/:slug', (req, res, next) => {
     return res.render('theme', {
       g: THEME_GUIDES[slug],
       slug,
+      seasonal: PRO_SEASON_PAGES.has(slug),
       levelNames: LEVEL_NAMES,
       examples: examplesFor(slug),
       ld: themeJsonLd(slug, THEME_GUIDES[slug], examplesFor(slug))

@@ -119,6 +119,8 @@
     <h2>Your pages</h2>
     <div class="gallery" id="gallery"></div>
   </div>
+
+  <%- include('partials/pro-nudge') %>
 </div>
 
 <%- include('partials/examples') %>
@@ -278,6 +280,8 @@ async function generatePage(){
       body: JSON.stringify({ prompt, style: 'medium', token: proToken })
     });
     const data = await res.json();
+    // The spinner goes first: it sits above the result, so removing it after a scroll would leave the scroll short.
+    loading.classList.remove('active');
     document.getElementById('usageBar').classList.remove('is-alert');
 
     if(!res.ok){
@@ -287,6 +291,9 @@ async function generatePage(){
         bar.textContent = data.error;
         bar.classList.add('is-alert');
         bar.hidden = false;
+        // The offer sits under the result with the price and what Pro includes. Not for a Pro buyer at the fair-use cap,
+        // and not when the shared drawing allowance is gone (the message above says that).
+        if(!proToken && data.reason !== 'ai_exhausted' && typeof cpmNudge !== 'undefined') cpmNudge.show(data.reason === 'free_global_cap' ? 'pool' : 'limit');
       } else {
         alert(data.error || 'Failed');
       }
@@ -297,6 +304,7 @@ async function generatePage(){
 
     generatedImages.unshift({ url: data.imageUrl, prompt });
     renderGallery();
+    if(data.remaining === 0 && typeof cpmNudge !== 'undefined') cpmNudge.show('last');
   } catch(e){ alert('Connection error'); }
 
   btn.disabled = false; btn.textContent = 'Generate coloring page';
