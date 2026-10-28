@@ -1,5 +1,6 @@
 import { DurableObject } from 'cloudflare:workers';
 import { LedgerCore } from './ledger-core.js';
+import { FunnelCore } from './funnel-core.js';
 
 const PURGE_EVERY_MS = 6 * 60 * 60 * 1000;
 
@@ -8,13 +9,18 @@ export class Ledger extends DurableObject {
   constructor(ctx, env) {
     super(ctx, env);
     const sql = ctx.storage.sql;
-    this.core = new LedgerCore((q, ...p) => sql.exec(q, ...p).toArray(), fn => ctx.storage.transactionSync(fn));
+    const exec = (q, ...p) => sql.exec(q, ...p).toArray(), txn = fn => ctx.storage.transactionSync(fn);
+    this.core = new LedgerCore(exec, txn);
+    // The Pro click counter (funnel-core.js) lives in a second instance of this class, named "funnel" (worker.js), so a flood of
+    // notes never waits behind a drawing request in the instance "main". Both instances have both tables; each uses its own.
+    this.funnel = new FunnelCore(exec, txn);
     ctx.blockConcurrencyWhile(async () => {
       if (!(await ctx.storage.getAlarm())) await ctx.storage.setAlarm(Date.now() + PURGE_EVERY_MS);
     });
   }
   async alarm() {
     this.core.purge();
+    this.funnel.purge();
     await this.ctx.storage.setAlarm(Date.now() + PURGE_EVERY_MS);
   }
   takeFree(a) { return this.core.takeFree(a); }
@@ -36,4 +42,6 @@ export class Ledger extends DurableObject {
   legacyMiss(h) { return this.core.legacyMiss(h); }
   noteLegacyMiss(h) { return this.core.noteLegacyMiss(h); }
   takeLegacyLookup(a) { return this.core.takeLegacyLookup(a); }
+  noteFunnel(rec) { return this.funnel.note(rec); }
+  funnelRows(a) { return this.funnel.rows(a); }
 }

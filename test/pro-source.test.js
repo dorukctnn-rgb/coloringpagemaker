@@ -628,7 +628,7 @@ test('every page carries the script in its head, and serves the plain product li
     assert.match(privacy, /the kind of app you opened the page in, for example Pinterest or Instagram, counts the same way/);
     assert.match(privacy, /local storage/);
     assert.match(privacy, /until you clear this site's data/);
-    assert.match(privacy, /no cookies and no analytics/);
+    assert.match(privacy, /This site sets no cookies/);
     const sitemap = xml.replace(/\s+/g, '');
     assert.ok(sitemap.includes('privacy</loc><lastmod>2026-10-28'), 'privacy lastmod');
   } finally {

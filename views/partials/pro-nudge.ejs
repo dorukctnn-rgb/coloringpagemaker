@@ -46,6 +46,7 @@ window.cpmNudge = (function () {
     document.getElementById('proNudgeTitle').textContent = TITLES[kind] || TITLES.limit;
     document.getElementById('proNudgeLead').textContent = lead(kind);
     el.hidden = false;
+    try { if (window.cpmFunnel) cpmFunnel.track('gate', TITLES[kind] ? kind : 'limit'); } catch (e) {}
     if (kind !== 'last') {
       var calm = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
       try { el.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' }); } catch (e) { el.scrollIntoView(); }
