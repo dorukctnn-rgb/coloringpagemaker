@@ -589,6 +589,16 @@ test('privacy page: names the host and the services the production Worker really
   assert.match(t, /Pinterest/);
 });
 
+test('privacy page: the meta description (search result and share card) names the drawing services the Worker really uses', () => {
+  const src = fs.readFileSync(path.join(root, 'views', 'privacy.ejs'), 'utf8');
+  const desc = src.match(/var desc = '([^']+)'/)[1];
+  assert.ok(prodConfig().ai.binding === 'AI' && /flux-1-schnell/.test(FLUX_MODEL));
+  assert.match(desc, /Workers AI/);
+  assert.match(desc, /OpenAI/);
+  assert.doesNotMatch(desc, /sent to OpenAI|counted by IP address/);
+  assert.ok(desc.length <= 200, 'the description stays short enough for a search result');
+});
+
 test('privacy page: every address the Worker code calls is one the page names', () => {
   // a call to fetch(...), not the handler's own `async fetch(request, ...)` and not env.ASSETS.fetch(...)
   const calls = s => [...s.matchAll(/(?<![.\w])(?<!async )fetch\(\s*([^,)]+)/g)].map(m => m[1].trim());
