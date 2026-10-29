@@ -573,6 +573,241 @@ const BLOG_POSTS = {
       ]
     }
   ]
+},
+
+"thankful-coloring-pages": {
+  "title": "Thankful Coloring Pages for Kids: 5 Fill-In Activities",
+  "description": "Make thankful coloring pages with blank leaves and jar slips for kids to write on. Five prompts to type, plus plans for home, class and church.",
+  "keyword": "thankful coloring pages",
+  "date": "Updated October 2026",
+  "read": "6 min",
+  "updated": "2026-10-29",
+  "summary": "Five thankful coloring page activities, each with a prompt to type: a jar, a banner, a card front, a tree and a turkey. The generator draws the pictures and the child writes the words by hand.",
+  "content": [
+    {
+      "type": "p",
+      "text": "Thankful coloring pages for kids work well when the child writes the words. Ask the generator for a page with empty spaces. Good choices are blank leaves or paper slips in a jar. The child colors the picture, then writes or draws one thing they are thankful for in each space."
+    },
+    {
+      "type": "p",
+      "text": "Below are five gratitude coloring pages to make, each with a prompt to type. You describe the page, print it and write the words by hand. The free plan covers all five, at two pages a day."
+    },
+    {
+      "type": "h2",
+      "text": "Thankful coloring pages that leave room to write"
+    },
+    {
+      "type": "p",
+      "text": "A blank space holds whatever the child wants to say. An older child writes a sentence. A younger child tells you a word, and you write it in. A drawing counts too."
+    },
+    {
+      "type": "p",
+      "text": "The generator draws pictures and cannot be relied on to write words or numbers. That is why these pages use empty spaces. Leave words, names and dates out of the prompt, and write them on the printed page by hand."
+    },
+    {
+      "type": "p",
+      "text": "To get blank spaces, describe them in the prompt. Use this pattern: an object, a number of empty spaces, then 'big simple shapes, no background'. For example: 'a harvest basket with six empty apple shapes, big simple shapes, no background'."
+    },
+    {
+      "type": "p",
+      "text": "Check the page before you print it. Every page is drawn fresh, so one may miss."
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Each space is empty and has a closed outline.",
+        "Each space is big enough for the child's handwriting. A child who is just learning to write needs more room.",
+        "No letters, numbers or word-like marks appear anywhere in the picture.",
+        "No character, logo or brand shows anywhere, including the background.",
+        "There is one space for each answer you need. The count may differ from your prompt, so count the spaces."
+      ]
+    },
+    {
+      "type": "p",
+      "text": "If a page misses, change one detail in the prompt and make it again."
+    },
+    {
+      "type": "p",
+      "text": "Write the starter line yourself before you hand over the page. For an 'I am thankful for' coloring page, write those words at the top with a marker. The child then finishes the thought in the spaces."
+    },
+    {
+      "type": "h2",
+      "text": "Five thankful activities to make"
+    },
+    {
+      "type": "p",
+      "text": "Each row is a prompt you can type as written, and each one makes a printable page. The Level column uses the generator's own labels: Simple (ages 3 to 6, thick lines) and Medium (ages 6 to 12, balanced)."
+    },
+    {
+      "type": "table",
+      "head": [
+        "Activity",
+        "Prompt to type",
+        "Level",
+        "What the child writes or draws"
+      ],
+      "rows": [
+        [
+          "Thankful jar",
+          "a large glass jar with eight blank paper slips floating inside it, each slip a plain empty rectangle, big simple shapes, no background",
+          "Simple",
+          "One thing on each slip: a word, a name or a small drawing"
+        ],
+        [
+          "Thankful banner",
+          "a smiling cartoon turkey holding a wide blank banner in front of its body, big simple shapes, no background",
+          "Simple",
+          "One line on the banner after an 'I am thankful for' starter that you write at the top"
+        ],
+        [
+          "Thank-you card front",
+          "a bunch of tulips tied with a ribbon, with a wide empty banner across the bottom, clean bold outlines, no background",
+          "Medium",
+          "'Thank you' and a name on the banner, with the longer note inside the card"
+        ],
+        [
+          "Thankful tree",
+          "Copy the thankful tree prompt from our [Thanksgiving coloring pages](/thanksgiving-coloring-pages)",
+          "Simple",
+          "One thing in each leaf"
+        ],
+        [
+          "Turkey with blank feathers",
+          "a smiling cartoon turkey with six big empty feathers fanned out behind it, each feather a plain blank shape, big simple shapes, no background",
+          "Simple",
+          "One word or small drawing on each feather"
+        ]
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Our [turkey coloring pages](/turkey-coloring-pages) have a paper version of the feathers activity. A bare turkey body gets feathers cut from colored paper. Each child writes one thing on a feather before gluing it on."
+    },
+    {
+      "type": "p",
+      "text": "For ages 6 to 12, choose Medium and ask for more spaces, such as twelve slips in the jar. Older children write more, so give them more slips. Their handwriting is smaller, so each slip can be smaller too. Skip Detailed for these pages. It is made for adults and draws intricate shapes, which leave little room to write."
+    },
+    {
+      "type": "p",
+      "text": "Give the child a starter so the blank space feels easy to fill. Write one at the top of the page:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "I am thankful for ____.",
+        "Thank you, ____, for ____.",
+        "Someone who helps me is ____.",
+        "A food I am glad to have is ____.",
+        "A place I like to be is ____.",
+        "Something that made me laugh this week was ____."
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Children who cannot write yet can draw. Ask what the drawing shows, and write that word beside it."
+    },
+    {
+      "type": "h2",
+      "text": "Using them at home, in class or at church"
+    },
+    {
+      "type": "p",
+      "text": "At home, tape one jar page to the fridge and take turns. One person fills one slip each day. Write the year on the back, so next November the family can read what the children wrote."
+    },
+    {
+      "type": "p",
+      "text": "The US Office of Personnel Management lists Thanksgiving Day for 2026 as Thursday 26 November. A jar with eight slips that you start on Monday 16 November is full by Monday 23 November. On Thanksgiving Day, pass the page around the table and let each person read their own slip."
+    },
+    {
+      "type": "p",
+      "text": "In a class, print one copy per child and let each child write something different. Write each child's name on the back, so the front stays free for the picture. Hang the finished thankful coloring pages in a row on a wall or a door."
+    },
+    {
+      "type": "p",
+      "text": "Children in one class write at different levels. Make the same prompt at Simple and at Medium, and hand each child the page that fits. Two pages a day on the free plan is enough for that."
+    },
+    {
+      "type": "p",
+      "text": "A Sunday school leader can use the same pages at the start of a lesson. Hand out the banner pages and give each child time to write or draw one line. When your group moves on to Advent, our [nativity coloring pages](/nativity-coloring-pages) have prompts by age and the story in six pages."
+    },
+    {
+      "type": "sources",
+      "checked": "22 October 2026",
+      "links": [
+        {
+          "text": "US Office of Personnel Management: Federal holidays",
+          "href": "https://www.opm.gov/policy-data-oversight/pay-leave/federal-holidays/"
+        }
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "After Thanksgiving: thank-you notes"
+    },
+    {
+      "type": "p",
+      "text": "Thankful coloring pages are useful after the holiday too. A thank-you card uses the same idea. The picture goes on the front, and the words go inside. Use the card-front prompt from the table, color the page, and write a short note by hand."
+    },
+    {
+      "type": "p",
+      "text": "Our [Christmas coloring pages](/christmas-coloring-pages) show how to print a page as a card, ornament or tag. Printing a card shrinks the page, so the banner shrinks too. Ask for a wide banner and test one print before you make a set."
+    },
+    {
+      "type": "p",
+      "text": "A short note is easier to write when it follows a pattern. A child can copy this one onto the inside of the card:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Greeting: Dear ____,",
+        "Thanks: Thank you for ____.",
+        "One detail: I like it because ____.",
+        "Closing: Love, ____"
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Younger children can color the card and tell you the words while you write them. For an older child, write the note on scrap paper first and let the child copy it."
+    },
+    {
+      "type": "h2",
+      "text": "Make and print the pages"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Open the [generator](/) and type a prompt from the table.",
+        "Pick the level: Simple for ages 3 to 6, or Medium for ages 6 to 12.",
+        "Check the page against the list above, and make it again if it misses.",
+        "Download the page as a PDF and print it on US letter paper.",
+        "Write the starter line, names and dates by hand."
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Your pages stay in the open browser tab only. A reload keeps up to the 20 newest pages, or fewer when the browser's storage is full. Closing the tab clears them, so download each page the same day."
+    },
+    {
+      "type": "p",
+      "text": "The free plan gives you two pages a day, counted by IP address, with no account. The pages come from a shared daily pool that can run out on busy days. The count resets at midnight UTC. Each free PDF holds one page and carries a 'Free preview' watermark. Free pages are for personal, non-commercial use, for example at home or in your own classroom."
+    },
+    {
+      "type": "p",
+      "text": "Start early. Five pages take three days on the free plan, and each retry uses one of the two pages a day."
+    },
+    {
+      "type": "p",
+      "text": "Pro is for larger batches, such as pages for several classes. Pro costs $9, paid once, and it is not a subscription. It allows up to 150 pages a day as a fair-use cap. It also puts all your pages in one PDF book without the watermark. The Free and Pro section of the generator page has the details."
+    },
+    {
+      "type": "p",
+      "text": "Describe plain objects such as a jar or a tree. Do not ask for characters, logos or artwork that belong to someone else."
+    },
+    {
+      "type": "p",
+      "text": "Teachers can find print settings and notes on the daily limit in our [guide to coloring pages for classroom teachers](/coloring-pages-for-classroom-teachers)."
+    }
+  ]
 }
 
 };
