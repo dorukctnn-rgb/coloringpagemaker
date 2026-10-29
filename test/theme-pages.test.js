@@ -9,6 +9,7 @@ const path = require('path');
 const h = require('./helpers');
 const THEME_EXAMPLES = require('../theme-examples.js');
 const THEME_GUIDES = require('../theme-guides.js');
+const BLOG_POSTS = require('../blog-posts.js');
 
 const SEASONAL = ['fall-coloring-pages', 'thanksgiving-coloring-pages', 'turkey-coloring-pages', 'winter-coloring-pages',
   'nativity-coloring-pages', 'new-year-coloring-pages', 'gingerbread-coloring-pages', 'snowman-coloring-pages',
@@ -50,7 +51,7 @@ function gallery(html) {
 }
 
 test('every theme in the sitemap has examples, and every example file exists', () => {
-  const themesInSitemap = sitemapPaths.filter(p => /-coloring-pages(-for-adults)?$/.test(p) && !/self-publishing/.test(p));
+  const themesInSitemap = sitemapPaths.filter(p => /-coloring-pages(-for-adults)?$/.test(p) && !/self-publishing/.test(p) && !BLOG_POSTS[p.slice(1)]);
   assert.deepEqual(themesInSitemap.slice().sort(), themePaths().sort());
   const alts = new Set();
   for (const [slug, g] of Object.entries(THEME_EXAMPLES)) {
