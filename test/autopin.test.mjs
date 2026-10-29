@@ -251,6 +251,9 @@ test('holiday banks: child safe and printable, a real season page for every subj
 function siteThemePages() {
   const slugs = new Set(['mandala-coloring-pages', 'flower-coloring-pages', 'easter-coloring-pages']);
   for (const k of Object.keys(createRequire(import.meta.url)('../theme-guides.js'))) slugs.add(k);
+  // The two articles of 29 October 2026 are pages of the site too (blog-posts.js); a pin must never link to one that is not there.
+  const blog = createRequire(import.meta.url)('../blog-posts.js');
+  for (const k of ['turkey-disguise-template', 'thankful-coloring-pages']) if (blog[k]) slugs.add(k);
   return slugs;
 }
 
@@ -854,7 +857,8 @@ test('holiday pin copy uses the measured query wording of the page it links to, 
     'christmas-tree-coloring-pages': 'printable', 'christmas-ornament-coloring-pages': 'free printable', 'snowflake-coloring-pages': 'printable',
     'christmas-coloring-pages-for-adults': 'printable', 'thanksgiving-coloring-pages': 'free', 'turkey-coloring-pages': 'printable PDF',
     'fall-coloring-pages': 'printable', 'winter-coloring-pages': 'printable', 'hanukkah-coloring-pages': 'free',
-    'new-year-coloring-pages': 'printable PDF', 'gingerbread-coloring-pages': 'printable', 'snowman-coloring-pages': 'printable'
+    'new-year-coloring-pages': 'printable PDF', 'gingerbread-coloring-pages': 'printable', 'snowman-coloring-pages': 'printable',
+    'turkey-disguise-template': 'printable', 'thankful-coloring-pages': 'free printable'
   });
   assert.equal(topics.queryLabel('santa-coloring-pages'), 'Santa coloring pages');
   assert.equal(topics.queryLabel('christmas-coloring-pages-for-adults'), 'Christmas coloring pages for adults');
@@ -1565,4 +1569,23 @@ test('every one of the 30 seed pages has its landing page from the first day, th
   // the hub, the sitemap and the feed still list only what has been released
   assert.ok(!(await (await call(w.env, '/printables')).text()).includes(SEEDS[0].slug));
   assert.ok(!(await (await call(w.env, '/sitemap-printables.xml')).text()).includes(SEEDS[0].slug));
+});
+
+test('the two articles of 29 October 2026 get pins: disguise and fill-in subjects link to them with the holiday2026 tags and come early in the Thanksgiving run', () => {
+  const all = topics.allSubjects();
+  const dis = all.filter(s => s.site === 'turkey-disguise-template'), thx = all.filter(s => s.site === 'thankful-coloring-pages');
+  assert.ok(dis.length >= 8 && thx.length >= 5, 'disguise ' + dis.length + ', thankful ' + thx.length);
+  for (const s of [...dis, ...thx]) {
+    // Thanksgiving pins only: they run until Thanksgiving Day (26 November 2026), never later
+    assert.equal(s.theme, 'thanksgiving', s.slug);
+    assert.equal(linkOf({ theme: s.theme, site: s.site, slug: s.slug }), `https://www.coloringpagemaker.app/${s.site}?utm_source=pinterest&utm_medium=social&utm_campaign=holiday2026&utm_content=${s.slug}`);
+  }
+  assert.equal(topics.queryLabel('turkey-disguise-template'), 'turkey disguise templates and ideas');
+  assert.equal(topics.queryLabel('thankful-coloring-pages'), 'thankful coloring pages');
+  const firstSixteen = topics.bank().thanksgiving.filter(s => s.pass === 1).slice(0, 16);
+  assert.ok(firstSixteen.filter(s => s.site === 'turkey-disguise-template').length >= 3, 'disguise pins come early');
+  assert.ok(firstSixteen.filter(s => s.site === 'thankful-coloring-pages').length >= 3, 'thankful pins come early');
+  const t = topics.describe(dis[0]);
+  assert.ok(t.pinDescription.includes('More printable turkey disguise templates and ideas for kids at ColoringPageMaker'), t.pinDescription);
+  assert.deepEqual(lint(t.pinTitle + ' ' + t.pinDescription), []);
 });
