@@ -331,15 +331,34 @@ const SEASONAL_THEMES = ['fall-coloring-pages', 'thanksgiving-coloring-pages', '
 const EVERGREEN_THEMES = ['dragon-coloring-pages', 'cat-coloring-pages', 'car-coloring-pages', 'dog-coloring-pages',
   'mermaid-coloring-pages', 'horse-coloring-pages', 'fairy-coloring-pages', 'butterfly-coloring-pages',
   'space-coloring-pages', 'ocean-coloring-pages'];
-const ALL_THEMES = [...THEME_ORDER, ...SEASONAL_THEMES, ...EVERGREEN_THEMES];
+// The Christmas and winter pages added on 27 October 2026 (Santa, reindeer, tree, ornaments, snowflakes, adults),
+// appended after the evergreen guides in every list for the same reason.
+const CHRISTMAS_THEMES = ['santa-coloring-pages', 'reindeer-coloring-pages', 'christmas-tree-coloring-pages',
+  'christmas-ornament-coloring-pages', 'snowflake-coloring-pages', 'christmas-coloring-pages-for-adults'];
+const ALL_THEMES = [...THEME_ORDER, ...SEASONAL_THEMES, ...EVERGREEN_THEMES, ...CHRISTMAS_THEMES];
+// The pages that carry the seasonal Pro line under the free examples (views/theme.ejs): every Thanksgiving, Christmas,
+// winter and holiday page. Halloween and the evergreen guides do not.
+const PRO_SEASON_PAGES = new Set([...SEASONAL_THEMES, ...CHRISTMAS_THEMES, 'christmas-coloring-pages']);
 // The "Free printable ... coloring pages" gallery for a theme page, or null.
 const examplesFor = slug => (THEME_EXAMPLES[slug] ? { slug, ...THEME_EXAMPLES[slug] } : null);
 const themeLabel = slug => (THEME_GUIDES[slug] ? THEME_GUIDES[slug].h1 : NICHE_PAGES[slug].h1);
 const SITE = 'https://www.coloringpagemaker.app';
 const LEVEL_NAMES = { simple: 'Simple', medium: 'Medium', detailed: 'Detailed' };
+// Image metadata that Google's image report asks for on every ImageObject. The license page is the terms:
+// "Using the pages you make" says free pages are for personal, non-commercial use (at home or in your own classroom)
+// and that Pro adds selling them. The terms also describe how Pro is bought, so they are the page to acquire a license
+// from. The copyright line is the one in the footer. Keep cloudflare/autopin/page.js in step.
+const IMAGE_META = {
+  creator: { '@type': 'Organization', name: 'ColoringPageMaker', url: SITE + '/' },
+  creditText: 'ColoringPageMaker',
+  copyrightNotice: '© 2026 ColoringPageMaker',
+  license: SITE + '/terms',
+  acquireLicensePage: SITE + '/terms'
+};
 
-function themeJsonLd(slug, g) {
+function themeJsonLd(slug, g, examples) {
   const url = `${SITE}/${slug}`;
+  const exampleDir = examples ? `${SITE}/examples/${examples.files || examples.slug}/` : '';
   return jsonLd({
     '@context': 'https://schema.org',
     '@graph': [
@@ -365,7 +384,16 @@ function themeJsonLd(slug, g) {
       {
         '@type': 'FAQPage',
         mainEntity: g.faq.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: plain(f.a) } }))
-      }
+      },
+      // The example pages shown on the page, and nothing that is not there.
+      ...(examples && examples.items.length ? [{
+        '@type': 'ImageGallery', '@id': url + '#examples', name: examples.heading, url: url + '#examples',
+        associatedMedia: examples.items.map(x => ({
+          '@type': 'ImageObject', name: x.title, description: x.alt, encodingFormat: 'image/png',
+          contentUrl: `${exampleDir}${x.name}.png`, thumbnailUrl: `${exampleDir}${x.name}-400.webp`,
+          ...IMAGE_META
+        }))
+      }] : [])
     ]
   });
 }
@@ -406,18 +434,21 @@ app.post('/generate', async (req, res) => {
       if (usage.reason === 'free_global_cap') {
         return res.status(429).json({
           error: 'The free pages for today are all used. They reset at midnight UTC, or Pro gives you up to ' + PRO_DAILY_LIMIT + ' a day.',
-          limitReached: true
+          limitReached: true,
+          reason: 'free_global_cap'
         });
       }
       if (usage.reason === 'pro_daily_cap') {
         return res.status(429).json({
           error: `Daily fair-use cap reached (${PRO_DAILY_LIMIT} pages). Resets at midnight UTC. Contact support if you need more.`,
-          limitReached: true
+          limitReached: true,
+          reason: 'pro_daily_cap'
         });
       }
       return res.status(429).json({
         error: 'Daily limit reached (2 free pages per day). Upgrade to Pro for up to 150 a day.',
-        limitReached: true
+        limitReached: true,
+        reason: 'free_daily_cap'
       });
     }
 
@@ -721,7 +752,13 @@ const THEME_NOTES = {
   'fairy-coloring-pages': ['Fairies', 'Fairy houses and the plants of fairy lore'],
   'butterfly-coloring-pages': ['Butterflies', "A monarch's real colors and life cycle"],
   'space-coloring-pages': ['Space', 'The eight planets and the first Moon landing'],
-  'ocean-coloring-pages': ['Ocean', 'Blue whales and the unexplored deep sea']
+  'ocean-coloring-pages': ['Ocean', 'Blue whales and the unexplored deep sea'],
+  'santa-coloring-pages': ['Santa', 'A smiling face, milk and cookies, and the 1955 phone call'],
+  'reindeer-coloring-pages': ['Reindeer', 'Which reindeer still have antlers in December'],
+  'christmas-tree-coloring-pages': ['Christmas trees', 'A tree to decorate and the first Rockefeller tree'],
+  'christmas-ornament-coloring-pages': ['Ornaments', 'Blank baubles to design and cut out'],
+  'snowflake-coloring-pages': ['Snowflakes', 'The snow crystal types and a paper snowflake'],
+  'christmas-coloring-pages-for-adults': ['Christmas for adults', 'Wreaths, a village street and an ornament mandala']
 };
 app.get('/blog', (req, res) => {
   const listed = new Set(BLOG_GROUPS.flatMap(g => g.slugs));
@@ -758,9 +795,10 @@ app.get('/:slug', (req, res, next) => {
     return res.render('theme', {
       g: THEME_GUIDES[slug],
       slug,
+      seasonal: PRO_SEASON_PAGES.has(slug),
       levelNames: LEVEL_NAMES,
       examples: examplesFor(slug),
-      ld: themeJsonLd(slug, THEME_GUIDES[slug])
+      ld: themeJsonLd(slug, THEME_GUIDES[slug], examplesFor(slug))
     });
   }
   if (NICHE_PAGES[slug]) {
@@ -770,7 +808,7 @@ app.get('/:slug', (req, res, next) => {
       examples: examplesFor(slug),
       // The next six themes after this one, wrapping around, so every theme page gets links from six others,
       // followed by the seasonal guides.
-      allPages: [...[...THEME_ORDER.slice(THEME_ORDER.indexOf(slug) + 1), ...THEME_ORDER.slice(0, Math.max(0, THEME_ORDER.indexOf(slug)))].filter(s => s !== slug).slice(0, 6), ...SEASONAL_THEMES, ...EVERGREEN_THEMES].map(s => ({ slug: s, h1: themeLabel(s) }))
+      allPages: [...[...THEME_ORDER.slice(THEME_ORDER.indexOf(slug) + 1), ...THEME_ORDER.slice(0, Math.max(0, THEME_ORDER.indexOf(slug)))].filter(s => s !== slug).slice(0, 6), ...SEASONAL_THEMES, ...EVERGREEN_THEMES, ...CHRISTMAS_THEMES].map(s => ({ slug: s, h1: themeLabel(s) }))
     });
   }
   if (BLOG_POSTS[slug]) {
@@ -788,7 +826,7 @@ app.get('/:slug', (req, res, next) => {
 const SITEMAP_LASTMOD = '2026-10-07';
 const BLOG_INDEX_UPDATED = '2026-10-15';
 const HOME_UPDATED = '2026-10-15';
-const PRIVACY_UPDATED = '2026-10-15';
+const PRIVACY_UPDATED = '2026-10-28';
 const TERMS_UPDATED = '2026-10-11';
 app.get('/sitemap.xml', (req, res) => {
   res.set('Content-Type', 'text/xml');
@@ -823,7 +861,8 @@ Disallow: /download-pdf
 Disallow: /gumroad-webhook
 Disallow: /verify-pro
 
-Sitemap: https://www.coloringpagemaker.app/sitemap.xml`);
+Sitemap: https://www.coloringpagemaker.app/sitemap.xml
+Sitemap: https://www.coloringpagemaker.app/sitemap-printables.xml`);
 });
 
 // === 404 ===

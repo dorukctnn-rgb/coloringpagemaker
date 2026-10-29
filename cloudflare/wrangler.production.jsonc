@@ -1,0 +1,65 @@
+// PRODUCTION Worker "coloringpagemaker" (www.coloringpagemaker.app is its Custom Domain). Deploy from the branch
+// cloudflare/shield-and-move, committed, never from main (the 30 Halloween pins under /pins/halloween-2026/ and the
+// printable pages under /printables/img/ are static files of this branch, and every deploy replaces all static files):
+//   node cloudflare/build.mjs && (cd cloudflare && npx wrangler deploy -c wrangler.production.jsonc)
+// Then: node cloudflare/check-site.mjs (0 problems) and node cloudflare/smoke.mjs https://www.coloringpagemaker.app.
+// The daily Pinterest job (cloudflare/autopin/, notes in takip/devir/coloring-autopin-NOTLAR.md) runs from the cron
+// trigger below; node cloudflare/autopin/tools/admin.mjs status shows it.
+// Secrets (wrangler secret put <NAME> -c wrangler.production.jsonc): OPENAI_API_KEY, IP_SALT, AUTOPIN_ADMIN_KEY (admin address of the Pinterest job).
+{
+  "name": "coloringpagemaker",
+  "main": "index.js",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "preview_urls": false,
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "none",
+    // The Worker answers these itself, as the old Express server did: 301 for a trailing slash, 404 for x.html.
+    "run_worker_first": ["/*/", "/*.html", "/*.HTML", "/404", "/index"]
+  },
+  "ai": { "binding": "AI" },
+  "images": { "binding": "IMAGES" },
+  // LEDGER: the site's counters. PINS: the daily Pinterest job (autopin/store.js): pages, images, run log, flags.
+  "durable_objects": { "bindings": [{ "name": "LEDGER", "class_name": "Ledger" }, { "name": "PINS", "class_name": "PinStore" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Ledger"] }, { "tag": "v2", "new_sqlite_classes": ["PinStore"] }],
+  // Every 3 hours at minute 7 (UTC): one tick of the Pinterest job, which draws at most AUTOPIN_DAILY_PAGES pages a day.
+  "triggers": { "crons": ["7 */3 * * *"] },
+  "observability": { "enabled": true },
+  "vars": {
+    "FREE_ENGINE": "flux",
+    "HD_ENABLED": "1",
+    "HD_COST_USD": "0.06",
+    "HD_MONTHLY_CAP_USD": "9",
+    "HD_DAILY_CAP_USD": "1.5",
+    "HD_MONTHLY_ALLOWANCE": "50",
+    // The day the Gumroad text with the monthly HD allowance went live. Sales before it keep their terms
+    // (150 pages a day, HD while the shared budget lasts); the Gumroad text names the same day.
+    "HD_TERMS_FROM": "2026-10-21",
+    "PRO_DAILY_LIMIT": "150",
+    // The Workers AI free allowance is 10,000 neurons a UTC day for the whole account, and one FLUX schnell page (1024 px,
+    // 4 steps) costs 172.8 of them (measured 25 October 2026; the earlier estimate of 57.6 was a third of the truth), so
+    // the account holds 57 pages a day. AI_DAILY_LIMIT counts every image of the day (free pages, Pro standard pages and
+    // the Pinterest job): 52 x 172.8 = 8,986 neurons, 90 percent, with a tenth left for delays and our own tests.
+    // Worst day: 30 free pages + 12 of the Pinterest job + 10 Pro standard pages = 52. Real demand is about 5 a day.
+    "FREE_GLOBAL_DAILY_LIMIT": "30",
+    "AI_DAILY_LIMIT": "52",
+    // The old Vercel server, asked once for Pro tokens made before the move. Remove when Vercel is gone.
+    "LEGACY_VERIFY_URL": "https://coloringpagemaker.vercel.app",
+    // The daily Pinterest job (autopin/tick.js). Kill switch: AUTOPIN_ENABLED "0" and deploy, or POST /pins/admin/pause.
+    "AUTOPIN_ENABLED": "1",
+    // The 30 Halloween seeds in the feed. Set "0" if the same 30 pins were uploaded from the CSV (they would be pinned twice).
+    "AUTOPIN_SEEDS": "1",
+    "AUTOPIN_DAILY_PAGES": "4",
+    "AUTOPIN_MAX_FLUX_PER_DAY": "12",
+    "AUTOPIN_MAX_ATTEMPTS": "3",
+    "AUTOPIN_SLOT_HOURS": "3",
+    // The job draws only while the day's image count is below AI_DAILY_LIMIT - AUTOPIN_SITE_RESERVE (52 - 30 = 22).
+    "AUTOPIN_SITE_RESERVE": "30",
+    "AUTOPIN_IMAGES_MONTHLY_CAP": "600",
+    "AUTOPIN_STORAGE_CAP_MB": "1500"
+  }
+}

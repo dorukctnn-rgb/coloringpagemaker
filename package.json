@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "test": "node --test test/security.test.js test/pro-source.test.js test/more-tools.test.js test/theme-pages.test.js test/lineart.test.js"
+    "test": "node --test test/security.test.js test/pro-source.test.js test/more-tools.test.js test/theme-pages.test.js test/pro-offer.test.js test/lineart.test.js test/cloudflare.test.mjs test/autopin.test.mjs test/funnel.test.mjs"
   },
   "dependencies": {
     "express": "^4.18.2",

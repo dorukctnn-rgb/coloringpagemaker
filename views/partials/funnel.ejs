@@ -1,0 +1,72 @@
+<script>
+// The visit and Pro click counter of this site (cloudflare/funnel-core.js, POST /funnel on this same address). It counts what
+// happened (a page opened, a page was made, the free pages ran out and the Pro card or window was shown, the Pro window was
+// opened, a Pro button was followed), on which page, in which part of it, and the one word for the kind of site that sent the
+// visitor (the word the Pro link already carries to Gumroad). Each note is a plain text POST with no cookie and no identifier;
+// the server adds one to a daily total and keeps no IP address, no browser details and no time of day. Nothing is sent from a
+// browser under automation, from any host but www.coloringpagemaker.app, or for the privacy, terms and 404 pages. A failed
+// send is ignored: nothing on the page depends on it.
+window.cpmFunnel = (function () {
+  var ENDPOINT = '/funnel';
+  var HOST = /^(www\.)?coloringpagemaker\.app$/;
+  var NO_VIEW = /^\/(privacy|terms|404)\/?$/;
+  var PRO = /^https:\/\/(dorukctn\.gumroad\.com\/l\/uynqt|gum\.co\/u\/[a-z0-9]+)(?:[\/?#]|$)/;
+  var lastEl = null, lastAt = 0;
+  function path() {
+    var p = '';
+    try { p = String(location.pathname || '').toLowerCase(); } catch (e) {}
+    return /^\/[a-z0-9\/._-]{0,119}$/.test(p) ? p : '';
+  }
+  // the part of the page a button is in
+  function place(el) {
+    try {
+      if (el.closest('#proNudge')) return 'limit-card';
+      if (el.closest('#proModal')) return 'modal';
+      if (el.closest('.season-pro')) return 'season';
+      if (el.closest('.usage-bar')) return 'usage-line';
+      if (el.closest('.pricing-cta')) return 'bottom-offer';
+      if (el.closest('.plans-cta') || el.closest('#pro')) return 'plans';
+      if (el.closest('.nav')) return 'nav';
+    } catch (e) {}
+    return 'page';
+  }
+  // the kind of site: this visit's for a page opening, the browser's first (what Gumroad is told) for a click
+  function word(forClick) {
+    try { return (forClick ? window.cpmSource.chosen() : window.cpmSource.source) || 'direct'; } catch (e) { return 'direct'; }
+  }
+  function track(event, where) {
+    try {
+      if (!HOST.test(location.hostname) || (typeof navigator !== 'undefined' && navigator.webdriver)) return;
+      var body = JSON.stringify({ e: event, t: 'coloringpagemaker', p: path(), w: where || '', s: word(event !== 'view') });
+      if (typeof fetch === 'function') {
+        var sent = fetch(ENDPOINT, { method: 'POST', body: body, headers: { 'Content-Type': 'text/plain;charset=UTF-8' }, keepalive: true, credentials: 'omit' });
+        if (sent && sent.catch) sent.catch(function () {});
+      }
+    } catch (e) {}
+  }
+  // A click on a button that opens the Pro window is "open"; a Pro link followed is "click" (one count per link per two seconds).
+  function clicked(e) {
+    try {
+      if (e.type === 'auxclick' && e.button !== 1) return;
+      var t = e.target;
+      if (!t || !t.closest) return;
+      var opener = t.closest('[data-open-pro], #navProBtn');
+      var a = t.closest('a[href]');
+      var el = opener || (a && PRO.test(a.href) ? a : null);
+      if (!el) return;
+      var now = Date.now();
+      if (el === lastEl && now - lastAt < 2000) return;
+      lastEl = el; lastAt = now;
+      track(opener ? 'open' : 'click', place(el));
+    } catch (err) {}
+  }
+  if (document.addEventListener) {
+    document.addEventListener('click', clicked, true);
+    document.addEventListener('auxclick', clicked, true);
+  }
+  // A page Chrome prerenders in the background is only counted once the visitor opens it.
+  function view() { try { if (!NO_VIEW.test(location.pathname)) track('view'); } catch (e) {} }
+  if (document.prerendering) document.addEventListener('prerenderingchange', view); else view();
+  return { track: track, place: place, ENDPOINT: ENDPOINT };
+})();
+</script>

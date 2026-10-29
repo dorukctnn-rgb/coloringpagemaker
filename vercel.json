@@ -11,5 +11,13 @@
       "src": "/(.*)",
       "dest": "server.js"
     }
-  ]
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "cro/pro-offer": false,
+      "cloudflare/shield-and-move": false,
+      "seasonal-pages": false,
+      "holiday-pins": false
+    }
+  }
 }

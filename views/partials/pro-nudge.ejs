@@ -1,0 +1,60 @@
+<%# The Pro offer shown at the moment a free visitor runs out of pages: right under the result, with the price,
+    what Pro includes and when the free pages come back. Hidden until cpmNudge.show() is called. Pro visitors never see it.
+    Pass { home: true } on the home page, where "Activate Pro" opens the license window instead of linking to it. %>
+<aside class="pro-nudge" id="proNudge" aria-labelledby="proNudgeTitle" hidden>
+  <div class="pro-nudge-main">
+    <h2 id="proNudgeTitle">That was your last free page today</h2>
+    <p class="pro-nudge-lead" id="proNudgeLead"></p>
+    <p class="pro-nudge-price"><strong>$9 once.</strong> No subscription, no yearly fee.</p>
+    <div class="pro-nudge-actions">
+      <a class="btn" href="https://dorukctn.gumroad.com/l/uynqt" target="_blank" rel="noopener">Get Pro for $9</a>
+      <button type="button" class="pro-nudge-dismiss" id="proNudgeDismiss">Not now</button>
+    </div>
+  </div>
+  <ul class="pro-nudge-list" aria-label="What Pro includes">
+    <li>Up to 150 pages a day</li>
+    <li>Up to 50 HD pages a month, then standard quality</li>
+    <li>All your pages in one PDF book, no watermark</li>
+    <li>Commercial use: sell your pages on Etsy and KDP</li>
+  </ul>
+  <p class="pro-nudge-foot">The pages you already made stay free to download as PNG. Bought Pro already? <% if (locals.home) { %><a href="#pro" data-open-pro>Enter your license key</a><% } else { %><a href="/#activate">Enter your license key</a><% } %>.</p>
+</aside>
+<script>
+// cpmNudge.show('last' | 'limit' | 'pool'): 'last' after the final free page (no scrolling, the visitor is looking at the page
+// just made), 'limit' when this visitor's 2 pages are used and 'pool' when the free pages every visitor shares are gone. Both
+// scroll the offer into view: on a phone the usage line under the button is off screen.
+window.cpmNudge = (function () {
+  var el = document.getElementById('proNudge');
+  var dismissed = false;
+  var TITLES = { last: 'That was your last free page today', limit: 'You have used today’s free pages', pool: 'Today’s free pages are all used' };
+  function isPro() { try { return !!(window.cpmPro && window.cpmPro.token()); } catch (e) { return false; } }
+  // The free pages are counted per UTC day, so the reset is the next 00:00 UTC, shown in the visitor's own clock.
+  function resetAt() {
+    var d = new Date();
+    var next = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() + 1));
+    try { return next.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }); } catch (e) { return ''; }
+  }
+  function lead(kind) {
+    var t = resetAt();
+    var when = t ? t + ', your time (midnight UTC)' : 'midnight UTC';
+    if (kind === 'pool') return 'The free pages are shared by every visitor and come back at ' + when + '. Pro lets you keep drawing today.';
+    return 'Your 2 free pages come back at ' + when + '. Pro lets you keep drawing today.';
+  }
+  function hide() { if (el) el.hidden = true; }
+  function show(kind) {
+    if (!el || dismissed || isPro()) return false;
+    document.getElementById('proNudgeTitle').textContent = TITLES[kind] || TITLES.limit;
+    document.getElementById('proNudgeLead').textContent = lead(kind);
+    el.hidden = false;
+    try { if (window.cpmFunnel) cpmFunnel.track('gate', TITLES[kind] ? kind : 'limit'); } catch (e) {}
+    if (kind !== 'last') {
+      var calm = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+      try { el.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' }); } catch (e) { el.scrollIntoView(); }
+    }
+    return true;
+  }
+  var btn = document.getElementById('proNudgeDismiss');
+  if (btn) btn.addEventListener('click', function () { dismissed = true; hide(); });
+  return { show: show, hide: hide };
+})();
+</script>

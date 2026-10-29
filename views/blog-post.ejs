@@ -21,6 +21,7 @@
 <link rel="canonical" href="https://www.coloringpagemaker.app/<%= slug %>">
 <%- include('partials/head-assets') %>
 <%- include('partials/pro-source') %>
+<%- include('partials/funnel') %>
 <script type="application/ld+json"><%- JSON.stringify({"@context":"https://schema.org","@graph":[{"@type":"Article",headline:post.title,description:post.description,image:"https://www.coloringpagemaker.app/og-image.png",...(post.updated ? {dateModified:post.updated} : {}),author:{"@type":"Organization",name:"ColoringPageMaker"},publisher:{"@type":"Organization",name:"ColoringPageMaker",url:"https://www.coloringpagemaker.app/"},mainEntityOfPage:"https://www.coloringpagemaker.app/"+slug},{"@type":"BreadcrumbList",itemListElement:[{"@type":"ListItem",position:1,name:"Home",item:"https://www.coloringpagemaker.app/"},{"@type":"ListItem",position:2,name:"Blog",item:"https://www.coloringpagemaker.app/blog"},{"@type":"ListItem",position:3,name:post.title,item:"https://www.coloringpagemaker.app/"+slug}]}]}).replace(/</g,"\\u003c") %></script>
 </head>
 <body>

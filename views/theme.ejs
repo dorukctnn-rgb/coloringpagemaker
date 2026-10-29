@@ -21,6 +21,7 @@
 <link rel="canonical" href="https://www.coloringpagemaker.app/<%= slug %>">
 <%- include('partials/head-assets') %>
 <%- include('partials/pro-source') %>
+<%- include('partials/funnel') %>
 <script type="application/ld+json"><%- ld %></script>
 </head>
 <body>
@@ -69,7 +70,7 @@
   <div class="loading" id="loadingArea" role="status">
     <div class="loading-spinner"></div>
     <p class="loading-text">Drawing your <%= g.name %>...</p>
-    <p class="loading-sub">This usually takes 10 to 40 seconds</p>
+    <p class="loading-sub" id="loadingSub">This usually takes a few seconds</p>
   </div>
 
   <div class="gallery-section" id="gallerySection">
@@ -77,9 +78,23 @@
     <div class="gallery" id="gallery"></div>
     <p class="gallery-note">Your pages are also kept on the <a href="/">home page</a> for this browser session, where Pro joins them into one PDF book.</p>
   </div>
+
+  <%- include('partials/pro-nudge') %>
 </div>
 
 <%- include('partials/examples') %>
+
+<% if (locals.seasonal) { %>
+<aside class="season-pro" data-sells-pro aria-labelledby="seasonProTitle">
+  <div class="season-pro-box">
+    <div>
+      <h2 id="seasonProTitle">Plan the whole season in one sitting</h2>
+      <p>Free makes 2 pages a day. Pro makes up to 150, so a class set or a seasonal pack for Etsy takes one evening instead of a week or more. It is $9 once with no subscription, and it adds up to 50 HD pages a month, one PDF for all your pages without a watermark, and a commercial license.</p>
+    </div>
+    <p class="season-pro-actions"><a class="btn" href="https://dorukctn.gumroad.com/l/uynqt" target="_blank" rel="noopener">Get Pro for $9</a><a class="season-pro-link" href="/#pro">Compare Free and Pro</a></p>
+  </div>
+</aside>
+<% } %>
 
 <article class="content">
   <h2 id="prompts"><%= g.recipesHeading || 'Prompts by age' %></h2>
@@ -159,15 +174,16 @@
   <dl class="spec">
     <div><dt>Output</dt><dd>Black line art, 1024 by 1024 pixels: about 136 DPI on a letter page, fine at home and below the 300 DPI print shops want.</dd></div>
     <div><dt>Free</dt><dd>2 pages a day, no account, personal use, watermarked PDF. A shared daily pool can run out on busy days.</dd></div>
-    <div><dt>Pro</dt><dd>$9 once: up to 150 pages a day, no watermark, commercial use and the one-PDF book maker.</dd></div>
+    <div><dt>Pro</dt><dd>$9 once: up to 150 pages a day and up to 50 HD pages a month, no watermark, commercial use and the one-PDF book maker.</dd></div>
   </dl>
 </section>
 
-<div class="wrap">
+<div class="wrap" data-sells-pro>
   <div class="pricing-cta">
     <h2>Make the whole set with Pro</h2>
     <p><%= g.cta %></p>
     <a href="https://dorukctn.gumroad.com/l/uynqt" target="_blank" rel="noopener" class="btn">Get Pro for $9</a>
+    <p class="pricing-cta-note">Already bought Pro? <a href="/#activate">Enter your license key</a>.</p>
   </div>
 </div>
 
@@ -197,6 +213,7 @@
   var style = '<%= g.defaultStyle %>';
   var reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   var proToken = window.cpmPro ? cpmPro.token() : '';
+  var loadingSub = document.getElementById('loadingSub');
   // Same storage key as the home page, so pages made here show up in its PDF book maker.
   var images = [];
   try { images = JSON.parse(sessionStorage.getItem('generated_images') || '[]') || []; } catch (e) { images = []; }
@@ -294,14 +311,21 @@
       });
       var data = {};
       try { data = await res.json(); } catch (e) {}
+      // The spinner goes first: it sits above the result, so removing it after a scroll would leave the scroll short.
+      loading.classList.remove('active');
       if (!res.ok) {
-        say(data.error || 'The page could not be generated. Please try again.', !!data.limitReached, true);
+        // A Pro buyer at the fair-use cap is never pitched Pro again, and a shared-pool message has no offer card.
+        var freeLimit = !!data.limitReached && !proToken && data.reason !== 'ai_exhausted';
+        say(data.error || 'The page could not be generated. Please try again.', !!data.limitReached && !proToken, true);
+        if (freeLimit && window.cpmNudge) cpmNudge.show(data.reason === 'free_global_cap' ? 'pool' : 'limit');
       } else {
         images.unshift({ url: data.imageUrl, prompt: prompt, time: Date.now() });
+        if (typeof cpmFunnel !== 'undefined') cpmFunnel.track('make', proToken ? 'pro' : 'free');
         render();
         persist();
         if (typeof data.remaining === 'number' && data.remaining >= 0) {
           say(data.remaining > 0 ? data.remaining + ' free page' + (data.remaining === 1 ? '' : 's') + ' left today.' : 'That was your last free page today.', true, false);
+          if (data.remaining === 0 && window.cpmNudge) cpmNudge.show('last');
         }
         scrollTo(gallerySection);
       }
@@ -313,11 +337,38 @@
   });
 
   // A buyer whose browser only had the old Pro email: Pro needs the license key again, on the home page.
-  if (window.cpmPro && cpmPro.needsKey()) {
+  function askForKey() {
     usage.textContent = cpmPro.RESTORE + ' ';
     var activate = document.createElement('a');
     activate.href = '/#activate'; activate.textContent = 'Activate Pro';
     usage.appendChild(activate);
+  }
+  // A Pro buyer sees Pro, not the free-plan line and not the boxes that sell Pro. The token is checked with the
+  // server in the background; only a clear "no" takes the Pro look away again (a network error leaves it).
+  function sellsPro(on) {
+    document.querySelectorAll('[data-sells-pro]').forEach(function(el) { el.hidden = !on; });
+  }
+  function showProState() {
+    usage.classList.remove('is-alert');
+    usage.textContent = 'Pro is active on this browser: up to 150 pages a day.';
+    if (loadingSub) loadingSub.textContent = 'This usually takes 10 to 40 seconds';
+    sellsPro(false);
+  }
+  if (window.cpmPro && cpmPro.needsKey()) {
+    askForKey();
+  } else if (proToken) {
+    showProState();
+    fetch('/verify-pro', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: proToken }) })
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(d) {
+        if (d && d.pro === false) {
+          cpmPro.expire(); proToken = '';
+          sellsPro(true);
+          if (loadingSub) loadingSub.textContent = 'This usually takes a few seconds';
+          askForKey();
+        }
+      })
+      .catch(function() {});
   }
 
   render();

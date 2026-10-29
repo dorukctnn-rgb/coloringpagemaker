@@ -251,6 +251,563 @@ const BLOG_POSTS = {
     { type: 'h2', text: `When to seek professional help` },
     { type: 'p', text: `Coloring is a useful tool for managing everyday stress, but it is not a substitute for treatment of clinical mental health conditions. If anxiety or depression is significantly affecting your daily life, work, or relationships, the most evidence-supported step is to consult a licensed mental health professional. Coloring can be one part of a broader self-care toolkit, not a replacement for therapy or medication when those are needed.` }
   ]
+},
+
+"turkey-disguise-template": {
+  "title": "Turkey Disguise Template: Free Printable and Ideas",
+  "description": "Print a plain turkey for the school disguise project, then pick from 18 disguise ideas. Each idea has a prompt for a matching coloring page.",
+  "keyword": "turkey disguise template",
+  "date": "Updated October 2026",
+  "read": "6 min",
+  "updated": "2026-10-29",
+  "summary": "A plain turkey to print for the school disguise project, 18 disguise ideas with a coloring page prompt for each, and a plan for teachers who need a class set.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "What the turkey disguise project is"
+    },
+    {
+      "type": "p",
+      "text": "A turkey disguise template is a plain paper turkey that a child dresses up at home so it can hide before Thanksgiving. The child picks a disguise and makes it from craft scraps. Then the turkey goes back to school. This page links to a free printable turkey to start from and lists 18 disguise ideas. Each idea comes with a prompt for a matching coloring page."
+    },
+    {
+      "type": "p",
+      "text": "The idea is a small story. The turkey does not want to end up as the Thanksgiving dinner, so it hides by looking like something else. Some schools call this project 'disguise a turkey'. Your child decides what the turkey becomes."
+    },
+    {
+      "type": "p",
+      "text": "Thanksgiving falls on Thursday, November 26, 2026. Your school sets the due date and the rules for the turkey disguise project, so follow the note that came home. If that note says something different from this page, follow the note."
+    },
+    {
+      "type": "p",
+      "text": "Your child needs only a few things:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "One printed turkey, from the next section",
+        "A glue stick, and white glue for heavier pieces",
+        "Child-safe scissors, with an adult cutting the small parts",
+        "Crayons or markers",
+        "Scraps of paper, felt, yarn or cotton balls"
+      ]
+    },
+    {
+      "type": "sources",
+      "checked": "22 October 2026",
+      "links": [
+        {
+          "text": "U.S. Office of Personnel Management: Federal holidays",
+          "href": "https://www.opm.gov/policy-data-oversight/pay-leave/federal-holidays/"
+        }
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Print a plain turkey template"
+    },
+    {
+      "type": "p",
+      "text": "Start with a turkey that has an empty body and an empty tail to decorate. The turkey without feathers on our [turkey coloring pages](/turkey-coloring-pages) is made for this. It has a round body, a head with a wattle, small wings and feet. The tail is left empty, so the whole turkey is free to disguise."
+    },
+    {
+      "type": "p",
+      "text": "You can download that turkey as a PNG or as a letter-size PDF. Either file works as a turkey disguise printable. Free pages are for personal use, for example at home or in your own classroom. A free PDF holds one page and carries a 'Free preview' watermark."
+    },
+    {
+      "type": "p",
+      "text": "Print the turkey at full page size so there is room for the disguise. Use cardstock if your child will glue on heavy things such as buttons or fabric, because thin paper can curl under wet glue. If your child wants to try two ideas, print a second copy."
+    },
+    {
+      "type": "p",
+      "text": "The generator can also draw a turkey at your child's level. Open the [generator](/), type a prompt and pick a detail level. Simple (ages 3 to 6, thick lines) gives big shapes for small hands. Medium (ages 6 to 12, balanced) adds more detail."
+    },
+    {
+      "type": "p",
+      "text": "One limit: it does not draw a bare turkey on request. We asked for a turkey with no tail feathers six times, in different words, and every page came back with a full fan of tail feathers. Use the example turkey above as your plain template. The disguise ideas below suit the generator better. We tried four of those prompts, and each gave a clean page."
+    },
+    {
+      "type": "sources",
+      "checked": "29 October 2026",
+      "links": []
+    },
+    {
+      "type": "h2",
+      "text": "Turkey disguise ideas with a prompt for each"
+    },
+    {
+      "type": "p",
+      "text": "These 18 ideas are all things anyone can draw, from a firefighter to a pie. Each row lists what your child can add by hand to the printed turkey. The same row has a prompt for a turkey in disguise coloring page, plus the detail level to pick for it. A disguise name that links goes to a theme page with more scenes to color."
+    },
+    {
+      "type": "table",
+      "head": [
+        "Disguise",
+        "What the child adds by hand",
+        "Prompt for a coloring page of it",
+        "Detail level"
+      ],
+      "rows": [
+        [
+          "Firefighter",
+          "A red paper helmet, a yellow felt coat and a paper hose",
+          "a turkey dressed as a firefighter with a helmet, a long coat and a hose, big simple shapes, no background",
+          "Simple"
+        ],
+        [
+          "Chef",
+          "A tall white paper hat, a paper apron and a paper whisk",
+          "a turkey dressed as a chef with a tall hat and an apron, holding a whisk, big simple shapes, no background",
+          "Simple"
+        ],
+        [
+          "Farmer",
+          "A yellow paper hat, blue paper overalls and a few pieces of yarn for hay",
+          "a turkey dressed as a farmer in a straw hat and overalls, standing next to a hay bale, clean bold outlines, no background",
+          "Medium"
+        ],
+        [
+          "[Astronaut](/space-coloring-pages)",
+          "A white paper suit, a round helmet with a foil window and a paper flag",
+          "a turkey dressed as an astronaut in a space suit and a round helmet, with stars around it, clean bold outlines, no background",
+          "Medium"
+        ],
+        [
+          "Knight",
+          "A gray paper helmet, a foil shield and a felt cape",
+          "a turkey dressed as a knight with a helmet, a round shield and a cape, clean bold outlines, no background",
+          "Medium"
+        ],
+        [
+          "Ballerina",
+          "A tutu from layers of tissue paper and a paper flower for the hair",
+          "a turkey dressed as a ballerina in a tutu, standing on tiptoe with its wings raised, clean bold outlines, no background",
+          "Medium"
+        ],
+        [
+          "[Scarecrow](/fall-coloring-pages)",
+          "A floppy paper hat, patched paper clothes and yarn for the straw",
+          "a turkey dressed as a scarecrow with a floppy hat, patched clothes and straw sticking out, clean bold outlines, no background",
+          "Medium"
+        ],
+        [
+          "Pumpkin",
+          "Orange paper over the body, a green paper stem and a curly paper vine",
+          "a turkey hiding inside a big pumpkin with only its head showing, a green stem on top, big simple shapes, no background",
+          "Simple"
+        ],
+        [
+          "[Snowman](/snowman-coloring-pages)",
+          "Cotton balls for the body, a paper carrot nose and a felt scarf",
+          "a turkey dressed as a snowman with a round white body, a scarf, a carrot nose and a hat, big simple shapes, no background",
+          "Simple"
+        ],
+        [
+          "Christmas tree",
+          "Layers of green paper, small paper ornaments and a paper star on top",
+          "a turkey dressed as a Christmas tree with green layers, round ornaments and a star on top, big simple shapes, no background",
+          "Simple"
+        ],
+        [
+          "[Gingerbread cookie](/gingerbread-coloring-pages)",
+          "Brown paper for the body, white crayon lines for icing and paper buttons",
+          "a turkey dressed as a gingerbread cookie with icing lines and big round buttons, big simple shapes, no background",
+          "Simple"
+        ],
+        [
+          "Pie",
+          "A brown paper crust, paper strips for the lattice and red paper cherries",
+          "a turkey hiding in a cherry pie with a lattice crust and only its head showing, big simple shapes, no background",
+          "Simple"
+        ],
+        [
+          "[Mermaid](/mermaid-coloring-pages)",
+          "A scaly paper fish tail, paper shells and yarn for long hair",
+          "a turkey dressed as a mermaid with a scaly fish tail, a shell necklace and long wavy hair, clean bold outlines, no background",
+          "Medium"
+        ],
+        [
+          "[Dinosaur](/dinosaur-coloring-pages)",
+          "Green paper spikes down the back, a long paper tail and felt spots",
+          "a turkey dressed as a dinosaur with spikes along its back, a long tail and small claws, clean bold outlines, no background",
+          "Medium"
+        ],
+        [
+          "[Unicorn](/unicorn-coloring-pages)",
+          "A paper horn, two paper ears and a yarn mane",
+          "a turkey dressed as a unicorn with a spiral horn, pointed ears and a long flowing mane, clean bold outlines, no background",
+          "Medium"
+        ],
+        [
+          "Sheep",
+          "Cotton balls glued all over the body and black felt for the face",
+          "a turkey dressed as a sheep covered in fluffy curls, with a dark face and small ears, big simple shapes, no background",
+          "Simple"
+        ],
+        [
+          "Penguin",
+          "Black paper for the back, a white paper belly and an orange paper beak",
+          "a turkey dressed as a penguin with a black back, a white belly and an orange beak, big simple shapes, no background",
+          "Simple"
+        ],
+        [
+          "Bee",
+          "Black and yellow paper stripes, two paper wings and pipe cleaner antennae",
+          "a turkey dressed as a bee with a striped body, small wings and two antennae, big simple shapes, no background",
+          "Simple"
+        ]
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Treat each prompt as a starting point. The generator draws a new page every time, so if a page misses, change one detail and try again."
+    },
+    {
+      "type": "p",
+      "text": "None of these ideas is a film, game or cartoon character. Do not ask for characters, logos or artwork that belong to someone else. Ask for the kind of thing, such as a knight or a firefighter."
+    },
+    {
+      "type": "p",
+      "text": "If your child likes the scarecrow or the pumpkin, our [fall coloring pages](/fall-coloring-pages) have scarecrows and pumpkin patches to color next."
+    },
+    {
+      "type": "h2",
+      "text": "Keep the disguise the child's own work"
+    },
+    {
+      "type": "p",
+      "text": "This is the child's project, so keep your own part small. Ask what the turkey would like to become, and let your child choose, even if the answer is silly. Your child does the coloring and the gluing. You cut the small parts."
+    },
+    {
+      "type": "p",
+      "text": "A simple order of work keeps the turkey neat:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Sketch the idea on scrap paper first.",
+        "Plan to cover the tail and the wattle first, because those give a turkey away.",
+        "Color the turkey before gluing anything on, because crayon does not go over glue.",
+        "Glue flat pieces first and heavy pieces last.",
+        "Let the turkey dry flat before it goes in a bag.",
+        "Write your child's name and class on the back by hand."
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Words and names need a pen. The generator draws pictures and cannot be relied on to write words or numbers. Leave words, names and dates out of the prompt and write them on the printed page by hand."
+    },
+    {
+      "type": "p",
+      "text": "These materials work well on a paper turkey:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Glue stick for paper, and white glue for felt and fabric",
+        "Felt for hats and coats",
+        "Cotton balls for snow or wool",
+        "Buttons for eyes or coat buttons, glued on firmly (an adult checks them)",
+        "Paper scraps for any flat part",
+        "Yarn for manes and hair"
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Using the template with a whole class"
+    },
+    {
+      "type": "p",
+      "text": "One turkey disguise template photocopied for the class is the simplest route. Every child starts from the same turkey, and each disguise makes it different."
+    },
+    {
+      "type": "p",
+      "text": "Send the turkey home with a short note. The note can cover these points:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "The due date and where to hand the turkey in",
+        "What the child may use, such as paper, felt and fabric",
+        "That the child makes the disguise and adults only cut",
+        "Where the child's name goes, on the back by hand"
+      ]
+    },
+    {
+      "type": "p",
+      "text": "When the turkeys come back, put them on one wall and let the class guess what each one is hiding as."
+    },
+    {
+      "type": "p",
+      "text": "A different turkey for every child needs more pages. The free plan needs no account. It gives two pages a day, counted by IP address, from a shared daily pool that can run out on busy days. A school network may share one address, so it can help to make the pages at home. At two pages a day, six different turkeys take three days."
+    },
+    {
+      "type": "p",
+      "text": "Free PDFs hold one page each and carry a 'Free preview' watermark. Free pages are for personal use, and your own classroom counts."
+    },
+    {
+      "type": "p",
+      "text": "Pro costs $9, paid once, and it is not a subscription. It gives up to 150 pages a day and puts all your pages in one PDF book without the watermark. That is plenty for a different turkey for every child in a class. Pro is sold through Gumroad, and the Free and Pro section of the generator page has the link."
+    },
+    {
+      "type": "p",
+      "text": "For more ways to use pages in class, see our guide to [coloring pages for classroom teachers](/coloring-pages-for-classroom-teachers)."
+    },
+    {
+      "type": "h2",
+      "text": "Check the page before you print"
+    },
+    {
+      "type": "p",
+      "text": "Check these points on the turkey disguise template you plan to print, whether it is the example turkey or one you made. Our [Thanksgiving coloring pages](/thanksgiving-coloring-pages) have more printables for the rest of the holiday, and the same checks apply to them."
+    },
+    {
+      "type": "ul",
+      "items": [
+        "The outline is closed all the way around, so color stays inside the lines.",
+        "The page is black lines on white with no gray shading, because gray strokes print muddy.",
+        "The body or the tail has empty space for the disguise.",
+        "The page is US letter size (8.5 x 11 inch) and prints at full page size.",
+        "A test print on plain paper looks right before you use cardstock.",
+        "The page has no words or logos on it, and the child's name goes on the back by hand."
+      ]
+    }
+  ]
+},
+
+"thankful-coloring-pages": {
+  "title": "Thankful Coloring Pages for Kids: 5 Fill-In Activities",
+  "description": "Make thankful coloring pages with blank leaves and jar slips for kids to write on. Five prompts to type, plus plans for home, class and church.",
+  "keyword": "thankful coloring pages",
+  "date": "Updated October 2026",
+  "read": "6 min",
+  "updated": "2026-10-29",
+  "summary": "Five thankful coloring page activities, each with a prompt to type: a jar, a banner, a card front, a tree and a turkey. The generator draws the pictures and the child writes the words by hand.",
+  "content": [
+    {
+      "type": "p",
+      "text": "Thankful coloring pages for kids work well when the child writes the words. Ask the generator for a page with empty spaces. Good choices are blank leaves or paper slips in a jar. The child colors the picture, then writes or draws one thing they are thankful for in each space."
+    },
+    {
+      "type": "p",
+      "text": "Below are five gratitude coloring pages to make, each with a prompt to type. You describe the page, print it and write the words by hand. The free plan covers all five, at two pages a day."
+    },
+    {
+      "type": "h2",
+      "text": "Thankful coloring pages that leave room to write"
+    },
+    {
+      "type": "p",
+      "text": "A blank space holds whatever the child wants to say. An older child writes a sentence. A younger child tells you a word, and you write it in. A drawing counts too."
+    },
+    {
+      "type": "p",
+      "text": "The generator draws pictures and cannot be relied on to write words or numbers. That is why these pages use empty spaces. Leave words, names and dates out of the prompt, and write them on the printed page by hand."
+    },
+    {
+      "type": "p",
+      "text": "To get blank spaces, describe them in the prompt. Use this pattern: an object, a number of empty spaces, then 'big simple shapes, no background'. For example: 'a harvest basket with six empty apple shapes, big simple shapes, no background'."
+    },
+    {
+      "type": "p",
+      "text": "Check the page before you print it. Every page is drawn fresh, so one may miss."
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Each space is empty and has a closed outline.",
+        "Each space is big enough for the child's handwriting. A child who is just learning to write needs more room.",
+        "No letters, numbers or word-like marks appear anywhere in the picture.",
+        "No character, logo or brand shows anywhere, including the background.",
+        "There is one space for each answer you need. The count may differ from your prompt, so count the spaces."
+      ]
+    },
+    {
+      "type": "p",
+      "text": "If a page misses, change one detail in the prompt and make it again."
+    },
+    {
+      "type": "p",
+      "text": "Write the starter line yourself before you hand over the page. For an 'I am thankful for' coloring page, write those words at the top with a marker. The child then finishes the thought in the spaces."
+    },
+    {
+      "type": "h2",
+      "text": "Five thankful activities to make"
+    },
+    {
+      "type": "p",
+      "text": "Each row is a prompt you can type as written, and each one makes a printable page. The Level column uses the generator's own labels: Simple (ages 3 to 6, thick lines) and Medium (ages 6 to 12, balanced)."
+    },
+    {
+      "type": "table",
+      "head": [
+        "Activity",
+        "Prompt to type",
+        "Level",
+        "What the child writes or draws"
+      ],
+      "rows": [
+        [
+          "Thankful jar",
+          "a large glass jar with eight blank paper slips floating inside it, each slip a plain empty rectangle, big simple shapes, no background",
+          "Simple",
+          "One thing on each slip: a word, a name or a small drawing"
+        ],
+        [
+          "Thankful banner",
+          "a smiling cartoon turkey holding a wide blank banner in front of its body, big simple shapes, no background",
+          "Simple",
+          "One line on the banner after an 'I am thankful for' starter that you write at the top"
+        ],
+        [
+          "Thank-you card front",
+          "a bunch of tulips tied with a ribbon, with a wide empty banner across the bottom, clean bold outlines, no background",
+          "Medium",
+          "'Thank you' and a name on the banner, with the longer note inside the card"
+        ],
+        [
+          "Thankful tree",
+          "Copy the thankful tree prompt from our [Thanksgiving coloring pages](/thanksgiving-coloring-pages)",
+          "Simple",
+          "One thing in each leaf"
+        ],
+        [
+          "Turkey with blank feathers",
+          "a smiling cartoon turkey with six big empty feathers fanned out behind it, each feather a plain blank shape, big simple shapes, no background",
+          "Simple",
+          "One word or small drawing on each feather"
+        ]
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Our [turkey coloring pages](/turkey-coloring-pages) have a paper version of the feathers activity. A bare turkey body gets feathers cut from colored paper. Each child writes one thing on a feather before gluing it on."
+    },
+    {
+      "type": "p",
+      "text": "For ages 6 to 12, choose Medium and ask for more spaces, such as twelve slips in the jar. Older children write more, so give them more slips. Their handwriting is smaller, so each slip can be smaller too. Skip Detailed for these pages. It is made for adults and draws intricate shapes, which leave little room to write."
+    },
+    {
+      "type": "p",
+      "text": "Give the child a starter so the blank space feels easy to fill. Write one at the top of the page:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "I am thankful for ____.",
+        "Thank you, ____, for ____.",
+        "Someone who helps me is ____.",
+        "A food I am glad to have is ____.",
+        "A place I like to be is ____.",
+        "Something that made me laugh this week was ____."
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Children who cannot write yet can draw. Ask what the drawing shows, and write that word beside it."
+    },
+    {
+      "type": "h2",
+      "text": "Using them at home, in class or at church"
+    },
+    {
+      "type": "p",
+      "text": "At home, tape one jar page to the fridge and take turns. One person fills one slip each day. Write the year on the back, so next November the family can read what the children wrote."
+    },
+    {
+      "type": "p",
+      "text": "The US Office of Personnel Management lists Thanksgiving Day for 2026 as Thursday 26 November. A jar with eight slips that you start on Monday 16 November is full by Monday 23 November. On Thanksgiving Day, pass the page around the table and let each person read their own slip."
+    },
+    {
+      "type": "p",
+      "text": "In a class, print one copy per child and let each child write something different. Write each child's name on the back, so the front stays free for the picture. Hang the finished thankful coloring pages in a row on a wall or a door."
+    },
+    {
+      "type": "p",
+      "text": "Children in one class write at different levels. Make the same prompt at Simple and at Medium, and hand each child the page that fits. Two pages a day on the free plan is enough for that."
+    },
+    {
+      "type": "p",
+      "text": "A Sunday school leader can use the same pages at the start of a lesson. Hand out the banner pages and give each child time to write or draw one line. When your group moves on to Advent, our [nativity coloring pages](/nativity-coloring-pages) have prompts by age and the story in six pages."
+    },
+    {
+      "type": "sources",
+      "checked": "22 October 2026",
+      "links": [
+        {
+          "text": "US Office of Personnel Management: Federal holidays",
+          "href": "https://www.opm.gov/policy-data-oversight/pay-leave/federal-holidays/"
+        }
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "After Thanksgiving: thank-you notes"
+    },
+    {
+      "type": "p",
+      "text": "Thankful coloring pages are useful after the holiday too. A thank-you card uses the same idea. The picture goes on the front, and the words go inside. Use the card-front prompt from the table, color the page, and write a short note by hand."
+    },
+    {
+      "type": "p",
+      "text": "Our [Christmas coloring pages](/christmas-coloring-pages) show how to print a page as a card, ornament or tag. Printing a card shrinks the page, so the banner shrinks too. Ask for a wide banner and test one print before you make a set."
+    },
+    {
+      "type": "p",
+      "text": "A short note is easier to write when it follows a pattern. A child can copy this one onto the inside of the card:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Greeting: Dear ____,",
+        "Thanks: Thank you for ____.",
+        "One detail: I like it because ____.",
+        "Closing: Love, ____"
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Younger children can color the card and tell you the words while you write them. For an older child, write the note on scrap paper first and let the child copy it."
+    },
+    {
+      "type": "h2",
+      "text": "Make and print the pages"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Open the [generator](/) and type a prompt from the table.",
+        "Pick the level: Simple for ages 3 to 6, or Medium for ages 6 to 12.",
+        "Check the page against the list above, and make it again if it misses.",
+        "Download the page as a PDF and print it on US letter paper.",
+        "Write the starter line, names and dates by hand."
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Your pages stay in the open browser tab only. A reload keeps up to the 20 newest pages, or fewer when the browser's storage is full. Closing the tab clears them, so download each page the same day."
+    },
+    {
+      "type": "p",
+      "text": "The free plan gives you two pages a day, counted by IP address, with no account. The pages come from a shared daily pool that can run out on busy days. The count resets at midnight UTC. Each free PDF holds one page and carries a 'Free preview' watermark. Free pages are for personal, non-commercial use, for example at home or in your own classroom."
+    },
+    {
+      "type": "p",
+      "text": "Start early. Five pages take three days on the free plan, and each retry uses one of the two pages a day."
+    },
+    {
+      "type": "p",
+      "text": "Pro is for larger batches, such as pages for several classes. Pro costs $9, paid once, and it is not a subscription. It allows up to 150 pages a day as a fair-use cap. It also puts all your pages in one PDF book without the watermark. The Free and Pro section of the generator page has the details."
+    },
+    {
+      "type": "p",
+      "text": "Describe plain objects such as a jar or a tree. Do not ask for characters, logos or artwork that belong to someone else."
+    },
+    {
+      "type": "p",
+      "text": "Teachers can find print settings and notes on the daily limit in our [guide to coloring pages for classroom teachers](/coloring-pages-for-classroom-teachers)."
+    }
+  ]
 }
 
 };

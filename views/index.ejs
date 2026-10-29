@@ -21,6 +21,7 @@
 <link rel="canonical" href="https://www.coloringpagemaker.app/">
 <%- include('partials/head-assets') %>
 <%- include('partials/pro-source') %>
+<%- include('partials/funnel') %>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"SoftwareApplication","name":"ColoringPageMaker","url":"https://www.coloringpagemaker.app/","applicationCategory":"DesignApplication","operatingSystem":"Any (web browser)","description":"AI coloring page generator: describe a scene and get printable black-and-white line art as a PDF.","offers":[{"@type":"Offer","name":"Free","price":"0","priceCurrency":"USD"},{"@type":"Offer","name":"Pro (lifetime)","price":"9","priceCurrency":"USD"}]}
 </script>
@@ -93,7 +94,7 @@
   <div class="loading" id="loadingArea" role="status">
     <div class="loading-spinner"></div>
     <div class="loading-text">Creating your coloring page...</div>
-    <div class="loading-sub">This usually takes 10-20 seconds</div>
+    <div class="loading-sub">This usually takes a few seconds</div>
   </div>
 
   <div class="gallery-section" id="gallerySection">
@@ -103,6 +104,8 @@
       <button type="button" class="btn-generate" onclick="downloadAllPDF()">Download all as PDF book</button>
     </div>
   </div>
+
+  <%- include('partials/pro-nudge', { home: true }) %>
 </div>
 
 <section class="section">
@@ -111,7 +114,7 @@
   <ol class="points">
     <li>
       <h3>Under a minute</h3>
-      <p>Type your idea and get a print-ready coloring page, usually in 15 to 40 seconds.</p>
+      <p>Type your idea and get a print-ready coloring page, usually within a few seconds.</p>
     </li>
     <li>
       <h3>The scene you describe</h3>
@@ -122,6 +125,23 @@
       <p>Pro includes commercial use, so you can sell the pages you make as printables or KDP books.</p>
     </li>
   </ol>
+</section>
+
+<section class="section" id="in-season">
+  <h2>Coloring pages for Thanksgiving, Christmas and winter</h2>
+  <p class="lead">Thanksgiving is on 26 November 2026, Hanukkah starts on 4 December and Christmas is on Friday 25 December. Each page has finished examples to download.</p>
+  <ul class="theme-list">
+    <li><a href="/thanksgiving-coloring-pages"><strong>Thanksgiving</strong><span>Pies, turkeys and a thankful tree</span></a></li>
+    <li><a href="/christmas-coloring-pages"><strong>Christmas</strong><span>A 24-day Advent plan</span></a></li>
+    <li><a href="/santa-coloring-pages"><strong>Santa</strong><span>A smiling face to a sack in the snow</span></a></li>
+    <li><a href="/reindeer-coloring-pages"><strong>Reindeer</strong><span>Harness bells and a snowy forest</span></a></li>
+    <li><a href="/christmas-tree-coloring-pages"><strong>Christmas trees</strong><span>A bare tree to decorate</span></a></li>
+    <li><a href="/christmas-ornament-coloring-pages"><strong>Ornaments</strong><span>Blank baubles to design and cut out</span></a></li>
+    <li><a href="/snowflake-coloring-pages"><strong>Snowflakes</strong><span>From four simple ones to fern-like arms</span></a></li>
+    <li><a href="/christmas-coloring-pages-for-adults"><strong>Christmas for adults</strong><span>A wreath, a village street and a mandala</span></a></li>
+    <li><a href="/hanukkah-coloring-pages"><strong>Hanukkah</strong><span>Menorahs, dreidels and latkes</span></a></li>
+    <li><a href="/new-year-coloring-pages"><strong>New Year</strong><span>Party hats, fireworks and a countdown clock</span></a></li>
+  </ul>
 </section>
 
 <section class="section">
@@ -169,6 +189,7 @@
       </thead>
       <tbody>
         <tr><th scope="row">Pages per day</th><td>2</td><td class="pro">Up to 150</td></tr>
+        <tr><th scope="row">Quality</th><td>Standard</td><td class="pro">Up to 50 HD pages a month, then standard</td></tr>
         <tr><th scope="row">PDF download</th><td>One page per PDF, with a watermark</td><td class="pro">All your pages in one PDF book, no watermark</td></tr>
         <tr><th scope="row">Use</th><td>Personal</td><td class="pro">Commercial (Etsy, KDP)</td></tr>
         <tr><th scope="row">Price</th><td>$0</td><td class="pro">$9 once, no subscription</td></tr>
@@ -194,6 +215,7 @@
 
     <ul class="features">
       <li>Up to 150 pages a day (free: 2 a day)</li>
+      <li>Up to 50 HD pages a month, then standard quality</li>
       <li>No watermark on PDFs</li>
       <li>Combine all your pages into one PDF book</li>
       <li>Commercial use: sell your pages on Etsy &amp; KDP</li>
@@ -285,10 +307,27 @@ async function generatePage(){
       body: JSON.stringify({ prompt, style: selectedStyle, token: proToken })
     });
     const data = await res.json();
+    document.getElementById('usageBar').classList.remove('is-alert');
 
     if(!res.ok){
-      if(data.limitReached){
+      if(data.limitReached && data.reason === 'ai_exhausted'){
+        // The shared drawing allowance of the day is gone: say so on the page, where the usage line is (no alert, no Pro window over it).
+        const bar = document.getElementById('usageBar');
+        bar.innerHTML = esc(data.error) + ' <a href="#pro" data-open-pro>See Pro (up to 150 a day)</a>';
+        bar.classList.add('is-alert');
+        if(typeof cpmFunnel !== 'undefined') cpmFunnel.track('gate', 'pool-line');
+      } else if(data.limitReached && proToken){
+        // A Pro buyer at the fair-use cap is told so in the usage line. The Pro window is for people who have not bought.
+        const bar = document.getElementById('usageBar');
+        bar.textContent = data.error;
+        bar.classList.add('is-alert');
+      } else if(data.limitReached){
+        // Say it on the page too, so the reason is still there when the Pro window is closed.
+        const bar = document.getElementById('usageBar');
+        bar.innerHTML = esc(data.error) + ' <a href="#pro" data-open-pro>See Pro (up to 150 a day)</a>';
+        bar.classList.add('is-alert');
         loading.classList.remove('active');
+        if(typeof cpmFunnel !== 'undefined') cpmFunnel.track('gate', 'limit-modal');
         openProModal();
       } else {
         alert(data.error || 'Generation failed');
@@ -301,6 +340,7 @@ async function generatePage(){
 
     // Render first: a storage failure must never hide an image the user paid for.
     generatedImages.unshift({ url: data.imageUrl, prompt, time: Date.now() });
+    if(typeof cpmFunnel !== 'undefined') cpmFunnel.track('make', proToken ? 'pro' : 'free');
     renderGallery();
     persistImages();
 
@@ -309,6 +349,7 @@ async function generatePage(){
       document.getElementById('usageBar').innerHTML = data.remaining > 0
         ? `<strong>${data.remaining}</strong> free pages left today. <a href="#pro" data-open-pro>See Pro (up to 150 a day)</a>`
         : `Daily limit reached. <a href="#pro" data-open-pro>See Pro (up to 150 a day)</a>`;
+      if(data.remaining === 0 && typeof cpmNudge !== 'undefined') cpmNudge.show('last');
     }
   } catch(e){
     alert('Connection error. Please try again.');
