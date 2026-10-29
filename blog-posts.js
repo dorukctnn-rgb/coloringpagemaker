@@ -251,6 +251,328 @@ const BLOG_POSTS = {
     { type: 'h2', text: `When to seek professional help` },
     { type: 'p', text: `Coloring is a useful tool for managing everyday stress, but it is not a substitute for treatment of clinical mental health conditions. If anxiety or depression is significantly affecting your daily life, work, or relationships, the most evidence-supported step is to consult a licensed mental health professional. Coloring can be one part of a broader self-care toolkit, not a replacement for therapy or medication when those are needed.` }
   ]
+},
+
+"turkey-disguise-template": {
+  "title": "Turkey Disguise Template: Free Printable and Ideas",
+  "description": "Print a plain turkey for the school disguise project, then pick from 18 disguise ideas. Each idea has a prompt for a matching coloring page.",
+  "keyword": "turkey disguise template",
+  "date": "Updated October 2026",
+  "read": "6 min",
+  "updated": "2026-10-29",
+  "summary": "A plain turkey to print for the school disguise project, 18 disguise ideas with a coloring page prompt for each, and a plan for teachers who need a class set.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "What the turkey disguise project is"
+    },
+    {
+      "type": "p",
+      "text": "A turkey disguise template is a plain paper turkey that a child dresses up at home so it can hide before Thanksgiving. The child picks a disguise and makes it from craft scraps. Then the turkey goes back to school. This page links to a free printable turkey to start from and lists 18 disguise ideas. Each idea comes with a prompt for a matching coloring page."
+    },
+    {
+      "type": "p",
+      "text": "The idea is a small story. The turkey does not want to end up as the Thanksgiving dinner, so it hides by looking like something else. Some schools call this project 'disguise a turkey'. Your child decides what the turkey becomes."
+    },
+    {
+      "type": "p",
+      "text": "Thanksgiving falls on Thursday, November 26, 2026. Your school sets the due date and the rules for the turkey disguise project, so follow the note that came home. If that note says something different from this page, follow the note."
+    },
+    {
+      "type": "p",
+      "text": "Your child needs only a few things:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "One printed turkey, from the next section",
+        "A glue stick, and white glue for heavier pieces",
+        "Child-safe scissors, with an adult cutting the small parts",
+        "Crayons or markers",
+        "Scraps of paper, felt, yarn or cotton balls"
+      ]
+    },
+    {
+      "type": "sources",
+      "checked": "22 October 2026",
+      "links": [
+        {
+          "text": "U.S. Office of Personnel Management: Federal holidays",
+          "href": "https://www.opm.gov/policy-data-oversight/pay-leave/federal-holidays/"
+        }
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Print a plain turkey template"
+    },
+    {
+      "type": "p",
+      "text": "Start with a turkey that has an empty body and an empty tail to decorate. The turkey without feathers on our [turkey coloring pages](/turkey-coloring-pages) is made for this. It has a round body, a head with a wattle, small wings and feet. The tail is left empty, so the whole turkey is free to disguise."
+    },
+    {
+      "type": "p",
+      "text": "You can download that turkey as a PNG or as a letter-size PDF. Either file works as a turkey disguise printable. Free pages are for personal use, for example at home or in your own classroom. A free PDF holds one page and carries a 'Free preview' watermark."
+    },
+    {
+      "type": "p",
+      "text": "Print the turkey at full page size so there is room for the disguise. Use cardstock if your child will glue on heavy things such as buttons or fabric, because thin paper can curl under wet glue. If your child wants to try two ideas, print a second copy."
+    },
+    {
+      "type": "p",
+      "text": "The generator can also draw a turkey at your child's level. Open the [generator](/), type a prompt and pick a detail level. Simple (ages 3 to 6, thick lines) gives big shapes for small hands. Medium (ages 6 to 12, balanced) adds more detail."
+    },
+    {
+      "type": "p",
+      "text": "One limit: it does not draw a bare turkey on request. We asked for a turkey with no tail feathers six times, in different words, and every page came back with a full fan of tail feathers. Use the example turkey above as your plain template. The disguise ideas below suit the generator better. We tried four of those prompts, and each gave a clean page."
+    },
+    {
+      "type": "sources",
+      "checked": "29 October 2026",
+      "links": []
+    },
+    {
+      "type": "h2",
+      "text": "Turkey disguise ideas with a prompt for each"
+    },
+    {
+      "type": "p",
+      "text": "These 18 ideas are all things anyone can draw, from a firefighter to a pie. Each row lists what your child can add by hand to the printed turkey. The same row has a prompt for a turkey in disguise coloring page, plus the detail level to pick for it. A disguise name that links goes to a theme page with more scenes to color."
+    },
+    {
+      "type": "table",
+      "head": [
+        "Disguise",
+        "What the child adds by hand",
+        "Prompt for a coloring page of it",
+        "Detail level"
+      ],
+      "rows": [
+        [
+          "Firefighter",
+          "A red paper helmet, a yellow felt coat and a paper hose",
+          "a turkey dressed as a firefighter with a helmet, a long coat and a hose, big simple shapes, no background",
+          "Simple"
+        ],
+        [
+          "Chef",
+          "A tall white paper hat, a paper apron and a paper whisk",
+          "a turkey dressed as a chef with a tall hat and an apron, holding a whisk, big simple shapes, no background",
+          "Simple"
+        ],
+        [
+          "Farmer",
+          "A yellow paper hat, blue paper overalls and a few pieces of yarn for hay",
+          "a turkey dressed as a farmer in a straw hat and overalls, standing next to a hay bale, clean bold outlines, no background",
+          "Medium"
+        ],
+        [
+          "[Astronaut](/space-coloring-pages)",
+          "A white paper suit, a round helmet with a foil window and a paper flag",
+          "a turkey dressed as an astronaut in a space suit and a round helmet, with stars around it, clean bold outlines, no background",
+          "Medium"
+        ],
+        [
+          "Knight",
+          "A gray paper helmet, a foil shield and a felt cape",
+          "a turkey dressed as a knight with a helmet, a round shield and a cape, clean bold outlines, no background",
+          "Medium"
+        ],
+        [
+          "Ballerina",
+          "A tutu from layers of tissue paper and a paper flower for the hair",
+          "a turkey dressed as a ballerina in a tutu, standing on tiptoe with its wings raised, clean bold outlines, no background",
+          "Medium"
+        ],
+        [
+          "[Scarecrow](/fall-coloring-pages)",
+          "A floppy paper hat, patched paper clothes and yarn for the straw",
+          "a turkey dressed as a scarecrow with a floppy hat, patched clothes and straw sticking out, clean bold outlines, no background",
+          "Medium"
+        ],
+        [
+          "Pumpkin",
+          "Orange paper over the body, a green paper stem and a curly paper vine",
+          "a turkey hiding inside a big pumpkin with only its head showing, a green stem on top, big simple shapes, no background",
+          "Simple"
+        ],
+        [
+          "[Snowman](/snowman-coloring-pages)",
+          "Cotton balls for the body, a paper carrot nose and a felt scarf",
+          "a turkey dressed as a snowman with a round white body, a scarf, a carrot nose and a hat, big simple shapes, no background",
+          "Simple"
+        ],
+        [
+          "Christmas tree",
+          "Layers of green paper, small paper ornaments and a paper star on top",
+          "a turkey dressed as a Christmas tree with green layers, round ornaments and a star on top, big simple shapes, no background",
+          "Simple"
+        ],
+        [
+          "[Gingerbread cookie](/gingerbread-coloring-pages)",
+          "Brown paper for the body, white crayon lines for icing and paper buttons",
+          "a turkey dressed as a gingerbread cookie with icing lines and big round buttons, big simple shapes, no background",
+          "Simple"
+        ],
+        [
+          "Pie",
+          "A brown paper crust, paper strips for the lattice and red paper cherries",
+          "a turkey hiding in a cherry pie with a lattice crust and only its head showing, big simple shapes, no background",
+          "Simple"
+        ],
+        [
+          "[Mermaid](/mermaid-coloring-pages)",
+          "A scaly paper fish tail, paper shells and yarn for long hair",
+          "a turkey dressed as a mermaid with a scaly fish tail, a shell necklace and long wavy hair, clean bold outlines, no background",
+          "Medium"
+        ],
+        [
+          "[Dinosaur](/dinosaur-coloring-pages)",
+          "Green paper spikes down the back, a long paper tail and felt spots",
+          "a turkey dressed as a dinosaur with spikes along its back, a long tail and small claws, clean bold outlines, no background",
+          "Medium"
+        ],
+        [
+          "[Unicorn](/unicorn-coloring-pages)",
+          "A paper horn, two paper ears and a yarn mane",
+          "a turkey dressed as a unicorn with a spiral horn, pointed ears and a long flowing mane, clean bold outlines, no background",
+          "Medium"
+        ],
+        [
+          "Sheep",
+          "Cotton balls glued all over the body and black felt for the face",
+          "a turkey dressed as a sheep covered in fluffy curls, with a dark face and small ears, big simple shapes, no background",
+          "Simple"
+        ],
+        [
+          "Penguin",
+          "Black paper for the back, a white paper belly and an orange paper beak",
+          "a turkey dressed as a penguin with a black back, a white belly and an orange beak, big simple shapes, no background",
+          "Simple"
+        ],
+        [
+          "Bee",
+          "Black and yellow paper stripes, two paper wings and pipe cleaner antennae",
+          "a turkey dressed as a bee with a striped body, small wings and two antennae, big simple shapes, no background",
+          "Simple"
+        ]
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Treat each prompt as a starting point. The generator draws a new page every time, so if a page misses, change one detail and try again."
+    },
+    {
+      "type": "p",
+      "text": "None of these ideas is a film, game or cartoon character. Do not ask for characters, logos or artwork that belong to someone else. Ask for the kind of thing, such as a knight or a firefighter."
+    },
+    {
+      "type": "p",
+      "text": "If your child likes the scarecrow or the pumpkin, our [fall coloring pages](/fall-coloring-pages) have scarecrows and pumpkin patches to color next."
+    },
+    {
+      "type": "h2",
+      "text": "Keep the disguise the child's own work"
+    },
+    {
+      "type": "p",
+      "text": "This is the child's project, so keep your own part small. Ask what the turkey would like to become, and let your child choose, even if the answer is silly. Your child does the coloring and the gluing. You cut the small parts."
+    },
+    {
+      "type": "p",
+      "text": "A simple order of work keeps the turkey neat:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Sketch the idea on scrap paper first.",
+        "Plan to cover the tail and the wattle first, because those give a turkey away.",
+        "Color the turkey before gluing anything on, because crayon does not go over glue.",
+        "Glue flat pieces first and heavy pieces last.",
+        "Let the turkey dry flat before it goes in a bag.",
+        "Write your child's name and class on the back by hand."
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Words and names need a pen. The generator draws pictures and cannot be relied on to write words or numbers. Leave words, names and dates out of the prompt and write them on the printed page by hand."
+    },
+    {
+      "type": "p",
+      "text": "These materials work well on a paper turkey:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Glue stick for paper, and white glue for felt and fabric",
+        "Felt for hats and coats",
+        "Cotton balls for snow or wool",
+        "Buttons for eyes or coat buttons, glued on firmly (an adult checks them)",
+        "Paper scraps for any flat part",
+        "Yarn for manes and hair"
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Using the template with a whole class"
+    },
+    {
+      "type": "p",
+      "text": "One turkey disguise template photocopied for the class is the simplest route. Every child starts from the same turkey, and each disguise makes it different."
+    },
+    {
+      "type": "p",
+      "text": "Send the turkey home with a short note. The note can cover these points:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "The due date and where to hand the turkey in",
+        "What the child may use, such as paper, felt and fabric",
+        "That the child makes the disguise and adults only cut",
+        "Where the child's name goes, on the back by hand"
+      ]
+    },
+    {
+      "type": "p",
+      "text": "When the turkeys come back, put them on one wall and let the class guess what each one is hiding as."
+    },
+    {
+      "type": "p",
+      "text": "A different turkey for every child needs more pages. The free plan needs no account. It gives two pages a day, counted by IP address, from a shared daily pool that can run out on busy days. A school network may share one address, so it can help to make the pages at home. At two pages a day, six different turkeys take three days."
+    },
+    {
+      "type": "p",
+      "text": "Free PDFs hold one page each and carry a 'Free preview' watermark. Free pages are for personal use, and your own classroom counts."
+    },
+    {
+      "type": "p",
+      "text": "Pro costs $9, paid once, and it is not a subscription. It gives up to 150 pages a day and puts all your pages in one PDF book without the watermark. That is plenty for a different turkey for every child in a class. Pro is sold through Gumroad, and the Free and Pro section of the generator page has the link."
+    },
+    {
+      "type": "p",
+      "text": "For more ways to use pages in class, see our guide to [coloring pages for classroom teachers](/coloring-pages-for-classroom-teachers)."
+    },
+    {
+      "type": "h2",
+      "text": "Check the page before you print"
+    },
+    {
+      "type": "p",
+      "text": "Check these points on the turkey disguise template you plan to print, whether it is the example turkey or one you made. Our [Thanksgiving coloring pages](/thanksgiving-coloring-pages) have more printables for the rest of the holiday, and the same checks apply to them."
+    },
+    {
+      "type": "ul",
+      "items": [
+        "The outline is closed all the way around, so color stays inside the lines.",
+        "The page is black lines on white with no gray shading, because gray strokes print muddy.",
+        "The body or the tail has empty space for the disguise.",
+        "The page is US letter size (8.5 x 11 inch) and prints at full page size.",
+        "A test print on plain paper looks right before you use cardstock.",
+        "The page has no words or logos on it, and the child's name goes on the back by hand."
+      ]
+    }
+  ]
 }
 
 };
