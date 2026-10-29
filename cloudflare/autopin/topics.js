@@ -199,7 +199,7 @@ const THANKSGIVING = [
   ['Thanksgiving pilgrim hat', 'a wide-brimmed felt hat with a plain band', 's'],
   ['Thanksgiving cornucopia', 'a cornucopia overflowing with pumpkins, apples, grapes and corn', 'm'],
   ['Thanksgiving pumpkin pie', 'a slice of pumpkin pie with a dollop of whipped cream', 's'],
-  ['Thanksgiving thankful tree', 'a tree with many round leaves and a few acorns at its roots', 's'],
+  ['Thanksgiving thankful tree', 'a tree with many round leaves and a few acorns at its roots', 's', 'thankful-coloring-pages'],
   ['Thanksgiving dinner table', 'a long table set with a roast turkey, pies, corn and candles', 'm'],
   ['Thanksgiving chef turkey', 'a turkey wearing a tall chef hat and holding a wooden spoon', 's', 'turkey-coloring-pages'],
   ['Thanksgiving dinner plate', 'a plate with turkey, corn, potatoes and a roll', 's'],
@@ -222,7 +222,7 @@ const THANKSGIVING = [
   ['Thanksgiving turkey face', 'a big turkey face with a beak, a red wattle and a ring of feathers behind it', 's', 'turkey-coloring-pages'],
   ['Thanksgiving reading turkey', 'a turkey in round glasses and a bow tie reading a big book', 's', 'turkey-coloring-pages'],
   ['Thanksgiving roast platter', 'a roast turkey on a platter with a bowl of cranberries and a basket of rolls', 'm'],
-  ['Thanksgiving gratitude jar', 'a glass jar full of paper leaves with a ribbon and a few leaves beside it', 's'],
+  ['Thanksgiving gratitude jar', 'a glass jar full of paper leaves with a ribbon and a few leaves beside it', 's', 'thankful-coloring-pages'],
   ['Thanksgiving cranberries', 'a bowl of cranberries with a spoon and a few leaves', 's'],
   ['Thanksgiving Mayflower ship', 'a wooden sailing ship with three masts on the waves, with seagulls overhead', 'm'],
   ['Thanksgiving pilgrim children', 'a pilgrim boy in a wide-brimmed felt hat and a girl in a linen cap and apron sharing a basket of corn', 'm'],
@@ -237,7 +237,20 @@ const THANKSGIVING = [
   ['Thanksgiving turkey zentangle', 'a turkey with tail feathers filled with zentangle patterns and small leaves', 'd', 'turkey-coloring-pages'],
   ['Thanksgiving place card', 'a folded place card with a small turkey, a border of leaves and an empty space for a name', 's'],
   ['Thanksgiving door wreath', 'a front door with a wreath of autumn leaves and small pumpkins and a welcome mat', 'm'],
-  ['Thanksgiving family walk', 'a family walking through a park of autumn trees with a dog and a basket of leaves', 'm']
+  ['Thanksgiving family walk', 'a family walking through a park of autumn trees with a dog and a basket of leaves', 'm'],
+  // Added 29 October 2026 for the two new articles. Disguise subjects go with /turkey-disguise-template, fill-in subjects with
+  // /thankful-coloring-pages. The first four disguise prompts and the three thankful prompts were tried on the live generator the same day.
+  ['Thanksgiving turkey firefighter', 'a turkey dressed as a firefighter with a helmet, a long coat and a hose', 's', 'turkey-disguise-template'],
+  ['Thanksgiving turkey astronaut', 'a turkey dressed as an astronaut in a space suit and a round helmet, with stars around it', 'm', 'turkey-disguise-template'],
+  ['Thanksgiving turkey in a pumpkin', 'a turkey hiding inside a big pumpkin with only its head showing, a green stem on top', 's', 'turkey-disguise-template'],
+  ['Thanksgiving turkey in a pie', 'a turkey hiding in a cherry pie with a lattice crust and only its head showing', 's', 'turkey-disguise-template'],
+  ['Thanksgiving turkey knight', 'a turkey dressed as a knight with a helmet, a round shield and a cape', 'm', 'turkey-disguise-template'],
+  ['Thanksgiving turkey ballerina', 'a turkey dressed as a ballerina in a tutu, standing on tiptoe with its wings raised', 'm', 'turkey-disguise-template'],
+  ['Thanksgiving turkey penguin', 'a turkey dressed as a penguin with a black back, a white belly and an orange beak', 's', 'turkey-disguise-template'],
+  ['Thanksgiving turkey bee', 'a turkey dressed as a bee with a striped body, small wings and two antennae', 's', 'turkey-disguise-template'],
+  ['Thanksgiving banner turkey', 'a smiling cartoon turkey holding a wide blank banner in front of its body', 's', 'thankful-coloring-pages'],
+  ['Thanksgiving fill-in turkey', 'a smiling cartoon turkey with six big empty feathers fanned out behind it', 's', 'thankful-coloring-pages'],
+  ['Thanksgiving thank you tulips', 'a bunch of tulips tied with a ribbon, with a wide empty banner across the bottom', 'm', 'thankful-coloring-pages']
 ];
 
 const CHRISTMAS = [
@@ -565,7 +578,7 @@ const RAW = { halloween: HALLOWEEN, fall: FALL, thanksgiving: THANKSGIVING, chri
 // holiday (Halloween, every evergreen page) keeps the plain shuffled order.
 export const QUERY_ORDER = [
   'santa-coloring-pages', 'christmas-tree-coloring-pages', 'reindeer-coloring-pages', 'christmas-ornament-coloring-pages', 'snowflake-coloring-pages',
-  'thanksgiving-coloring-pages', 'turkey-coloring-pages', 'hanukkah-coloring-pages', 'christmas-coloring-pages', 'gingerbread-coloring-pages',
+  'thanksgiving-coloring-pages', 'turkey-coloring-pages', 'turkey-disguise-template', 'thankful-coloring-pages', 'hanukkah-coloring-pages', 'christmas-coloring-pages', 'gingerbread-coloring-pages',
   'snowman-coloring-pages', 'new-year-coloring-pages', 'winter-coloring-pages', 'fall-coloring-pages', 'christmas-coloring-pages-for-adults'
 ];
 const orderOf = site => { const i = QUERY_ORDER.indexOf(site); return i < 0 ? QUERY_ORDER.length : i; };
@@ -643,6 +656,8 @@ export const QUERY_MODIFIER = {
   'christmas-tree-coloring-pages': 'printable', 'christmas-ornament-coloring-pages': 'free printable', 'snowflake-coloring-pages': 'printable',
   'christmas-coloring-pages-for-adults': 'printable', 'thanksgiving-coloring-pages': 'free', 'turkey-coloring-pages': 'printable PDF',
   'fall-coloring-pages': 'printable', 'winter-coloring-pages': 'printable', 'hanukkah-coloring-pages': 'free',
+  // Articles of 29 October 2026 (keyword scan: "turkey disguise template printable", "thankful coloring pages free printable")
+  'turkey-disguise-template': 'printable', 'thankful-coloring-pages': 'free printable',
   'new-year-coloring-pages': 'printable PDF', 'gingerbread-coloring-pages': 'printable', 'snowman-coloring-pages': 'printable'
 };
 const HOLIDAY_TITLES = {
@@ -664,7 +679,10 @@ const HOLIDAY_TITLES = {
 };
 // "christmas-coloring-pages-for-adults" -> "Christmas coloring pages for adults"
 const PROPER_WORDS = ['Santa', 'Christmas', 'Thanksgiving', 'Hanukkah', 'New Year'];
+// A page that is an article, not a theme page: its address is not the phrase to put after "More printable".
+const QUERY_LABEL = { 'turkey-disguise-template': 'turkey disguise templates and ideas' };
 export function queryLabel(site) {
+  if (QUERY_LABEL[site]) return QUERY_LABEL[site];
   let q = String(site).replace(/-/g, ' ');
   for (const w of PROPER_WORDS) q = q.replace(new RegExp('\\b' + w + '\\b', 'i'), w);
   return q;
