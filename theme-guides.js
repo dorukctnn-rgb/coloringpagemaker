@@ -674,7 +674,7 @@ const THEME_GUIDES = {
   chips: ['turkey wearing a scarf and boots', 'mother turkey with three chicks', 'turkey hiding behind a pumpkin', 'turkey in a pumpkin patch'],
   recipes: [
     { who: 'Ages 2 to 5', style: 'simple', prompt: `a smiling cartoon turkey with a big fan of rounded tail feathers, big simple shapes, black outlines only, no background`, why: `Each tail feather is one big shape, so even a three-year-old can give every feather its own color.` },
-    { who: 'Feather craft', style: 'simple', prompt: `a plain turkey body without any tail feathers: round body, head with a wattle, small wings and feet, big simple shapes, no background`, why: `The starting page for paper, handprint or thankful feathers (see below).` },
+    { who: 'Fill-in feathers', style: 'simple', prompt: `a smiling cartoon turkey with six big empty feathers fanned out behind it, each feather a plain blank shape, big simple shapes, no background`, why: `Every feather is an empty shape for a word, a drawing or a color. For a bare turkey body to add paper feathers to, use the example on this page: the generator draws a tail even when you ask for none.` },
     { who: 'Ages 6 to 9', style: 'medium', prompt: `a mother turkey and three chicks walking through tall grass, clean bold outlines`, why: `A family scene, and a chance to show that a turkey hen looks quite different from a male.` },
     { who: 'Ages 9 to 12', style: 'medium', prompt: `a wild turkey strutting on grass with its tail feathers fanned out, each feather a separate outline, clean bold lines, white background`, why: `Closer to the real bird, with every feather drawn as its own shape.` },
     { who: 'Teens and adults', style: 'medium', prompt: `a wild turkey at the edge of a forest in autumn, each feather on its wings and fanned tail drawn as a separate outline, clean bold lines`, why: `Hundreds of feathers to fill with bronze, copper and brown.` }
@@ -708,7 +708,7 @@ const THEME_GUIDES = {
   ],
   faq: [
     { q: 'Are these turkey coloring pages free to print?', a: `The example pages on this page download as PNG files for personal use, with no account and no watermark. The generator makes 2 free pages a day; its free PDF carries a watermark, and [Pro](https://dorukctn.gumroad.com/l/uynqt) removes it for $9 once.` },
-    { q: 'Where can I get a turkey coloring page without feathers?', a: `Download the example on this page, or use the feather craft prompt above. It draws the round body, head, wattle, wings and feet, and leaves the tail empty for paper or handprint feathers.` },
+    { q: 'Where can I get a turkey coloring page without feathers?', a: `Download the example on this page. The generator tends to draw a full fan of tail feathers even when you ask for none: we asked six times on 29 October 2026 and every page had a tail. For feathers that are empty shapes to fill in, use the fill-in feathers prompt above.` },
     { q: 'Which turkey pages suit toddlers?', a: `A cartoon turkey on Simple with a few big tail feathers. Leave realistic turkeys for older children: the feathers are too small to color at this age.` },
     { q: `What is the red part on a turkey's head?`, a: `The red flaps of skin on the throat and neck are wattles. The head itself is bare skin, red and blue on an adult male (Missouri Department of Conservation).` },
     { q: 'Can I make a page for a disguise-a-turkey project?', a: `Yes. Print the turkey without feathers at full size so there is room for the disguise, and make a second copy if your child wants to try two ideas.` },
