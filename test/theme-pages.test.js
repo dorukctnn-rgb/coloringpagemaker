@@ -192,14 +192,14 @@ test('existing link lists keep their items and order; the seasonal pages are onl
   const related = {
     halloween: ['christmas', 'animal', 'adult', 'coloring-pages-for-classroom-teachers', 'fall'],
     christmas: ['halloween', 'animal', 'adult', 'coloring-pages-for-classroom-teachers', 'winter', 'nativity',
-      'santa', 'reindeer', 'christmas-tree', 'christmas-ornament', 'snowflake', 'christmas-for-adults'],
+      'santa', 'reindeer', 'christmas-tree', 'christmas-ornament', 'snowflake', 'christmas-for-adults', 'elf', 'custom-christmas-book'],
     winter: ['christmas', 'animal', 'adult', 'coloring-pages-for-classroom-teachers', 'snowman', 'snowflake', 'reindeer'],
     animal: ['dinosaur', 'halloween', 'unicorn', 'coloring-pages-for-classroom-teachers', 'cat', 'dog', 'horse', 'butterfly']
   };
   for (const [slug, expected] of Object.entries(related)) {
     // The Christmas pages of 27 October 2026 end in "-coloring-pages-for-adults", never "<x>-coloring-pages" for that one.
     assert.deepEqual(THEME_GUIDES[t(slug)].related.map(r => r.href),
-      expected.map(s => '/' + (s === 'christmas-for-adults' ? 'christmas-coloring-pages-for-adults' : s.startsWith('coloring-pages-') ? s : t(s))), slug + ': related links');
+      expected.map(s => '/' + (s === 'christmas-for-adults' ? 'christmas-coloring-pages-for-adults' : s === 'custom-christmas-book' ? 'custom-christmas-coloring-book' : s.startsWith('coloring-pages-') ? s : t(s))), slug + ': related links');
   }
 });
 
