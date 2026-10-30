@@ -1050,6 +1050,369 @@ const BLOG_POSTS = {
       ]
     }
   ]
+},
+
+"custom-christmas-coloring-book": {
+  "title": "Custom Christmas Coloring Book: A 12-Page Homemade Gift",
+  "description": "Make a custom Christmas coloring book from details about one child: a 12-page example with prompts, real test notes, page order, cost and binding.",
+  "keyword": "custom christmas coloring book",
+  "date": "Updated October 2026",
+  "read": "10 min",
+  "updated": "2026-10-29",
+  "summary": "A worked 12-page plan for a Christmas coloring book about one child: the prompt for every page, what our test pages showed, the page order, what it costs, and how to print and bind it.",
+  "content": [
+    {
+      "type": "p",
+      "text": "A custom Christmas coloring book has pages about one child. One page might show the family dog in a Santa hat, another the house with snow on the roof. To make one, write a short description for each page and make the pages in a coloring page generator. Put them in one PDF, then print the pages and bind them into a book."
+    },
+    {
+      "type": "p",
+      "text": "The free plan makes two pages a day, so 12 pages take six days. Pro costs $9, paid once, and its cap of 150 pages a day leaves room to make the whole book in one evening. Only Pro puts the pages in one PDF without the watermark, while a free PDF holds one page. The worked example below shows how to make your own Christmas coloring book, with the prompt for all 12 pages."
+    },
+    {
+      "type": "h2",
+      "text": "What makes a Christmas coloring book custom"
+    },
+    {
+      "type": "p",
+      "text": "A custom book gets its pictures from the child's own life: the family dog, the house, the street, a favorite toy. Some people call it a personalized Christmas coloring book. Every page starts with one detail about the child, and you write that detail as a short description."
+    },
+    {
+      "type": "p",
+      "text": "You describe each page in words, and the generator draws a printable page from your description. It works from text, so you need no photo of the child. The page usually shows the details you write, such as floppy ears or a round window. You can make it again if one is missing. The generator draws something new on every try, so a page is never an exact copy of your dog."
+    },
+    {
+      "type": "p",
+      "text": "If you are a grandparent or an aunt, ask a parent for the details. These six questions give you more than enough for 12 pages."
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Which pet lives in the house? Note its size, ears, tail and coat.",
+        "What does the house look like from the street? Note windows, a porch or a chimney.",
+        "What does the child do in the snow? A sled, a snowman or a nearby hill.",
+        "Which toy goes everywhere with the child? Note its shape, such as a wooden train.",
+        "What does the family do every December? Baking, lights or a trip for a tree.",
+        "What is next to the bed at night? A stuffed animal or a lamp."
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Describe shapes and leave colors out. The pages are black lines on white, and the child picks the colors. Write 'a hat with a big bobble' instead of 'a red hat'."
+    },
+    {
+      "type": "p",
+      "text": "Keep words, names and dates out of every prompt. The generator draws pictures and cannot be relied on to write words or numbers. You will write the child's name and the year on the cover by hand after you print it. Leave the surname and the street address out too, since the pages do not need them."
+    },
+    {
+      "type": "p",
+      "text": "Leave out characters, logos and artwork that belong to someone else, including the stars of the child's favorite show. Describe a favorite toy by its shape instead, such as a wooden train or a stuffed rabbit."
+    },
+    {
+      "type": "h2",
+      "text": "Worked example: a 12-page Christmas book for a five-year-old"
+    },
+    {
+      "type": "p",
+      "text": "This example is a made-up family with a five-year-old. Every page uses the Simple level, which the generator labels ages 3-6, with thick lines. Page 1 is the cover, and page 12 is the last page. We tested eight of the pages. The last column shows how each one came out, and the next section has the details. Pages 7, 8, 9 and 11 were not made, so their prompts are untested."
+    },
+    {
+      "type": "table",
+      "head": [
+        "Page",
+        "Detail about the child",
+        "Prompt to type",
+        "Level",
+        "Our test"
+      ],
+      "rows": [
+        [
+          "1",
+          "Their name goes in the middle, written by hand",
+          "a round Christmas wreath with holly leaves and a big bow, and a large empty circle in the middle",
+          "Simple",
+          "Matched"
+        ],
+        [
+          "2",
+          "House with a round window by the door",
+          "a small house with a round window next to the front door, snow on the roof and smoke from the chimney",
+          "Simple",
+          "Close"
+        ],
+        [
+          "3",
+          "The street the family lives on",
+          "a snowy street with three small houses in a row and one street lamp",
+          "Simple",
+          "Matched (third wording)"
+        ],
+        [
+          "4",
+          "Small dog with floppy ears and a curly tail",
+          "a small dog with floppy ears and a curly tail, wearing a Santa hat and sitting next to a Christmas tree",
+          "Simple",
+          "Matched"
+        ],
+        [
+          "5",
+          "Builds a snowman in the front yard every year",
+          "a child in a hat with a big bobble rolling a snowball next to a snowman in a front yard",
+          "Simple",
+          "Matched"
+        ],
+        [
+          "6",
+          "Plays with a wooden toy train every day",
+          "a wooden toy train with four cars under a Christmas tree, with one wrapped box beside it",
+          "Simple",
+          "Close (a second wording matched)"
+        ],
+        [
+          "7",
+          "The family decorates a gingerbread house each year",
+          "a gingerbread house with a round door, candy on the roof and a candy cane by the door",
+          "Simple",
+          "Not made"
+        ],
+        [
+          "8",
+          "The sled and the small hill by the park",
+          "a child on a sled at the top of a small snowy hill, with a dog running beside the sled",
+          "Simple",
+          "Not made (a related sled prompt failed)"
+        ],
+        [
+          "9",
+          "Boots and mittens by the front door",
+          "a pair of snow boots and two mittens on a mat beside a front door",
+          "Simple",
+          "Not made"
+        ],
+        [
+          "10",
+          "Stocking by the fireplace, cookies on Christmas Eve",
+          "a fireplace with one stocking hanging at the side and a plate of cookies on the floor in front",
+          "Simple",
+          "Matched"
+        ],
+        [
+          "11",
+          "Sleeps with a stuffed rabbit on the pillow",
+          "a small bed with a quilt, a stuffed rabbit on the pillow and snow falling outside the window",
+          "Simple",
+          "Not made"
+        ],
+        [
+          "12",
+          "Looks at the stars from the bedroom window",
+          "a quiet night sky with one big star and a crescent moon above a snowy roof",
+          "Simple",
+          "Close"
+        ]
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Each prompt names the main subject and where it is, and keeps the list of details short. If a page comes out too busy, cut the prompt down and make it again. You can also add 'big simple shapes, no background' to the end of the prompt."
+    },
+    {
+      "type": "p",
+      "text": "Page 4 shows how a detail becomes a prompt. The detail is a small dog with floppy ears and a curly tail. The prompt keeps those shapes, leaves out the dog's name and adds the season: a Santa hat and a tree. To put the name on the page, write it by hand under the picture."
+    },
+    {
+      "type": "p",
+      "text": "For a child of six or older, any page can be made at Medium, which the generator labels ages 6-12. We made our test pages at Simple only, so we have not seen how Medium comes out."
+    },
+    {
+      "type": "p",
+      "text": "To reuse the table for another child, keep its order. Page 1 is the cover, and pages 2 and 3 show the home and the street. Pages 4 to 6 are the pet, play in the snow and a favorite toy. Pages 7 to 10 are baking, the sled hill, the front door and the fireplace. Pages 11 and 12 are bedtime and the night sky. Then replace each detail with one from your own child."
+    },
+    {
+      "type": "p",
+      "text": "Three of these pages have longer guides. The [dog coloring pages](/dog-coloring-pages) show how to describe your own dog, from its ears to the thing it always does. The [snowman coloring pages](/snowman-coloring-pages) include a blank snowman for the child to dress. The [gingerbread coloring pages](/gingerbread-coloring-pages) show how to ask for a plain house for the child to decorate."
+    },
+    {
+      "type": "h2",
+      "text": "What our test pages showed"
+    },
+    {
+      "type": "p",
+      "text": "On 29 October 2026 we made 12 pages through a test copy of the generator. It uses the same drawing prompt and model as this site's free pages. We did not test Pro pages, which may look different, so check every page either way. The pages cover eight table pages: 1, 2, 3, 4, 5, 6, 10 and 12. The remaining four were two more street tries, a second wording for page 6 and a related sled prompt. Pages 7, 8, 9 and 11 were not made. All pages were Simple level, and we looked at every one after it came out."
+    },
+    {
+      "type": "p",
+      "text": "Five of the eight table pages matched their prompts:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Page 1: the wreath cover, with a large empty circle in the middle, so the name fits there.",
+        "Page 3: the street, on the third wording (see below).",
+        "Page 4: the dog, with floppy ears, a curly tail, a Santa hat and a tree beside it, as asked.",
+        "Page 5: the child rolling a snowball next to a snowman, with an odd grid shape behind the snowman.",
+        "Page 10: the fireplace, with one stocking at the side and a plate of cookies in front."
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Three came out close, with a position or a count off:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Page 2: the round window sat above the door instead of beside it.",
+        "Page 6: the train sat in front of the tree instead of under it, and the count of four cars was not clean.",
+        "Page 12: it drew about seven small dots for stars instead of one big star."
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Page 6 matched on a second wording. We used 'a wooden toy train with several cars on the floor in front of a Christmas tree, with one wrapped box beside it'. It drew a steam engine and cars on the floor in front of the tree. It also drew two wrapped boxes with bows and a baseboard line, though we asked for one box. The page has more detail than the first try but is still clear. You can use this wording for page 6."
+    },
+    {
+      "type": "p",
+      "text": "The street page took three tries. The first prompt asked for three houses, a string of lights along each roof and one street lamp. The page had lights on one roof only, a wire across the sky and two street lamps. The second try asked for a row of houses with lights along every roof. It drew a long street of many tiny houses, which is too busy for a Simple page. The third wording, the one now in the table, dropped the lights and matched. It shows three small houses in a row, one street lamp and a few snow dots."
+    },
+    {
+      "type": "p",
+      "text": "One related prompt failed. We used 'a child pulling a small Christmas tree on a sled across the snow'. The page was unusable, because the child stood on the sled and the tree dragged behind it. Page 8 uses a different prompt, a child on a sled with a dog running beside it, and we did not make it. Page 8 may need a remake."
+    },
+    {
+      "type": "p",
+      "text": "Counts and position words are the weak spot. 'Each', 'four cars', 'one big star' and 'under' missed, and 'next to' missed on page 2. 'Next to' held on pages 4 and 5. A long street with lights on every roof came out too busy, and three houses with one lamp fixed it. Naming the position you want, such as 'in front of', worked on page 6. Check every page when it comes out, and make it again if it misses."
+    },
+    {
+      "type": "sources",
+      "checked": "29 October 2026",
+      "links": []
+    },
+    {
+      "type": "h2",
+      "text": "Make the pages in the right order"
+    },
+    {
+      "type": "p",
+      "text": "Open the [generator](/) and make page 12 first. The generator lists the newest page first, and the 'Download all as PDF book' button builds the book in that order. The page you make last is the first page of the book, so the cover comes last. The one-PDF book is part of the paid plan, covered in the next section."
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Type the prompt for page 12, choose Simple and make the page.",
+        "Look at the page before you go on: lines that close, big shapes, no letters, and the counts and positions you asked for.",
+        "If the page misses, press its Remove button. Change one detail in the prompt, or cut it down, and make the page again.",
+        "Work down from page 11 to page 2 the same way, then make the cover."
+      ]
+    },
+    {
+      "type": "p",
+      "text": "A page you make again stays in the list, and in the PDF book, until you press Remove on it. Before you download, check that the list holds exactly your 12 pages, in the order of your table."
+    },
+    {
+      "type": "p",
+      "text": "A new page always goes to the front of the list. If you find a bad page 7 after you made the cover, a new page 7 would land in front of the cover. Press Remove on page 7 and on every page made after it (pages 6 to 1). Then make them again in order, starting with page 7."
+    },
+    {
+      "type": "p",
+      "text": "Your pages stay in the open browser tab only, and closing the tab clears them. Do not reload the page while you make the book. A reload keeps only the newest pages, up to 20, and fewer when the browser's storage is full. Download the book before you close the tab."
+    },
+    {
+      "type": "h2",
+      "text": "Free plan or Pro"
+    },
+    {
+      "type": "p",
+      "text": "The free plan gives two pages a day, with no account. The pages come from a shared daily pool that can run out on busy days, and the count resets at midnight UTC. At that rate, 12 pages take six days. A free PDF holds one page and carries a 'Free preview' watermark. Free pages are for personal, non-commercial use, so a gift for your own family is fine. You may not sell them."
+    },
+    {
+      "type": "p",
+      "text": "A limit of two pages a day spreads the work over several days, and closing the tab clears the list. Save each page's PDF the day you make it, and name the files by page number, such as 04-dog.pdf. Because a free PDF holds one page, the order you make them in does not matter. Leave room for retries, since a page that misses uses up one of your two pages. For a gift on 25 December, start by 1 December, which leaves time for retries and for printing."
+    },
+    {
+      "type": "p",
+      "text": "Pro costs $9, paid once, and it is not a subscription. It allows up to 150 pages a day as a fair-use cap, so the whole book fits in one evening. It puts all your pages in one PDF book without the watermark. That gives you a Christmas coloring book PDF to print at home or send to a relative. If Pro does not suit you, you can ask for a refund within 14 days of purchase, paid back through Gumroad."
+    },
+    {
+      "type": "table",
+      "head": [
+        "For a 12-page book",
+        "Free plan",
+        "Pro"
+      ],
+      "rows": [
+        [
+          "Time to make the pages",
+          "Six days or more, at two pages a day",
+          "One evening, within the cap of 150 pages a day"
+        ],
+        [
+          "Watermark",
+          "'Free preview' on every PDF",
+          "None in the PDF book"
+        ],
+        [
+          "Files",
+          "12 PDFs, one page each",
+          "One PDF book"
+        ],
+        [
+          "Cost",
+          "Free",
+          "$9, paid once"
+        ]
+      ]
+    },
+    {
+      "type": "p",
+      "text": "If you have a week and a watermark on every page is fine, the free plan is enough. If the book has a deadline, or you want clean pages in one PDF, Pro at $9 is the better fit."
+    },
+    {
+      "type": "h2",
+      "text": "Print, bind and wrap"
+    },
+    {
+      "type": "p",
+      "text": "The pages arrive as US letter (8.5 x 11 inch) PDFs with black lines on white. Any home printer with letter paper can print them, and a copy shop can print the PDF if you have no printer. Print one side of each sheet only. Markers can bleed through to the back, and a blank back leaves room for the child to draw."
+    },
+    {
+      "type": "p",
+      "text": "Print one page first and color a corner with a crayon. Check that the lines look thick and that nothing is cut off at the edges. On the free plan, the 'Free preview' watermark prints with each page, so decide now if that is fine for a gift."
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Stack the pages in order with the cover on top. Staple the left edge two or three times, then cover the staples with a strip of tape so small fingers stay safe.",
+        "Or punch holes along the left edge and thread a ribbon through them. A ribbon also lets you add a page later.",
+        "Print the cover page on cardstock if your printer takes it. If it does not, glue the printed page to a sheet of cardstock cut to the same size.",
+        "Write the child's name in the empty circle of the wreath with a marker, and add the year below it."
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Tie a small box of crayons or a few washable markers to the book with a ribbon, so the child can start right away. Wrap the book flat, with the crayons on top. If you live far from the child, email the PDF to a parent who can print it and write the name by hand."
+    },
+    {
+      "type": "p",
+      "text": "For a matching gift tag or card, the [Christmas coloring pages](/christmas-coloring-pages) guide explains how to print a page at a smaller size. It also lists more Christmas prompts by age."
+    },
+    {
+      "type": "h2",
+      "text": "Gift checklist"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Details: you have 12 details about the child, one for each page.",
+        "Prompts: each one names the main subject and where it is, keeps the list of details short and has no words, names or dates.",
+        "Order: you made page 12 first and the cover last, looked at every page, and removed and remade any page that missed.",
+        "Files: you saved the PDF book, or the 12 single PDFs on the free plan, before closing the tab.",
+        "Test print: you printed one page and colored a corner.",
+        "Cover: the child's name and the year are written by hand.",
+        "Binding: the pages are stapled or tied, with a cardstock cover.",
+        "Crayons: a box of crayons or washable markers is tied to the book."
+      ]
+    }
+  ]
 }
 
 };
