@@ -808,6 +808,248 @@ const BLOG_POSTS = {
       "text": "Teachers can find print settings and notes on the daily limit in our [guide to coloring pages for classroom teachers](/coloring-pages-for-classroom-teachers)."
     }
   ]
+},
+
+"elf-coloring-pages": {
+  "title": "Elf Coloring Pages: Tested Prompts for Kids",
+  "description": "Eight elf coloring pages we made and checked, with the exact prompts, three errors, a name tag to write by hand, and printing tips.",
+  "keyword": "elf coloring pages",
+  "date": "Updated October 2026",
+  "read": "6 min",
+  "updated": "2026-10-29",
+  "summary": "Eight tested prompts for elf coloring pages, with the exact wording, the detail level and what each page showed, including three errors and a few extras. Plus a name tag page and a printing checklist.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "Elf coloring pages you can make"
+    },
+    {
+      "type": "p",
+      "text": "You can make printable elf coloring pages by typing a short description of an elf into the [generator](/). It draws a black-and-white page that prints on US letter paper. The free plan gives two pages a day and needs no account."
+    },
+    {
+      "type": "p",
+      "text": "We tried a set of elf prompts and looked at every page. This article shows what we entered and what came back, misses included. Use the prompts as they are, or change a word or two to fit your child."
+    },
+    {
+      "type": "p",
+      "text": "An elf page suits a quiet afternoon at home or a classroom workshop. It also works as one day in a December countdown."
+    },
+    {
+      "type": "h2",
+      "text": "Elf prompts we tested and what came back"
+    },
+    {
+      "type": "p",
+      "text": "On 29 October 2026 we ran eleven elf prompts through a test copy of the generator that uses the same drawing prompt and image model as this site's free pages, and we looked at every page. We did not test Pro pages, which may look different. Eight prompts gave a page that matched the idea. Three gave an error, and a later section covers those. Each row below shows the prompt exactly as we entered it, the detail level, and what the page showed."
+    },
+    {
+      "type": "table",
+      "head": [
+        "Page idea",
+        "Prompt to type",
+        "Level",
+        "What our test page showed"
+      ],
+      "rows": [
+        [
+          "Friendly elf with a candy cane",
+          "a friendly elf with a big pointed hat and pointed ears, smiling, holding a candy cane",
+          "Simple",
+          "A smiling elf with a tall pointed hat that has a curled tip, pointed ears, a candy cane in one hand and curly-toed shoes. Thick, clean lines and closed shapes. Good."
+        ],
+        [
+          "Two elves holding hands",
+          "two elves holding hands, one tall and one small, both with pointed hats and curly-toed shoes",
+          "Simple",
+          "Two elves of different heights holding hands, with pointed hats and curly-toed shoes. The lines are finer than on the first page, and the outlines of the free hands are open. Good overall, but check the hands before you print."
+        ],
+        [
+          "Elf with a blank name tag",
+          "a smiling elf with a pointed hat wearing a blank rectangular name tag on his vest",
+          "Simple",
+          "A smiling elf with an empty rectangle on the vest and no letters. Good: the tag is blank, so a name can be written by hand. The elf is cut off at the hips, so you see no shoes."
+        ],
+        [
+          "Elf wrapping a present",
+          "an elf wrapping a present at a wooden workbench in a toy workshop, with a toy train and a teddy bear on a shelf behind",
+          "Medium",
+          "An elf wrapping a gift at a bench. The shelf holds a toy train and two teddy bears, though we asked for one. A paper garland and a sack on the floor were extras. Good, but crowded."
+        ],
+        [
+          "Elf rolling cookie dough",
+          "an elf rolling out cookie dough on a table with a rolling pin, with a tray of star-shaped cookies beside it",
+          "Medium",
+          "An elf with both hands on a round of dough. The rolling pin lies on the tray and the elf does not hold it. Star cookies sit on the trays. A garland and a chair in the background were not asked for. Good."
+        ],
+        [
+          "Elf feeding a reindeer",
+          "a small elf feeding a carrot to a friendly reindeer in the snow",
+          "Medium",
+          "A small elf in a hat and scarf holds a carrot up to a reindeer with antlers. There are snow marks on the ground. Good."
+        ],
+        [
+          "Elf hanging lights on a house",
+          "an elf on a ladder hanging a string of lights on a small house with snow on the roof",
+          "Medium",
+          "An elf on a ladder, lights along the roof edge, snow on the roof. This was the weakest page: the house is a plain rounded block, and the curled toe of the elf's shoe looks like a tail. The page also has two ornaments with a bow and a tuft of grass that we did not ask for. Usable, but not a favorite."
+        ],
+        [
+          "Elf on a stack of gifts",
+          "a Christmas elf sitting on a stack of gift boxes, surrounded by holly leaves, ornaments and snowflakes",
+          "Detailed",
+          "An elf on three stacked gift boxes. Many leaf clusters look more like poinsettias than holly. Ornaments hang and small snowflakes fall over the whole page. Busy, in line with the Detailed label."
+        ]
+      ]
+    },
+    {
+      "type": "p",
+      "text": "The generator draws a new page each time, so your page will differ from ours, and each prompt is a starting point."
+    },
+    {
+      "type": "sources",
+      "checked": "29 October 2026",
+      "links": []
+    },
+    {
+      "type": "h2",
+      "text": "Pick the detail level"
+    },
+    {
+      "type": "p",
+      "text": "The generator has three detail levels for elf coloring pages. Simple (ages 3-6, thick lines) gives big shapes for small hands. Medium (ages 6-12, balanced) adds more to look at. Detailed (adults, intricate) fills the page with small shapes."
+    },
+    {
+      "type": "p",
+      "text": "Our three Simple pages are the elf with a candy cane, the two elves and the name tag elf. The candy cane page and the name tag page have thick lines. The two-elves page has finer lines and open hand outlines, so it sits at the upper end of Simple."
+    },
+    {
+      "type": "p",
+      "text": "The four Medium pages are scenes with an elf and the things around it: a toy workshop, cookie dough, a reindeer and a ladder with lights. The workshop page is crowded, with a lot to color. For a child who likes bigger spaces, try a Simple page first."
+    },
+    {
+      "type": "p",
+      "text": "The one Detailed page is the elf on a stack of gifts. The generator labels Detailed for adults, and this page is busy, with leaves, ornaments and snowflakes over the whole sheet."
+    },
+    {
+      "type": "h2",
+      "text": "An elf name tag to write by hand"
+    },
+    {
+      "type": "p",
+      "text": "One of our prompts asked for a smiling elf with a blank rectangular name tag on his vest. The page came back with an empty rectangle and no letters. That makes a handy page for a class, because each child can write a name in the tag. The generator draws pictures and cannot be relied on to write words or numbers, so ask for a blank tag and add the name with a pen."
+    },
+    {
+      "type": "p",
+      "text": "Here is a simple way to use it:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Make the page with the name tag prompt from the table and print it.",
+        "Write the name in the rectangle first, with a pen or a fine marker.",
+        "Let the child color the rest of the elf.",
+        "Use the finished page as a place card, or tape it to a desk.",
+        "Leave names, dates and other words out of any prompt you type."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Where the generator went wrong"
+    },
+    {
+      "type": "p",
+      "text": "Three of our eleven prompts gave an error instead of a page. All three asked for a hat, or a hat with shoes, with no elf wearing it, and all three were at the Simple level. These are the exact wordings:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "a big pointed elf hat with a bell at the tip and a wide folded brim, nothing else",
+        "a big pointed Christmas elf hat with a bell on the tip and a wide folded brim, drawn by itself",
+        "a Christmas elf hat with a round pom-pom and a curled top, and a pair of curly-toed elf shoes beside it"
+      ]
+    },
+    {
+      "type": "p",
+      "text": "In our test copy the model returned a content-filter error (code 8007). A hat is a harmless idea, and we do not know why the hat prompts were refused. On the free plan of this site the same failure would read 'The drawing service is busy. Please try again in a minute.', which gives the visitor no reason. If the same wording fails again, change the wording. In our test, all eight prompts that asked for an elf gave a page."
+    },
+    {
+      "type": "p",
+      "text": "The pages that worked had flaws too, and the table lists the main ones. The ladder page was the weakest."
+    },
+    {
+      "type": "p",
+      "text": "When a page misses, change one detail and make it again. Each retry that gives a page uses one of your two free pages a day, so choose one clear change. Swap the object in the elf's hand, or move the elf to a new setting."
+    },
+    {
+      "type": "p",
+      "text": "Describe an elf in plain words, such as the hat and what the elf holds. Do not ask for characters, logos or artwork that belong to someone else."
+    },
+    {
+      "type": "sources",
+      "checked": "29 October 2026",
+      "links": []
+    },
+    {
+      "type": "h2",
+      "text": "A December elf set for a class or a home"
+    },
+    {
+      "type": "p",
+      "text": "One elf page a day makes a simple countdown. Our [Christmas coloring pages](/christmas-coloring-pages) guide has a plan with one page for each day from 1 to 24 December, and an elf page fits into it."
+    },
+    {
+      "type": "p",
+      "text": "For a workshop afternoon, start with the name tag page. Add two scenes from the table, such as the reindeer and the cookie dough. Children color at their own pace, and a finished page goes straight on the wall."
+    },
+    {
+      "type": "p",
+      "text": "Two of the scenes have a neighbor on our site. The elf who feeds a carrot to a reindeer sits well beside more [reindeer coloring pages](/reindeer-coloring-pages). The cookie elf pairs with the cookie shapes on our [gingerbread coloring pages](/gingerbread-coloring-pages). A [Santa coloring page](/santa-coloring-pages) can share the table with the elves."
+    },
+    {
+      "type": "p",
+      "text": "Children who finish early can color a blank ornament from our [Christmas ornament coloring pages](/christmas-ornament-coloring-pages), then cut it out and hang it on the tree."
+    },
+    {
+      "type": "p",
+      "text": "Plan ahead if you use the free plan. It gives two pages a day, counted by IP address, from a shared daily pool that can run out on busy days. A school network may share one address, so making the pages at home can help."
+    },
+    {
+      "type": "h2",
+      "text": "Free plan or Pro"
+    },
+    {
+      "type": "p",
+      "text": "Free pages are for personal use, for example at home or in your own classroom, and they may not be sold. A free PDF holds one page and carries a 'Free preview' watermark."
+    },
+    {
+      "type": "p",
+      "text": "Pro costs $9, paid once, and it is not a subscription. It gives up to 150 pages a day and puts all your pages in one PDF book without the watermark. That suits a class set made in one sitting. Pro is sold through Gumroad, and the generator page has the link."
+    },
+    {
+      "type": "h2",
+      "text": "Print the elf pages"
+    },
+    {
+      "type": "p",
+      "text": "Pages are black lines on white, delivered as US letter (8.5 x 11 inch) PDFs, and each page also has a PNG button. Your pages stay in the open browser tab only, and closing the tab clears them. Download each page before you leave."
+    },
+    {
+      "type": "p",
+      "text": "Print on one side of the sheet at full page size. Make a test print on plain paper first, then use cardstock for the name tag if you want a sturdier page. Check these points before you print elf coloring pages:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "The elf's hat and shoes have clear outlines with no gaps.",
+        "The lines are black on white, with no gray or colored patches.",
+        "The page prints at full size on US letter paper (8.5 x 11 inch).",
+        "A test print on plain paper looks right before you use cardstock.",
+        "Extra objects, such as a chair or a garland, are ones you are happy to color.",
+        "The page has no words on it, and names go on by hand."
+      ]
+    }
+  ]
 }
 
 };
