@@ -164,7 +164,9 @@ const THEME_GUIDES = {
     { href: '/christmas-tree-coloring-pages', label: 'Christmas tree coloring pages', note: 'a tree to decorate' },
     { href: '/christmas-ornament-coloring-pages', label: 'Christmas ornament coloring pages', note: 'blank baubles to design and cut out' },
     { href: '/snowflake-coloring-pages', label: 'Snowflake coloring pages', note: 'the snow crystal types and a paper snowflake' },
-    { href: '/christmas-coloring-pages-for-adults', label: 'Christmas coloring pages for adults', note: 'wreaths, a village street and a mandala' }
+    { href: '/christmas-coloring-pages-for-adults', label: 'Christmas coloring pages for adults', note: 'wreaths, a village street and a mandala' },
+    { href: '/elf-coloring-pages', label: 'Elf coloring pages', note: 'tested prompts for a Christmas elf' },
+    { href: '/custom-christmas-coloring-book', label: 'Custom Christmas coloring book', note: 'a 12-page homemade gift' }
   ]
 },
 
@@ -581,7 +583,9 @@ const THEME_GUIDES = {
     { href: '/thanksgiving-coloring-pages', label: 'Thanksgiving coloring pages', note: 'pies, cornucopias and a thankful tree' },
     { href: '/turkey-coloring-pages', label: 'Turkey coloring pages', note: 'cartoon, realistic or without feathers' },
     { href: '/halloween-coloring-pages', label: 'Halloween coloring pages', note: 'from cute to spooky' },
-    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' },
+    { href: '/thankful-coloring-pages', label: 'Thankful coloring pages', note: 'five fill-in activities for kids' },
+    { href: '/turkey-disguise-template', label: 'Turkey disguise template', note: 'a plain turkey and 18 disguise ideas' }
   ]
 },
 
@@ -653,7 +657,9 @@ const THEME_GUIDES = {
     { href: '/turkey-coloring-pages', label: 'Turkey coloring pages', note: 'cartoon, realistic or without feathers' },
     { href: '/fall-coloring-pages', label: 'Fall coloring pages', note: 'leaves, scarecrows and pumpkin patches' },
     { href: '/christmas-coloring-pages', label: 'Christmas coloring pages', note: 'with a 24-day Advent plan' },
-    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' },
+    { href: '/turkey-disguise-template', label: 'Turkey disguise template', note: 'a plain turkey and 18 disguise ideas' },
+    { href: '/thankful-coloring-pages', label: 'Thankful coloring pages', note: 'five fill-in activities for kids' }
   ]
 },
 
@@ -722,7 +728,8 @@ const THEME_GUIDES = {
     { href: '/thanksgiving-coloring-pages', label: 'Thanksgiving coloring pages', note: 'pies, cornucopias and a thankful tree' },
     { href: '/fall-coloring-pages', label: 'Fall coloring pages', note: 'leaves, scarecrows and pumpkin patches' },
     { href: '/animal-coloring-pages', label: 'Animal coloring pages', note: 'real animals, pets and habitats' },
-    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' },
+    { href: '/turkey-disguise-template', label: 'Turkey disguise template', note: 'a plain turkey and 18 disguise ideas' }
   ]
 },
 
@@ -1817,7 +1824,9 @@ const THEME_GUIDES = {
     { href: '/christmas-tree-coloring-pages', label: 'Christmas tree coloring pages', note: 'a tree to decorate' },
     { href: '/christmas-coloring-pages-for-adults', label: 'Christmas coloring pages for adults', note: 'wreaths, a village street and a mandala' },
     { href: '/snowman-coloring-pages', label: 'Snowman coloring pages', note: 'a blank snowman to dress' },
-    { href: '/gingerbread-coloring-pages', label: 'Gingerbread coloring pages', note: 'cookies and candy houses' }
+    { href: '/gingerbread-coloring-pages', label: 'Gingerbread coloring pages', note: 'cookies and candy houses' },
+    { href: '/elf-coloring-pages', label: 'Elf coloring pages', note: 'tested prompts for a Christmas elf' },
+    { href: '/custom-christmas-coloring-book', label: 'Custom Christmas coloring book', note: 'a 12-page homemade gift' }
   ]
 },
 
@@ -1873,7 +1882,8 @@ const THEME_GUIDES = {
     { href: '/christmas-coloring-pages', label: 'Christmas coloring pages', note: 'with a 24-day Advent plan' },
     { href: '/winter-coloring-pages', label: 'Winter coloring pages', note: 'snow days, snowflakes and polar animals' },
     { href: '/animal-coloring-pages', label: 'Animal coloring pages', note: 'life cycles and pet portraits' },
-    { href: '/christmas-coloring-pages-for-adults', label: 'Christmas coloring pages for adults', note: 'wreaths, a village street and a mandala' }
+    { href: '/christmas-coloring-pages-for-adults', label: 'Christmas coloring pages for adults', note: 'wreaths, a village street and a mandala' },
+    { href: '/elf-coloring-pages', label: 'Elf coloring pages', note: 'tested prompts for a Christmas elf' }
   ]
 },
 
@@ -1993,7 +2003,8 @@ const THEME_GUIDES = {
     { href: '/christmas-coloring-pages', label: 'Christmas coloring pages', note: 'with a 24-day Advent plan, cards and ornaments' },
     { href: '/snowflake-coloring-pages', label: 'Snowflake coloring pages', note: 'the snow crystal types and a paper snowflake' },
     { href: '/mandala-coloring-pages', label: 'Mandala coloring pages', note: 'symmetrical designs for a quiet evening' },
-    { href: '/christmas-coloring-pages-for-adults', label: 'Christmas coloring pages for adults', note: 'wreaths, a village street and a mandala' }
+    { href: '/christmas-coloring-pages-for-adults', label: 'Christmas coloring pages for adults', note: 'wreaths, a village street and a mandala' },
+    { href: '/custom-christmas-coloring-book', label: 'Custom Christmas coloring book', note: 'a 12-page homemade gift' }
   ]
 },
 
