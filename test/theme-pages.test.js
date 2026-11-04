@@ -367,3 +367,37 @@ test('every ImageObject names its creator, license, license page, credit and cop
   assert.match(text, /your own classroom/);
   assert.match(text, /With Pro you may also sell the pages you make/);
 });
+
+test('home page pictures: real WebP files under public/, sized, described and lazy, all below the tool, and they wait for the screen', () => {
+  const html = pages.get('/');
+  const toolEnd = html.indexOf('<div class="examples-bar">');
+  assert.ok(toolEnd > 0);
+  const pics = [...html.matchAll(/<img\b[^>]*>/g)].filter(m => m[0].includes('/examples/'));
+  assert.ok(pics.length >= 50, 'the home page has ' + pics.length + ' example pictures');
+  for (const m of pics) {
+    const tag = m[0];
+    const attr = n => (tag.match(new RegExp('\\s' + n + '="([^"]*)"')) || [])[1];
+    const url = attr('data-src') || attr('src');
+    assert.ok(m.index > toolEnd, url + ' comes after the tool');
+    for (const n of ['width', 'height', 'alt']) assert.ok(attr(n), url + ' has ' + n);
+    assert.doesNotMatch(attr('alt'), /\bAI\b/, url);
+    assert.equal(attr('loading'), 'lazy', url);
+    assert.equal(attr('decoding'), 'async', url);
+    const set = attr('data-srcset') || attr('srcset') || '';
+    const files = [url, ...set.split(',').map(s => s.trim().split(' ')[0]).filter(Boolean)];
+    for (const f of files) {
+      assert.match(f, /^\/examples\/[a-z0-9/-]+\.webp$/, f);
+      assert.ok(fs.existsSync(path.join(__dirname, '..', 'public', f)), f + ' exists');
+    }
+    // Chrome downloads lazy images within 1250-3000 px of the first screen with the page, so every picture keeps its
+    // address in data-src until it comes near the screen: the first download of the page stays the same.
+    assert.ok(attr('data-src'), url + ' waits in data-src');
+    assert.match(attr('src'), /^data:image\/gif;base64,/, url + ' has the blank placeholder');
+  }
+  // A picture under the tool fills the prompt box the way an example prompt does: every one names a prompt that is
+  // also an example chip, so the chips and the pictures stay in step.
+  const chips = [...html.matchAll(/<button type="button" class="example-chip" onclick="useExample\(this\)">([^<]+)<\/button>/g)].map(x => x[1]);
+  const proofs = [...html.matchAll(/data-proof-prompt="([^"]+)" data-proof-level="(simple|medium|detailed)"/g)].map(x => x[1]);
+  assert.equal(chips.length, 8);
+  assert.deepEqual(proofs, chips);
+});
