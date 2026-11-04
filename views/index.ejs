@@ -110,11 +110,12 @@
   <%# Pages drawn on 4 November 2026 from the example prompts above, with this site's own drawing model and prompt
       (cloudflare/flux.js) at the level each card names. The mandala is Detailed: at Medium and Simple the model refuses
       that prompt. Files: public/examples/prompts/<name>-coloring-page-256.webp and -400.webp.
-      These pictures and the three under "Why ColoringPageMaker" sit within the browser's lazy-loading distance of the
-      first screen, so loading="lazy" alone would still download them with the page. They carry their address in
-      data-src/data-srcset and a blank 1 px GIF in src; the script at the end of the page swaps them in when they come
-      near the screen (the whole strip at once, since on a phone it scrolls sideways). The page's first download stays
-      what it was. %>
+      Every example picture on this page waits for the screen. Chrome downloads a loading="lazy" image with the page
+      when it is within 1250 px of the first screen (3000 px when it cannot tell the connection speed, as in
+      Lighthouse), which would put this strip, the three reasons and the first theme thumbnails in the first download.
+      So each one carries its address in data-src/data-srcset and a blank 1 px GIF in src, and the script at the end of
+      the page swaps the address in when the picture comes within 64 px of the screen (the whole strip at once, since on
+      a phone it scrolls sideways). The page's first download stays what it was, apart from the markup. %>
   <% var BLANK = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=='; %>
   <% var proofs = [
     ['cute-dinosaur-in-jungle', 'cute dinosaur in jungle', 'medium', 'Cute dinosaur in a jungle coloring page for kids, printable'],
@@ -161,9 +162,10 @@
 <%
   // A small picture for each theme link: one of the example pages already on that theme's own page (theme-examples.js),
   // as a 192 px WebP next to its -400/-800 files. The four guides use pages drawn while their prompts were tested.
+  // It waits in data-src like the pictures above (see the note over the strip).
   function thumb(file, alt) {
     var a = String(alt).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
-    return '<img src="/examples/' + file + '-192.webp" width="192" height="192" alt="' + a + '" loading="lazy" decoding="async">';
+    return '<img src="' + BLANK + '" data-src="/examples/' + file + '-192.webp" width="192" height="192" alt="' + a + '" loading="lazy" decoding="async">';
   }
 %>
 <section class="section" id="in-season">
@@ -257,7 +259,7 @@
     <div class="price-tag">
       <span class="amt">$9</span>
       <span class="desc">one-time, forever</span>
-      <span class="pro-sheet"><img src="/examples/unicorn-coloring-pages/unicorn-baby-meadow-192.webp" width="192" height="192" alt="A page of a Pro PDF book: baby unicorn coloring page on letter-size paper, no watermark" loading="lazy" decoding="async"></span>
+      <span class="pro-sheet"><img src="<%= BLANK %>" data-src="/examples/unicorn-coloring-pages/unicorn-baby-meadow-192.webp" width="192" height="192" alt="A page of a Pro PDF book: baby unicorn coloring page on letter-size paper, no watermark" loading="lazy" decoding="async"></span>
     </div>
 
     <ul class="features">
