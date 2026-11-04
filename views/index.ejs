@@ -106,83 +106,122 @@
   </div>
 
   <%- include('partials/pro-nudge', { home: true }) %>
+
+  <%# Pages drawn on 4 November 2026 from the example prompts above, with this site's own drawing model and prompt
+      (cloudflare/flux.js) at the level each card names. The mandala is Detailed: at Medium and Simple the model refuses
+      that prompt. Files: public/examples/prompts/<name>-coloring-page-256.webp and -400.webp.
+      These pictures and the three under "Why ColoringPageMaker" sit within the browser's lazy-loading distance of the
+      first screen, so loading="lazy" alone would still download them with the page. They carry their address in
+      data-src/data-srcset and a blank 1 px GIF in src; the script at the end of the page swaps them in when they come
+      near the screen (the whole strip at once, since on a phone it scrolls sideways). The page's first download stays
+      what it was. %>
+  <% var BLANK = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=='; %>
+  <% var proofs = [
+    ['cute-dinosaur-in-jungle', 'cute dinosaur in jungle', 'medium', 'Cute dinosaur in a jungle coloring page for kids, printable'],
+    ['unicorn-princess-with-castle', 'unicorn princess with castle', 'medium', 'Unicorn in front of a fairy tale castle coloring page for kids, printable'],
+    ['intricate-mandala-with-flowers', 'intricate mandala with flowers', 'detailed', 'Intricate flower mandala coloring page for adults, printable'],
+    ['halloween-pumpkin-with-bats', 'halloween pumpkin with bats', 'medium', 'Halloween pumpkin with bats coloring page, printable'],
+    ['space-astronaut-on-moon', 'space astronaut on moon', 'medium', 'Astronaut on the moon space coloring page for kids, printable'],
+    ['mermaid-underwater-scene', 'mermaid underwater scene', 'medium', 'Mermaid underwater scene coloring page for kids, printable'],
+    ['cute-robot-with-flowers', 'cute robot with flowers', 'medium', 'Cute robot with flowers coloring page for kids, printable'],
+    ['fairy-with-butterflies', 'fairy with butterflies', 'medium', 'Fairy with butterflies coloring page, printable']
+  ]; %>
+  <div class="prompt-proofs">
+    <p class="prompt-proofs-note">Pages drawn from the example prompts above. Pick one to put its prompt and detail level in the box.</p>
+    <ul class="prompt-proofs-list" data-img-group>
+      <% proofs.forEach(function (p) { var b = '/examples/prompts/' + p[0] + '-coloring-page', lvl = p[2] === 'detailed' ? 'Detailed' : 'Medium'; %>
+      <li><button type="button" class="prompt-proof" data-proof-prompt="<%= p[1] %>" data-proof-level="<%= p[2] %>" aria-label="Use the prompt <%= p[1] %> at <%= lvl %> detail"><img src="<%= BLANK %>" data-src="<%= b %>-256.webp" data-srcset="<%= b %>-256.webp 256w, <%= b %>-400.webp 400w" sizes="(max-width: 639px) 140px, (max-width: 899px) 22vw, 124px" width="256" height="256" alt="<%= p[3] %>" loading="lazy" decoding="async"><span><%= p[1] %><small><%= lvl %></small></span></button></li>
+      <% }); %>
+    </ul>
+  </div>
 </div>
 
 <section class="section">
   <h2>Why ColoringPageMaker</h2>
   <p class="lead">You describe the page, the generator draws it. No searching through stock sites for something close.</p>
-  <ol class="points">
+  <ol class="points points-art">
     <li>
       <h3>Under a minute</h3>
       <p>Type your idea and get a print-ready coloring page, usually within a few seconds.</p>
+      <figure class="point-art"><img src="<%= BLANK %>" data-src="/examples/dog-coloring-pages/dog-bath-192.webp" data-srcset="/examples/dog-coloring-pages/dog-bath-192.webp 192w, /examples/dog-coloring-pages/dog-bath-400.webp 400w" sizes="(max-width: 700px) 88px, 150px" width="192" height="192" alt="Dog in a bubble bath coloring page for kids, printable" loading="lazy" decoding="async"><figcaption>Dog in a bubble bath, Medium detail</figcaption></figure>
     </li>
     <li>
       <h3>The scene you describe</h3>
       <p>Ask for the exact scene, character or pattern you have in mind instead of settling for the closest stock page.</p>
+      <figure class="point-art"><img src="<%= BLANK %>" data-src="/examples/prompts/cat-in-raincoat-puddles-coloring-page-256.webp" data-srcset="/examples/prompts/cat-in-raincoat-puddles-coloring-page-256.webp 256w, /examples/prompts/cat-in-raincoat-puddles-coloring-page-400.webp 400w" sizes="(max-width: 700px) 88px, 150px" width="256" height="256" alt="Cat in a raincoat and boots with an umbrella jumping over puddles, coloring page drawn from that prompt" loading="lazy" decoding="async"><figcaption class="point-prompt">a cat in a raincoat and boots holding an umbrella, jumping over puddles</figcaption></figure>
     </li>
     <li>
       <h3>Sell on Etsy and KDP</h3>
       <p>Pro includes commercial use, so you can sell the pages you make as printables or KDP books.</p>
+      <figure class="point-art"><span class="pdf-sheet"><img src="<%= BLANK %>" data-src="/examples/mandala-coloring-pages/mandala-leaf-ring-192.webp" data-srcset="/examples/mandala-coloring-pages/mandala-leaf-ring-192.webp 192w, /examples/mandala-coloring-pages/mandala-leaf-ring-400.webp 400w" sizes="(max-width: 700px) 80px, 136px" width="192" height="192" alt="Mandala coloring page on a letter-size PDF page for KDP or Etsy" loading="lazy" decoding="async"></span><figcaption>Pro PDF page, 8.5×11 in, no watermark</figcaption></figure>
     </li>
   </ol>
 </section>
 
+<%
+  // A small picture for each theme link: one of the example pages already on that theme's own page (theme-examples.js),
+  // as a 192 px WebP next to its -400/-800 files. The four guides use pages drawn while their prompts were tested.
+  function thumb(file, alt) {
+    var a = String(alt).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+    return '<img src="/examples/' + file + '-192.webp" width="192" height="192" alt="' + a + '" loading="lazy" decoding="async">';
+  }
+%>
 <section class="section" id="in-season">
   <h2>Coloring pages for Thanksgiving, Christmas and winter</h2>
   <p class="lead">Thanksgiving is on 26 November 2026, Hanukkah starts on 4 December and Christmas is on Friday 25 December. Each page has finished examples to download.</p>
-  <ul class="theme-list">
-    <li><a href="/thanksgiving-coloring-pages"><strong>Thanksgiving</strong><span>Pies, turkeys and a thankful tree</span></a></li>
-    <li><a href="/christmas-coloring-pages"><strong>Christmas</strong><span>A 24-day Advent plan</span></a></li>
-    <li><a href="/santa-coloring-pages"><strong>Santa</strong><span>A smiling face to a sack in the snow</span></a></li>
-    <li><a href="/reindeer-coloring-pages"><strong>Reindeer</strong><span>Harness bells and a snowy forest</span></a></li>
-    <li><a href="/christmas-tree-coloring-pages"><strong>Christmas trees</strong><span>A bare tree to decorate</span></a></li>
-    <li><a href="/christmas-ornament-coloring-pages"><strong>Ornaments</strong><span>Blank baubles to design and cut out</span></a></li>
-    <li><a href="/snowflake-coloring-pages"><strong>Snowflakes</strong><span>From four simple ones to fern-like arms</span></a></li>
-    <li><a href="/christmas-coloring-pages-for-adults"><strong>Christmas for adults</strong><span>A wreath, a village street and a mandala</span></a></li>
-    <li><a href="/hanukkah-coloring-pages"><strong>Hanukkah</strong><span>Menorahs, dreidels and latkes</span></a></li>
-    <li><a href="/new-year-coloring-pages"><strong>New Year</strong><span>Party hats, fireworks and a countdown clock</span></a></li>
+  <ul class="theme-list with-thumbs">
+    <li><a href="/thanksgiving-coloring-pages"><strong>Thanksgiving</strong><span>Pies, turkeys and a thankful tree</span><%- thumb('thanksgiving-coloring-pages/thanksgiving-pumpkin-pie', 'Pumpkin pie Thanksgiving coloring page for kids') %></a></li>
+    <li><a href="/christmas-coloring-pages"><strong>Christmas</strong><span>A 24-day Advent plan</span><%- thumb('christmas-coloring-pages/christmas-tree-ornaments', 'Christmas tree with ornaments coloring page for kids') %></a></li>
+    <li><a href="/santa-coloring-pages"><strong>Santa</strong><span>A smiling face to a sack in the snow</span><%- thumb('santa-coloring-pages/santa-smiling-face', 'Smiling Santa Claus face coloring page for kids') %></a></li>
+    <li><a href="/reindeer-coloring-pages"><strong>Reindeer</strong><span>Harness bells and a snowy forest</span><%- thumb('reindeer-coloring-pages/reindeer-harness-bells', 'Reindeer with harness bells coloring page') %></a></li>
+    <li><a href="/christmas-tree-coloring-pages"><strong>Christmas trees</strong><span>A bare tree to decorate</span><%- thumb('christmas-tree-coloring-pages/christmas-tree-presents', 'Christmas tree with presents coloring page') %></a></li>
+    <li><a href="/christmas-ornament-coloring-pages"><strong>Ornaments</strong><span>Blank baubles to design and cut out</span><%- thumb('ornament-coloring-pages/ornament-blank-ball', 'Blank Christmas ornament coloring page to design') %></a></li>
+    <li><a href="/snowflake-coloring-pages"><strong>Snowflakes</strong><span>From four simple ones to fern-like arms</span><%- thumb('snowflake-coloring-pages/snowflake-fern-arms', 'Detailed snowflake coloring page') %></a></li>
+    <li><a href="/christmas-coloring-pages-for-adults"><strong>Christmas for adults</strong><span>A wreath, a village street and a mandala</span><%- thumb('christmas-coloring-pages-for-adults/christmas-adults-holly-wreath', 'Holly wreath Christmas coloring page for adults') %></a></li>
+    <li><a href="/hanukkah-coloring-pages"><strong>Hanukkah</strong><span>Menorahs, dreidels and latkes</span><%- thumb('hanukkah-coloring-pages/hanukkah-menorah', 'Hanukkah menorah coloring page for kids') %></a></li>
+    <li><a href="/new-year-coloring-pages"><strong>New Year</strong><span>Party hats, fireworks and a countdown clock</span><%- thumb('new-year-coloring-pages/new-year-clock', 'New Year countdown clock coloring page') %></a></li>
   </ul>
   <p class="lead" style="margin:34px 0 0">Four guides with prompts we tested, for a class set or a gift.</p>
-  <ul class="theme-list">
-    <li><a href="/turkey-disguise-template"><strong>Turkey disguise template</strong><span>A plain turkey and 18 disguise ideas</span></a></li>
-    <li><a href="/thankful-coloring-pages"><strong>Thankful pages</strong><span>Five fill-in activities for kids</span></a></li>
-    <li><a href="/elf-coloring-pages"><strong>Elf pages</strong><span>Eight prompts for a Christmas elf</span></a></li>
-    <li><a href="/custom-christmas-coloring-book"><strong>Custom Christmas book</strong><span>A 12-page gift about one child</span></a></li>
+  <ul class="theme-list with-thumbs">
+    <li><a href="/turkey-disguise-template"><strong>Turkey disguise template</strong><span>A plain turkey and 18 disguise ideas</span><%- thumb('guides/turkey-disguise-firefighter-coloring-page', 'Turkey disguised as a firefighter coloring page') %></a></li>
+    <li><a href="/thankful-coloring-pages"><strong>Thankful pages</strong><span>Five fill-in activities for kids</span><%- thumb('guides/thankful-turkey-banner-coloring-page', 'Thankful turkey with a blank banner, fill-in coloring page for kids') %></a></li>
+    <li><a href="/elf-coloring-pages"><strong>Elf pages</strong><span>Eight prompts for a Christmas elf</span><%- thumb('guides/elf-with-candy-cane-coloring-page', 'Christmas elf with a candy cane coloring page for kids') %></a></li>
+    <li><a href="/custom-christmas-coloring-book"><strong>Custom Christmas book</strong><span>A 12-page gift about one child</span><%- thumb('guides/christmas-wreath-book-cover-coloring-page', 'Christmas wreath coloring page for a homemade coloring book cover') %></a></li>
   </ul>
 </section>
 
 <section class="section">
   <h2>Popular themes</h2>
   <p class="lead">Each theme has its own generator page with example prompts.</p>
-  <ul class="theme-list">
-    <li><a href="/unicorn-coloring-pages"><strong>Unicorns</strong><span>Rainbows and baby unicorns</span></a></li>
-    <li><a href="/dinosaur-coloring-pages"><strong>Dinosaurs</strong><span>T-Rex, Triceratops and friends</span></a></li>
-    <li><a href="/mandala-coloring-pages"><strong>Mandalas</strong><span>Calm, symmetrical patterns for adults</span></a></li>
-    <li><a href="/halloween-coloring-pages"><strong>Halloween</strong><span>Friendly pumpkins and ghosts</span></a></li>
-    <li><a href="/christmas-coloring-pages"><strong>Christmas</strong><span>Santa, trees and snowmen</span></a></li>
-    <li><a href="/animal-coloring-pages"><strong>Animals</strong><span>Any animal you can name</span></a></li>
-    <li><a href="/princess-coloring-pages"><strong>Princesses</strong><span>Castles, crowns and dresses</span></a></li>
-    <li><a href="/flower-coloring-pages"><strong>Flowers</strong><span>Bouquets and botanical line art</span></a></li>
-    <li><a href="/adult-coloring-pages"><strong>Adult</strong><span>Dense, detailed designs</span></a></li>
-    <li><a href="/fall-coloring-pages"><strong>Fall</strong><span>Leaves, scarecrows and pumpkin patches</span></a></li>
-    <li><a href="/thanksgiving-coloring-pages"><strong>Thanksgiving</strong><span>Pies, turkeys and a thankful tree</span></a></li>
-    <li><a href="/winter-coloring-pages"><strong>Winter</strong><span>Snowmen, snow days and polar bears</span></a></li>
-    <li><a href="/nativity-coloring-pages"><strong>Nativity</strong><span>The manger, the shepherds and the star</span></a></li>
-    <li><a href="/new-year-coloring-pages"><strong>New Year</strong><span>Party hats, fireworks and a countdown clock</span></a></li>
-    <li><a href="/gingerbread-coloring-pages"><strong>Gingerbread</strong><span>Gingerbread men, houses and cookies</span></a></li>
-    <li><a href="/snowman-coloring-pages"><strong>Snowmen</strong><span>Snow families and a blank snowman to dress</span></a></li>
-    <li><a href="/diwali-coloring-pages"><strong>Diwali</strong><span>Diyas, rangoli and lanterns</span></a></li>
-    <li><a href="/hanukkah-coloring-pages"><strong>Hanukkah</strong><span>Menorahs, dreidels and latkes</span></a></li>
-    <li><a href="/dragon-coloring-pages"><strong>Dragons</strong><span>Baby dragons and castle towers</span></a></li>
-    <li><a href="/cat-coloring-pages"><strong>Cats</strong><span>Kittens, cozy cats and real breeds</span></a></li>
-    <li><a href="/car-coloring-pages"><strong>Cars</strong><span>Classic cars, race cars and road trips</span></a></li>
-    <li><a href="/dog-coloring-pages"><strong>Dogs</strong><span>Puppies and the seven dog groups</span></a></li>
-    <li><a href="/mermaid-coloring-pages"><strong>Mermaids</strong><span>On the rocks and under the sea</span></a></li>
-    <li><a href="/horse-coloring-pages"><strong>Horses</strong><span>Ponies, foals and galloping horses</span></a></li>
-    <li><a href="/fairy-coloring-pages"><strong>Fairies</strong><span>Fairy houses, wings and gardens</span></a></li>
-    <li><a href="/butterfly-coloring-pages"><strong>Butterflies</strong><span>Monarchs and caterpillars</span></a></li>
-    <li><a href="/space-coloring-pages"><strong>Space</strong><span>Rockets, planets and astronauts</span></a></li>
-    <li><a href="/ocean-coloring-pages"><strong>Ocean</strong><span>Sea turtles, reefs and whales</span></a></li>
+  <ul class="theme-list with-thumbs">
+    <li><a href="/unicorn-coloring-pages"><strong>Unicorns</strong><span>Rainbows and baby unicorns</span><%- thumb('unicorn-coloring-pages/unicorn-rainbow-jump', 'Unicorn jumping over a rainbow coloring page for kids') %></a></li>
+    <li><a href="/dinosaur-coloring-pages"><strong>Dinosaurs</strong><span>T-Rex, Triceratops and friends</span><%- thumb('dinosaur-coloring-pages/dinosaur-baby-t-rex', 'Baby T. rex dinosaur coloring page for kids') %></a></li>
+    <li><a href="/mandala-coloring-pages"><strong>Mandalas</strong><span>Calm, symmetrical patterns for adults</span><%- thumb('mandala-coloring-pages/mandala-petal-rings', 'Petal mandala coloring page for adults') %></a></li>
+    <li><a href="/halloween-coloring-pages"><strong>Halloween</strong><span>Friendly pumpkins and ghosts</span><%- thumb('halloween-coloring-pages/halloween-pumpkin-ghost', 'Halloween pumpkin and friendly ghost coloring page for kids') %></a></li>
+    <li><a href="/christmas-coloring-pages"><strong>Christmas</strong><span>Santa, trees and snowmen</span><%- thumb('christmas-coloring-pages/christmas-stockings-fireplace', 'Christmas stockings on a fireplace coloring page') %></a></li>
+    <li><a href="/animal-coloring-pages"><strong>Animals</strong><span>Any animal you can name</span><%- thumb('animal-coloring-pages/animal-cartoon-elephant', 'Cartoon elephant animal coloring page for kids') %></a></li>
+    <li><a href="/princess-coloring-pages"><strong>Princesses</strong><span>Castles, crowns and dresses</span><%- thumb('princess-coloring-pages/princess-crown-flower', 'Princess with a crown and a flower coloring page for kids') %></a></li>
+    <li><a href="/flower-coloring-pages"><strong>Flowers</strong><span>Bouquets and botanical line art</span><%- thumb('flower-coloring-pages/flower-sunflower-bouquet', 'Sunflower and daisy bouquet flower coloring page') %></a></li>
+    <li><a href="/adult-coloring-pages"><strong>Adult</strong><span>Dense, detailed designs</span><%- thumb('adult-coloring-pages/adult-cottage-garden', 'Cottage garden gate coloring page for adults') %></a></li>
+    <li><a href="/fall-coloring-pages"><strong>Fall</strong><span>Leaves, scarecrows and pumpkin patches</span><%- thumb('fall-coloring-pages/fall-scarecrow-pumpkins', 'Fall scarecrow and pumpkins coloring page') %></a></li>
+    <li><a href="/thanksgiving-coloring-pages"><strong>Thanksgiving</strong><span>Pies, turkeys and a thankful tree</span><%- thumb('thanksgiving-coloring-pages/thanksgiving-cornucopia', 'Thanksgiving cornucopia coloring page') %></a></li>
+    <li><a href="/winter-coloring-pages"><strong>Winter</strong><span>Snowmen, snow days and polar bears</span><%- thumb('winter-coloring-pages/winter-polar-bear-cub', 'Polar bear cub sliding on snow winter coloring page for kids') %></a></li>
+    <li><a href="/nativity-coloring-pages"><strong>Nativity</strong><span>The manger, the shepherds and the star</span><%- thumb('nativity-coloring-pages/nativity-stable-animals', 'Nativity stable with a donkey, an ox and a sheep coloring page') %></a></li>
+    <li><a href="/new-year-coloring-pages"><strong>New Year</strong><span>Party hats, fireworks and a countdown clock</span><%- thumb('new-year-coloring-pages/new-year-party-hat', 'New Year party hat and balloons coloring page for kids') %></a></li>
+    <li><a href="/gingerbread-coloring-pages"><strong>Gingerbread</strong><span>Gingerbread men, houses and cookies</span><%- thumb('gingerbread-coloring-pages/gingerbread-man', 'Gingerbread man coloring page for kids') %></a></li>
+    <li><a href="/snowman-coloring-pages"><strong>Snowmen</strong><span>Snow families and a blank snowman to dress</span><%- thumb('snowman-coloring-pages/snowman-family', 'Snowman family coloring page for kids') %></a></li>
+    <li><a href="/diwali-coloring-pages"><strong>Diwali</strong><span>Diyas, rangoli and lanterns</span><%- thumb('diwali-coloring-pages/diwali-diya', 'Diwali diya lamp coloring page for kids') %></a></li>
+    <li><a href="/hanukkah-coloring-pages"><strong>Hanukkah</strong><span>Menorahs, dreidels and latkes</span><%- thumb('hanukkah-coloring-pages/hanukkah-latkes', 'Hanukkah latkes coloring page for kids') %></a></li>
+    <li><a href="/dragon-coloring-pages"><strong>Dragons</strong><span>Baby dragons and castle towers</span><%- thumb('dragon-coloring-pages/dragon-baby-egg', 'Baby dragon hatching from an egg coloring page for kids') %></a></li>
+    <li><a href="/cat-coloring-pages"><strong>Cats</strong><span>Kittens, cozy cats and real breeds</span><%- thumb('cat-coloring-pages/cat-kittens-basket', 'Kittens in a basket cat coloring page') %></a></li>
+    <li><a href="/car-coloring-pages"><strong>Cars</strong><span>Classic cars, race cars and road trips</span><%- thumb('car-coloring-pages/car-classic', 'Classic car coloring page for kids') %></a></li>
+    <li><a href="/dog-coloring-pages"><strong>Dogs</strong><span>Puppies and the seven dog groups</span><%- thumb('dog-coloring-pages/dog-puppy-bone', 'Puppy with a bone dog coloring page for kids') %></a></li>
+    <li><a href="/mermaid-coloring-pages"><strong>Mermaids</strong><span>On the rocks and under the sea</span><%- thumb('mermaid-coloring-pages/mermaid-rock', 'Mermaid on a rock coloring page for kids') %></a></li>
+    <li><a href="/horse-coloring-pages"><strong>Horses</strong><span>Ponies, foals and galloping horses</span><%- thumb('horse-coloring-pages/horse-pony', 'Pony horse coloring page for kids') %></a></li>
+    <li><a href="/fairy-coloring-pages"><strong>Fairies</strong><span>Fairy houses, wings and gardens</span><%- thumb('fairy-coloring-pages/fairy-mushroom', 'Fairy on a mushroom coloring page for kids') %></a></li>
+    <li><a href="/butterfly-coloring-pages"><strong>Butterflies</strong><span>Monarchs and caterpillars</span><%- thumb('butterfly-coloring-pages/butterfly-caterpillar', 'Butterfly and caterpillar coloring page for kids') %></a></li>
+    <li><a href="/space-coloring-pages"><strong>Space</strong><span>Rockets, planets and astronauts</span><%- thumb('space-coloring-pages/space-rocket', 'Rocket, Moon and planet space coloring page for kids') %></a></li>
+    <li><a href="/ocean-coloring-pages"><strong>Ocean</strong><span>Sea turtles, reefs and whales</span><%- thumb('ocean-coloring-pages/ocean-sea-turtle', 'Sea turtle ocean coloring page for kids') %></a></li>
   </ul>
 </section>
 
@@ -218,6 +257,7 @@
     <div class="price-tag">
       <span class="amt">$9</span>
       <span class="desc">one-time, forever</span>
+      <span class="pro-sheet"><img src="/examples/unicorn-coloring-pages/unicorn-baby-meadow-192.webp" width="192" height="192" alt="A page of a Pro PDF book: baby unicorn coloring page on letter-size paper, no watermark" loading="lazy" decoding="async"></span>
     </div>
 
     <ul class="features">
@@ -628,6 +668,49 @@ function openFromHash(){
 }
 openFromHash();
 window.addEventListener('hashchange', openFromHash);
+</script>
+<script>
+// The pictures under the tool: a click puts that page's prompt and detail level in the box, as an example prompt does,
+// and brings the box back into view.
+document.addEventListener('click', function (e) {
+  var b = e.target && e.target.closest ? e.target.closest('[data-proof-prompt]') : null;
+  if (!b) return;
+  var input = document.getElementById('promptInput');
+  input.value = b.getAttribute('data-proof-prompt');
+  updateCharCount();
+  selectStyle(b.getAttribute('data-proof-level') || 'medium');
+  var calm = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  try { input.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'center' }); } catch (err) { input.scrollIntoView(); }
+  if (window.matchMedia && window.matchMedia('(hover: hover)').matches) { try { input.focus({ preventScroll: true }); } catch (err) {} }
+});
+// Pictures that wait for the screen (img[data-src], see the note above the strip): each one loads when it comes within
+// 64 px of the screen; the strip under the tool ([data-img-group]) loads as a whole. Without IntersectionObserver
+// they all load at once, as plain lazy images.
+(function () {
+  var imgs = [].slice.call(document.querySelectorAll('img[data-src]'));
+  function show(img) {
+    if (!img.getAttribute('data-src')) return;
+    if (img.getAttribute('data-srcset')) img.srcset = img.getAttribute('data-srcset');
+    img.src = img.getAttribute('data-src');
+    img.removeAttribute('data-src');
+    img.removeAttribute('data-srcset');
+  }
+  if (!('IntersectionObserver' in window)) { imgs.forEach(show); return; }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (!en.isIntersecting) return;
+      io.unobserve(en.target);
+      if (en.target.tagName === 'IMG') show(en.target);
+      else [].slice.call(en.target.querySelectorAll('img[data-src]')).forEach(show);
+    });
+  }, { rootMargin: '0px 0px 64px 0px' });
+  var seen = [];
+  imgs.forEach(function (img) {
+    var g = img.closest('[data-img-group]');
+    if (!g) { io.observe(img); return; }
+    if (seen.indexOf(g) < 0) { seen.push(g); io.observe(g); }
+  });
+})();
 </script>
 
 </body>

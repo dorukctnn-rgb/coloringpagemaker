@@ -365,3 +365,40 @@ article.post .data-table{font-size:15px}
 .season-pro .season-pro-actions .btn{color:var(--on-accent)}
 .season-pro-link{color:var(--ink);font-weight:600;text-underline-offset:3px}
 @media (max-width:700px){.season-pro-box{grid-template-columns:1fr}.season-pro .season-pro-actions .btn{width:100%}}
+/* Home page pictures (views/index.ejs): pages from the example prompts, the three reasons, the theme lists, the Pro window */
+.prompt-proofs{margin-top:28px}
+.prompt-proofs-note{font-size:14px;color:var(--muted);margin-bottom:12px}
+.prompt-proofs-list{list-style:none;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:12px}
+.prompt-proof{display:flex;flex-direction:column;justify-content:flex-start;width:100%;height:100%;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:0;overflow:hidden;cursor:pointer;text-align:left;transition:border-color .15s}
+.prompt-proof:hover{border-color:var(--ink)}
+.prompt-proof img{display:block;width:100%;height:auto;aspect-ratio:1/1;background:#fff;border-bottom:1px solid var(--line)}
+.prompt-proof span{display:block;padding:8px 10px 10px;font-size:13px;line-height:1.35}
+.prompt-proof small{display:block;margin-top:3px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--accent-text)}
+@media (max-width:899px){.prompt-proofs-list{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:639px){
+  .prompt-proofs-list{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -20px;padding:0 20px 6px;scroll-padding:0 20px;overscroll-behavior-x:contain}
+  .prompt-proofs-list li{flex:0 0 140px;scroll-snap-align:start}
+}
+.points-art li{grid-template-columns:56px minmax(0,1fr) minmax(0,1.8fr) 150px}
+.point-art{margin:0;align-self:start;grid-column:4;grid-row:1}
+.point-art img{display:block;width:150px;height:150px;background:#fff;border:1px solid var(--line);border-radius:8px}
+.point-art figcaption{margin-top:6px;font-size:12.5px;line-height:1.4;color:var(--muted)}
+.point-art .point-prompt{font-family:var(--display);font-size:13px;color:var(--ink)}
+.point-prompt::before{content:"\201C"}
+.point-prompt::after{content:"\201D"}
+.pdf-sheet{display:flex;align-items:center;width:116px;aspect-ratio:612/792;margin:0 0 0 8px;padding:6px;background:#fff;border:1px solid var(--line-strong);box-shadow:-6px 6px 0 -1px #fff,-6px 6px 0 0 var(--line-strong)}
+.point-art .pdf-sheet img{width:100%;height:auto;aspect-ratio:1/1;border:0;border-radius:0}
+@media (max-width:700px){
+  .points-art li{grid-template-columns:44px minmax(0,1fr)}
+  .point-art{grid-column:2;grid-row:auto;display:flex;align-items:center;gap:14px;margin-top:10px}
+  .point-art img{width:88px;height:88px;flex:0 0 88px}
+  .point-art figcaption{margin-top:0}
+  .pdf-sheet{width:68px;flex:0 0 68px;padding:4px;margin-left:6px}
+}
+.theme-list.with-thumbs a{display:grid;grid-template-columns:60px minmax(0,1fr);column-gap:14px;align-items:center;padding:12px 0}
+.theme-list.with-thumbs img{grid-column:1;grid-row:1 / span 2;width:60px;height:60px;display:block;background:#fff;border:1px solid var(--line);border-radius:8px}
+.theme-list.with-thumbs strong{grid-column:2;align-self:end}
+.theme-list.with-thumbs span{grid-column:2;align-self:start}
+.modal .price-tag{position:relative}
+.pro-sheet{position:absolute;right:8px;bottom:-4px;display:flex;align-items:center;width:50px;aspect-ratio:612/792;padding:3px;background:#fff;border:1px solid var(--line-strong);box-shadow:-4px 4px 0 -1px #fff,-4px 4px 0 0 var(--line-strong)}
+.pro-sheet img{display:block;width:100%;height:auto;aspect-ratio:1/1}
