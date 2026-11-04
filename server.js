@@ -788,6 +788,7 @@ app.get('/blog', (req, res) => {
 
 app.get('/privacy', (req, res) => res.render('privacy'));
 app.get('/terms', (req, res) => res.render('terms'));
+app.get('/refund', (req, res) => res.render('refund'));
 
 app.get('/:slug', (req, res, next) => {
   const slug = req.params.slug;
@@ -827,7 +828,8 @@ const SITEMAP_LASTMOD = '2026-10-07';
 const BLOG_INDEX_UPDATED = '2026-10-15';
 const HOME_UPDATED = '2026-10-15';
 const PRIVACY_UPDATED = '2026-10-28';
-const TERMS_UPDATED = '2026-10-11';
+const TERMS_UPDATED = '2026-11-04';
+const REFUND_UPDATED = '2026-11-04';
 app.get('/sitemap.xml', (req, res) => {
   res.set('Content-Type', 'text/xml');
   const entries = [
@@ -836,7 +838,8 @@ app.get('/sitemap.xml', (req, res) => {
     ...ALL_THEMES.map(s => ['/' + s, (THEME_GUIDES[s] || NICHE_PAGES[s] || {}).updated || SITEMAP_LASTMOD]),
     ...Object.keys(BLOG_POSTS).map(s => ['/' + s, BLOG_POSTS[s].updated || SITEMAP_LASTMOD]),
     ['/privacy', PRIVACY_UPDATED],
-    ['/terms', TERMS_UPDATED]
+    ['/terms', TERMS_UPDATED],
+    ['/refund', REFUND_UPDATED]
   ];
   const urls = entries.map(([p, lastmod]) => `
   <url>
