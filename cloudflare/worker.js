@@ -27,7 +27,7 @@ const PRO_TOKEN_RE = /^[a-f0-9]{64}$/;
 const RETIRED_PAGES = { '/pokemon-coloring-pages': '/animal-coloring-pages', '/cartoon-character-coloring-pages': '/' };
 const API_GET_REDIRECTS = new Set(['/generate', '/download-pdf', '/gumroad-webhook', '/verify-pro']);
 // Express matches these fixed routes without regard to case; the theme and guide slugs are case-sensitive.
-const FIXED_PAGES = new Set(['/blog', '/privacy', '/terms', '/sitemap.xml', '/robots.txt']);
+const FIXED_PAGES = new Set(['/blog', '/privacy', '/terms', '/refund', '/sitemap.xml', '/robots.txt']);
 
 // OpenAI image models past their shutdown date fall back to the default (same table as server.js).
 const DEFAULT_IMAGE_MODEL = 'gpt-image-2.5-flare';

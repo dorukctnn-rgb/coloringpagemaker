@@ -296,3 +296,32 @@ test('every page in the sitemap still renders', async () => {
   const terms = await (await fetch(app.base + '/terms')).text();
   assert.match(terms, /only with the license key/);
 });
+
+test('refund policy page: public, in the sitemap, linked from the footer, and the terms name both resellers', async () => {
+  const xml = await (await fetch(app.base + '/sitemap.xml')).text();
+  assert.match(xml, /<loc>https:\/\/www\.coloringpagemaker\.app\/refund<\/loc>/);
+  const refund = await fetch(app.base + '/refund');
+  assert.equal(refund.status, 200);
+  const text = await refund.text();
+  assert.match(text, /<link rel="canonical" href="https:\/\/www\.coloringpagemaker\.app\/refund">/);
+  assert.match(text, /within 14 days of purchase and we will refund you/);
+  assert.match(text, /mailto:info@peakappsstudio\.com/);
+  assert.match(text, /Paddle\.com and Gumroad/);
+  assert.match(text, /through the reseller you paid/);
+  assert.doesNotMatch(text, /[—–→✓✅]/);
+  // no sales script or counter on the legal page
+  assert.doesNotMatch(text, /href="https:\/\/dorukctn\.gumroad\.com|openProModal|cpmFunnel/);
+  for (const p of ['/', '/terms', '/privacy', '/refund']) {
+    const html = await (await fetch(app.base + p)).text();
+    const footer = html.slice(html.indexOf('<footer'));
+    assert.match(footer, /<a href="\/refund">Refund policy<\/a>/, p + ': footer refund link');
+    assert.match(footer, /<a href="\/terms">Terms of use<\/a>/, p + ': footer terms link');
+    assert.match(footer, /<a href="\/privacy">Privacy policy<\/a>/, p + ': footer privacy link');
+    assert.match(footer, /mailto:info@peakappsstudio\.com/, p + ': footer contact e-mail');
+  }
+  const terms = await (await fetch(app.base + '/terms')).text();
+  assert.match(terms, /Our order process is conducted by our online resellers Paddle\.com and Gumroad\. They are the Merchant of Record for all our orders/);
+  assert.match(terms, /Refunds are paid back through the reseller you paid/);
+  assert.doesNotMatch(terms, /refunds are paid back through Gumroad|Gumroad, which acts as the merchant of record/i);
+  assert.match(terms, /<a href="\/refund">refund policy<\/a>/);
+});

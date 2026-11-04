@@ -1009,7 +1009,7 @@ test('landing page: canonical, absolute image links, valid JSON-LD, working acti
   assert.equal((html.match(/<h1/g) || []).length, 1);
   assert.deepEqual(lint(visibleText(html)), []);
   // every link and image of the page is a path of the site or an absolute https address
-  for (const m of html.matchAll(/(?:href|src)="([^"]+)"/g)) assert.match(m[1], /^(\/|#|https:\/\/)/, m[1]);
+  for (const m of html.matchAll(/(?:href|src)="([^"]+)"/g)) assert.match(m[1], /^(\/|#|https:\/\/|mailto:info@peakappsstudio\.com$)/, m[1]);
   // a hostile title cannot break out of the page
   const evil = renderLanding({ ...v, headline: '<script>alert(1)</script>', alt: '"><img src=x onerror=alert(1)>', prompt: '</p><script>x</script>' }, []);
   assert.ok(!evil.includes('<script>alert') && !evil.includes('<img src=x') && !evil.includes('<script>x</script>'), 'no raw markup from the text');
