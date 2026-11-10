@@ -7,9 +7,12 @@
 // hours, oldest first, at most 200 a day. So each item carries exactly one image tag (a second tag for the same image
 // could open a second pin), and the feed only lists an item from the time it is released.
 import { SEEDS } from './seeds.js';
-import { SITE, LEVELS, THEMES, GROUPS } from './topics.js';
+import { SITE, LEVELS, THEMES, GROUPS, allSubjects, pageHeadline } from './topics.js';
 
 export const FEED_PATH = '/pins/feed.xml';
+// The day the text of the landing pages was rewritten (notes/index.js): a page released before it was last changed on this day, so the
+// sitemap's lastmod and the page's dateModified never say less. A page released later keeps its own release day.
+export const CONTENT_REVISED = '2026-11-10';
 const SEED_THEME = THEMES.halloween;
 
 const xmlText = s => String(s)
@@ -32,9 +35,18 @@ export function seedView(s) {
     pageImage: `/printables/img/${s.slug}.png`, thumbImage: `/printables/img/${s.slug}-400.png`
   };
 }
+// A page that is the second drawing of a subject (slug ending in -easy, -classic or -detailed) is headed with its level, whatever
+// headline was stored when it was drawn: the stored one is the same as its first drawing's. Only the landing page, the hub and the
+// sitemap read the headline; the pin title and description of the feed are stored text and stay as they were.
+let subjectBySlug = null;
+export function headlineOf(p) {
+  if (!subjectBySlug) subjectBySlug = new Map(allSubjects().map(s => [s.slug, s]));
+  const s = subjectBySlug.get(p.slug);
+  return s && s.variant ? pageHeadline(s) : p.headline;
+}
 export function autoView(p) {
   return {
-    source: 'auto', slug: p.slug, theme: p.theme, group: p.group, level: p.level, headline: p.headline, sub: LEVELS[p.level].sub,
+    source: 'auto', slug: p.slug, theme: p.theme, group: p.group, level: p.level, headline: headlineOf(p), sub: LEVELS[p.level].sub,
     title: p.title, description: p.description, alt: p.alt, intro: p.intro, prompt: p.prompt, metaDescription: p.metaDescription,
     site: p.site, release: p.release, created: p.created,
     pinImage: `/pins/auto/${p.slug}.png`, pinBytes: p.pinBytes,
@@ -103,18 +115,15 @@ ${body}
 
 // --- sitemap of the printable pages (the hub and every released page) ---
 export function buildSitemap({ views, now }) {
-  const lastmod = ms => new Date(ms).toISOString().slice(0, 10);
+  const revised = Date.parse(CONTENT_REVISED);
+  const lastmod = ms => new Date(Math.max(ms, revised)).toISOString().slice(0, 10);
   const newest = views.length ? views[0].release : now;
   const urls = [`  <url>
     <loc>${SITE}/printables</loc>
     <lastmod>${lastmod(newest)}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
   </url>`, ...views.map(v => `  <url>
     <loc>${xmlText(pageUrl(v.slug))}</loc>
     <lastmod>${lastmod(v.release)}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
   </url>`)].join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

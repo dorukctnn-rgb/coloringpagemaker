@@ -194,7 +194,7 @@ test('existing link lists keep their items and order; the seasonal pages are onl
     christmas: ['halloween', 'animal', 'adult', 'coloring-pages-for-classroom-teachers', 'winter', 'nativity',
       'santa', 'reindeer', 'christmas-tree', 'christmas-ornament', 'snowflake', 'christmas-for-adults', 'elf', 'custom-christmas-book'],
     winter: ['christmas', 'animal', 'adult', 'coloring-pages-for-classroom-teachers', 'snowman', 'snowflake', 'reindeer'],
-    animal: ['dinosaur', 'halloween', 'unicorn', 'coloring-pages-for-classroom-teachers', 'cat', 'dog', 'horse', 'butterfly']
+    animal: ['dinosaur', 'halloween', 'unicorn', 'coloring-pages-for-classroom-teachers', 'cat', 'dog', 'horse', 'butterfly', 'easter']
   };
   for (const [slug, expected] of Object.entries(related)) {
     // The Christmas pages of 27 October 2026 end in "-coloring-pages-for-adults", never "<x>-coloring-pages" for that one.

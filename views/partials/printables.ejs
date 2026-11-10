@@ -1,0 +1,21 @@
+<% if (locals.printables && printables.items && printables.items.length) { %>
+<section class="printables-band" id="printables" aria-labelledby="printables-title">
+  <div class="printables-head">
+    <h2 id="printables-title"><%= printables.heading %></h2>
+    <p class="printables-intro"><%= printables.intro %></p>
+  </div>
+  <ul class="printables-grid">
+    <% printables.items.forEach(function (x) { %>
+    <li class="image-card">
+      <a class="printable-card" href="/printables/<%= x.slug %>">
+        <figure>
+          <img src="/printables/img/<%= x.slug %>-400.png" width="400" height="400" alt="<%= x.alt %>" loading="lazy" decoding="async">
+          <figcaption><strong><%= x.headline %></strong><span><%= x.levelName %> page, free to print</span></figcaption>
+        </figure>
+      </a>
+    </li>
+    <% }); %>
+  </ul>
+  <p class="printables-more"><a href="<%= printables.moreHref %>"><%= printables.moreLabel %></a></p>
+</section>
+<% } %>

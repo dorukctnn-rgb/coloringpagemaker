@@ -176,6 +176,11 @@ export class PinCore {
     const r = this.exec('SELECT bytes FROM blobs WHERE slug = ? AND kind = ?', slug, kind)[0];
     return r ? bytesOf(r.bytes) : null;
   }
+  // A derived file of a page (the WebP of its picture): one row per slug and kind, replaced when written again.
+  putBlob(slug, kind, bytes) {
+    this.exec('INSERT INTO blobs (slug, kind, bytes) VALUES (?, ?, ?) ON CONFLICT(slug, kind) DO UPDATE SET bytes = excluded.bytes', slug, kind, bytes);
+    return true;
+  }
   storageBytes() {
     const r = this.exec('SELECT COALESCE(SUM(pin_bytes + page_bytes + thumb_bytes), 0) AS n, COUNT(*) AS c FROM pages')[0];
     return { bytes: Number(r.n), pages: Number(r.c) };
