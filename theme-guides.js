@@ -311,7 +311,8 @@ const THEME_GUIDES = {
     { href: '/mandala-coloring-pages', label: 'Mandala coloring pages', note: 'symmetrical, round designs' },
     { href: '/flower-coloring-pages', label: 'Flower coloring pages', note: 'bouquets and botanical line art' },
     { href: '/adult-coloring-mental-health-benefits', label: 'Adult coloring and anxiety', note: 'what four studies found' },
-    { href: '/coloring-pages-for-self-publishing-kdp', label: 'Publishing a coloring book on KDP', note: 'trim size, bleed and the 300 DPI rule' }
+    { href: '/coloring-pages-for-self-publishing-kdp', label: 'Publishing a coloring book on KDP', note: 'trim size, bleed and the 300 DPI rule' },
+    { href: '/christmas-coloring-pages-for-adults', label: 'Christmas coloring pages for adults', note: 'wreaths, a village street and a mandala' }
   ]
 },
 
@@ -456,7 +457,8 @@ const THEME_GUIDES = {
     { href: '/cat-coloring-pages', label: 'Cat coloring pages', note: 'kittens, cozy cats and real breeds' },
     { href: '/dog-coloring-pages', label: 'Dog coloring pages', note: 'puppies and the seven dog groups' },
     { href: '/horse-coloring-pages', label: 'Horse coloring pages', note: 'ponies, foals and galloping horses' },
-    { href: '/butterfly-coloring-pages', label: 'Butterfly coloring pages', note: `a monarch's real colors and life cycle` }
+    { href: '/butterfly-coloring-pages', label: 'Butterfly coloring pages', note: `a monarch's real colors and life cycle` },
+    { href: '/easter-coloring-pages', label: 'Easter coloring pages', note: 'bunnies, eggs and chicks for spring' }
   ]
 },
 
@@ -867,7 +869,8 @@ const THEME_GUIDES = {
     { href: '/christmas-coloring-pages', label: 'Christmas coloring pages', note: 'with a 24-day Advent plan' },
     { href: '/gingerbread-coloring-pages', label: 'Gingerbread coloring pages', note: 'gingerbread men, houses and cookies' },
     { href: '/winter-coloring-pages', label: 'Winter coloring pages', note: 'snowmen, snow days and polar animals' },
-    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' },
+    { href: '/custom-christmas-coloring-book', label: 'A custom Christmas coloring book', note: 'twelve pages about one child, as a homemade gift' }
   ]
 },
 
@@ -1004,7 +1007,9 @@ const THEME_GUIDES = {
     { href: '/nativity-coloring-pages', label: 'Nativity coloring pages', note: 'the manger, the shepherds and the star' },
     { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' },
     { href: '/christmas-tree-coloring-pages', label: 'Christmas tree coloring pages', note: 'a tree to decorate' },
-    { href: '/christmas-ornament-coloring-pages', label: 'Christmas ornament coloring pages', note: 'blank baubles to design and cut out' }
+    { href: '/christmas-ornament-coloring-pages', label: 'Christmas ornament coloring pages', note: 'blank baubles to design and cut out' },
+    { href: '/custom-christmas-coloring-book', label: 'A custom Christmas coloring book', note: 'twelve pages about one child, as a homemade gift' },
+    { href: '/christmas-coloring-pages-for-adults', label: 'Christmas coloring pages for adults', note: 'wreaths, a village street and a mandala' }
   ]
 },
 
@@ -1066,7 +1071,8 @@ const THEME_GUIDES = {
     { href: '/new-year-coloring-pages', label: 'New Year coloring pages', note: 'party hats, fireworks and a countdown clock' },
     { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' },
     { href: '/snowflake-coloring-pages', label: 'Snowflake coloring pages', note: 'the snow crystal types and a paper snowflake' },
-    { href: '/santa-coloring-pages', label: 'Santa coloring pages', note: 'a smiling face to a sack in the snow' }
+    { href: '/santa-coloring-pages', label: 'Santa coloring pages', note: 'a smiling face to a sack in the snow' },
+    { href: '/custom-christmas-coloring-book', label: 'A custom Christmas coloring book', note: 'twelve pages about one child, as a homemade gift' }
   ]
 },
 
@@ -1594,7 +1600,8 @@ const THEME_GUIDES = {
     { href: '/unicorn-coloring-pages', label: 'Unicorn coloring pages', note: 'winged unicorns and party pages' },
     { href: '/princess-coloring-pages', label: 'Princess coloring pages', note: 'fairy tales that are free to draw' },
     { href: '/butterfly-coloring-pages', label: 'Butterfly coloring pages', note: `a monarch's real colors` },
-    { href: '/mermaid-coloring-pages', label: 'Mermaid coloring pages', note: 'on the rocks and under the sea' }
+    { href: '/mermaid-coloring-pages', label: 'Mermaid coloring pages', note: 'on the rocks and under the sea' },
+    { href: '/easter-coloring-pages', label: 'Easter coloring pages', note: 'spring scenes with bunnies and eggs' }
   ]
 },
 
@@ -1650,7 +1657,8 @@ const THEME_GUIDES = {
     { href: '/animal-coloring-pages', label: 'Animal coloring pages', note: 'black markings, life cycles, pet portraits' },
     { href: '/flower-coloring-pages', label: 'Flower coloring pages', note: 'roses, sunflowers and bouquets' },
     { href: '/fairy-coloring-pages', label: 'Fairy coloring pages', note: 'fairy houses, wings and gardens' },
-    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' }
+    { href: '/coloring-pages-for-classroom-teachers', label: 'Coloring pages for teachers', note: 'planning pages around a lesson' },
+    { href: '/easter-coloring-pages', label: 'Easter coloring pages', note: 'bunnies, eggs and chicks for spring' }
   ]
 },
 
@@ -1943,7 +1951,8 @@ const THEME_GUIDES = {
     { href: '/christmas-ornament-coloring-pages', label: 'Christmas ornament coloring pages', note: 'blank baubles to design and cut out' },
     { href: '/santa-coloring-pages', label: 'Santa coloring pages', note: 'a smiling face to a sack in the snow' },
     { href: '/gingerbread-coloring-pages', label: 'Gingerbread coloring pages', note: 'cookies and candy houses' },
-    { href: '/christmas-coloring-pages-for-adults', label: 'Christmas coloring pages for adults', note: 'wreaths, a village street and a mandala' }
+    { href: '/christmas-coloring-pages-for-adults', label: 'Christmas coloring pages for adults', note: 'wreaths, a village street and a mandala' },
+    { href: '/custom-christmas-coloring-book', label: 'A custom Christmas coloring book', note: 'twelve pages about one child, as a homemade gift' }
   ]
 },
 
@@ -2072,7 +2081,8 @@ const THEME_GUIDES = {
     { href: '/snowman-coloring-pages', label: 'Snowman coloring pages', note: 'a blank snowman to dress' },
     { href: '/christmas-ornament-coloring-pages', label: 'Christmas ornament coloring pages', note: 'blank baubles to design and cut out' },
     { href: '/mandala-coloring-pages', label: 'Mandala coloring pages', note: 'symmetrical designs for a quiet evening' },
-    { href: '/christmas-coloring-pages', label: 'Christmas coloring pages', note: 'with a 24-day Advent plan' }
+    { href: '/christmas-coloring-pages', label: 'Christmas coloring pages', note: 'with a 24-day Advent plan' },
+    { href: '/christmas-coloring-pages-for-adults', label: 'Christmas coloring pages for adults', note: 'wreaths, a village street and a mandala' }
   ]
 },
 

@@ -234,3 +234,11 @@ test('/llms.txt names the tool, the printables, every collection and guide and t
   const robots = await get('/robots.txt');
   assert.ok(!/llms/.test(robots));
 });
+
+test('the four pages Google crawled but did not index get more inbound links from the theme guides', () => {
+  const guides = require('../theme-guides.js');
+  const inbound = slug => Object.entries(guides).filter(([k, g]) => (g.related || []).some(r => r.href === '/' + slug)).length;
+  assert.ok(inbound('easter-coloring-pages') >= 3, 'easter is named by animal, butterfly and fairy guides');
+  assert.ok(inbound('custom-christmas-coloring-book') >= 6);
+  assert.ok(inbound('christmas-coloring-pages-for-adults') >= 8);
+});
