@@ -20,7 +20,7 @@ import * as topics from '../cloudflare/autopin/topics.js';
 import { decodeGrayPng, judge, whiten, artSquare, LIMITS } from '../cloudflare/autopin/art.js';
 import { composePin, SKINS, skinFor, skinContrast, fitHeadline, PIN_W, PIN_H, CARD } from '../cloudflare/autopin/pin.js';
 import { encodePngGray, xmpChunk, readXmp, pngSize, textWidth } from '../cloudflare/autopin/raster.js';
-import { buildFeed, buildSitemap, feedItems, releasedViews, seedViews, itemLink, holidayLink, linkOf, autoView, HOLIDAY_CAMPAIGN, printAlt } from '../cloudflare/autopin/feed.js';
+import { buildFeed, buildSitemap, feedItems, releasedViews, seedViews, itemLink, holidayLink, linkOf, autoView, headlineOf, HOLIDAY_CAMPAIGN, printAlt } from '../cloudflare/autopin/feed.js';
 import { renderLanding, renderHub } from '../cloudflare/autopin/page.js';
 import { shellSource } from '../cloudflare/autopin/tools/make-shell.mjs';
 import { SHELL } from '../cloudflare/autopin/shell.js';
@@ -1076,7 +1076,7 @@ test('the Worker serves the feed, the hub, landing pages, sitemap and images of 
   assert.equal(landing.status, 200);
   assert.match(landing.headers.get('content-type'), /^text\/html; charset=utf-8$/);
   const lh = await landing.text();
-  assert.ok(lh.includes(`<h1>${page.headline}</h1>`));
+  assert.ok(lh.includes(`<h1>${headlineOf(page)}</h1>`), 'the H1 is the page headline (a second drawing of a subject is headed with its level)');
   assert.ok((await (await call(w.env, '/printables')).text()).includes(page.slug));
   assert.ok((await (await call(w.env, '/sitemap-printables.xml')).text()).includes(`/printables/${page.slug}</loc>`));
   // a seed's landing page works before its pin is released; unknown and unsafe slugs are the site's 404
@@ -1488,7 +1488,7 @@ test('a long run: the sitemap keeps every page, the hub the newest 500, the know
   assert.equal((await w.svc.slugs()).length, 700);
   assert.equal((await call(w.env, '/printables/evergreen-bulk-0-coloring-page')).status, 200, 'the oldest page still has its page');
   const page = await (await call(w.env, '/printables/evergreen-bulk-350-coloring-page')).text();
-  assert.equal((page.match(/class="image-card"/g) || []).length, 6, 'six neighbors');
+  assert.equal((page.match(/class="image-card"/g) || []).length, 9, 'three related pages, then six neighbors that are not among them');
   assert.ok(page.includes('evergreen-bulk-349-coloring-page') && page.includes('evergreen-bulk-351-coloring-page'));
 });
 

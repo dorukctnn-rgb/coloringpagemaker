@@ -694,6 +694,18 @@ const sentence = s => cap(s.replace(/\s+/g, ' ').trim()).replace(/[.,;:\s]+$/, '
 // "a friendly ghost with ..." -> alt text for the page.
 const altOf = draw => `Black line art coloring page of ${draw}, on white paper.`;
 
+// The headline of a page's own landing page. The second drawing of a subject (another detail level, a slug ending in -easy, -classic
+// or -detailed) is headed with its level, so no two pages share a title or an H1: "Halloween castle coloring page" and
+// "Detailed Halloween castle coloring page". The pin keeps the plain headline of describe(): it has to fit the pin card.
+const VARIANT_HEADLINE = {
+  easy: (name, mid) => `Easy ${mid} coloring page`,
+  classic: (name, mid) => `${cap(name)} coloring page, classic version`,
+  detailed: (name, mid) => `Detailed ${mid} coloring page`
+};
+export function pageHeadline(subject) {
+  return subject.variant ? VARIANT_HEADLINE[subject.variant](subject.name, midName(subject.name)) : `${cap(subject.name)} coloring page`;
+}
+
 // Everything written about one subject. level and name come from the subject; pick is a number that chooses among
 // the wordings (the subject hash, so the same page always gets the same words).
 export function describe(subject) {

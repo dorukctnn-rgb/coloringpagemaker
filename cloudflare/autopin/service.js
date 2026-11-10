@@ -6,12 +6,18 @@ import { Buffer } from 'node:buffer';
 import { runTick, pinsConfig, pinsStatus } from './tick.js';
 import { releasedViews, feedItems, buildFeed, buildSitemap, seedBySlug, seedViews, autoView, FEED_PATH } from './feed.js';
 import { renderLanding, renderHub } from './page.js';
+import { relatedViews } from './notes/index.js';
 import { decodeGrayPng, judge, whiten, artSquare } from './art.js';
 import { composePin, CARD } from './pin.js';
 import { encodePngGray, resizeGray, xmpChunk } from './raster.js';
 import { GROUPS } from './topics.js';
 import { isoDay } from './core.js';
 import { FLUX_MODEL } from '../flux.js';
+
+// Lossy WebP of line art: 80 keeps the lines crisp and the file a fraction of the PNG. The PNG stays the download and the print.
+export const WEBP_QUALITY = 80;
+const isWebp = b => b && b.length > 12 && b[0] === 0x52 && b[1] === 0x49 && b[2] === 0x46 && b[3] === 0x46 && b[8] === 0x57 && b[9] === 0x45 && b[10] === 0x42 && b[11] === 0x50;
+const WEBP_RETRY_MS = 10 * 60 * 1000;
 
 // The bindings of the Worker as the tick wants them (tick.js has no idea what a Worker is).
 export function makeDeps(env, cfg) {
@@ -26,6 +32,11 @@ export function makeDeps(env, cfg) {
     },
     async toGray(jpeg) {
       const res = await env.IMAGES.input(new Blob([jpeg]).stream()).transform({ saturation: 0 }).output({ format: 'image/png' });
+      return new Uint8Array(await res.response().arrayBuffer());
+    },
+    // The page PNG as a lossy WebP for the page's own picture (the LCP image): the same Images binding as toGray.
+    async toWebp(png) {
+      const res = await env.IMAGES.input(new Blob([png]).stream()).transform({ width: 1024, fit: 'scale-down' }).output({ format: 'image/webp', quality: WEBP_QUALITY });
       return new Uint8Array(await res.response().arrayBuffer());
     },
     ledger: {
@@ -142,7 +153,31 @@ export class PinService {
     let v = seedBySlug(slug);
     if (!v) { const p = this.core.getPage(slug); if (p && !p.hidden && p.release <= now) v = autoView(p); }
     if (!v) return null;
-    return renderLanding(v, neighbors(this.allViews(now, v.group), v.slug, 6));
+    return renderLanding(v, neighbors(this.allViews(now, v.group), v.slug, 6), relatedViews(v, this.allViews(now), 3));
+  }
+  // The WebP of a page's picture, made on the first request and kept as a blob: { bytes, kind: 'webp' }. When the conversion fails
+  // (no Images binding, an error, a result that is not smaller) the PNG comes back with fallback: true, and the conversion is not
+  // tried again for ten minutes. null: no such page. The seeds have static .webp files and never come here.
+  async webp(slug) {
+    const p = this.core.getPage(slug);
+    if (!p || p.hidden || p.release > this.now()) return null;
+    const kept = this.core.getBlob(slug, 'webp');
+    if (kept) return { bytes: kept, kind: 'webp' };
+    const png = this.core.getBlob(slug, 'page');
+    if (!png) return null;
+    const failed = Number(this.core.getMeta('webp_failed') || 0);
+    if (!failed || this.now() - failed >= WEBP_RETRY_MS) {
+      try {
+        const deps = this.depsFactory(this.env, this.cfg());
+        const out = deps.toWebp ? await deps.toWebp(png) : null;
+        if (isWebp(out) && out.length < png.length) { this.core.putBlob(slug, 'webp', out); return { bytes: out, kind: 'webp' }; }
+        throw new Error(out ? 'the WebP is not smaller than the PNG' : 'no conversion available');
+      } catch (e) {
+        this.core.setMeta('webp_failed', String(this.now()));
+        this.core.logError('webp', String(e && e.message || e).slice(0, 200), null);
+      }
+    }
+    return { bytes: png, kind: 'page', fallback: true };
   }
   // { bytes: Uint8Array, kind } for a stored image of a page made by the job, or null.
   image(slug, kind) {

@@ -2,8 +2,9 @@
 // that lists them. They use the same shell (head assets, navigation, footer) and the same styles as every other page of
 // the site, plus a few rules of their own for the page image and for printing.
 import { SHELL } from './shell.js';
-import { SITE, LEVELS, GROUPS, THEMES } from './topics.js';
-import { pageUrl } from './feed.js';
+import { SITE, LEVELS, GROUPS } from './topics.js';
+import { pageUrl, CONTENT_REVISED } from './feed.js';
+import { pageNotes, relatedViews, META_TAIL } from './notes/index.js';
 
 export const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 // JSON for <script type="application/ld+json">: no raw "<", so the block cannot be closed early.
@@ -15,17 +16,6 @@ const LEVEL_LABEL = { simple: 'Easy', medium: 'Medium', detailed: 'Detailed' };
 // How the call to action names a site page whose address does not end in -coloring-pages.
 const SITE_NAMES = { 'christmas-coloring-pages-for-adults': 'adult Christmas' };
 
-const THEME_TIPS = {
-  halloween: 'Orange, purple, black and a little green suit a Halloween page, and a white gel pen adds moonlight on dark colors.',
-  fall: 'Rust red, golden yellow and brown give a page the look of fall leaves.',
-  thanksgiving: 'Warm browns, deep reds and golden yellows work well for a Thanksgiving page, and the page can double as a place card or a table activity.',
-  christmas: 'Red, green and gold are the classic Christmas colors, and glitter pens look good on ornaments and stars.',
-  hanukkah: 'Blue, silver and white suit a Hanukkah page, and yellow or gold makes the candle flames glow.',
-  newyear: 'Deep blue and purple make a good night sky, and a white gel pen or a gold marker adds the fireworks and stars.',
-  winter: 'Cool blues and silvers suit a winter page, and white crayon on blue paper makes snow.',
-  evergreen: 'Any colors work. Start with the biggest shapes and keep the small details for last.'
-};
-
 const HEAD_COMMON = `<meta name="google-site-verification" content="FbTHVuCc47YEKFw9nyT2XbH2ZgpbtjZPZce7boWZgH0" />
 <meta name="p:domain_verify" content="13cf5111c1b82113fad5ae7932381a41"/>
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -36,6 +26,7 @@ const HEAD_COMMON = `<meta name="google-site-verification" content="FbTHVuCc47YE
 const STYLE = `<style>
 .printable{max-width:900px;margin:28px auto 0;padding:0 20px}
 .printable-fig{margin:0;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.printable-fig picture{display:block}
 .printable-fig img{display:block;width:100%;height:auto;aspect-ratio:1/1;background:#fff}
 .printable-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
 .printable-actions .btn-small{display:inline-block;text-decoration:none;font-size:14px;padding:9px 16px}
@@ -158,26 +149,43 @@ const IMAGE_META = {
   acquireLicensePage: SITE + '/terms'
 };
 
-// v: a view (feed.js); related: other views of the same group, newest first.
-export function renderLanding(v, related = []) {
+// The title and the meta description of a landing page. The title keeps "Free Printable" unless that would run past 60 characters.
+export function titleOf(v) {
+  const t = `${v.headline}, Free Printable`;
+  return t.length <= 60 ? t : `${v.headline}, Free PDF`;
+}
+export function metaOf(n, v) {
+  const m = `${n.m}${META_TAIL}`;
+  return m.length <= 155 ? m : `${String(n.m).slice(0, 155 - META_TAIL.length).replace(/\s+\S*$/, '')}${META_TAIL}`;
+}
+
+// v: a view (feed.js); neighbors: other views of the same group, newest first ("More <group>");
+// related3: the three pages named as related to this one (service.js passes them from all the released pages; without them
+// they are picked from the neighbors).
+export function renderLanding(v, neighbors = [], related3 = null) {
   const url = pageUrl(v.slug);
   const L = LEVELS[v.level];
-  const theme = THEMES[v.theme] || THEMES.evergreen;
   const group = GROUPS[v.group];
   const siteHref = '/' + (v.site || '') + (v.site ? '#generator' : '');
   const siteName = v.site ? (SITE_NAMES[v.site] || v.site.replace(/-coloring-pages$/, '').replace(/-/g, ' ')) : '';
-  const rel = related.filter(r => r.slug !== v.slug).slice(0, 6);
+  const notes = pageNotes(v);
+  const rel = (related3 || relatedViews(v, neighbors, 3)).filter(r => r.slug !== v.slug).slice(0, 3);
+  const relSlugs = new Set(rel.map(r => r.slug));
+  const more = neighbors.filter(r => r.slug !== v.slug && !relSlugs.has(r.slug)).slice(0, 6);
+  const webp = v.pageImage.replace(/\.png$/, '.webp');
+  const modified = isoDate(Math.max(v.release, Date.parse(CONTENT_REVISED)));
+  const description = metaOf(notes, v);
   const ld = {
     '@context': 'https://schema.org',
     '@graph': [
       {
-        '@type': 'WebPage', '@id': url + '#webpage', url, name: v.headline, description: v.metaDescription,
-        dateModified: isoDate(v.release), isPartOf: { '@type': 'WebSite', name: 'ColoringPageMaker', url: SITE + '/' },
+        '@type': 'WebPage', '@id': url + '#webpage', url, name: v.headline, description,
+        dateModified: modified, isPartOf: { '@type': 'WebSite', name: 'ColoringPageMaker', url: SITE + '/' },
         breadcrumb: { '@id': url + '#breadcrumb' }, primaryImageOfPage: { '@id': url + '#image' }
       },
       {
-        '@type': 'ImageObject', '@id': url + '#image', url: SITE + v.pageImage, contentUrl: SITE + v.pageImage, name: v.headline,
-        description: v.alt, encodingFormat: 'image/png', width: 1024, height: 1024, datePublished: isoDate(v.release),
+        '@type': 'ImageObject', '@id': url + '#image', url: SITE + v.pageImage, contentUrl: SITE + v.pageImage, thumbnailUrl: SITE + v.thumbImage,
+        name: v.headline, description: v.alt, encodingFormat: 'image/png', width: 1024, height: 1024, datePublished: isoDate(v.release),
         ...IMAGE_META
       },
       {
@@ -206,7 +214,10 @@ export function renderLanding(v, related = []) {
 
 <section class="printable" aria-label="The coloring page">
   <figure class="printable-fig">
-    <img src="${esc(v.pageImage)}" width="1024" height="1024" alt="${esc(v.alt)}" fetchpriority="high">
+    <picture>
+      <source type="image/webp" srcset="${esc(webp)}">
+      <img src="${esc(v.pageImage)}" width="1024" height="1024" alt="${esc(v.alt)}" fetchpriority="high">
+    </picture>
   </figure>
   <div class="printable-actions">
     <a class="btn-small" href="${esc(v.pageImage)}" download="${esc(v.slug)}.png">Download PNG</a>
@@ -214,26 +225,37 @@ export function renderLanding(v, related = []) {
     <button type="button" class="btn-small btn-small-outline" data-print>Print</button>
     <a class="btn-small btn-small-outline" href="${esc(pinSaveHref(v))}" target="_blank" rel="noopener" data-pin-save>Save to Pinterest</a>
   </div>
-  <p class="printable-meta">Added ${dateText(v.release)}. Drawn by the ColoringPageMaker image generator.</p>
+  <p class="printable-meta">Added ${dateText(v.release)}. Drawn with the ColoringPageMaker generator from the sentence &ldquo;${esc(v.prompt)}&rdquo;.</p>
 </section>
 
 <article class="content">
   <h2>About this coloring page</h2>
-  <p>${esc(v.headline)} was drawn with the ColoringPageMaker generator from one typed sentence: &ldquo;${esc(v.prompt)}&rdquo;. ${esc(L.line)}.</p>
-  <p>${esc(THEME_TIPS[v.theme] || THEME_TIPS.evergreen)}</p>
+  <p>${esc(notes.a)}</p>
+  <p>${esc(notes.l)}</p>
+  <h2>Printing and coloring tips</h2>
+  <p>${esc(notes.p)}</p>
+  <p>${esc(notes.c)}</p>
+  <h2>How to use it</h2>
+  <p>${esc(notes.u)}</p>
   <h2>How to print it</h2>
   <ul class="list">
     <li>Download the PNG and print it at 100 percent on US Letter or A4 paper. The page is 1024 by 1024 pixels, about 136 DPI on a letter page.</li>
     <li>The Letter PDF puts the page in the middle of a US Letter sheet with even margins.</li>
-    <li>Crayons, colored pencils and washable markers all work. Put a spare sheet under the page if you use markers.</li>
     <li>Free pages are for personal use, at home or in your own classroom. They may not be sold.</li>
   </ul>
 </article>
 ${rel.length ? `
+<section class="examples hub-group" aria-labelledby="related-title">
+  <h2 id="related-title">Related printable coloring pages</h2>
+  <ul class="examples-grid">
+${rel.map(card).join('\n')}
+  </ul>
+</section>
+` : ''}${more.length ? `
 <section class="examples hub-group" aria-labelledby="more-title">
   <h2 id="more-title">More ${esc(group.label)}</h2>
   <ul class="examples-grid">
-${rel.map(card).join('\n')}
+${more.map(card).join('\n')}
   </ul>
   <p class="examples-intro" style="margin-top:16px"><a href="/printables">See all free printable coloring pages</a></p>
 </section>
@@ -248,8 +270,8 @@ ${rel.map(card).join('\n')}
   // The sheet that prints is a child of <body> itself: the print rules hide every other child of <body>.
   const afterMain = `<div class="print-sheet"><img src="${esc(v.pageImage)}" width="1024" height="1024" alt=""></div>`;
   return shell({
-    title: `${v.headline}, Free Printable`,
-    description: v.metaDescription, canonical: url, ogImage: SITE + v.pageImage, ogAlt: v.alt, ld, body, afterMain
+    title: titleOf(v),
+    description, canonical: url, ogImage: SITE + v.pageImage, ogAlt: v.alt, ld, body, afterMain
   });
 }
 

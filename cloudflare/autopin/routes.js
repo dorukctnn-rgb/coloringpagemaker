@@ -5,6 +5,7 @@
 //   /printables                    the hub of all printable pages
 //   /printables/<slug>             the landing page of one coloring page (where a pin's click lands)
 //   /printables/img/<slug>.png     the printable page, and <slug>-400.png its thumbnail (the 30 Halloween seeds are static files)
+//   /printables/img/<slug>.webp    the page picture as WebP for the landing page (static for the seeds, made on first use for the rest)
 //   /sitemap-printables.xml        the sitemap of the hub and the pages
 //   /pins/admin/...                status, pause, resume, seeds, hide, run, selftest (Authorization: Bearer <AUTOPIN_ADMIN_KEY>)
 //
@@ -46,7 +47,7 @@ async function cached(request, ctx, make) {
 const forMethod = (request, res) => (request.method === 'HEAD' ? new Response(null, { status: res.status, headers: res.headers }) : res);
 
 const html = (body, ttl = 300) => new Response(body, { status: 200, headers: hdr('text/html; charset=utf-8', `public, max-age=${ttl}`) });
-const imageResponse = bytes => new Response(bytes, { status: 200, headers: { ...hdr('image/png', 'public, max-age=31536000, immutable'), 'Content-Length': String(bytes.length) } });
+const imageResponse = (bytes, type = 'image/png') => new Response(bytes, { status: 200, headers: { ...hdr(type, 'public, max-age=31536000, immutable'), 'Content-Length': String(bytes.length) } });
 
 async function sha256(s) { return new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s))); }
 export async function authorized(request, env) {
@@ -117,6 +118,22 @@ export async function pinsRoute(request, env, ctx, url) {
       return img ? imageResponse(img.bytes) : new Response(null, { status: 404 });
     });
     return res.status === 404 ? null : forMethod(request, res);
+  }
+  // /printables/img/<slug>.webp: the page picture as WebP (the landing page's <picture>). The seeds have static files; a page of the
+  // job gets its WebP from the object on the first request. If the object cannot convert, the PNG bytes come back (they decode
+  // under any image type) with a short cache time, and only a real WebP is kept at the edge.
+  m = /^\/printables\/img\/([a-z0-9-]+)\.webp$/.exec(path);
+  if (m && SLUG.test(m[1])) {
+    if (SEED_SLUGS.has(m[1]) || !(await isKnown(stub, m[1]))) return null;
+    const cache = typeof caches !== 'undefined' && caches.default ? caches.default : null;
+    const key = new Request(request.url, { method: 'GET' });
+    if (cache) { try { const hit = await cache.match(key); if (hit) return forMethod(request, hit); } catch (e) { /* build it */ } }
+    const img = await stub.webp(m[1]);
+    if (!img) return null;
+    if (img.fallback) return forMethod(request, new Response(img.bytes, { status: 200, headers: { ...hdr('image/png', 'public, max-age=300'), 'Content-Length': String(img.bytes.length) } }));
+    const res = imageResponse(img.bytes, 'image/webp');
+    if (cache && ctx && ctx.waitUntil) ctx.waitUntil(cache.put(key, res.clone()).catch(() => {}));
+    return forMethod(request, res);
   }
   m = /^\/printables\/img\/([a-z0-9-]+?)(-400)?\.png$/.exec(path);
   if (m && SLUG.test(m[1])) {
