@@ -76,7 +76,7 @@ function makeCore(clock) {
 
 // The model, the Images binding and the site's ledger as stubs. opts.pages: the gray PNGs the conversion returns in turn.
 function makeStubs(clock, opts = {}) {
-  const calls = { flux: [], fluxTotal: 0, gray: 0, takeAi: 0, giveBack: 0 };
+  const calls = { flux: [], fluxTotal: 0, gray: 0, webp: 0, takeAi: 0, giveBack: 0 };
   let aiUsed = opts.aiToday || 0;
   const pages = opts.pages || [GOOD.png];
   const factory = (env, cfg) => ({
@@ -88,6 +88,14 @@ function makeStubs(clock, opts = {}) {
       return JPEG_STUB;
     },
     async toGray() { const png = pages[Math.min(calls.gray, pages.length - 1)]; calls.gray++; return new Uint8Array(png); },
+    // The page as a WebP: a stub file of 40 bytes with the RIFF/WEBP signature (opts.webpError throws, opts.webpBig makes it larger than any PNG).
+    async toWebp() {
+      calls.webp++;
+      if (opts.webpError) throw new Error(opts.webpError);
+      const out = new Uint8Array(opts.webpBig ? 2_000_000 : 40);
+      out.set([0x52, 0x49, 0x46, 0x46, 0, 0, 0, 0, 0x57, 0x45, 0x42, 0x50]);
+      return out;
+    },
     ledger: {
       async aiToday() { return aiUsed; },
       async counters() { if (opts.countersError) throw new Error(opts.countersError); return { aiToday: aiUsed, freeToday: opts.freeToday || 0, dayMicros: opts.dayMicros || 0, monthMicros: opts.monthMicros || 0 }; },
@@ -1091,6 +1099,52 @@ test('the Worker serves the feed, the hub, landing pages, sitemap and images of 
   assert.equal((await call(w.env, `/printables/${page.slug}`)).status, 404);
   assert.equal((await call(w.env, `/pins/auto/${page.slug}.png`)).status, 404);
   assert.equal(tag(await (await call(w.env, '/pins/feed.xml')).text(), 'item').length, 0);
+});
+
+test('the WebP of a page of the job: made once from the PNG and kept, long cache; when the conversion fails the PNG answers for a short time and it is tried again later', async () => {
+  const w = makeWorld({ now: at(2026, 10, 24, 15, 7) });
+  await cron(w, w.clock.t);
+  const page = w.core.listPages({ upTo: w.clock.t })[0];
+  const r = await call(w.env, `/printables/img/${page.slug}.webp`);
+  assert.equal(r.status, 200);
+  assert.equal(r.headers.get('content-type'), 'image/webp');
+  assert.match(r.headers.get('cache-control'), /immutable/);
+  const bytes = Buffer.from(await r.arrayBuffer());
+  assert.equal(bytes.subarray(0, 4).toString('latin1'), 'RIFF');
+  assert.equal(bytes.subarray(8, 12).toString('latin1'), 'WEBP');
+  assert.ok(bytes.length < w.core.getBlob(page.slug, 'page').length, 'smaller than the PNG');
+  assert.equal((await call(w.env, `/printables/img/${page.slug}.webp`)).status, 200);
+  assert.equal(w.calls.webp, 1, 'the WebP is kept: one conversion for two requests');
+  assert.equal((await call(w.env, `/printables/img/${page.slug}.webp`, { method: 'HEAD' })).status, 200);
+  // the landing page offers it, with the PNG as the fallback
+  const html = await (await call(w.env, `/printables/${page.slug}`)).text();
+  assert.ok(html.includes(`<source type="image/webp" srcset="/printables/img/${page.slug}.webp">`));
+  assert.ok(html.includes(`<img src="/printables/img/${page.slug}.png" width="1024" height="1024"`));
+  // unknown pages, a seed (a static file on the real site) and a hidden page answer the site's 404
+  for (const p of ['/printables/img/nope-coloring-page.webp', `/printables/img/${SEEDS[0].slug}.webp`, '/printables/img/UPPER.webp']) assert.equal((await call(w.env, p)).status, 404, p);
+  assert.equal((await admin(w.env, `/pins/admin/hide?slug=${page.slug}`)).status, 200);
+  assert.equal((await call(w.env, `/printables/img/${page.slug}.webp`)).status, 404);
+  // a failing conversion: the PNG comes back with a short cache, and the next try waits ten minutes
+  const f = makeWorld({ now: at(2026, 10, 24, 15, 7), stubs: { webpError: 'no images binding' } });
+  await cron(f, f.clock.t);
+  const fp = f.core.listPages({ upTo: f.clock.t })[0];
+  const png = f.core.getBlob(fp.slug, 'page');
+  const fr = await call(f.env, `/printables/img/${fp.slug}.webp`);
+  assert.equal(fr.status, 200);
+  assert.equal(fr.headers.get('content-type'), 'image/png');
+  assert.match(fr.headers.get('cache-control'), /max-age=300$/);
+  assert.equal(Buffer.from(await fr.arrayBuffer()).length, png.length);
+  await call(f.env, `/printables/img/${fp.slug}.webp`);
+  assert.equal(f.calls.webp, 1, 'not tried again at once');
+  f.clock.t += 11 * 60 * 1000;
+  await call(f.env, `/printables/img/${fp.slug}.webp`);
+  assert.equal(f.calls.webp, 2, 'tried again after ten minutes');
+  // a result that is not smaller than the PNG is not used either
+  const b = makeWorld({ now: at(2026, 10, 24, 15, 7), stubs: { webpBig: true } });
+  await cron(b, b.clock.t);
+  const bp = b.core.listPages({ upTo: b.clock.t })[0];
+  assert.equal((await call(b.env, `/printables/img/${bp.slug}.webp`)).headers.get('content-type'), 'image/png');
+  assert.equal(b.core.getBlob(bp.slug, 'webp'), null);
 });
 
 test('feed per board: ?group= shows one group, an unknown group falls back to the whole feed', async () => {
