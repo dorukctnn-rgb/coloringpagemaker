@@ -24,7 +24,20 @@ const HEAD_COMMON = `<meta name="google-site-verification" content="FbTHVuCc47YE
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">`;
 
 const STYLE = `<style>
-.printable{max-width:900px;margin:28px auto 0;padding:0 20px}
+/* Full width: every block is as wide as the screen between the site's gutters (the navigation and the footer of these pages too).
+   From 1024 px the title and the buttons sit beside the picture, and the four notes run in two columns below. */
+:root{--pr-g:clamp(16px,4vw,64px)}
+.nav-inner,.site-footer-inner,.hero-wide>.wrap,.pr-wide{max-width:none;width:min(100% - 2 * var(--pr-g),2240px);margin-left:auto;margin-right:auto}
+.nav-inner,.site-footer-inner{padding-left:0;padding-right:0}
+.hero-wide>.wrap,.pr-wide{padding:0}
+.pr-top .hero-wide>.wrap{width:auto}
+.pr-text{margin-top:28px}
+.pr-text section{margin:0 0 8px}
+.pr-text h2{font-size:clamp(1.55rem,3vw,2.05rem);margin:34px 0 12px}
+.pr-text section:first-child h2{margin-top:0}
+.pr-text p{margin-bottom:16px;line-height:1.7;max-width:68ch}
+.pr-text .list{margin:0 0 18px;padding-left:1.2em;max-width:68ch}
+.pr-text .list li{margin:0 0 10px;line-height:1.65;padding-left:2px}
 .printable-fig{margin:0;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
 .printable-fig picture{display:block}
 .printable-fig img{display:block;width:100%;height:auto;aspect-ratio:1/1;background:#fff}
@@ -34,14 +47,34 @@ const STYLE = `<style>
 .crumbs{font-size:14px;color:var(--muted);margin-bottom:14px}
 .crumbs a{color:inherit}
 .print-sheet{display:none}
+.hub-group{max-width:none;width:min(100% - 2 * var(--pr-g),2240px);padding:0}
+.hub-group .examples-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .hub-group .examples-grid figure{margin:0}
+.related-three .examples-grid{grid-template-columns:minmax(0,1fr)}
+.pr-cta{max-width:none;margin-top:clamp(40px,6vw,64px)}
 .hub-card{display:block;text-decoration:none;color:inherit}
 /* the list of older pages: plain links, in columns */
 .older-title{font-family:var(--body);font-size:12px;color:var(--muted);margin:26px 0 10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em}
 .older-list{list-style:none;columns:2;column-gap:28px;font-size:15px}
 .older-list li{padding:3px 0;break-inside:avoid}
 .hub-card:hover strong{text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--accent)}
-@media (max-width:640px){.examples-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:640px){.related-three .examples-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.hub-group .examples-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}}
+@media (min-width:1024px){
+  .pr-top{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);grid-template-areas:"head fig" "tools fig" "meta fig" "rest fig";grid-template-rows:auto auto auto 1fr;column-gap:clamp(32px,4.5vw,88px);align-items:start}
+  .pr-top .printable{display:contents}
+  .pr-head{grid-area:head}
+  .printable-fig{grid-area:fig;margin-top:clamp(36px,5vw,64px)}
+  .printable-actions{grid-area:tools;margin-top:6px}
+  .printable-meta{grid-area:meta}
+  .pr-text{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:clamp(32px,4.5vw,88px);margin-top:clamp(36px,5vw,64px)}
+  .pr-text section{margin-bottom:28px}
+  .pr-text h2{margin-top:0}
+  .pr-cta{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px clamp(24px,4vw,64px);align-items:center}
+  .pr-cta h2,.pr-cta p{grid-column:1}
+  .pr-cta p{margin-bottom:0}
+  .pr-cta .btn{grid-column:2;grid-row:1 / span 2}
+}
+@media (min-width:1100px){.hub-group .examples-grid{grid-template-columns:repeat(6,minmax(0,1fr))}.related-three .examples-grid{grid-template-columns:repeat(3,minmax(0,480px))}}
 @media print{
   @page{margin:.4in}
   body > :not(.print-sheet){display:none !important}
@@ -198,7 +231,8 @@ export function renderLanding(v, neighbors = [], related3 = null) {
       }
     ]
   };
-  const body = `<header class="hero hero-wide">
+  const body = `<div class="pr-wide pr-top">
+<header class="hero hero-wide pr-head">
   <div class="wrap">
     <p class="crumbs"><a href="/">Home</a> / <a href="/printables">Free printables</a> / ${esc(group.short)}</p>
     <p class="eyebrow">${esc(group.short)}</p>
@@ -211,7 +245,6 @@ export function renderLanding(v, neighbors = [], related3 = null) {
     </ul>
   </div>
 </header>
-
 <section class="printable" aria-label="The coloring page">
   <figure class="printable-fig">
     <picture>
@@ -227,25 +260,34 @@ export function renderLanding(v, neighbors = [], related3 = null) {
   </div>
   <p class="printable-meta">Added ${dateText(v.release)}. Drawn with the ColoringPageMaker generator from the sentence &ldquo;${esc(v.prompt)}&rdquo;.</p>
 </section>
+</div>
 
-<article class="content">
-  <h2>About this coloring page</h2>
-  <p>${esc(notes.a)}</p>
-  <p>${esc(notes.l)}</p>
-  <h2>Printing and coloring tips</h2>
-  <p>${esc(notes.p)}</p>
-  <p>${esc(notes.c)}</p>
-  <h2>How to use it</h2>
-  <p>${esc(notes.u)}</p>
-  <h2>How to print it</h2>
-  <ul class="list">
-    <li>Download the PNG and print it at 100 percent on US Letter or A4 paper. The page is 1024 by 1024 pixels, about 136 DPI on a letter page.</li>
-    <li>The Letter PDF puts the page in the middle of a US Letter sheet with even margins.</li>
-    <li>Free pages are for personal use, at home or in your own classroom. They may not be sold.</li>
-  </ul>
+<article class="pr-wide pr-text">
+  <section>
+    <h2>About this coloring page</h2>
+    <p>${esc(notes.a)}</p>
+    <p>${esc(notes.l)}</p>
+  </section>
+  <section>
+    <h2>Printing and coloring tips</h2>
+    <p>${esc(notes.p)}</p>
+    <p>${esc(notes.c)}</p>
+  </section>
+  <section>
+    <h2>How to use it</h2>
+    <p>${esc(notes.u)}</p>
+  </section>
+  <section>
+    <h2>How to print it</h2>
+    <ul class="list">
+      <li>Download the PNG and print it at 100 percent on US Letter or A4 paper. The page is 1024 by 1024 pixels, about 136 DPI on a letter page.</li>
+      <li>The Letter PDF puts the page in the middle of a US Letter sheet with even margins.</li>
+      <li>Free pages are for personal use, at home or in your own classroom. They may not be sold.</li>
+    </ul>
+  </section>
 </article>
 ${rel.length ? `
-<section class="examples hub-group" aria-labelledby="related-title">
+<section class="examples hub-group related-three" aria-labelledby="related-title">
   <h2 id="related-title">Related printable coloring pages</h2>
   <ul class="examples-grid">
 ${rel.map(card).join('\n')}
@@ -260,8 +302,8 @@ ${more.map(card).join('\n')}
   <p class="examples-intro" style="margin-top:16px"><a href="/printables">See all free printable coloring pages</a></p>
 </section>
 ` : ''}
-<div class="wrap">
-  <div class="pricing-cta">
+<div class="pr-wide">
+  <div class="pricing-cta pr-cta">
     <h2>Draw a page of your own</h2>
     <p>Type what you want to color, pick the detail level and get a printable page in under a minute. Two pages a day are free, with no account.</p>
     <a href="${esc(siteHref)}" class="btn">${v.site ? 'Make your own ' + esc(siteName) + ' page' : 'Open the generator'}</a>
@@ -329,8 +371,8 @@ ${older.map(v => `    <li><a href="/printables/${esc(v.slug)}">${esc(v.headline)
 
 ${sections || `<section class="examples"><p class="examples-intro">The first pages arrive soon. Meanwhile, <a href="/">draw your own page</a> with the free generator.</p></section>`}
 
-<div class="wrap">
-  <div class="pricing-cta">
+<div class="pr-wide">
+  <div class="pricing-cta pr-cta">
     <h2>Draw a page of your own</h2>
     <p>Type what you want to color, pick the detail level and get a printable page in under a minute. Two pages a day are free, with no account.</p>
     <a href="/" class="btn">Open the generator</a>

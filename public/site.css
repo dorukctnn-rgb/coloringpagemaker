@@ -263,6 +263,23 @@ article.post .sources p{font-size:12px;margin-bottom:6px}
 .examples-grid figcaption span{color:var(--muted)}
 .examples .actions a{display:inline-block;text-decoration:none}
 @media (max-width:640px){.examples-grid{grid-template-columns:1fr}}
+/* The printable pages of a theme, full width (views/partials/printables.ejs): a band as wide as the screen, 2 to 8 across */
+.printables-band{--band-gutter:clamp(16px,4vw,64px);width:min(100% - 2 * var(--band-gutter),2240px);margin:clamp(40px,7vw,64px) auto 0}
+.printables-head{display:grid;gap:6px;margin-bottom:18px}
+.printables-head h2{font-size:clamp(1.5rem,3vw,1.9rem)}
+.printables-intro{color:var(--muted);max-width:72ch}
+.printables-grid{list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.printables-grid figure{margin:0}
+.printables-grid img{height:auto;aspect-ratio:1/1}
+.printables-grid figcaption{padding:10px 12px 12px;font-size:14px;line-height:1.4}
+.printables-grid figcaption strong{display:block;font-size:15px}
+.printables-grid figcaption span{color:var(--muted)}
+.printable-card{display:block;text-decoration:none;color:inherit}
+.printable-card:hover strong{text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--accent)}
+.printables-more{margin-top:16px;font-weight:600}
+.printables-more a{text-underline-offset:4px}
+@media (min-width:768px){.printables-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}}
+@media (min-width:1800px){.printables-grid{grid-template-columns:repeat(8,minmax(0,1fr))}}
 .recipes-intro{color:var(--muted);font-size:16px}
 .recipes{width:100%;border-collapse:collapse;margin:20px 0 8px;border-top:2px solid var(--ink)}
 .recipes thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}

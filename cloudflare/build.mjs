@@ -58,6 +58,8 @@ const HEADERS = `# Response headers for the static files (Cloudflare Workers sta
   Cache-Control: public, max-age=2592000
 /sitemap.xml
   Content-Type: text/xml; charset=utf-8
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
 `;
 
 async function main() {
@@ -90,7 +92,7 @@ async function main() {
       fs.writeFileSync(path.join(dist, file), buf);
       manifest.pages[p] = { file, sha256: createHash('sha256').update(buf).digest('hex'), bytes: buf.length };
     }
-    for (const [p, file] of [['/sitemap.xml', 'sitemap.xml'], ['/robots.txt', 'robots.txt']]) {
+    for (const [p, file] of [['/sitemap.xml', 'sitemap.xml'], ['/robots.txt', 'robots.txt'], ['/llms.txt', 'llms.txt']]) {
       const buf = Buffer.from(await (await fetch(base + p)).arrayBuffer());
       fs.writeFileSync(path.join(dist, file), buf);
       manifest.files[p] = { file, sha256: createHash('sha256').update(buf).digest('hex'), bytes: buf.length };

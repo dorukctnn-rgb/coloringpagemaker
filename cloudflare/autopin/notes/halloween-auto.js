@@ -13,7 +13,7 @@ export const HALLOWEEN_AUTO = {
   'halloween-barn-owl-coloring-page': {
     m: 'An owl with scale-patterned feathers on a leafy branch in front of a full moon with tiny bats. For adults and teens.',
     a: 'An owl with large round eyes and feathers covered in tiny scale patterns sits on a leafy branch in front of a big full moon with crater marks. Small bats fly in the sky around the moon, and leaves and twigs curl along the branch.',
-    l: 'This is a detailed page for teens and adults. The feather patterns are the main challenge, because hundreds of small shapes sit close together. Plan on an hour or more.',
+    l: 'Detailed, and meant for teens and adults. The feather patterns are the main challenge, because hundreds of small shapes sit close together. Plan on an hour or more.',
     p: 'A 0.3 to 0.5 mm fine liner or a very sharp pencil crayon handles the small feather shapes. Print on smooth paper rather than recycled sheets with visible fibers.',
     c: 'Browns, tans and a creamy white give the feathers a natural look. For a night scene, shade the moon pale yellow and keep the sky behind the bats dark blue.',
     u: 'A good page for a quiet evening, or for a bird-watching club meeting around Halloween.',
@@ -40,7 +40,7 @@ export const HALLOWEEN_AUTO = {
   'halloween-castle-coloring-page': {
     m: 'A tall Halloween castle on a rocky cliff with pointed towers, bats and a big moon behind it. For ages 6 to 12.',
     a: 'A tall castle with pointed towers and arched windows stands on a rocky cliff. A big moon circle sits behind it and a few bats fly across the sky. The cliff edge is drawn with rough rocks and tufts of grass.',
-    l: 'Suited to ages 6 to 12, with one clear subject. The towers and the cliff offer a range of shapes, from big walls to narrow windows. It takes about 30 minutes.',
+    l: 'Suited to ages 6 to 12, with one clear subject. The towers and the cliff offer a range of shapes, from big walls to narrow windows. Half an hour is a fair estimate.',
     p: 'There is also a detailed version of this castle. Print both and let a younger child take this page while an older sibling takes the other.',
     c: 'Stone walls in gray and brown, a dark blue or purple sky and a pale yellow moon make a classic spooky castle. A touch of orange in one window suggests a light inside.',
     u: 'It works as a story starter. Where does the owner of the castle go at night? Older children can write a paragraph after coloring.',
@@ -58,7 +58,7 @@ export const HALLOWEEN_AUTO = {
   'halloween-cat-face-coloring-page': {
     m: 'A big cat face with large round eyes, pointed ears and long whiskers. A very easy Halloween page for ages 3 to 6.',
     a: 'A big cat face fills the page, with two pointed ears, large round eyes with highlights, a small triangle nose, a smile line and six long whiskers. There is no body and no background.',
-    l: 'A very simple page for ages 3 to 6. Most of the face is one large area, which makes it quick to color, and the whiskers are long lines that a child can trace with a finger first.',
+    l: 'A very simple page, made for ages 3 to 6. Most of the face is one large area, which makes it quick to color, and the whiskers are long lines that a child can trace with a finger first.',
     p: 'Because the face is large, it also works as a mask. Print it on cardstock, cut out two eye holes and add a strip of elastic.',
     c: 'A black cat can stay black with white or yellow eyes. For more color, try an orange tabby with darker stripes or a gray cat with a pink nose.',
     u: 'Print a few for a cat lover party and let each child color their own pet or a dream cat.',
@@ -67,7 +67,7 @@ export const HALLOWEEN_AUTO = {
   'halloween-cat-mandala-coloring-page': {
     m: 'A round mandala of black cat silhouettes and small cat faces around an empty center. A detailed page for adults and teens.',
     a: 'A round mandala of cats: solid black cat silhouettes alternate with small outlined cat faces and tiny stars in a ring around an empty circle in the middle, with a fringe of fine marks around the edge.',
-    l: 'A detailed page for teens and adults. The black silhouettes are already finished, so the work goes into the small outlined faces and the fine marks between them.',
+    l: 'A detailed mandala for teens and adults. The black silhouettes are already finished, so the work goes into the small outlined faces and the fine marks between them.',
     p: 'This page has large solid black areas, so it takes more toner or ink than most pages here. Print it in draft mode, or print one copy and photocopy it.',
     c: 'Fill the empty center with your own design: a moon, a name or a pattern. Color the small faces in two or three alternating colors to bring out the ring shape.',
     u: 'A nice page for a calm craft night. The empty center is also a good place to write a name on a handmade card.',
@@ -76,7 +76,7 @@ export const HALLOWEEN_AUTO = {
   'halloween-cauldron-bats-coloring-page': {
     m: 'A big bubbling cauldron with a long spoon and bats flying out over the top. A medium Halloween page for ages 6 to 10.',
     a: 'A big round cauldron with two small handles bubbles over with steam, a long spoon rests in the brew, and bats fly out of the pot across the top of the page.',
-    l: 'A medium page for ages 6 to 10. The cauldron is a large area, while the steam and the bats are the details that keep the page interesting.',
+    l: 'Ages 6 to 10 will find this a comfortable medium page. The cauldron is a large area, while the steam and the bats are the details that keep the page interesting.',
     p: 'The pot itself is mostly empty outline. Add stripes, dots or a face to it with a pencil before coloring, and it gets some character.',
     c: 'Green potion steam, dark gray bats and a black cauldron look like a witch kitchen. Or make a rainbow brew with a different color for each curl of steam.',
     u: 'Pair it with a potion game. Children color the cauldron and write three silly potion ingredients on the back.',
@@ -103,7 +103,7 @@ export const HALLOWEEN_AUTO = {
   'halloween-frog-coloring-page': {
     m: 'A happy frog in a witch hat on a toadstool with small mushrooms and grass. A medium page for ages 5 to 10.',
     a: 'A happy frog in a tall witch hat sits on a big toadstool with a wide cap. Small mushrooms and grass tufts grow around the base, and the front legs of the frog rest on its knees.',
-    l: 'A medium page for ages 5 to 10. The frog and its hat are bold shapes, while the grass and the small mushrooms give extra detail.',
+    l: 'Medium level, ages 5 to 10. The frog and its hat are bold shapes, while the grass and the small mushrooms give extra detail.',
     p: 'The toadstool has a wide flat cap that invites patterns. Add spots with a white gel pen after coloring the cap red or purple.',
     c: 'A green frog with a yellow belly under a purple hat is a classic mix. The toadstool cap can be red with white spots, or turquoise for a fantasy look.',
     u: 'A good page for a nature class on amphibians. Ask what frogs eat, where they live and how they grow from tadpoles.',
@@ -112,7 +112,7 @@ export const HALLOWEEN_AUTO = {
   'halloween-ghost-patch-coloring-page': {
     m: 'A smiling ghost floating over a pumpkin patch at night, with a crescent moon and curly vines. For ages 6 to 10.',
     a: 'A smiling ghost floats above a crowded pumpkin patch at night with one arm raised in a wave. A crescent moon and small dots like stars hang in the sky, and pumpkins of many sizes grow among curly vines in the foreground.',
-    l: 'A medium page for ages 6 to 10. The ghost is simple, while the pumpkins and vines fill the lower half with small, overlapping shapes.',
+    l: 'A medium-level page that suits ages 6 to 10. The ghost is simple, while the pumpkins and vines fill the lower half with small, overlapping shapes.',
     p: 'Pumpkins crowd the lower half. A mix of pencil crayons for the vines and markers for the pumpkins keeps the page readable.',
     c: 'A dark blue night sky with a yellow crescent moon makes the white ghost glow. Mix orange, yellow and a few white pumpkins in the patch.',
     u: 'Print it with the pumpkin patch page and the scarecrow page for a small set of autumn field scenes to display together.',
@@ -121,7 +121,7 @@ export const HALLOWEEN_AUTO = {
   'halloween-hilltop-pumpkin-coloring-page': {
     m: 'One big carved jack-o-lantern on a grassy hill under a crescent moon, with bats in the sky. For ages 6 to 12.',
     a: 'One big carved jack-o-lantern sits on a grassy hill. A large crescent moon hangs in the upper right, and bats fly across the sky. The grass is drawn in short, quick strokes.',
-    l: 'A medium page for ages 6 to 12. The pumpkin is easy to color, and the grass strokes ask for a bit of patience.',
+    l: 'A medium page, good for ages 6 to 12. The pumpkin is easy to color, and the grass strokes ask for a bit of patience.',
     p: 'The grass is made of many short strokes. Instead of coloring each blade, use the side of a green pencil crayon in quick flicks.',
     c: 'Make the pumpkin glow with yellow inside the carved parts and deep orange around them. A dark purple sky with the moon left white finishes the night scene.',
     u: 'A good page for a door sign. Color it, cut around the pumpkin and tape it to the front door with a note for trick-or-treaters.',
@@ -148,7 +148,7 @@ export const HALLOWEEN_AUTO = {
   'halloween-pumpkin-witch-coloring-page': {
     m: 'A round pumpkin in a tall witch hat with a buckle, with a blank face to draw. A very easy page for ages 3 to 6.',
     a: 'A round ribbed pumpkin wears a tall, bent witch hat with a wide brim and a belt buckle. The pumpkin has no face, so children can draw one themselves.',
-    l: 'A very simple page for ages 3 to 6. The blank pumpkin is a creative prompt: children draw a funny, scary or sleepy face, and a short session turns into a small drawing game as well as a coloring page.',
+    l: 'A very simple page for ages 3 to 6, with one creative twist. The blank pumpkin is a creative prompt: children draw a funny, scary or sleepy face, and a short session turns into a small drawing game as well as a coloring page.',
     p: 'Hand a pencil to children who like drawing and let them add a face before coloring. A pencil line under crayon stays visible.',
     c: 'An orange pumpkin with a black hat, or a green pumpkin with a purple hat. Try eyes in different shapes: round, triangle or star.',
     u: 'Let each child draw a different face, then hold a class vote for the funniest one. The pages can hang in a row like a gallery of pumpkin characters.',
@@ -175,7 +175,7 @@ export const HALLOWEEN_AUTO = {
   'halloween-spider-coloring-page': {
     m: 'A cute smiling spider hanging from a single thread with a small pumpkin below. Easy, for ages 3 to 6.',
     a: 'A cute spider with a round smiling body and eight thin legs hangs from a single thread. A small pumpkin sits below it, and the rest of the page is empty.',
-    l: 'A simple page for ages 3 to 6. The body is one round shape and the legs are long lines, so it suits a short attention span, and the whole page is done in about ten minutes.',
+    l: 'Simple level, for ages 3 to 6. The body is one round shape and the legs are long lines, so it suits a short attention span, and the whole page is done in about ten minutes.',
     p: 'The thread runs from the top edge to the spider. Let your child trace it with a finger before coloring, as a small fine-motor warm-up.',
     c: 'Black, purple or bright green all look fun. Give the legs two alternating colors for a striped effect.',
     u: 'Make a spider mobile: color several copies, cut out the spiders and hang them at different heights on thread from a doorframe or a classroom ceiling.',
@@ -184,7 +184,7 @@ export const HALLOWEEN_AUTO = {
   'halloween-spider-web-mandala-coloring-page': {
     m: 'A big round spider web mandala with tiny pumpkins along the rim and small spiders in the gaps. For adults and teens.',
     a: 'A large round spider web with many spokes and rings fills the page, with tiny pumpkins strung along the outer rim and small spiders and dots in the gaps.',
-    l: 'A detailed page for teens and adults. The spokes split the design into many small cells, so the page works well for slow, careful coloring, and it holds attention for an hour or more.',
+    l: 'Teens and adults get a detailed, absorbing page here. The spokes split the design into many small cells, so the page works well for slow, careful coloring, and it holds attention for an hour or more.',
     p: 'A sharp pencil crayon in light colors lets you shade the cells without losing the web lines. Dark markers hide the thin lines.',
     c: 'Try a gradient: one color in the center that gradually changes to another at the rim. Or color each ring in a different shade of one color.',
     u: 'A calm page for a late-night art club or an after-school craft table in October. Hang the finished web in a window and let the light shine through the paper.',
@@ -202,7 +202,7 @@ export const HALLOWEEN_AUTO = {
   'halloween-witch-cottage-coloring-page': {
     m: 'A crooked stone witch cottage with a thatched roof, a smoking chimney and a pumpkin on each side of the door.',
     a: 'A crooked stone cottage with a thatched roof, a smoking chimney and a rounded wooden door sits on a grassy patch. A pumpkin stands on each side of the door, a stepping-stone path leads to it and a small fence leans nearby.',
-    l: 'A medium page for ages 6 to 12. The thatched roof and the stone walls add texture, and the path and the fence are quick finishing touches.',
+    l: 'This medium page suits ages 6 to 12. The thatched roof and the stone walls add texture, and the path and the fence are quick finishing touches.',
     p: 'Thatch looks good in short vertical strokes. Use two shades of yellow-brown and keep the pencil strokes close together.',
     c: 'A warm brown roof, gray stone, a green door and bright orange pumpkins give a cozy look. A yellow glow in the window makes the cottage feel lived in.',
     u: 'Ask your child to imagine who lives in the cottage and what they cook. It makes a nice story prompt.',
@@ -211,7 +211,7 @@ export const HALLOWEEN_AUTO = {
   'halloween-witch-owl-coloring-page': {
     m: 'An owl in a tall witch hat on a leafy branch with a patterned chest and small stars. A medium page for ages 5 to 10.',
     a: 'An owl in a tall witch hat sits on a leafy branch with wide round eyes and a patterned chest. Four small sparkle stars float around it, and leaves grow along the branch.',
-    l: 'A medium page for ages 5 to 10. The owl and its hat are clear shapes, and the leaves along the branch add a gentle challenge.',
+    l: 'A medium page that suits ages 5 to 10. The owl and its hat are clear shapes, and the leaves along the branch add a gentle challenge.',
     p: 'The feather pattern on the chest is a good place for pencil crayons. Use markers for the hat and the leaves, and keep the eyes for last.',
     c: 'A purple hat with a gold buckle, a brown or gray owl and green leaves with orange tips make a balanced page. The stars can be yellow.',
     u: 'Display it with the bunny witch and frog pages as a small set of animal witches. Children can vote for the one they would invite to a party.',

@@ -121,13 +121,9 @@ export function buildSitemap({ views, now }) {
   const urls = [`  <url>
     <loc>${SITE}/printables</loc>
     <lastmod>${lastmod(newest)}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
   </url>`, ...views.map(v => `  <url>
     <loc>${xmlText(pageUrl(v.slug))}</loc>
     <lastmod>${lastmod(v.release)}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
   </url>`)].join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

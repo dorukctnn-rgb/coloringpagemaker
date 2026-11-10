@@ -342,6 +342,48 @@ const PRO_SEASON_PAGES = new Set([...SEASONAL_THEMES, ...CHRISTMAS_THEMES, 'chri
 // The "Free printable ... coloring pages" gallery for a theme page, or null.
 const examplesFor = slug => (THEME_EXAMPLES[slug] ? { slug, ...THEME_EXAMPLES[slug] } : null);
 const themeLabel = slug => (THEME_GUIDES[slug] ? THEME_GUIDES[slug].h1 : NICHE_PAGES[slug].h1);
+
+// "Free printable ... pages" on a theme page: the printable pages of /printables that belong to it, each with a link to its own page
+// (views/partials/printables.ejs). The pages live in the Worker's Durable Object, which the static build cannot read, so
+// printables-index.json holds a copy; cloudflare/autopin/tools/sync-printables.mjs writes it. The theme page that has the
+// search traffic (turkey) is left as it was.
+const PRINTABLES = require('./printables-index.json').items;
+const NO_PRINTABLES_BLOCK = new Set(['turkey-coloring-pages']);
+const PRINTABLES_HEADING = {
+  'halloween-coloring-pages': 'More free Halloween coloring pages to print',
+  'fall-coloring-pages': 'More free fall coloring pages to print',
+  'thanksgiving-coloring-pages': 'More free Thanksgiving coloring pages to print',
+  'christmas-coloring-pages': 'More free Christmas coloring pages to print',
+  'thankful-coloring-pages': 'Free printable thankful coloring pages',
+  'turkey-disguise-template': 'Free printable turkey pages to color first'
+};
+const PRINTABLES_LABEL = {
+  'halloween-coloring-pages': 'Halloween', 'fall-coloring-pages': 'fall', 'thanksgiving-coloring-pages': 'Thanksgiving',
+  'christmas-coloring-pages': 'Christmas', 'thankful-coloring-pages': 'thankful', 'turkey-disguise-template': 'turkey'
+};
+const PRINTABLES_SHOWN = 8;
+function printablesFor(slug) {
+  if (NO_PRINTABLES_BLOCK.has(slug)) return null;
+  const mine = PRINTABLES.filter(x => x.shows.includes(slug));
+  if (mine.length < 2) return null;
+  // The pages written for this very theme page come first, then the ones of its narrower pages; within each, one level after
+  // the other (easy, medium, detailed), newest first, so the block shows what the theme offers.
+  const rank = x => (x.site === slug ? 0 : 1);
+  const byLevel = { simple: [], medium: [], detailed: [] };
+  for (const x of [...mine].sort((a, b) => rank(a) - rank(b))) (byLevel[x.level] || byLevel.medium).push(x);
+  const items = [];
+  while (items.length < PRINTABLES_SHOWN && (byLevel.simple.length || byLevel.medium.length || byLevel.detailed.length)) {
+    for (const k of ['simple', 'medium', 'detailed']) { const x = byLevel[k].shift(); if (x && items.length < PRINTABLES_SHOWN) items.push(x); }
+  }
+  const label = PRINTABLES_LABEL[slug] || slug.replace(/-coloring-pages$/, '').replace(/-/g, ' ');
+  return {
+    heading: PRINTABLES_HEADING[slug] || `More free ${label} coloring pages to print`,
+    intro: 'Every page below opens on its own page with a PNG and a letter-size PDF to print at home, a note on what the drawing shows and who it suits, and three related pages.',
+    items: items.map(x => ({ ...x, levelName: { simple: 'Easy', medium: 'Medium', detailed: 'Detailed' }[x.level] || 'Medium' })),
+    moreHref: '/printables#g-' + mine[0].group,
+    moreLabel: mine.length > items.length ? `See all ${mine.length} free ${label} printables` : 'See all free printable coloring pages'
+  };
+}
 const SITE = 'https://www.coloringpagemaker.app';
 const LEVEL_NAMES = { simple: 'Simple', medium: 'Medium', detailed: 'Detailed' };
 // Image metadata that Google's image report asks for on every ImageObject. The license page is the terms:
@@ -799,6 +841,7 @@ app.get('/:slug', (req, res, next) => {
       seasonal: PRO_SEASON_PAGES.has(slug),
       levelNames: LEVEL_NAMES,
       examples: examplesFor(slug),
+      printables: printablesFor(slug),
       ld: themeJsonLd(slug, THEME_GUIDES[slug], examplesFor(slug))
     });
   }
@@ -807,6 +850,7 @@ app.get('/:slug', (req, res, next) => {
       page: NICHE_PAGES[slug],
       slug,
       examples: examplesFor(slug),
+      printables: printablesFor(slug),
       // The next six themes after this one, wrapping around, so every theme page gets links from six others,
       // followed by the seasonal guides.
       allPages: [...[...THEME_ORDER.slice(THEME_ORDER.indexOf(slug) + 1), ...THEME_ORDER.slice(0, Math.max(0, THEME_ORDER.indexOf(slug)))].filter(s => s !== slug).slice(0, 6), ...SEASONAL_THEMES, ...EVERGREEN_THEMES, ...CHRISTMAS_THEMES].map(s => ({ slug: s, h1: themeLabel(s) }))
@@ -816,6 +860,7 @@ app.get('/:slug', (req, res, next) => {
     return res.render('blog-post', {
       post: BLOG_POSTS[slug],
       slug,
+      printables: printablesFor(slug),
       allPosts: Object.keys(BLOG_POSTS).filter(s => s !== slug).slice(0, 4).map(s => ({ slug: s, title: BLOG_POSTS[s].title }))
     });
   }
@@ -845,8 +890,6 @@ app.get('/sitemap.xml', (req, res) => {
   <url>
     <loc>${SITE}${p}</loc>
     <lastmod>${lastmod}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>${p === '/' ? '1.0' : '0.8'}</priority>
   </url>`).join('');
 
   res.send(`<?xml version="1.0" encoding="UTF-8"?>
@@ -866,6 +909,45 @@ Disallow: /verify-pro
 
 Sitemap: https://www.coloringpagemaker.app/sitemap.xml
 Sitemap: https://www.coloringpagemaker.app/sitemap-printables.xml`);
+});
+
+// === LLMS.TXT ===
+// A short map of the site for programs that read it (llmstxt.org): what the tool does, the printable pages, the collections, the
+// guides and the plans. The lists come from the same tables as the sitemap, so a new page appears here by itself.
+// A guide whose title has the word "AI" in it is named by a plain label here.
+const LLMS_GUIDE_LABEL = {
+  'sell-coloring-books-on-etsy': 'How to sell coloring books on Etsy in 2026: fees, files and rules',
+  'best-ai-coloring-page-generators-2026': 'Coloring page makers compared in 2026: an honest comparison'
+};
+app.get('/llms.txt', (req, res) => {
+  res.type('text/plain');
+  const line = (label, p, note) => `- [${label}](${SITE}${p})${note ? ': ' + note : ''}`;
+  res.send([
+    '# ColoringPageMaker',
+    '',
+    '> ColoringPageMaker draws a printable black-and-white coloring page from one sentence you type, and keeps a growing set of free printable pages. Pages download as a PNG or a letter-size PDF. Two pages a day are free, with no account, for personal use. Pro is a one-time $9 payment.',
+    '',
+    '## Start here',
+    line('Coloring page maker', '/', 'type what you want to color, pick the detail level (simple for ages 3 to 5, medium, detailed for adults) and download a PNG or a letter-size PDF'),
+    line('Free printable coloring pages', '/printables', 'ready-made pages, each with its own page, a PNG and a letter PDF to print at home; a few new pages every day'),
+    '',
+    `## Coloring page collections (${ALL_THEMES.length})`,
+    ...ALL_THEMES.map(s => line(themeLabel(s), '/' + s)),
+    '',
+    '## Guides',
+    ...Object.keys(BLOG_POSTS).map(s => line(LLMS_GUIDE_LABEL[s] || BLOG_POSTS[s].title, '/' + s)),
+    line('All guides and articles', '/blog'),
+    '',
+    '## Plans and terms',
+    line('Free and Pro', '/#pro', 'Free: 2 pages a day, no account, personal use at home or in your own classroom. Pro: $9 once with no subscription, up to 150 pages a day, up to 50 HD pages a month, one PDF for all your pages without a watermark, and a commercial license'),
+    line('Terms of use', '/terms'),
+    line('Refund policy', '/refund'),
+    line('Privacy policy', '/privacy'),
+    '',
+    '## Contact',
+    '- info@peakappsstudio.com',
+    ''
+  ].join('\n'));
 });
 
 // === 404 ===

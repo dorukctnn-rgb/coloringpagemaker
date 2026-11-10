@@ -138,7 +138,7 @@ export const HALLOWEEN_SEEDS = {
   'halloween-little-witch-coloring-page': {
     m: 'A smiling little witch in a big pointed hat hugging a carved pumpkin, with falling leaves. For ages 6 to 10.',
     a: 'A smiling girl in an oversized pointed hat with a bow hugs a big carved pumpkin that is almost as tall as she is. A small scarf, boots and falling autumn leaves complete the scene.',
-    l: 'A medium page for ages 6 to 10. The hat and the pumpkin give two large areas, while the leaves, scarf and boots add small shapes for a longer attention span.',
+    l: 'Aimed at ages 6 to 10, at a medium level. The hat and the pumpkin give two large areas, while the leaves, scarf and boots add small shapes for a longer attention span.',
     p: 'The hat bow and the leaf outlines are thin, so fine-tip markers work well. Print at 100 percent, because a smaller copy makes the face too small to color.',
     c: 'Try a purple hat with a bright green bow, a red scarf and autumn leaves in red, orange and yellow. The pumpkin eyes can glow in a warm yellow.',
     u: 'A natural page for a costume day: ask each child to color the witch to match the costume they will wear, then put the pages on a door display.',
@@ -156,7 +156,7 @@ export const HALLOWEEN_SEEDS = {
   'halloween-owl-on-pumpkin-coloring-page': {
     m: 'An owl with patterned feathers on a carved pumpkin, framed by leaves and a vine border. A detailed page for adults and teens.',
     a: 'An owl with patterned feathers perches on a pumpkin, framed by autumn leaves on both sides and a decorated square border of vines, small flowers and swirls.',
-    l: 'This is a detailed page for teens and adults. The feather pattern, the leaves and the border are all small areas, so plan on an hour or more.',
+    l: 'This one is for teens and adults who like detail. The feather pattern, the leaves and the border are all small areas, so plan on an hour or more.',
     p: 'Colored pencils give the best control over the feather pattern. Print on smooth paper so the pencil lays down evenly across the leaves.',
     c: 'Warm browns and creams for the owl, bright orange for the pumpkin and a mix of reds and golds for the leaves make a classic autumn palette. For a twist, try a purple and teal owl.',
     u: 'Frame the finished page for a fall mantel, or use it as a calm break during a busy Halloween week.',
@@ -183,7 +183,7 @@ export const HALLOWEEN_SEEDS = {
   'halloween-pumpkin-patch-coloring-page': {
     m: 'A pumpkin patch with pumpkins of every size, curly vines, big leaves and a wheelbarrow. For ages 6 to 12.',
     a: 'Pumpkins of many sizes crowd a field with curly vines and big leaves, and an old wheelbarrow stands on the right. A cloud and a vine curling in the top corners leave the sky empty for coloring.',
-    l: 'A medium page for ages 6 to 12. Many pumpkins overlap, so children decide where each one starts and stops, which is good practice in choosing colors.',
+    l: 'Medium level, for ages 6 to 12. Many pumpkins overlap, so children decide where each one starts and stops, which is good practice in choosing colors.',
     p: 'Overlapping pumpkins can blend together if you use the same orange. Vary the shade between neighbors: yellow-orange, red-orange and a pale peach.',
     c: 'Add a few green and white pumpkins for variety, brown wheelbarrow wood and dark green leaves. Keep the sky a pale blue with light crayon pressure.',
     u: 'Use it before or after a pumpkin patch trip. Ask children to color the pumpkins as they remember them and count how many they can find.',
@@ -192,7 +192,7 @@ export const HALLOWEEN_SEEDS = {
   'halloween-pumpkin-porch-coloring-page': {
     m: 'Three carved pumpkins on a porch step in front of an open door, with a hanging lantern and fallen leaves. For ages 7 to 12.',
     a: 'Three carved pumpkins sit on a porch step in front of an open front door. A lantern hangs from the porch roof, columns frame both sides and fallen leaves lie around the pumpkins.',
-    l: 'The pumpkins are simple, while the brick wall and the door panels add enough detail for ages 7 to 12. It takes about 30 minutes.',
+    l: 'The pumpkins are simple, while the brick wall and the door panels add enough detail for ages 7 to 12. Plan on about half an hour.',
     p: 'Straight lines such as the door panels and the columns are easier with a ruler. Older children can use one for a crisp, architectural look.',
     c: 'Make the glow by coloring the pumpkin faces yellow and shading the wall nearby in a pale warm tone. A deep red door is a nice contrast to the orange pumpkins.',
     u: 'Good for a decorating-the-house activity. Color the porch, then compare it with how your own front steps look at Halloween.',
@@ -201,7 +201,7 @@ export const HALLOWEEN_SEEDS = {
   'halloween-scarecrow-coloring-page': {
     m: 'A friendly scarecrow in a pumpkin patch with two crows and a moon. A medium page for ages 6 to 12.',
     a: 'A scarecrow in a patched hat and a smiling stitched face stands in a pumpkin patch with its arms stretched wide. Two crows perch on the arms, a moon outline hangs in the corner, and pumpkins and leaves fill the ground.',
-    l: 'A medium page for ages 6 to 12. The scarecrow is easy to recognize, while the crows, pumpkins and leaves provide smaller areas to work on.',
+    l: 'Ages 6 to 12 can handle this medium page on their own. The scarecrow is easy to recognize, while the crows, pumpkins and leaves provide smaller areas to work on.',
     p: 'Straw and patches suggest rough texture. Pencil crayons pressed lightly in short strokes look like straw, and crayon on textured paper gives a similar effect.',
     c: 'Try faded blue and brown for the clothes, bright squares for the patches and yellow for the straw. The crows can be deep purple instead of plain black for a glossy look.',
     u: 'A fitting page for a fall festival or a harvest unit in class. Pair it with a short talk about why farmers use scarecrows.',
@@ -273,7 +273,7 @@ export const HALLOWEEN_SEEDS = {
   'halloween-witch-on-broomstick-coloring-page': {
     m: 'A smiling witch on a broomstick with a black cat behind her and a big moon outline. For ages 6 to 10.',
     a: 'A smiling witch with wavy hair and a tall pointed hat sits sideways on a broomstick with one arm stretched forward. A cat rides behind her on the broom, and a big moon outline fills the sky behind them.',
-    l: 'A medium page for ages 6 to 10. The witch and the cat are two small characters with clothing details, and the moon is a big area that ties the picture together.',
+    l: 'Medium level, best for ages 6 to 10. The witch and the cat are two small characters with clothing details, and the moon is a big area that ties the picture together.',
     p: 'Faces are small. Color the face and hands in a light tone first and add the hat and clothes afterwards, so the lines do not smudge.',
     c: 'A purple dress with a green hat, golden hair and an orange broom bundle, all under a dark blue sky with a pale yellow moon.',
     u: 'Great for a costume week. Let children color the witch to match the costume they chose and display the pages near the classroom door.',
