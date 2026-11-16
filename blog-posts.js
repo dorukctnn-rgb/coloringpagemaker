@@ -1413,6 +1413,313 @@ const BLOG_POSTS = {
       ]
     }
   ]
+},
+
+"thanksgiving-coloring-placemats": {
+  "title": "Thanksgiving Coloring Placemats for Kids (8-Seat Example)",
+  "description": "Plan Thanksgiving coloring placemats for a kids' table: the prompt and level for each age, how to build the placemat, and when to print.",
+  "keyword": "thanksgiving coloring placemats",
+  "date": "Updated October 2026",
+  "read": "7 min",
+  "updated": "2026-10-22",
+  "summary": "A worked example for an eight-seat kids' table: the page, prompt and detail level for each age, how to turn a letter page into a placemat, and a day-by-day plan for making the pages.",
+  "content": [
+    {
+      "type": "h2",
+      "text": "A coloring placemat for every seat"
+    },
+    {
+      "type": "p",
+      "text": "To make Thanksgiving coloring placemats for kids, describe a border of harvest pictures in the generator. Pick a detail level for each child's age and print one page per child. Mount or enlarge each page so it fits the plate, and write the child's name on a strip by hand. This guide plans a table of eight children, with a prompt for each seat."
+    },
+    {
+      "type": "p",
+      "text": "The US Office of Personnel Management lists Thanksgiving Day for 2026 as Thursday 26 November. Plan your Thanksgiving coloring placemats backward from that day. The free plan makes two pages a day, so eight different pages need four days. Add spare days for pages that miss."
+    },
+    {
+      "type": "sources",
+      "checked": "22 October 2026",
+      "links": [
+        {
+          "text": "US Office of Personnel Management: Federal holidays (2026 schedule)",
+          "href": "https://www.opm.gov/policy-data-oversight/pay-leave/federal-holidays/"
+        }
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Worked example: an eight-seat kids' table"
+    },
+    {
+      "type": "p",
+      "text": "The table below plans eight seats, for children from age 3 to age 12. Each row gives the prompt to type and the level to pick. The generator labels its detail levels by age:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Simple: ages 3 to 6, thick lines.",
+        "Medium: ages 6 to 12, balanced.",
+        "Detailed: adults, intricate."
+      ]
+    },
+    {
+      "type": "table",
+      "head": [
+        "Seat",
+        "Age",
+        "Page",
+        "Prompt to type",
+        "Level",
+        "Paper"
+      ],
+      "rows": [
+        [
+          "1",
+          "3",
+          "Pumpkin border",
+          "a border of big pumpkins and round leaves along the edges, open white space in the middle, big simple shapes, no background",
+          "Simple",
+          "Copy paper, plus a spare copy"
+        ],
+        [
+          "2",
+          "4",
+          "Turkey border",
+          "a border of smiling cartoon turkeys with big round tail feathers along the edges, open white space in the middle, big simple shapes, no background",
+          "Simple",
+          "Copy paper, plus a spare copy"
+        ],
+        [
+          "3",
+          "5",
+          "Orchard border",
+          "a border of apples, pears and corn cobs along the edges, open white space in the middle, big simple shapes, no background",
+          "Simple",
+          "Copy paper on a colored frame"
+        ],
+        [
+          "4",
+          "6",
+          "Squirrel border",
+          "a border of squirrels holding acorns, with oak leaves falling along the edges, open white space in the middle, big simple shapes, no background",
+          "Simple",
+          "Copy paper on a colored frame"
+        ],
+        [
+          "5",
+          "7",
+          "Scarecrow border",
+          "a border of friendly scarecrows, pumpkins and corn stalks along the edges, open white space in the middle, clean bold outlines",
+          "Medium",
+          "Frame and clear cover"
+        ],
+        [
+          "6",
+          "9",
+          "Hedgehog border",
+          "a border of hedgehogs, mushrooms and fallen leaves along the edges, open white space in the middle, clean bold outlines",
+          "Medium",
+          "Frame and clear cover"
+        ],
+        [
+          "7",
+          "10",
+          "Leaf border",
+          "a border of overlapping maple, oak and birch leaves along the edges, each leaf a separate outline, open white space in the middle",
+          "Medium",
+          "Frame and clear cover"
+        ],
+        [
+          "8",
+          "12",
+          "Wild turkey border",
+          "a border of wild turkeys with tails fanned out, wheat stalks and apples along the edges, each feather a separate outline, open white space in the middle",
+          "Medium",
+          "Frame and clear cover"
+        ]
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Age 6 fits both labels, so seat 4 could take Simple or Medium. Pick Simple for a child who still colors outside the lines. Pick Medium for a child who stays inside them. For a table of four or ten, drop or add rows. The rule stays the same: the level follows the age."
+    },
+    {
+      "type": "p",
+      "text": "The paper column changes with the age. The two youngest get plain copy paper and a spare copy, because small children tear and spill. Seats 3 and 4 get a colored frame. Seats 5 to 8 get a frame and a clear cover. They can use wipe-off crayons, and the placemat can be reused next year. The next section shows how to make each one."
+    },
+    {
+      "type": "p",
+      "text": "Every prompt asks for pictures only. The generator draws pictures and cannot be relied on to write words or numbers, so leave words, names and dates out of the prompt and write them on the printed page by hand. Each prompt also asks for a border and an open middle. A small plate can sit on the middle; a bigger plate may cover part of the border, and the next section shows what to do. Before dinner, the child can draw in the middle what they are thankful for."
+    },
+    {
+      "type": "p",
+      "text": "Do not ask for characters, logos or artwork that belong to someone else. If a child asks for a favorite character, describe an animal or a scene instead."
+    },
+    {
+      "type": "p",
+      "text": "The generator draws what you describe, and it may not leave the middle open every time. If a page misses, change one detail in the prompt and make it again. On the free plan, each new page uses one of the day's two. Check every page before you print it:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "The middle is open and wide, so a plate covers as little of the border as possible.",
+        "The lines are closed, so color stays inside each shape.",
+        "The smallest shape is large enough for the child's crayon.",
+        "No words or numbers show anywhere on the page.",
+        "No character, logo or brand shows, even in the background."
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Our page of [Thanksgiving coloring pages](/thanksgiving-coloring-pages) has a short plan for the kids' table and more prompts by age. For more turkey ideas, from cartoon to realistic, see our [turkey coloring pages](/turkey-coloring-pages)."
+    },
+    {
+      "type": "h2",
+      "text": "Turn a letter page into a placemat"
+    },
+    {
+      "type": "p",
+      "text": "A Thanksgiving placemat coloring page from the generator is black lines on white. It comes as a US letter PDF, 8.5 x 11 inches. A letter page makes a small placemat, so test the fit first. Print the first page you make and set the plate on it. See how much of the border still shows. When the border matters, a bigger sheet is the main layout. Pick the layout that fits:"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "If the plate covers the border, use a larger sheet of construction paper or poster board. Glue the page toward the top and set the plate on the lower part, or set the plate beside the page. Lay both on the sheet first to check the fit.",
+        "If the border still shows all around the plate, use the page as it is and let the plate cover the open middle. For a frame, glue the page onto a larger sheet of colored construction paper first.",
+        "If your printer takes a larger sheet, print the PDF scaled up to fill it. A bigger print looks a little softer, so print one test copy and check the lines first."
+      ]
+    },
+    {
+      "type": "p",
+      "text": "Add a name strip to every placemat. Cut a strip of plain paper and write the child's name on it with a marker. Glue the strip along the top edge. The strip doubles as a place card."
+    },
+    {
+      "type": "p",
+      "text": "Tape two corners of each placemat to the table so it does not slide while a child colors. Try the tape on a hidden corner of the table first."
+    },
+    {
+      "type": "p",
+      "text": "To reuse a placemat, cover the page with clear contact paper or slide it into a laminating pouch. Contact paper comes on a roll, so it can cover a large frame. A pouch takes only a sheet that fits inside it."
+    },
+    {
+      "type": "p",
+      "text": "Color a covered page with wipe-off crayons or markers. Test one color on a corner and wipe it away to see that it comes off. A covered page also wipes clean after a spill. If you skip the cover, print fresh copies and swap one in when a page is full."
+    },
+    {
+      "type": "h2",
+      "text": "When to make the pages"
+    },
+    {
+      "type": "p",
+      "text": "The free plan makes two pages a day, with no account. The count is by IP address. It resets at midnight UTC, which may not be midnight where you live. Free pages come from a shared daily pool that can run out on busy days. A plan with no spare day has no room for a bad page. Free pages are for personal, non-commercial use, for example at home or in your own classroom. A family table at home is personal use. Free pages may not be sold."
+    },
+    {
+      "type": "p",
+      "text": "Free printable Thanksgiving coloring placemats from the generator come one page per PDF. Each PDF carries a 'Free preview' watermark, so eight pages come as eight watermarked files. Your pages stay in the open browser tab only, and closing the tab clears them. Download each page as soon as you make it."
+    },
+    {
+      "type": "p",
+      "text": "This plan starts on Saturday 14 November and leaves three spare days, 18 to 20 November. A late start, such as Saturday 21 November, leaves no spare day. The eight pages then finish on Tuesday 24 November. You would print and mount on Wednesday 25 November, so skip the covers."
+    },
+    {
+      "type": "table",
+      "head": [
+        "Days",
+        "What to do"
+      ],
+      "rows": [
+        [
+          "Sat 14 and Sun 15 November",
+          "Make seats 1 to 4, two pages a day. Download each page as you go. Print the seat 1 page and set a plate on it."
+        ],
+        [
+          "Mon 16 and Tue 17 November",
+          "Make seats 5 to 8."
+        ],
+        [
+          "Wed 18 to Fri 20 November",
+          "Spare days. Make any page again, make the adult page, and buy the paper and wipe-off crayons."
+        ],
+        [
+          "Sat 21 and Sun 22 November",
+          "Print every page, plus a spare copy for seats 1 and 2."
+        ],
+        [
+          "Mon 23 November",
+          "Glue the pages for seats 3 to 8 onto their frames. Write every name strip and glue it on."
+        ],
+        [
+          "Tue 24 November",
+          "Cover the pages for seats 5 to 8. Test one wipe-off color on a corner."
+        ],
+        [
+          "Wed 25 November",
+          "Set the table and run the night-before checklist."
+        ],
+        [
+          "Thu 26 November",
+          "Thanksgiving Day. Tape the pages down and put out the crayons before the food comes to the table."
+        ]
+      ]
+    },
+    {
+      "type": "p",
+      "text": "If the days do not fit, or the watermark bothers you, use Pro. It costs $9, paid once, and it is not a subscription. Pro allows up to 150 pages a day as a fair-use cap, so all eight pages take one sitting. It puts all your pages in one PDF book without the watermark. Pro is sold through Gumroad, and the Free and Pro section of the [generator](/) page has the link."
+    },
+    {
+      "type": "p",
+      "text": "With Pro, the book follows the list on the page, newest page first. Make the seat 8 page first and the seat 1 page last, and the book opens with seat 1. If you make a page again, press Remove on the old copy, or the book keeps both. Keep the tab open until the book is downloaded."
+    },
+    {
+      "type": "sources",
+      "checked": "22 October 2026",
+      "links": [
+        {
+          "text": "US Office of Personnel Management: Federal holidays (2026 schedule)",
+          "href": "https://www.opm.gov/policy-data-oversight/pay-leave/federal-holidays/"
+        }
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Something for the adults"
+    },
+    {
+      "type": "p",
+      "text": "Make one more page for the grown-up who sits with the children, or for anyone who wants to color after dinner. Use the Detailed level, which the generator labels for adults. Ask for a long dinner table with a roast turkey, pies, corn, candles and autumn leaves. Add 'fine but unbroken lines' and 'no people' to the prompt."
+    },
+    {
+      "type": "p",
+      "text": "Our guide to [adult coloring pages](/adult-coloring-pages) lists paper for pencils and markers, and how fine the detail can get."
+    },
+    {
+      "type": "p",
+      "text": "For leaves, acorns and harvest scenes that stay in season after Thanksgiving, see our [fall coloring pages](/fall-coloring-pages). Print a few extras for children to color after dinner or take home."
+    },
+    {
+      "type": "h2",
+      "text": "Night-before checklist"
+    },
+    {
+      "type": "p",
+      "text": "Run through this list the evening before the dinner, once your Thanksgiving coloring placemats are printed and mounted."
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Pages: one for every child, a spare copy for seats 1 and 2, and the adult page.",
+        "Files: every PDF saved to your computer, so a spilled page can be printed again.",
+        "Frames: each page for seats 3 to 8 glued onto its frame, with the edges pressed flat.",
+        "Name strips: each name written by hand and glued on.",
+        "Covers: the pages for seats 5 to 8 covered, with one wipe-off color tested on a corner.",
+        "Plate test: one plate set on one finished placemat to see how much picture shows.",
+        "Crayons: one cup between every two children, with the same colors in each cup. Add wipe-off crayons for seats 5 to 8.",
+        "Tape: a short piece ready for two corners of each placemat.",
+        "Wipes: a pack of wipes and a few paper towels at the end of the table.",
+        "Seating: name strips in place, with the youngest children nearest the grown-up helper."
+      ]
+    }
+  ]
 }
 
 };
