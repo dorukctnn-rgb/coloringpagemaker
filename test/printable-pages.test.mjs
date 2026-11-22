@@ -210,12 +210,21 @@ test('a theme page links to its own printables: 8 on Halloween, with thumbnails,
   assert.ok(!BANNED.test(text(block)));
 });
 
-test('the Christmas, fall and Thanksgiving pages show their printables; the guides with printables show theirs; the turkey page stays as it was', async () => {
+test('the Christmas, fall and Thanksgiving pages show their printables; the guides with printables show theirs; the turkey page carries its own block of six', async () => {
   for (const [p, n] of [['/christmas-coloring-pages', 6], ['/fall-coloring-pages', 6], ['/thanksgiving-coloring-pages', 8], ['/thankful-coloring-pages', 3], ['/turkey-disguise-template', 3]]) {
     const html = await get(p);
     assert.equal((html.match(/class="printable-card"/g) || []).length, n, p);
   }
-  assert.ok(!(await get('/turkey-coloring-pages')).includes('printables-band'), 'the page with the search traffic is untouched');
+  // The collection with the search traffic has no data-driven block; it carries one hand-written block of six, in a fixed order, and nothing else of the page changed.
+  const turkey = await get('/turkey-coloring-pages');
+  assert.equal((turkey.match(/class="printables-band"/g) || []).length, 1);
+  const tb = /<section class="printables-band" id="printable-turkey-pages"[\s\S]*?<\/section>/.exec(turkey)[0];
+  const six = ['ballerina', 'face', 'astronaut', 'parade', 'firefighter', 'mandala'].map(n => `thanksgiving-turkey-${n}-coloring-page`);
+  assert.deepEqual([...tb.matchAll(/href="\/printables\/([a-z0-9-]+)"/g)].map(m => m[1]), six);
+  assert.ok(/<h2 id="turkey-printables-title">Printable turkey pages<\/h2>/.test(tb));
+  assert.equal((tb.match(/loading="lazy"/g) || []).length, 6);
+  assert.ok(/alt="[^"]{30,}"/.test(tb) && !/alt=""/.test(tb));
+  assert.ok(!BANNED.test(text(tb)));
   assert.ok(!(await get('/dog-coloring-pages')).includes('printables-band'), 'a theme with no printables shows no block');
 });
 

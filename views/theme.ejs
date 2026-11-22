@@ -85,6 +85,36 @@
 <%- include('partials/examples') %>
 <%- include('partials/printables') %>
 
+<% if (slug === 'turkey-coloring-pages') { %>
+<%# The turkey collection has no data-driven printables block (printablesFor in server.js leaves it out). It carries this one, written by hand: six turkey pages that each have their own printable page, with a plain link, a thumbnail and a line on what the drawing shows. The levels and the drawings are the ones on each page. %>
+<section class="printables-band" id="printable-turkey-pages" aria-labelledby="turkey-printables-title">
+  <div class="printables-head">
+    <h2 id="turkey-printables-title">Printable turkey pages</h2>
+    <p class="printables-intro">Every page below opens on its own page with a PNG and a letter-size PDF to print at home, a note on what the drawing shows and who it suits, and three related pages.</p>
+  </div>
+  <ul class="printables-grid">
+    <% [
+      { slug: 'thanksgiving-turkey-ballerina-coloring-page', name: 'Turkey ballerina', level: 'Medium', alt: 'Coloring page of a turkey dressed as a ballerina in a tutu, standing on tiptoe with its wings, in black line art on white paper.' },
+      { slug: 'thanksgiving-turkey-face-coloring-page', name: 'Turkey face', level: 'Easy', alt: 'Coloring page of a big turkey face with a beak, a red wattle and a ring of feathers behind it, in black line art on white paper.' },
+      { slug: 'thanksgiving-turkey-astronaut-coloring-page', name: 'Turkey astronaut', level: 'Medium', alt: 'Coloring page of a turkey dressed as an astronaut in a space suit and a round helmet, with stars, in black line art on white paper.' },
+      { slug: 'thanksgiving-turkey-parade-coloring-page', name: 'Turkey parade', level: 'Easy', alt: 'Coloring page of three turkeys walking in a row with fanned tails and falling leaves, in black line art on white paper.' },
+      { slug: 'thanksgiving-turkey-firefighter-coloring-page', name: 'Turkey firefighter', level: 'Easy', alt: 'Coloring page of a turkey dressed as a firefighter with a helmet, a long coat and a hose, in black line art on white paper.' },
+      { slug: 'thanksgiving-turkey-mandala-coloring-page', name: 'Turkey mandala', level: 'Detailed', alt: 'Coloring page of a round mandala shaped like a turkey with patterned feathers, in black line art on white paper.' }
+    ].forEach(function (x) { %>
+    <li class="image-card">
+      <a class="printable-card" href="/printables/<%= x.slug %>">
+        <figure>
+          <img src="/printables/img/<%= x.slug %>-400.png" width="400" height="400" alt="<%= x.alt %>" loading="lazy" decoding="async">
+          <figcaption><strong><%= x.name %> coloring page</strong><span><%= x.level %> page, free to print</span></figcaption>
+        </figure>
+      </a>
+    </li>
+    <% }); %>
+  </ul>
+  <p class="printables-more"><a href="/printables#g-autumn">See all free printable coloring pages</a></p>
+</section>
+<% } %>
+
 <% if (locals.seasonal) { %>
 <aside class="season-pro" data-sells-pro aria-labelledby="seasonProTitle">
   <div class="season-pro-box">
